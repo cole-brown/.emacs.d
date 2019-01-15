@@ -73,6 +73,7 @@
 ;; Custom file
 ;;---
 ;; Some packages want to write to our custom file, so set that up first.
+;; An unadorned filename (just "custom.el") wasn't getting picked up as the custom file, so for now:
 (setq custom-file (expand-file-name "custom.el" spydez/setup-personal-dir))
 ;; May need a better setter if custom-file needs adjusted per computer...
 ;; Helper func to look for file to define place or maybe try provide/require?
@@ -111,6 +112,25 @@
 
 ;; todo: utf-8
 
+;; conditional use-package stuff? 
+;; https://jwiegley.github.io/use-package/keywords/
+
+;;------------------------------------------------------------------------------
+;; Packages.
+;;------------------------------------------------------------------------------
+
+;; TODO: pull out into one or more include files when needed
+
+;; Uh... use-package-always-ensure is void out here?
+;; Maybe start a spydez/debugging file...
+;; https://www.gnu.org/software/emacs/manual/html_node/eintr/message.html
+;(message "%s" use-package-always-ensure)
+
+;;---
+;; Color scheme: Zenburn
+;;---
+(use-package zenburn-theme)
+;; Seems to work fine without 'load-theme
 
 ;;------------------------------------------------------------------------------
 ;; The End.

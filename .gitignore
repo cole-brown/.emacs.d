@@ -1,4 +1,11 @@
+# -*- mode: gitignore; -*-
 # Files to ignore for .emacs.d repo
+
+# https://github.com/github/gitignore/blob/master/Global/Emacs.gitignore
+
+*~
+\#*\#
+*.elc
 
 ##---
 ## Auto-gen, packages, etc.
