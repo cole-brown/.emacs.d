@@ -5,6 +5,7 @@
 ;; can 'literate programming' do multiple files?
 ;; http://www.howardism.org/Technical/Emacs/literate-programming-tutorial.html
 
+
 ;;------------------------------------------------------------------------------
 ;; Initial vars setup.
 ;;------------------------------------------------------------------------------
@@ -41,10 +42,20 @@
 (defvar spydez/auto-open-list
   '("c:/home/documents/work.org"))
 
-;; TODO: user-full-name user-mail-address ??
+;;---
+;; Identity / Personal Information
+;;---
+(setq user-full-name "Cole Brown"
+      user-mail-address "git@spydez.com")
 
 ;; TODO: custom-file
 ; https://www.gnu.org/software/emacs/manual/html_node/emacs/Saving-Customizations.html
+
+;;---
+;; TODO: try-load init-vars.el?
+;;---
+;(unless (some-predicate-about-something-p 'package-name)
+;  (do-a-thing))
 
 ;;---
 ;; Add stuff to our load path.
@@ -62,8 +73,11 @@
 ;; Custom file
 ;;---
 ;; Some packages want to write to our custom file, so set that up first.
-(setq custom-file "custom.el")
+(setq custom-file (expand-file-name "custom.el" spydez/setup-personal-dir))
+;; May need a better setter if custom-file needs adjusted per computer...
+;; Helper func to look for file to define place or maybe try provide/require?
 (load custom-file t)
+
 
 ;;------------------------------------------------------------------------------
 ;; Bootstrap.
@@ -97,13 +111,10 @@
 
 ;; todo: utf-8
 
-;; todo: move to wherever the end is? Or leave here because this is the end?
-;; https://github.com/zzamboni/dot-emacs/blob/master/init.org
-(defun spydez/startup-hook ()
-  (message "Emacs ready in %s with %d garbage collections."
-    (format "%.2f seconds"
-      (float-time
-        (time-subtract after-init-time before-init-time)))
-    gcs-done))
-(add-hook 'emacs-startup-hook 'spydez/startup-hook)
-;;fin
+
+;;------------------------------------------------------------------------------
+;; The End.
+;;------------------------------------------------------------------------------
+
+(load "finalize.el")
+;; fin
