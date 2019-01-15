@@ -1,0 +1,17 @@
+# Files to ignore for .emacs.d repo
+
+##---
+## Auto-gen, packages, etc.
+##---
+
+# emacs auto-save
+/auto-save-list/
+
+# package.el repository
+/elpa/
+
+##---
+## Misc
+##---
+
+*.bat
