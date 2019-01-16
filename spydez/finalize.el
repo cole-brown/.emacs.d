@@ -13,3 +13,8 @@
         (time-subtract after-init-time before-init-time)))
     gcs-done))
 (add-hook 'emacs-startup-hook 'spydez/startup-hook)
+
+
+;; More timing tooling for packages (require and load functions):
+;; https://github.com/dholm/benchmark-init-el
+

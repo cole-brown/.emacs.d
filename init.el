@@ -21,20 +21,26 @@
 ;; cross-platform dir and file names:
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Directory-Names.html#Directory-Names
 
-(defconst spydez/setup-domain-name "work"
+(defconst spydez/name/setup-domain "work"
   "A domain/folder for setups similar to this. E.g. work vs personal.")
-(defconst spydez/setup-comp-name (system-name)
-  "This specific computer's setup folder.")
-(defconst spydez/setup-root-dir (expand-file-name user-emacs-directory)
+(defconst spydez/name/setup-comp (system-name)
+  "Intended for this specific computer's setup folder.")
+(defconst spydez/dir/setup-emacs (expand-file-name user-emacs-directory)
   ;; user-init-file and user-emacs-directory can be helpful here
-  "Probably don't need this?")
-;; todo: need these?
-;(defconst spydez/setup-libs (concat spydez/setup-root-dir "libs/"))
-(defconst spydez/setup-personal-dir (expand-file-name "personal" spydez/setup-root-dir)
+  "This should be a platform-agnostic way to find .emacs.d.")
+
+;; Path dirs, and places for overrides to exist.
+;;   ./spydez/
+;;   ./spydez/defaults/
+;;   ./spydez/work/
+;;   ./spydez/work/WORK-PC-NAME
+(defconst spydez/dir/setup-personal (expand-file-name "spydez" spydez/dir/setup-emacs)
   "All of my own personal/custom setup code/vars/definitions...")
-(defconst spydez/setup-domain-specific-dir (expand-file-name spydez/setup-domain-name spydez/setup-personal-dir)
+(defconst spydez/dir/setup-defaults (expand-file-name "defaults" spydez/dir/setup-personal)
+  "All of my optional/default setup elisp files...")
+(defconst spydez/dir/setup-domain-specific (expand-file-name spydez/name/setup-domain spydez/dir/setup-personal)
   "Anything that has to be domain specific. Tab widths or whatnot.")
-(defconst spydez/setup-comp-specific-dir (expand-file-name spydez/setup-comp-name spydez/setup-domain-specific-dir)
+(defconst spydez/dir/setup-comp-specific (expand-file-name spydez/name/setup-comp spydez/dir/setup-domain-specific)
   "Anything that has to be computer specific. Overriding tab widths or whatnot.")
 
 ;; todo: move to an end script or something?
@@ -48,15 +54,6 @@
 (setq user-full-name "Cole Brown"
       user-mail-address "git@spydez.com")
 
-;; TODO: custom-file
-; https://www.gnu.org/software/emacs/manual/html_node/emacs/Saving-Customizations.html
-
-;;---
-;; TODO: try-load init-vars.el?
-;;---
-;(unless (some-predicate-about-something-p 'package-name)
-;  (do-a-thing))
-
 ;;---
 ;; Add stuff to our load path.
 ;;---
@@ -64,21 +61,30 @@
 ;;
 ;; Don't use .emacs.d. 
 ;; https://stackoverflow.com/questions/24779041/disable-warning-about-emacs-d-in-load-path
-;; (add-to-list 'load-path spydez/setup-root-dir)
-(add-to-list 'load-path spydez/setup-personal-dir)
-(add-to-list 'load-path spydez/setup-domain-specific-dir)
-(add-to-list 'load-path spydez/setup-comp-specific-dir)
+;; (add-to-list 'load-path spydez/dir/setup-emacs)
+(add-to-list 'load-path spydez/dir/setup-defaults) ;; defaults first so everything else overrides.
+(add-to-list 'load-path spydez/dir/setup-personal)
+(add-to-list 'load-path spydez/dir/setup-domain-specific)
+(add-to-list 'load-path spydez/dir/setup-comp-specific) ;; most specific to this computer last
 
 ;;---
 ;; Custom file
 ;;---
+;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Saving-Customizations.html
+
 ;; Some packages want to write to our custom file, so set that up first.
 ;; An unadorned filename (just "custom.el") wasn't getting picked up as the custom file, so for now:
-(setq custom-file (expand-file-name "custom.el" spydez/setup-personal-dir))
+(setq custom-file (expand-file-name "custom.el" spydez/dir/setup-personal))
 ;; May need a better setter if custom-file needs adjusted per computer...
 ;; Helper func to look for file to define place or maybe try provide/require?
 (load custom-file t)
 
+;;---
+;; Try-Load overrides (from init-vars.el)?
+;;---
+;(when (load "init-vars.el" 'noerror)
+;  (message "hi?"))
+(load "init-vars.el" 'noerror)
 
 ;;------------------------------------------------------------------------------
 ;; Bootstrap.
@@ -87,12 +93,7 @@
 ;; Init use-package so we can use use-package for the rest of the packages we use.
 (load "init-package.el")
 
-;; todo: check these out?
-;(load-file (concat kooru/emacs-libs "bootstrap.el"))
-;(bootstrap-init kooru/comp-domain kooru/comp-name)
-
 ;; todo: inhibit startup stuff
-;; todo: initial-buffer-choice vs spydez/auto-open-list???
 ;ptions affect some aspects of the startup sequence.
 ;- User Option: inhibit-startup-screen
 ;
@@ -115,6 +116,10 @@
 ;; conditional use-package stuff? 
 ;; https://jwiegley.github.io/use-package/keywords/
 
+;; TODO: Libraries here?
+;;  - do we need any?
+;;  - do they really go here, or down in packages?
+
 ;;------------------------------------------------------------------------------
 ;; Packages.
 ;;------------------------------------------------------------------------------
@@ -132,9 +137,30 @@
 (use-package zenburn-theme)
 ;; Seems to work fine without 'load-theme
 
+;; put my stuff after all those packages are loaded
+;; todo: check these out?
+;(load-file (concat kooru/emacs-libs "bootstrap.el"))
+;(bootstrap-init kooru/comp-domain kooru/comp-name)
+
+
+;;------------------------------------------------------------------------------
+;; The... Something?.. TODO a title
+;;------------------------------------------------------------------------------
+
+;; todo: a load for a vars that is in this part of the init... but isn't init-vars.el
+;; I like the menu bar right now... (File, Edit, etc)
+(if (fboundp 'menu-bar-mode) (menu-bar-mode 1))
+;; Tool bar must go. (new, open, etc buttons).
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+;; Scroll bar useful for buffer size/position at-a-glance.
+(if (fboundp 'scroll-bar-mode) (scroll-bar-mode 1))
+
+
 ;;------------------------------------------------------------------------------
 ;; The End.
 ;;------------------------------------------------------------------------------
+
+;; todo: initial-buffer-choice vs spydez/auto-open-list???
 
 (load "finalize.el")
 ;; fin

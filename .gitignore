@@ -3,6 +3,9 @@
 
 # https://github.com/github/gitignore/blob/master/Global/Emacs.gitignore
 
+##---
+## General Emacs things
+##---
 *~
 \#*\#
 *.elc
@@ -22,3 +25,8 @@
 ##---
 
 *.bat
+
+##---
+## Inspiration
+##---
+Sacha.org

@@ -14,6 +14,7 @@
 ;; Set some use-packages vars
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#orgf1ae4f6
 
+;; use-package options:
 (setq use-package-verbose t)
 ;; Not sure if we want this disabled...
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Package-Installation.html
@@ -32,5 +33,15 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-(eval-when-compile
-  (require 'use-package))
+;; todo: require vs eval-when-compile require?
+;;(eval-when-compile
+;;  (require 'use-package))
+(require 'use-package)
+
+;; https://github.com/emacscollective/auto-compile
+;; Pull in auto-compile here, set to on-load mode.
+(use-package auto-compile
+  :config (auto-compile-on-load-mode))
+
+;; auto-compile options:
+(setq load-prefer-newer t)
