@@ -6,10 +6,10 @@
 ;; http://www.howardism.org/Technical/Emacs/literate-programming-tutorial.html
 
 ;; Special extra useful links:
-;; Sacha .emacs: http://pages.sachachua.com/.emacs.d/Sacha.html
+;; Sacha init.el: http://pages.sachachua.com/.emacs.d/Sacha.html
+;; zzamboni init.el: https://github.com/zzamboni/dot-emacs/blob/master/init.org
 ;; Many neat things?: https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
 ;;   todo: see if I want more of them.
-
 
 ;;------------------------------------------------------------------------------
 ;; Initial vars setup.
@@ -93,6 +93,12 @@
 (add-to-list 'load-path spydez/dir/setup-comp-specific) ;; most specific to this computer last
 
 ;;---
+;; Debug
+;;---
+;; All the way down here because I want my load paths, but we could put at the top if needed with a little adjustment.
+(load "debug.el")
+
+;;---
 ;; Custom file
 ;;---
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Saving-Customizations.html
@@ -134,26 +140,9 @@
 ;; Setup backups, autosaves, and history.
 (load "backups.el")
 
-;; todo: inhibit startup stuff
-;ptions affect some aspects of the startup sequence.
-;- User Option: inhibit-startup-screen
-;
-;    This variable, if non-nil, inhibits the startup screen. In that case, Emacs typically displays the *scratch* buffer; but see initial-buffer-choice, below.
-;
-;    Do not set this variable in the init file of a new user, or in a way that affects more than one user, as that would prevent new users from receiving information about copyleft and basic Emacs usage.
-;
-;    inhibit-startup-message and inhibit-splash-screen are aliases for this variable. 
-;
-;- User Option: initial-buffer-choice
-;
-;    If non-nil, this variable is a string that specifies a file or directory for Emacs to display after starting up, instead of the startup screen. If its value is a function, Emacs calls that function which must return a buffer which is then displayed. If its value is t, Emacs displays the *scratch* buffer. 
-;
-;- User Option: inhibit-startup-echo-area-message
-;
-;    This variable controls the display of the startup echo area message. You can suppress the startup echo area message by adding text with this form to your init file: 
-
 ;; todo: utf-8
 
+;; todo:
 ;; conditional use-package stuff? 
 ;; https://jwiegley.github.io/use-package/keywords/
 
@@ -176,10 +165,19 @@
 
 
 ;;------------------------------------------------------------------------------
-;; The... Something?.. TODO a title
+;; Setup.
 ;;------------------------------------------------------------------------------
+;; Loading and init are done - now do any more required setup.
 
-;; todo: a load for a vars that is in this part of the init... but isn't init-vars.el
+;;---
+;; Window/GUI Setup
+;;---
+
+;; Don't show the GNU splash.
+(setq inhibit-startup-screen t)
+
+;; todo: a load for a file for vars that is in this part of the init... but isn't init-vars.el
+
 ;; I like the menu bar right now... (File, Edit, etc)
 (if (fboundp 'menu-bar-mode) (menu-bar-mode 1))
 ;; Tool bar must go. (new, open, etc buttons).
@@ -187,6 +185,28 @@
 ;; Scroll bar useful for buffer size/position at-a-glance.
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode 1))
 
+;;---
+;; Time in the modeline
+;;---
+;; Puts a clock down in the mode line.
+
+;; For simple 24hr time:
+;; (setq display-time-24hr-format t)
+;; (display-time-mode t)
+
+;; For ISO time:
+;; https://emacs.stackexchange.com/questions/7365/how-to-display-date-in-julian-in-the-mode-line
+(require 'calendar)
+;; Set format to: yyyy-mm-dd HH:MM
+;; (trimmed down from: yy-mm-dd HH:MM:SS (Time Zone) <Mail notify>
+(setq display-time-string-forms
+    ;; 2 digit year: '((substring year -2) "/" month "/" day
+    '(year "/" month "/" day
+      " " 24-hours ":" minutes ; ":" seconds
+      ; Long-ass TZ: (if time-zone " (") time-zone (if time-zone ")")
+      ; Mail notice: (if mail " Mail" "")
+      ))
+(display-time-mode t)
 
 ;;------------------------------------------------------------------------------
 ;; The End.
