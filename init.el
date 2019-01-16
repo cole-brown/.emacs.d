@@ -5,6 +5,11 @@
 ;; can 'literate programming' do multiple files?
 ;; http://www.howardism.org/Technical/Emacs/literate-programming-tutorial.html
 
+;; Special extra useful links:
+;; Sacha .emacs: http://pages.sachachua.com/.emacs.d/Sacha.html
+;; Many neat things?: https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
+;;   todo: see if I want more of them.
+
 
 ;;------------------------------------------------------------------------------
 ;; Initial vars setup.
@@ -63,6 +68,10 @@
 
 (defconst spydez/dir/auto-save-files
   (spydez/dir-name "auto-save-list" spydez/dir/setup-emacs))
+
+(defconst spydez/file/save-history
+  (expand-file-name "savehist" spydez/dir/setup-emacs)
+  "History of commands, etc.")
 
 ;;---
 ;; Identity / Personal Information

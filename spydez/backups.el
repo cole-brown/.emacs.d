@@ -32,3 +32,18 @@
 ;; Ask tramp to behave as well.
 (setq tramp-backup-directory-alist `((".*" ,spydez/dir/auto-save-files t)))
 (setq tramp-auto-save-directory spydez/dir/auto-save-files)
+
+;; TODO: do I want this?
+;; "It is nice to have commands and their history saved so that every time
+;;  you get back to work, you can just re-run stuff as you need it."
+;;  - http://pages.sachachua.com/.emacs.d/Sacha.html#orgdfcb533
+;; https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
+(setq savehist-file spydez/file/save-history)
+(savehist-mode 1)
+(setq history-length t)
+(setq history-delete-duplicates t)
+(setq savehist-save-minibuffer-history 1)
+(setq savehist-additional-variables
+      '(kill-ring
+        search-ring
+        regexp-search-ring))

@@ -16,6 +16,8 @@
 
 # emacs auto-save
 /auto-save-list/
+/backups/
+/savehist
 
 # package.el repository
 /elpa/
