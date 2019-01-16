@@ -21,6 +21,10 @@
 ;; cross-platform dir and file names:
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Directory-Names.html#Directory-Names
 
+(defun spydez/dir-name (name parent)
+  "Expand name as child dir of parent in platform-agnostic manner."
+    (file-name-as-directory (expand-file-name name parent)))
+
 (defconst spydez/name/setup-domain "work"
   "A domain/folder for setups similar to this. E.g. work vs personal.")
 (defconst spydez/name/setup-comp (system-name)
@@ -30,23 +34,35 @@
   "This should be a platform-agnostic way to find .emacs.d.")
 
 ;; Path dirs, and places for overrides to exist.
-;;   ./spydez/
 ;;   ./spydez/defaults/
+;;   ./spydez/
 ;;   ./spydez/work/
-;;   ./spydez/work/WORK-PC-NAME
-(defconst spydez/dir/setup-personal (expand-file-name "spydez" spydez/dir/setup-emacs)
+;;   ./spydez/work/WORK-PC-NAME/
+(defconst spydez/dir/setup-personal (spydez/dir-name "spydez" spydez/dir/setup-emacs)
   "All of my own personal/custom setup code/vars/definitions...")
-(defconst spydez/dir/setup-defaults (expand-file-name "defaults" spydez/dir/setup-personal)
+(defconst spydez/dir/setup-defaults (spydez/dir-name "defaults" spydez/dir/setup-personal)
   "All of my optional/default setup elisp files...")
-(defconst spydez/dir/setup-domain-specific (expand-file-name spydez/name/setup-domain spydez/dir/setup-personal)
+(defconst spydez/dir/setup-domain-specific (spydez/dir-name spydez/name/setup-domain spydez/dir/setup-personal)
   "Anything that has to be domain specific. Tab widths or whatnot.")
-(defconst spydez/dir/setup-comp-specific (expand-file-name spydez/name/setup-comp spydez/dir/setup-domain-specific)
+(defconst spydez/dir/setup-comp-specific (spydez/dir-name spydez/name/setup-comp spydez/dir/setup-domain-specific)
   "Anything that has to be computer specific. Overriding tab widths or whatnot.")
+
+(defconst spydez/dir/common-doc-save "c:/home/documents"
+  "Place for auto-open files or secrets or something to be.")
 
 ;; todo: move to an end script or something?
 ;; auto-open file list
 (defvar spydez/auto-open-list
-  '("c:/home/documents/work.org"))
+  '(
+    (expand-file-name "work.org" spydez/dir/common-doc-save)
+    ))
+
+;; folders for auto-save files and backup-files (#*# and *~)
+(defconst spydez/dir/backup-files
+  (spydez/dir-name "backups" spydez/dir/setup-emacs))
+
+(defconst spydez/dir/auto-save-files
+  (spydez/dir-name "auto-save-list" spydez/dir/setup-emacs))
 
 ;;---
 ;; Identity / Personal Information
@@ -80,6 +96,15 @@
 (load custom-file t)
 
 ;;---
+;; Misc Stuff
+;;---
+;; Load sensitive information from outside of .emacs.d
+(when
+    (not
+     (load (expand-file-name ".emacs.secrets" spydez/dir/common-doc-save) 'noerror))
+  (message "No secrets to load."))
+
+;;---
 ;; Try-Load overrides (from init-vars.el)?
 ;;---
 ;(when (load "init-vars.el" 'noerror)
@@ -92,6 +117,13 @@
 
 ;; Init use-package so we can use use-package for the rest of the packages we use.
 (load "init-package.el")
+
+;; TODO: Libraries here? E.g. dash
+;;  - do we need any?
+;;  - do they really go here, or down in packages?
+
+;; Setup backups, autosaves, and history.
+(load "backups.el")
 
 ;; todo: inhibit startup stuff
 ;ptions affect some aspects of the startup sequence.
@@ -116,20 +148,11 @@
 ;; conditional use-package stuff? 
 ;; https://jwiegley.github.io/use-package/keywords/
 
-;; TODO: Libraries here?
-;;  - do we need any?
-;;  - do they really go here, or down in packages?
-
 ;;------------------------------------------------------------------------------
 ;; Packages.
 ;;------------------------------------------------------------------------------
 
 ;; TODO: pull out into one or more include files when needed
-
-;; Uh... use-package-always-ensure is void out here?
-;; Maybe start a spydez/debugging file...
-;; https://www.gnu.org/software/emacs/manual/html_node/eintr/message.html
-;(message "%s" use-package-always-ensure)
 
 ;;---
 ;; Color scheme: Zenburn
@@ -161,6 +184,10 @@
 ;;------------------------------------------------------------------------------
 
 ;; todo: initial-buffer-choice vs spydez/auto-open-list???
+
+;; todo: Maybe start a spydez/debugging file?..
+;; https://www.gnu.org/software/emacs/manual/html_node/eintr/message.html
+;(message "%s" use-package-always-ensure)
 
 (load "finalize.el")
 ;; fin
