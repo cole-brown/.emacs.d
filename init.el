@@ -6,8 +6,8 @@
 ;; http://www.howardism.org/Technical/Emacs/literate-programming-tutorial.html
 
 ;; Special extra useful links:
-;; Sacha init.el: http://pages.sachachua.com/.emacs.d/Sacha.html
-;; zzamboni init.el: https://github.com/zzamboni/dot-emacs/blob/master/init.org
+;; TODO: Finish: Sacha init.el: http://pages.sachachua.com/.emacs.d/Sacha.html
+;; TODO: Start: zzamboni init.el: https://github.com/zzamboni/dot-emacs/blob/master/init.org
 ;; Many neat things?: https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
 ;;   todo: see if I want more of them.
 
@@ -179,11 +179,22 @@
 ;; todo: a load for a file for vars that is in this part of the init... but isn't init-vars.el
 
 ;; I like the menu bar right now... (File, Edit, etc)
-(if (fboundp 'menu-bar-mode) (menu-bar-mode 1))
+(when (fboundp 'menu-bar-mode) (menu-bar-mode 1))
 ;; Tool bar must go. (new, open, etc buttons).
-(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 ;; Scroll bar useful for buffer size/position at-a-glance.
-(if (fboundp 'scroll-bar-mode) (scroll-bar-mode 1))
+(when (fboundp 'scroll-bar-mode) (scroll-bar-mode 1))
+
+;; Winner-mode lets you use C-c <left> and C-c <right> to switch between window
+;; configurations. This is handy when something has popped up a buffer that you
+;; want to look at briefly before returning to whatever you were working
+;; on. When you're done, press C-c <left>.
+(when (fboundp 'winner-mode) (winner-mode 1))
+;; https://www.emacswiki.org/emacs/WinnerMode
+;; Some use use-package for this... http://pages.sachachua.com/.emacs.d/Sacha.html#org59481f4
+
+;; todo: window config?
+;; https://www.emacswiki.org/emacs/WindowConfiguration
 
 ;;---
 ;; Time in the modeline
@@ -207,6 +218,15 @@
       ; Mail notice: (if mail " Mail" "")
       ))
 (display-time-mode t)
+
+;;---
+;; Misc Config
+;;---
+
+;; Sentences end with a single space. This makes sentence navigation commands work better?
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org892ee89
+;; TODO: What does this do, exactly?
+(setq sentence-end-double-space nil)
 
 ;;------------------------------------------------------------------------------
 ;; The End.
