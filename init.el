@@ -10,6 +10,21 @@
 ;; TODO: Start: zzamboni init.el: https://github.com/zzamboni/dot-emacs/blob/master/init.org
 ;; Many neat things?: https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
 ;;   todo: see if I want more of them.
+;; TODO: https://www.gitignore.io/api/emacs
+;; And of course my old setup: https://github.com/spydez/emacs
+
+;; TODO: try a let or something for vars that should be different during my init
+;; e.g. gc threshold.
+;; like...
+;; (let ((gc-cons-threshold most-positive-fixnum))
+;;  # existing init code
+;;  )
+;; But a nicer way to do that? (let ((vars...)) (load "actual-init")) maybe?
+
+;; TODO: for my init files...
+;;   do: (load "file") instead of (load "file.el") ??
+;;   or even: (require 'file)/(provides 'file) ???
+;; https://emacs.stackexchange.com/questions/3310/difference-between-load-file-and-load
 
 ;;------------------------------------------------------------------------------
 ;; Initial vars setup.
@@ -22,6 +37,8 @@
 
 ;; defconst vs defvar vs setq
 ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Defining-Variables.html
+;; Looks like I can use defconst for desired functionality/hinting, while also being
+;; allowed to ignore the const-ness and override via a setq in a later init sub-file.
 
 ;; cross-platform dir and file names:
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Directory-Names.html#Directory-Names
@@ -152,22 +169,24 @@
 
 ;; TODO: pull out into one or more include files when needed
 
-;;---
-;; Color scheme: Zenburn
-;;---
-(use-package zenburn-theme)
-;; Seems to work fine without 'load-theme
-
 ;; put my stuff after all those packages are loaded
 ;; todo: check these out?
 ;(load-file (concat kooru/emacs-libs "bootstrap.el"))
 ;(bootstrap-init kooru/comp-domain kooru/comp-name)
 
+;; todo: up this a waybunch? May be a more annoying hit to gc huge chunks infrequently instead of tiny chunks frequently.
+;gc-cons-threshold
+;; https://emacs.stackexchange.com/questions/34342/is-there-any-downside-to-setting-gc-cons-threshold-very-high-and-collecting-ga
+;; or hooks... http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
+
+;; TODO: move `Packages` below `Setup`?
 
 ;;------------------------------------------------------------------------------
 ;; Setup.
 ;;------------------------------------------------------------------------------
 ;; Loading and init are done - now do any more required setup.
+
+(load "setup-completion.el")
 
 ;;---
 ;; Window/GUI Setup
@@ -195,6 +214,12 @@
 
 ;; todo: window config?
 ;; https://www.emacswiki.org/emacs/WindowConfiguration
+
+;;---
+;; Color scheme: Zenburn
+;;---
+(use-package zenburn-theme)
+;; Seems to work fine without 'load-theme
 
 ;;---
 ;; Time in the modeline
