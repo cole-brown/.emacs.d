@@ -34,6 +34,7 @@
 ;;  e.g. http://ergoemacs.org/emacs/organize_your_dot_emacs.html
 ;;  but I'd still need all the stuff setting up the paths, probably?
 
+
 ;;------------------------------------------------------------------------------
 ;; Layout.
 ;;------------------------------------------------------------------------------
@@ -42,9 +43,18 @@
 ;; Our init.el will then load our files in this order:
 ;;   - bootstrap-*.el
 ;;   - init-*.el
-;;   - setup-*.el
+;;   - configure-*.el
 
 ;; We probably need to setup some vars, load paths, etc in our init.el before getting going.
+
+;; Trying require/provide now.
+;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Named-Features.html
+;; Note: 'require' works off of file name just like load if not already
+;; loaded. 'provide' can provide anything.  But if we want 'require' to find the
+;; right thing, we'll have to have require/provide/filename on the same page.
+;; Alternative is, like, (require 'spydez/bootstrap/debug "bootstrap-debug")?
+;; Don't think that looks great.
+
 
 ;;------------------------------------------------------------------------------
 ;; Initial vars bootstrap.
@@ -151,7 +161,8 @@
 ;; An unadorned filename (just "custom.el") wasn't getting picked up as the custom file, so for now:
 (setq custom-file (expand-file-name "custom.el" spydez/dir/setup-personal))
 ;; May need a better setter if custom-file needs adjusted per computer...
-;; Helper func to look for file to define place or maybe try provide/require?
+;; todo: Helper func to look for file to define place or maybe try provide/require?
+;; Possibly move custom-file setting up, and loading down below loading of bootstrap-vars overrides.
 (load custom-file t)
 
 ;;---
@@ -164,11 +175,11 @@
   (message "No secrets to load."))
 
 ;;---
-;; Try-Load overrides (from init-vars.el)?
+;; Try-Load overrides (from bootstrap-vars.el)?
 ;;---
-;(when (load "init-vars.el" 'noerror)
-;  (message "hi?"))
-(load "bootstrap-vars.el" 'noerror)
+;(when (require bootstrap-vars nil 'noerror)
+;  (message "Empty bootstrap-vars."))
+(require 'bootstrap-vars nil 'noerror)
 
 ;;------------------------------------------------------------------------------
 ;; Bootstrap.
@@ -180,11 +191,11 @@
 ;;   In emacs 25+, the `package-initialize' call is auto-added to the top of
 ;; init.el unless the user already has a commented or uncommented
 ;; `(package-initialize)' line present in their init.el.
-;;   I call this function in setup-packages.el and so am keeping the
+;;   I call this function in bootstrap-packages.el and so am keeping the
 ;; commented out version here so that package.el does not add it again.
 
 ;; Init use-package so we can use use-package for the rest of the packages we use.
-(load "bootstrap-package.el")
+(require 'bootstrap-package)
 
 ;; ASAP after use-package is available
 (require 'init-debug)
@@ -194,7 +205,7 @@
 ;;  - do they really go here, or down in packages?
 
 ;; Setup backups, autosaves, and history.
-(load "bootstrap-backups.el")
+(require 'bootstrap-backups)
 
 ;; todo: utf-8
 
@@ -221,11 +232,11 @@
 ;; TODO: move `Packages` below `Setup`?
 
 ;;------------------------------------------------------------------------------
-;; Setup.
+;; Configuration.
 ;;------------------------------------------------------------------------------
 ;; Loading and init are done - now do any more required setup.
 
-(load "setup-completion.el")
+(require 'configure-completion)
 
 ;;---
 ;; Window/GUI Setup
@@ -302,5 +313,5 @@
 ;; https://www.gnu.org/software/emacs/manual/html_node/eintr/message.html
 ;(message "%s" use-package-always-ensure)
 
-(load "zzz-finalize.el")
+(require 'zzz-finalize)
 ;; fin

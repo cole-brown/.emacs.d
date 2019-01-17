@@ -47,3 +47,5 @@
       '(kill-ring
         search-ring
         regexp-search-ring))
+
+(provide 'bootstrap-backups)

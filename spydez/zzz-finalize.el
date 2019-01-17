@@ -21,3 +21,4 @@
 ;; More timing tooling for packages (require and load functions):
 ;; https://github.com/dholm/benchmark-init-el
 
+(provide 'zzz-finalize)

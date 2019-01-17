@@ -59,3 +59,5 @@
 ;;                          nil t))))
 ;; 
 ;; (global-set-key "\C-cf" 'spydez/ido/find-file-in-tag-files)
+
+(provide 'setup-completion)

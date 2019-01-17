@@ -50,3 +50,5 @@
 
 ;; auto-compile options:
 (setq load-prefer-newer t)
+
+(provide 'bootstrap-package)
