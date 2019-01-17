@@ -12,6 +12,8 @@
 ;;   todo: see if I want more of them.
 ;; TODO: https://www.gitignore.io/api/emacs
 ;; And of course my old setup: https://github.com/spydez/emacs
+;; TODO: check this? https://github.com/kaushalmodi/.emacs.d/blob/master/init.el
+;;    from: https://www.reddit.com/r/emacs/comments/2wzhxh/how_to_organize_initel/covmnl5
 
 ;; TODO: try a let or something for vars that should be different during my init
 ;; e.g. gc threshold.
@@ -33,8 +35,24 @@
 ;;  but I'd still need all the stuff setting up the paths, probably?
 
 ;;------------------------------------------------------------------------------
-;; Initial vars setup.
+;; Layout.
 ;;------------------------------------------------------------------------------
+
+;; First, emacs loads init.el.
+;; Our init.el will then load our files in this order:
+;;   - bootstrap-*.el
+;;   - init-*.el
+;;   - setup-*.el
+
+;; We probably need to setup some vars, load paths, etc in our init.el before getting going.
+
+;;------------------------------------------------------------------------------
+;; Initial vars bootstrap.
+;;------------------------------------------------------------------------------
+
+;; Can do some even earlier stuff with early-init.el if needed...
+;; https://www.reddit.com/r/emacs/comments/7yns85/emacs_adds_support_for_a_second_read_earlier_init/
+;; https://git.savannah.gnu.org/cgit/emacs.git/commit/?id=24acb31c04b4048b85311d794e600ecd7ce60d3b
 
 ;;---
 ;; Setup some very basics, so we can get moving...
@@ -150,21 +168,21 @@
 ;;---
 ;(when (load "init-vars.el" 'noerror)
 ;  (message "hi?"))
-(load "init-vars.el" 'noerror)
+(load "bootstrap-vars.el" 'noerror)
 
 ;;------------------------------------------------------------------------------
 ;; Bootstrap.
 ;;------------------------------------------------------------------------------
 
 ;; Init use-package so we can use use-package for the rest of the packages we use.
-(load "init-package.el")
+(load "bootstrap-package.el")
 
 ;; TODO: Libraries here? E.g. dash
 ;;  - do we need any?
 ;;  - do they really go here, or down in packages?
 
 ;; Setup backups, autosaves, and history.
-(load "backups.el")
+(load "bootstrap-backups.el")
 
 ;; todo: utf-8
 
@@ -272,5 +290,5 @@
 ;; https://www.gnu.org/software/emacs/manual/html_node/eintr/message.html
 ;(message "%s" use-package-always-ensure)
 
-(load "finalize.el")
+(load "zzz-finalize.el")
 ;; fin

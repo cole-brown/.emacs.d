@@ -5,7 +5,7 @@
 ;; Show *Messages* buffer.
 ;;   https://stackoverflow.com/questions/40075912/want-to-view-emacs-messages-buffer-while-emacs-loads
 
-(defconst spydez/init-debug t)
+(defconst spydez/init-debug t) ;; nil)
 
 ;; How about putting this at the beginning of your init.el?
 ;; (view-echo-area-messages)
@@ -26,3 +26,12 @@
 ;;
 ;; Or alternatively, you could just M-x toggle-debug-on-error and reload your 
 ;; init-file (M-x load-file RET ~/.emacs.d/init.el RET).
+
+;; benchmark-init from https://github.com/kaushalmodi/.emacs.d/blob/master/init.el
+;; git repo: https://github.com/dholm/benchmark-init-el
+;; disable when not debugging
+;(use-package benchmark-init
+;  :disabled (not spydez/init-debug)
+;  :config
+;  ;; To disable collection of benchmark data after init is done.
+;  (add-hook 'after-init-hook 'benchmark-init/deactivate))
