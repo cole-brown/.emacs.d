@@ -140,7 +140,7 @@
 ;; Debug
 ;;---
 ;; All the way down here because I want my load paths, but we could put at the top if needed with a little adjustment.
-(load "debug.el")
+(require 'bootstrap-debug)
 
 ;;---
 ;; Custom file
@@ -174,8 +174,20 @@
 ;; Bootstrap.
 ;;------------------------------------------------------------------------------
 
+;; Not sure how true this is, but...
+;; source: https://github.com/kaushalmodi/.emacs.d/blob/master/init.el
+;; (package-initialize) ; Do NOT delete this comment
+;;   In emacs 25+, the `package-initialize' call is auto-added to the top of
+;; init.el unless the user already has a commented or uncommented
+;; `(package-initialize)' line present in their init.el.
+;;   I call this function in setup-packages.el and so am keeping the
+;; commented out version here so that package.el does not add it again.
+
 ;; Init use-package so we can use use-package for the rest of the packages we use.
 (load "bootstrap-package.el")
+
+;; ASAP after use-package is available
+(require 'init-debug)
 
 ;; TODO: Libraries here? E.g. dash
 ;;  - do we need any?
