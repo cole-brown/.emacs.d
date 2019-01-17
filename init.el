@@ -26,6 +26,12 @@
 ;;   or even: (require 'file)/(provides 'file) ???
 ;; https://emacs.stackexchange.com/questions/3310/difference-between-load-file-and-load
 
+;; TODO: check if missed any of old .emacs files
+
+;; TODO: reduce this down to as few lines as possible? 
+;;  e.g. http://ergoemacs.org/emacs/organize_your_dot_emacs.html
+;;  but I'd still need all the stuff setting up the paths, probably?
+
 ;;------------------------------------------------------------------------------
 ;; Initial vars setup.
 ;;------------------------------------------------------------------------------
@@ -69,6 +75,9 @@
 (defconst spydez/dir/setup-comp-specific (spydez/dir-name spydez/name/setup-comp spydez/dir/setup-domain-specific)
   "Anything that has to be computer specific. Overriding tab widths or whatnot.")
 
+;; todo: can we get a (default) user name from emacs?
+
+;; todo: updated to c:/home/<user>/documents
 (defconst spydez/dir/common-doc-save "c:/home/documents"
   "Place for auto-open files or secrets or something to be.")
 
