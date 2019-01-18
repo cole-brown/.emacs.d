@@ -1,9 +1,8 @@
 ;; -*- emacs-lisp -*-
 
-;; configure-completion.el - Helm, ido, ivy, etc...
-
-;; I was using ido in previous .emacs setup. Fuzzy file completion is a must for
-;; whatever I'll be using now.
+;; TODO:
+;;   I was using ido in previous .emacs setup.
+;;   Fuzzy file completion is a must for whatever I'll be using now?
 
 ;; ido:
 ;;   old ido setup: https://github.com/spydez/emacs/blob/master/libs/custom/ido-config.el
@@ -12,11 +11,16 @@
 ;; Helm:
 ;;   Hacker News replies about Helm: https://news.ycombinator.com/item?id=11100312
 
+;; ivy:
+;;   https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
+
+
 ;;------------------------------------------------------------------------------
 ;; Trial: Helm package
 ;;------------------------------------------------------------------------------
 ;; Try out this newfangle Helm thing...
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org04e47b9
+;; https://github.com/emacs-helm/helm/wiki
 ;; Trial: [2019-01-18]
 (use-package helm
   :diminish helm-mode
@@ -59,6 +63,9 @@
 ;; Maybe: ivy
 ;;------------------------------------------------------------------------------
 ;; TODO: Try out ivy if Helm is to big and clunky?..
+;;
+;; https://sam217pa.github.io/2016/09/13/from-helm-to-ivy/
+;; https://www.reddit.com/r/emacs/comments/7vcrwo/helm_vs_ivy_what_are_the_differences_what_are_the/dtrcktb
 
 
 ;;------------------------------------------------------------------------------
