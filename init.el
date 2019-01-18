@@ -36,6 +36,8 @@
 ;; Left off at "Projectile", but have to use Google Cache:
 ;; http://www.wisdomandwonder.com/wordpress/wp-content/uploads/2014/03/C3F.html
 ;; https://webcache.googleusercontent.com/search?q=cache:pccrs3LhmCoJ:https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html+&cd=1&hl=en&ct=clnk&gl=us&client=firefox-b-1
+;;
+;; http://ergoemacs.org
 
 ;; TODO: try a let or something for vars that should be different during my init
 ;; e.g. gc threshold.
@@ -241,9 +243,16 @@
 ;; ASAP after use-package is available (debug prints, init load timings)
 (require 'init-debug)
 
+;; todo: mess with garbage collection at all?
+;; todo: up this a waybunch? May be a more annoying hit to gc huge chunks infrequently instead of tiny chunks frequently.
+;gc-cons-threshold
+;; https://emacs.stackexchange.com/questions/34342/is-there-any-downside-to-setting-gc-cons-threshold-very-high-and-collecting-ga
+;; or hooks... http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
+
 ;; TODO: Libraries here? E.g. dash
 ;;  - do we need any?
 ;;  - do they really go here, or down in packages?
+(use-package diminish)
 
 ;; Setup backups, autosaves, and history.
 (require 'bootstrap-backups)
@@ -258,11 +267,6 @@
 ;;------------------------------------------------------------------------------
 
 ;; TODO: pull out into one or more include files when needed
-
-;; todo: up this a waybunch? May be a more annoying hit to gc huge chunks infrequently instead of tiny chunks frequently.
-;gc-cons-threshold
-;; https://emacs.stackexchange.com/questions/34342/is-there-any-downside-to-setting-gc-cons-threshold-very-high-and-collecting-ga
-;; or hooks... http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
 
 ;; TODO: move `Packages` below `Setup`?
 
@@ -282,47 +286,12 @@
 ;; Window setup (menu bar, color theme, etc)
 (require 'configure-window)
 
-;;---
 ;; Kill/Yank Ring (aka Undo/Redo)
-;;---
+(require 'configure-kill-ring)
 
-;; This lets you use C-x u (undo-tree-visualize) to visually walk through the
-;; changes you've made, undo back to a certain point (or redo), and go down
-;; different branches. (C-n/p/f/b mostly?)
-(use-package undo-tree
-  :diminish undo-tree-mode
-  ;; TODO: undo tree not being diminished?
-  :config
-  (progn
-    (global-undo-tree-mode)
-    (setq undo-tree-visualizer-timestamps t)
-    (setq undo-tree-visualizer-diff t)))
-;; [2019-01-17] Trial package...
-
-;; Emacs has a powerful buffer tracking change system. Unfortunately, I don't understand any of it. Undo should "just work".
-
-;; (require 'undo-tree)
-;; (global-undo-tree-mode 1)
-;; (eval-after-load "diminish"
-;;   '(progn
-;;      (eval-after-load "undo-tree"
-;;        '(diminish 'undo-tree-mode "↺"))))
-
-;;---
 ;; Help?
-;;---
 ;; I need somebody...
-
-;; It's hard to remember keyboard shortcuts. The guide-key package pops up help after a short delay. 
-(use-package guide-key
-  :defer t
-  :diminish guide-key-mode
-  :config
-  (progn
-    (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
-    (guide-key-mode 1)))  ; Enable guide-key-mode
-;; [2019-01-17] Trial package...
-;; TODO: Doesn't work til turned off/back on. Need debugged?
+(require 'configure-help)
 
 ;;---
 ;; Misc Config
@@ -365,10 +334,6 @@
 ;; (require 'uniquify)
 ;; (setq uniquify-buffer-name-style 'forward)
 
-;; Ban whitespace at end of lines, globally. 56
-;; (add-hook 'write-file-hooks
-;;           '(lambda ()
-;;              (gcr/delete-trailing-whitespace)))
 
 
 ;; autocomplete?
@@ -391,6 +356,11 @@
 ;; https://webcache.googleusercontent.com/search?q=cache:pccrs3LhmCoJ:https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html+&cd=1&hl=en&ct=clnk&gl=us&client=firefox-b-1
 
 
+;; Ban whitespace at end of lines, globally. 56
+;; (add-hook 'write-file-hooks
+;;           '(lambda ()
+;;              (gcr/delete-trailing-whitespace)))
+
 ;; Whitespace
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Useless-Whitespace.html
 ;; (require 'whitespace)
@@ -403,6 +373,26 @@
 ;;        '(diminish 'global-whitespace-mode "ᗣ"))
 ;;      (eval-after-load "whitespace"
 ;;        '(diminish 'whitespace-mode ""))))
+;; meh. No work?
+
+;; This gets closer, but is a bit ugly. Need to tweak zenburn theme?
+;; http://ergoemacs.org/emacs/whitespace-mode.html
+;; (progn
+;;  ;; Make whitespace-mode with very basic background coloring for whitespaces.
+;;   ;; http://ergoemacs.org/emacs/whitespace-mode.html
+;;   (setq whitespace-style (quote (face spaces tabs newline space-mark tab-mark newline-mark )))
+;; 
+;;   ;; Make whitespace-mode and whitespace-newline-mode use “¶” for end of line char and “▷” for tab.
+;;   (setq whitespace-display-mappings
+;;         ;; all numbers are unicode codepoint in decimal. e.g. (insert-char 182 1)
+;;         '(
+;;           (space-mark 32 [183] [46]) ; SPACE 32 「 」, 183 MIDDLE DOT 「·」, 46 FULL STOP 「.」
+;;           (newline-mark 10 [182 10]) ; LINE FEED,
+;;           (tab-mark 9 [9655 9] [92 9]) ; tab
+;;           )))
+;;
+;; https://www.emacswiki.org/emacs/WhiteSpace
+
 
 ;; Templates/snippets
 ;; (require 'yasnippet)
