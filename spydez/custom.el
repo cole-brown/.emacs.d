@@ -2,6 +2,8 @@
 
 ;; custom.el - for custom-set-variables and custom-set-faces
 
+;; TODO: see if want to import stuff from old custom
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

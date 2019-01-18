@@ -54,6 +54,14 @@
 ;;------------------------------------------------------------------------------
 
 ;;---
+;; Unique buffer names
+;;---
+(use-package uniquify
+  :config
+  (setq uniquify-buffer-name-style 'post-forward
+        uniquify-separator ":"))
+
+;;---
 ;; Time in the modeline
 ;;---
 ;; Puts a clock down in the mode line.

@@ -63,6 +63,7 @@
 ;; 
 ;; (global-set-key "\C-cf" 'spydez/ido/find-file-in-tag-files)
 
+;; TODO if ido-mode (message "oops")
 
 ;;------------------------------------------------------------------------------
 ;; Provide this.

@@ -249,9 +249,7 @@
 ;; https://emacs.stackexchange.com/questions/34342/is-there-any-downside-to-setting-gc-cons-threshold-very-high-and-collecting-ga
 ;; or hooks... http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
 
-;; TODO: Libraries here? E.g. dash
-;;  - do we need any?
-;;  - do they really go here, or down in packages?
+;; Packages used by other packages.
 (use-package diminish)
 
 ;; Setup backups, autosaves, and history.
@@ -261,15 +259,10 @@
 ;; conditional use-package stuff? 
 ;; https://jwiegley.github.io/use-package/keywords/
 
-
-;;------------------------------------------------------------------------------
-;; Packages.
-;;------------------------------------------------------------------------------
-
-;; TODO: pull out into one or more include files when needed
-
-;; TODO: move `Packages` below `Setup`?
-
+;; TODO: turn on server eventually
+;; TODO: pull out into configure-daemon? bootstrap-daemons?
+; (require 'server)
+; (unless (server-running-p) (server-start))
 
 ;;------------------------------------------------------------------------------
 ;; Configuration.
@@ -292,6 +285,26 @@
 ;; Help?
 ;; I need somebody...
 (require 'configure-help)
+
+;; todo: linum
+;; todo: linum, misc config, utf-8 into one configure? configure-...... misc.el?
+
+;; todo: configure version control?
+;;   - git? Magit?
+;;   - svn?
+
+;; todo: configure parenthesis
+
+;; todo: configure code modes
+;;  - C
+;;  - C++
+;;  - C#
+;;  - python
+;;  - go?
+
+;; todo: htmlize?
+
+;; todo: yasnippet?
 
 ;;---
 ;; Misc Config
@@ -356,44 +369,6 @@
 ;; https://webcache.googleusercontent.com/search?q=cache:pccrs3LhmCoJ:https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html+&cd=1&hl=en&ct=clnk&gl=us&client=firefox-b-1
 
 
-;; Ban whitespace at end of lines, globally. 56
-;; (add-hook 'write-file-hooks
-;;           '(lambda ()
-;;              (gcr/delete-trailing-whitespace)))
-
-;; Whitespace
-;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Useless-Whitespace.html
-;; (require 'whitespace)
-;; (setq whitespace-style '(trailing lines tab-mark))
-;; (setq whitespace-line-column 80)
-;; (global-whitespace-mode 1)
-;; (eval-after-load "diminish"
-;;   '(progn
-;;      (eval-after-load "whitespace"
-;;        '(diminish 'global-whitespace-mode "ᗣ"))
-;;      (eval-after-load "whitespace"
-;;        '(diminish 'whitespace-mode ""))))
-;; meh. No work?
-
-;; This gets closer, but is a bit ugly. Need to tweak zenburn theme?
-;; http://ergoemacs.org/emacs/whitespace-mode.html
-;; (progn
-;;  ;; Make whitespace-mode with very basic background coloring for whitespaces.
-;;   ;; http://ergoemacs.org/emacs/whitespace-mode.html
-;;   (setq whitespace-style (quote (face spaces tabs newline space-mark tab-mark newline-mark )))
-;; 
-;;   ;; Make whitespace-mode and whitespace-newline-mode use “¶” for end of line char and “▷” for tab.
-;;   (setq whitespace-display-mappings
-;;         ;; all numbers are unicode codepoint in decimal. e.g. (insert-char 182 1)
-;;         '(
-;;           (space-mark 32 [183] [46]) ; SPACE 32 「 」, 183 MIDDLE DOT 「·」, 46 FULL STOP 「.」
-;;           (newline-mark 10 [182 10]) ; LINE FEED,
-;;           (tab-mark 9 [9655 9] [92 9]) ; tab
-;;           )))
-;;
-;; https://www.emacswiki.org/emacs/WhiteSpace
-
-
 ;; Templates/snippets
 ;; (require 'yasnippet)
 ;; (yas-load-directory (concat (cask-elpa-dir)
@@ -403,6 +378,9 @@
 ;;      (eval-after-load "yasnippet"
 ;;        '(diminish 'yas-minor-mode "✂"))))
 ;; (yas-global-mode 1)
+
+;; Config TRAMP for getting at server text files?
+;; I don't need it day-to-day, but it'd be nice to already have if I do need it.
 
 ;;------------------------------------------------------------------------------
 ;; The End.
