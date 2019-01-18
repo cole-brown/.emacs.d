@@ -5,6 +5,8 @@
 ;; benchmark-init from https://github.com/kaushalmodi/.emacs.d/blob/master/init.el
 ;; git repo: https://github.com/dholm/benchmark-init-el
 ;; disable when not debugging?
+
+;; benchmark-init records time taken in load and require, so it should notice ours as well as other packages.
 (use-package benchmark-init
 ;  :disabled (not (spydez/debugging-p))
   :config

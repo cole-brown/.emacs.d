@@ -1,6 +1,6 @@
 ;; -*- emacs-lisp -*-
 
-;; setup-completion.el - Helm, ido, ivy, etc...
+;; configure-completion.el - Helm, ido, ivy, etc...
 
 ;; I was using ido in previous .emacs setup. Fuzzy file completion is a must for
 ;; whatever I'll be using now.
@@ -16,6 +16,9 @@
 ;; Trial: Helm package
 ;;------------------------------------------------------------------------------
 ;; Try out this newfangle Helm thing...
+;; TODO: HELM HERE PLZ
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org04e47b9
+
 
 ;;------------------------------------------------------------------------------
 ;; Disabled: ido package
@@ -60,4 +63,4 @@
 ;; 
 ;; (global-set-key "\C-cf" 'spydez/ido/find-file-in-tag-files)
 
-(provide 'setup-completion)
+(provide 'configure-completion)
