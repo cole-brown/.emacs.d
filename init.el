@@ -7,6 +7,7 @@
 ;; https://snyk.io/blog/mit-apache-bsd-fairest-of-them-all/
 ;; TODO: Short copyright in header pointing to LICENSE.txt or something.
 
+
 ;;------------------------------------------------------------------------------
 ;; Notes, TODOs, Links
 ;;------------------------------------------------------------------------------
@@ -18,6 +19,11 @@
 
 ;; can 'literate programming' do multiple files?
 ;; http://www.howardism.org/Technical/Emacs/literate-programming-tutorial.html
+
+
+;;---
+;; References.
+;;---
 
 ;; Special extra useful links:
 ;; Todo: Do we want ./spydez/references/ ignored or saved in git?
@@ -39,6 +45,11 @@
 ;;
 ;; http://ergoemacs.org
 
+
+;;---
+;; TODOs and Misc.
+;;---
+
 ;; TODO: try a let or something for vars that should be different during my init
 ;; e.g. gc threshold.
 ;; like...
@@ -57,6 +68,7 @@
 ;; TODO: reduce this down to as few lines as possible? 
 ;;  e.g. http://ergoemacs.org/emacs/organize_your_dot_emacs.html
 ;;  but I'd still need all the stuff setting up the paths, probably?
+
 
 ;;---
 ;; Trials and Try-outs.
