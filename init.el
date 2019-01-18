@@ -312,6 +312,13 @@
 ;; todo: configure version control?
 (require 'configure-version-control)
 
+;; todo: configure shell?
+;; will need an 'if windows'?
+;; ...and maybe an 'if git bash exists'
+;; https://emacs.stackexchange.com/questions/22049/git-bash-in-emacs-on-windows
+;; (setq explicit-shell-file-name "C:/git-for-windows/bin/bash.exe")
+;; (setq explicit-bash.exe-args '("--login" "-i"))
+
 ;; todo: configure parenthesis
 ;; rainbow? What I do in old .emacs?
 
@@ -325,6 +332,21 @@
 ;; todo: htmlize?
 
 ;; todo: yasnippet?
+
+;; todo: configure keyboard?
+;; Y'know...
+;;   - dvorak vs qwerty.
+;;   - Any binds that make sense for dvorak but not qwerty.
+;;   - vice versa
+;;   - maybe mapping memory muscle ones to something weird if not dvorak?
+;; Caveat: use-package and bind make keys a bit more spread out.
+;;   My "C-x C-m" instead of "M-x" for instance, is in helm's use-package.
+;;   So maybe this needs to be in bootstrap or something so I can set up a predicate to check later.
+;;   spydez/keyboard/dvorak-p or whatever. (spydez/keyboard/dvorak 'dvorak-thing 'else-slash-qwerty-thing).
+;; TODO: See what this is on about; seems maybe too vimmy:
+;;   http://ergoemacs.org/emacs/emacs_keybinding_redesign_2.html
+;;   http://ergoemacs.org/misc/ergoemacs_vi_mode.html
+;; TODO: does this apply to key-chord and/or hydra packages?
 
 ;;---
 ;; Misc Config
@@ -362,6 +384,7 @@
 
 ;; Config TRAMP for getting at server text files?
 ;; I don't need it day-to-day, but it'd be nice to already have if I do need it.
+
 
 ;;------------------------------------------------------------------------------
 ;; The End.
