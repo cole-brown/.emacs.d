@@ -16,15 +16,43 @@
 ;; Trial: Helm package
 ;;------------------------------------------------------------------------------
 ;; Try out this newfangle Helm thing...
-;; TODO: HELM HERE PLZ
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org04e47b9
 ;; Trial: [2019-01-18]
+(use-package helm
+  :diminish helm-mode
+  :init
+  (progn
+    (require 'helm-config)
+    (setq helm-candidate-number-limit 100)
+    ;; From https://gist.github.com/antifuchs/9238468
+    (setq helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
+          helm-input-idle-delay 0.01  ; this actually updates things
+                                        ; reeeelatively quickly.
+          helm-yas-display-key-on-candidate t
+          helm-quick-update t
+          helm-M-x-requires-pattern nil
+          helm-ff-skip-boring-files t)
+    (helm-mode))
+  :bind (("C-c h" . helm-mini)
+         ("C-h a" . helm-apropos)
+         ("C-x C-b" . helm-buffers-list)
+         ("C-x b" . helm-buffers-list)
+         ("M-y" . helm-show-kill-ring)
+         ("M-x" . helm-M-x)
+         ("C-x C-m" . helm-M-x) ; Invoke M-x w/o the Alt key. Useful for Dvorak.
+         ("C-x c o" . helm-occur)
+         ("C-x c s" . helm-swoop)
+         ("C-x c y" . helm-yas-complete)
+         ("C-x c Y" . helm-yas-create-snippet-on-region)
+         ("C-x c SPC" . helm-all-mark-rings)))
 
-; TODO: these might should go to Helm instead.
+;; TODO: helm-descbinds?
+
+;; Bound these in Helm right now. Put these in (use-package ido...) :bind section if needed again?
 ;; Invoke M-x w/o the Alt key.
 ;; from: http://steve.yegge.googlepages.com/effective-emacs
-(global-set-key "\C-x\C-m" 'execute-extended-command)
-(global-set-key "\C-c\C-m" 'execute-extended-command) ; todo: I never use this one... lose it?
+;; (global-set-key "\C-x\C-m" 'execute-extended-command)
+;; (global-set-key "\C-c\C-m" 'execute-extended-command) ; todo: I never use this one... lose it?
 
 
 ;;------------------------------------------------------------------------------
@@ -71,6 +99,7 @@
 ;; (global-set-key "\C-cf" 'spydez/ido/find-file-in-tag-files)
 
 ;; TODO if ido-mode (error "oops")
+
 
 ;;------------------------------------------------------------------------------
 ;; Provide this.

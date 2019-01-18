@@ -376,6 +376,8 @@
 ; todo: require sanity
 ;   - sanity ido-mode off?
 ;   - sanity other things? emacs version complainer? platform complainer?
+(require 'finalize-sanity)
+
 (require 'zzz-finalize)
 ;; fin
 
