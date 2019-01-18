@@ -16,7 +16,7 @@
     (global-undo-tree-mode)
     (setq undo-tree-visualizer-timestamps t)
     (setq undo-tree-visualizer-diff t)))
-;; [2019-01-17] Trial package...
+;; Trial: [2019-01-17]
 ;; Not sure if I'll use this... I'm fine with the kill ring functionality usually.
 
 

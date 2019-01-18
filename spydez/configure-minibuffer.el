@@ -17,7 +17,7 @@
 ;; Well I'll try it... but right now it's not all that different. Maybe
 ;; when more packages are installed...
 (use-package smart-mode-line)
-;; [2019-01-17] Trial package...
+;; Trial: [2019-01-17]
 
 ;; Could configure some regexes into sml/replacer-regexp-list when up and running.
 ;; See git repo readme or Google.
@@ -33,7 +33,7 @@
 (use-package miniedit
   :commands minibuffer-edit
   :init (miniedit-install))
-;; [2019-01-17] Trial package...
+;; Trial: [2019-01-17]
 
 ;; Alternative:
 ;;  minibuffer often displays so much information, even temporarily, that 

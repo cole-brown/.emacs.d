@@ -58,6 +58,12 @@
 ;;  e.g. http://ergoemacs.org/emacs/organize_your_dot_emacs.html
 ;;  but I'd still need all the stuff setting up the paths, probably?
 
+;;---
+;; Trials and Try-outs.
+;;---
+;; Packages and experiments should be marked with something like... 
+;; Trial: [yyyy-mm-dd]
+
 
 ;;------------------------------------------------------------------------------
 ;; Layout.
@@ -355,6 +361,9 @@
 ;; https://www.gnu.org/software/emacs/manual/html_node/eintr/message.html
 ;(message "%s" use-package-always-ensure)
 
+; todo: require sanity
+;   - sanity ido-mode off?
+;   - sanity other things? emacs version complainer? platform complainer?
 (require 'zzz-finalize)
 ;; fin
 

@@ -18,6 +18,13 @@
 ;; Try out this newfangle Helm thing...
 ;; TODO: HELM HERE PLZ
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org04e47b9
+;; Trial: [2019-01-18]
+
+; TODO: these might should go to Helm instead.
+;; Invoke M-x w/o the Alt key.
+;; from: http://steve.yegge.googlepages.com/effective-emacs
+(global-set-key "\C-x\C-m" 'execute-extended-command)
+(global-set-key "\C-c\C-m" 'execute-extended-command) ; todo: I never use this one... lose it?
 
 
 ;;------------------------------------------------------------------------------

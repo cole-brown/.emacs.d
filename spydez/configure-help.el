@@ -20,7 +20,7 @@
   (progn
     (setq guide-key/guide-key-sequence '("C-x r" "C-x 4" "C-c"))
     (guide-key-mode 1)))  ; Enable guide-key-mode
-;; [2019-01-17] Trial package...
+;; Trial: [2019-01-17]
 
 ;; (Help) You know I need someone.
 
