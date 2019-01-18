@@ -2,6 +2,10 @@
 
 ;; finalize.el - non-computer-specific emacs init - the final bits
 
+;;------------------------------------------------------------------------------
+;; Debugging: clean up and finalize
+;;------------------------------------------------------------------------------
+
 ;; show benchmark if debugging
 ;; https://github.com/dholm/benchmark-init-el
 (when (spydez/debugging-p)
@@ -18,7 +22,8 @@
     gcs-done))
 (add-hook 'emacs-startup-hook 'spydez/startup-hook)
 
-;; More timing tooling for packages (require and load functions):
-;; https://github.com/dholm/benchmark-init-el
 
+;;------------------------------------------------------------------------------
+;; Provide this.
+;;------------------------------------------------------------------------------
 (provide 'zzz-finalize)

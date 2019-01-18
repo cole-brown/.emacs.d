@@ -11,14 +11,21 @@
 ;; Notes, TODOs, Links
 ;;------------------------------------------------------------------------------
 
+
+;; search...
+;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep "provide"
+
+
 ;; can 'literate programming' do multiple files?
 ;; http://www.howardism.org/Technical/Emacs/literate-programming-tutorial.html
 
 ;; Special extra useful links:
+;; Todo: Do we want ./spydez/references/ ignored or saved in git?
 ;; TODO: Finish: Sacha init.el: http://pages.sachachua.com/.emacs.d/Sacha.html
 ;; TODO: Start: zzamboni init.el: https://github.com/zzamboni/dot-emacs/blob/master/init.org
 ;; Many neat things?: https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
 ;;   todo: see if I want more of them.
+;;   todo: is this the same as C3F below? Update all old links to this if so... Also save a new one to references.
 ;; TODO: https://www.gitignore.io/api/emacs
 ;; And of course my old setup: https://github.com/spydez/emacs
 ;; TODO: check this? https://github.com/kaushalmodi/.emacs.d/blob/master/init.el
@@ -63,16 +70,17 @@
 ;; init.el:
 ;;   First, emacs loads init.el.
 ;;   Our init.el will then load our files in this order:
-;;     - bootstrap-*.el
-;;     - init-*.el
-;;     - configure-*.el
+;;     1) bootstrap-*.el
+;;     2) init-*.el
+;;     3) configure-*.el
 ;; TODO: I moved from setup-*.el to configure-*.el because it seemed more apropros.
 ;;   However now my ordering is not also alphabetical...
 ;; TODO: bootstrap-*, configure-*, finalize-* maybe?
 
+;; I don't want a megalithic emacs init file. So how best to break it up?
 ;; Trying require/provide now.
-;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Named-Features.html
-;; Note: 'require' works off of file name just like load if not already
+;;   http://www.gnu.org/software/emacs/manual/html_node/elisp/Named-Features.html
+;; Note: 'require' works off of file name (just like load) if not already
 ;; loaded. 'provide' can provide anything.  But if we want 'require' to find the
 ;; right thing, we'll have to have require/provide/filename on the same page.
 ;; Alternative is, like, (require 'spydez/bootstrap/debug "bootstrap-debug")?
@@ -83,6 +91,10 @@
 ;; Initial vars bootstrap.
 ;;------------------------------------------------------------------------------
 ;; We probably need to setup some vars, load paths, etc in our init.el before getting going.
+
+;; I don't have any more than just some Windowses (7, 10) right now so a robust
+;; cross-platform init with proper places for overriding things will probably
+;; have to wait until I encounter it.
 
 ;;---
 ;; Setup some very basics, so we can get moving...
@@ -226,7 +238,7 @@
 ;; Init use-package so we can use use-package for the rest of the packages we use.
 (require 'bootstrap-package)
 
-;; ASAP after use-package is available
+;; ASAP after use-package is available (debug prints, init load timings)
 (require 'init-debug)
 
 ;; TODO: Libraries here? E.g. dash

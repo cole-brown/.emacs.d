@@ -29,4 +29,8 @@
 ;; Or alternatively, you could just M-x toggle-debug-on-error and reload your 
 ;; init-file (M-x load-file RET ~/.emacs.d/init.el RET).
 
+
+;;------------------------------------------------------------------------------
+;; Provide this.
+;;------------------------------------------------------------------------------
 (provide 'bootstrap-debug)
