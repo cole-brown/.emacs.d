@@ -103,6 +103,8 @@
 ;;---
 ;; These are the defaults. Override with setq later if needed.
 
+;; TODO: setq vs customize-set-variable (...vs being in the custom file?)
+
 ;; defconst vs defvar vs setq
 ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Defining-Variables.html
 ;; Looks like I can use defconst for desired functionality/hinting, while also being
@@ -286,14 +288,14 @@
 ;; I need somebody...
 (require 'configure-help)
 
-;; todo: linum
-;; todo: linum, misc config, utf-8 into one configure? configure-...... misc.el?
+;; Text: fill-column, UTF-8, etc.
+(require 'configure-text)
 
 ;; todo: configure version control?
-;;   - git? Magit?
-;;   - svn?
+(require 'configure-version-control)
 
 ;; todo: configure parenthesis
+;; rainbow? What I do in old .emacs?
 
 ;; todo: configure code modes
 ;;  - C
@@ -309,45 +311,6 @@
 ;;---
 ;; Misc Config
 ;;---
-
-;; Sentences end with a single space. This makes sentence navigation commands work better?
-;; http://pages.sachachua.com/.emacs.d/Sacha.html#org892ee89
-;; TODO: What does this do, exactly?
-(setq sentence-end-double-space nil)
-
-;; probably want this overridable
-(setq-default fill-column 80)
-
-;;---
-;; UTF-8
-;;---
-;; Prefer utf-8
-;; https://www.gnu.org/software/emacs/manual/html_node/emacs/International.html#International
-;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Recognize-Coding.html
-;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Output-Coding.html
-;; May need a way of checking for smart quotes and em dashes and stuff when we don't want utf-8...
-(prefer-coding-system 'utf-8)
-(when (display-graphic-p)
-  (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
-
-;; todo: these?
-;; (global-linum-mode 1) ; show line numbers everywhere
-
-;; parenthesis?
-;; (setq blink-matching-paren nil)
-;; (show-paren-mode t)
-;; (setq show-paren-delay 0)
-;; (setq show-paren-style 'expression)
-
-;; bell? (this doesn't work...)
-;; (setq ring-bell-function 'ignore)
-;; (setq visible-bell t)
-
-;; pull whatever I have in my old config, check against this:
-;; (require 'uniquify)
-;; (setq uniquify-buffer-name-style 'forward)
-
-
 
 ;; autocomplete?
 ;; Can you thrive and profit without auto-completion? Surely. The feature is

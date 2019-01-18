@@ -56,10 +56,15 @@
 ;;---
 ;; Unique buffer names
 ;;---
-(use-package uniquify
-  :config
-  (setq uniquify-buffer-name-style 'post-forward
-        uniquify-separator ":"))
+(require 'uniquify)
+;; "file.txt/to/path"
+;; (setq uniquify-buffer-name-style 'forward)
+;;       uniquify-separator "/"
+(setq uniquify-buffer-name-style 'post-forward
+      uniquify-separator ":"            ; "file.txt:path/to"
+      uniquify-after-kill-buffer-p t    ; rename after killing uniquified
+      uniquify-ignore-buffers-re "^\\*" ; don't muck with special buffers
+      )
 
 ;;---
 ;; Time in the modeline

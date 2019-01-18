@@ -11,7 +11,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (miniedit diminish guide-key undo-tree smart-mode-line benchmark-init auto-compile zenburn-theme use-package))))
+    (uniquify miniedit diminish guide-key undo-tree smart-mode-line benchmark-init auto-compile zenburn-theme use-package))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
