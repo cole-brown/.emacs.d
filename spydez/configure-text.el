@@ -52,7 +52,9 @@
     :defer nil
     :config
     (global-display-line-numbers-mode)))
-    
+
+;; TODO: Do we have more setting for it? Like default size/format of line number gutter?
+
 
 ;;------------------------------------------------------------------------------
 ;; TODO: these. Parenthesis, bells?

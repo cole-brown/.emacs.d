@@ -312,6 +312,34 @@
 ;; todo: configure version control?
 (require 'configure-version-control)
 
+
+;; todo: configure IDE?
+;;
+;; Setup Visual Studio to auto check/notice changed files? (or does it do that by default?)
+;;
+;; https://www.emacswiki.org/emacs/MSVisualStudio#toc5
+;; Notably from there:
+;;   - "Sending current file to Emacs from Visual Studio"
+;;     - "with a macro..."
+;;
+;; For tool: Visual Studio -> "Tools" -> "External Tools" -> "Add"
+;; For kbd shortcut: Visual Studio -> "Tools" -> "Options" -> Environment -> Keyboard -> Search: "Tools.ExternalComm" -> ExternalCommandN where N is number of your added external tool. Set to e.g. C-M-. (Ctrl + Alt + .)
+;; In visual Studio, Configure external tools. Add a tool with the following configuration:
+;;   Name: Emacs (for example)
+;;   Location: c:\path-to\emacsclientw.exe
+;;   Arguments: -n +$(CurLine):$(CurCol) $(ItemFileName)$(ItemFileExt)
+;;   *note there is a variable button that will help you with the shortcuts like $(CurLine)
+;;   WorkingDirectory: $(ItemDirectory)
+;;
+;; Sample for VS2010
+;;   Name: Emacs
+;;   Location: c:\path-to\emacsclientw.exe
+;;   Arguments: -n +$(CurLine):$(CurCol) $(ItemPath)
+;;   *note there is a variable button that will help you with the shortcuts like $(CurLine)
+;;   WorkingDirectory: $(ItemDirectory)
+
+;; TODO: shortcut for building Pathfinder_Everything in Emacs with Emacs output buffer?
+
 ;; todo: configure shell?
 ;; will need an 'if windows'?
 ;; ...and maybe an 'if git bash exists'
@@ -319,8 +347,10 @@
 ;; (setq explicit-shell-file-name "C:/git-for-windows/bin/bash.exe")
 ;; (setq explicit-bash.exe-args '("--login" "-i"))
 
+
 ;; todo: configure parenthesis
 ;; rainbow? What I do in old .emacs?
+
 
 ;; todo: configure code modes
 ;;  - C
