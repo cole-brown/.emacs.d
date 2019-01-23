@@ -64,6 +64,48 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Jump between Emacs windows more efficientcly.
+;;------------------------------------------------------------------------------
+;; https://www.emacswiki.org/emacs/WindMove
+;; http://pragmaticemacs.com/emacs/whizz-between-windows-with-windmove/
+;; Trial: [2019-01-23]
+(use-package windmove
+  ;; 2 column editing uses F2... -_- So no to this then as well.
+  ;; ;; http://www.gnu.org/software/emacs/manual/html_node/emacs/Two_002dColumn.html
+  ;; :bind
+  ;; (("<f2> <right>" . windmove-right)
+  ;;  ("<f2> <left>" . windmove-left)
+  ;;  ("<f2> <up>" . windmove-up)
+  ;;  ("<f2> <down>" . windmove-down)
+  ;;  )
+
+  :config
+  ;; No to this.
+  ;; Super + arrows on Windows is a command I use for organizing Windows' windows.
+  ;; Trying Sacha's F2+arrows for now.
+  ;; ;; use command key on Mac
+  ;; (windmove-default-keybindings 'super)
+
+  ;; wrap around at edges
+  (setq windmove-wrap-around t)
+  )
+;; TODO: Not quite sure what to do with this.
+;; TODO: Try out default for now - see how much my org-mode usage (not much)
+;;   is affected (probably also not much).
+
+;; TODO: try ace-window instead? Or dump this if not used much.
+;;   - https://www.reddit.com/r/emacs/comments/7evidd/windmove_shortcuts/
+;;     -> https://github.com/abo-abo/ace-window
+
+;; Switch window has a lot more setup/options in github readme. For now just
+;; see if we like it at all.
+;; https://github.com/dimitri/switch-window
+;; Trial: [2019-01-23]
+(use-package switch-window
+  :bind (("C-x o" . switch-window)))
+
+
+;;------------------------------------------------------------------------------
 ;; Zoom in/out? / Repeatable Commands
 ;;------------------------------------------------------------------------------
 ;; todo: I would never use this, but it is cool...

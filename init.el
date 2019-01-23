@@ -47,6 +47,9 @@
 ;; TODOs and Misc.
 ;;---
 
+;; TODO: defer load absolutely nothing? Seems to make for just random pauses for a while when you do something
+;; after loading emacs. An extra second or two at start might be less annoying?
+
 ;; TODO: try a let or something for vars that should be different during my init
 ;; e.g. gc threshold.
 ;; like...
@@ -158,11 +161,20 @@
 (defconst spydez/dir/common-doc-save "c:/home/documents"
   "Place for auto-open files or secrets or something to be.")
 
-;; todo: move to an end script or something?
-;; auto-open file list
+;; todo: move to an end script or something? Or leave up here so it can be overridden...
+;; auto-open this file list at end of emacs init/setup
 (defvar spydez/auto-open-list
-  '(
+  ;; don't do: '(
+  ;; do this: (list
+  ;; Need a thing that will eval the list items to strings either now or in auto-open-files.
+  ;; So we choose now.
+  (list
+    ;; top level work org-mode file for notes & such
     (expand-file-name "work.org" spydez/dir/common-doc-save)
+
+    ;; Working on .emacs.d a lot right now so add these in.
+    (expand-file-name "init.el" spydez/dir/setup-emacs)
+    (expand-file-name "configure-completion.el" spydez/dir/setup-personal)
     ))
 
 ;; folders for auto-save files and backup-files (#*# and *~)
@@ -436,6 +448,13 @@
 ;   - sanity ido-mode off?
 ;   - sanity other things? emacs version complainer? platform complainer?
 (require 'finalize-sanity)
+
+;; TODO: move to a finalize probably
+(defun spydez/auto-open-files ()
+  (if (and window-system (boundp 'spydez/auto-open-list))
+      (dolist (file spydez/auto-open-list)
+        (find-file file))))
+(add-hook 'emacs-startup-hook 'spydez/auto-open-files)
 
 (require 'zzz-finalize)
 ;; fin

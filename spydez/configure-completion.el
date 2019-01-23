@@ -64,6 +64,7 @@
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#orga9c79c3
 ;; Trial: [2019-01-23]
 (use-package helm-swoop
+  :after helm
   :bind
   (("C-S-s" . helm-swoop)
    ("M-i" . helm-swoop)
@@ -122,7 +123,7 @@
 ;;   - http://pages.sachachua.com/.emacs.d/Sacha.html#org04e47b9
 ;; https://github.com/emacs-helm/helm-descbinds
 (use-package helm-descbinds
-  :defer t
+  :defer t ;; no need for ":after" with this. https://github.com/jwiegley/use-package/issues/575
   :bind (("C-h b" . helm-descbinds)
          ("C-h w" . helm-descbinds)))
 
