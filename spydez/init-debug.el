@@ -1,7 +1,5 @@
 ;; -*- emacs-lisp -*-
 
-;; init-debug.el - some debug-related stuff for init code
-
 ;; benchmark-init from https://github.com/kaushalmodi/.emacs.d/blob/master/init.el
 ;; git repo: https://github.com/dholm/benchmark-init-el
 ;; disable when not debugging?

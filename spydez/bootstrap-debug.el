@@ -1,7 +1,5 @@
 ;; -*- emacs-lisp -*-
 
-;; bootstrap-debug.el - some debug-related setup
-
 ;; Show *Messages* buffer.
 ;;   https://stackoverflow.com/questions/40075912/want-to-view-emacs-messages-buffer-while-emacs-loads
 

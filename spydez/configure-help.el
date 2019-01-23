@@ -14,7 +14,7 @@
 ;;   2) Window frames "C-x 4"
 ;;   3) Mode specific "C-c"
 (use-package guide-key
-  :defer t
+;  :defer t ;; defer til... when?
   :diminish guide-key-mode
   :config
   (progn

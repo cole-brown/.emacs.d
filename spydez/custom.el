@@ -1,7 +1,5 @@
 ;; -*- emacs-lisp -*-
 
-;; custom.el - for custom-set-variables and custom-set-faces
-
 ;; TODO: see if want to import stuff from old custom
 
 (custom-set-variables

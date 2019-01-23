@@ -1,7 +1,5 @@
 ;; -*- emacs-lisp -*-
 
-;; finalize.el - non-computer-specific emacs init - the final bits
-
 ;;------------------------------------------------------------------------------
 ;; Debugging: clean up and finalize
 ;;------------------------------------------------------------------------------

@@ -1,7 +1,5 @@
 ;; -*- emacs-lisp -*-
 
-;; emacs.el - non-computer-specific emacs init
-
 ;; use-package git repo has helpful readme: https://github.com/jwiegley/use-package
 
 ;;------------------------------------------------------------------------------

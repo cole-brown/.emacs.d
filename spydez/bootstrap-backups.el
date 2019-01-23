@@ -1,6 +1,8 @@
 ;; -*- emacs-lisp -*-
 
-;; backups.el - Where to store the emacs auto-files.
+;;------------------------------------------------------------------------------
+;; Backups, auto-saves, etc.
+;;------------------------------------------------------------------------------
 
 ;; Stuff taken from:
 ;; http://stackoverflow.com/questions/151945/how-do-i-control-how-emacs-makes-backup-files

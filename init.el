@@ -1,9 +1,6 @@
 ;; -*- emacs-lisp -*-
 
-;; init.el - non-computer-specific emacs init
-;; TODO: get rid of this filename line in all files..?
-
-;; TODO: add license? MIT probably.
+;; TODO: add license? MIT probably?
 ;; https://snyk.io/blog/mit-apache-bsd-fairest-of-them-all/
 ;; TODO: Short copyright in header pointing to LICENSE.txt or something.
 

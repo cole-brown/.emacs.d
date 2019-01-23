@@ -1,7 +1,5 @@
 ;; -*- emacs-lisp -*-
 
-;; init-vars.el - computer-specific emacs init (vars override before bootstrap and init proper)
-
 ;; This file can be used to override variables using `setq' forms.
 
 ;; An example use is to disable loading of selected packages.
