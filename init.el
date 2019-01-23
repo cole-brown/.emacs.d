@@ -279,15 +279,16 @@
 ;; conditional use-package stuff? 
 ;; https://jwiegley.github.io/use-package/keywords/
 
-;; TODO: turn on server eventually
-;; TODO: pull out into configure-daemon? bootstrap-daemons?
-; (require 'server)
+
 ; (unless (server-running-p) (server-start))
 
 ;;------------------------------------------------------------------------------
 ;; Configuration.
 ;;------------------------------------------------------------------------------
 ;; Loading and init are done - now do any more required setup.
+
+;; Make sure emacs server daemon is running.
+(require 'configure-daemons)
 
 ;; TODO: HELM HERE PLZ
 ;; Helm/ido/etc

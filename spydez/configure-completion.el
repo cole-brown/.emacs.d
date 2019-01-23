@@ -48,9 +48,14 @@
          ("C-x c s" . helm-swoop)
          ("C-x c y" . helm-yas-complete)
          ("C-x c Y" . helm-yas-create-snippet-on-region)
-         ("C-x c SPC" . helm-all-mark-rings)))
+         ("C-x c SPC" . helm-all-mark-rings)
+         ("C-x C-f" . helm-find-files) ; Use helm for finding instead of find-files
+	 ))
 
 ;; TODO: helm-descbinds?
+
+;; "As for the fuzzy matching, look into the "helm-flx" package. It gives you real fuzzy matching, much better than the default helm matching."
+;;   - https://news.ycombinator.com/item?id=11100341
 
 ;; Bound these in Helm right now. Put these in (use-package ido...) :bind section if needed again?
 ;; Invoke M-x w/o the Alt key.

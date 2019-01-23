@@ -22,6 +22,9 @@
 # package.el repository
 /elpa/
 
+# server/daemon
+/server/
+
 ##---
 ## Misc
 ##---
