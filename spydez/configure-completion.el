@@ -83,7 +83,16 @@
 ;; (setq helm-lisp-fuzzy-completion t)
 
 
+;;---
+;; Helm: Misc
+;;---
+
 ;; TODO: helm-descbinds?
+;; Great for describing bindings. I'll replace the binding for where-is too.
+;;(use-package helm-descbinds
+;;  :defer t
+;;  :bind (("C-h b" . helm-descbinds)
+;;         ("C-h w" . helm-descbinds)))
 
 
 ;; Bound these in Helm right now. Put these in (use-package ido...) :bind section if needed again?

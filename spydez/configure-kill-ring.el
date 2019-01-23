@@ -9,7 +9,7 @@
 ;; changes you've made, undo back to a certain point (or redo), and go down
 ;; different branches. (C-n/p/f/b mostly?)
 (use-package undo-tree
-  :diminish undo-tree-mode "↺" ;; fancy UTF-8
+  :diminish undo-tree-mode " ↺" ;; fancy UTF-8
   ;:diminish undo-tree-mode ;; just squelched entirely
   :config
   (progn
