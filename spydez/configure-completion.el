@@ -52,10 +52,39 @@
          ("C-x C-f" . helm-find-files) ; Use helm for finding instead of find-files
 	 ))
 
-;; TODO: helm-descbinds?
+;;---
+;; Helm: Fuzzy Matching
+;;---
 
 ;; "As for the fuzzy matching, look into the "helm-flx" package. It gives you real fuzzy matching, much better than the default helm matching."
 ;;   - https://news.ycombinator.com/item?id=11100341
+
+;; or all this for default helm fuzzy matching?
+;;  - https://tuhdo.github.io/helm-intro.html
+;;
+;; Starting from 1.6.5, helm-M-x can fuzzy match candidates, but this is not
+;; enabled by default. To enable fuzzy matching, add the following setting:
+;; (setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
+;;
+;; (setq helm-buffers-fuzzy-matching t
+;;      helm-recentf-fuzzy-match    t)
+;;
+;; To enable fuzzy matching for both Semantic and Imenu listing, add the following setting:
+;; (setq helm-semantic-fuzzy-match t
+;;       helm-imenu-fuzzy-match    t)
+;;
+;; To enable fuzzy matching in helm-locate, add this setting:
+;; (setq helm-locate-fuzzy-match t)
+;;
+;; To enable fuzzy matching, add this setting:
+;; (setq helm-apropos-fuzzy-match t)
+;;
+;; there's... so many...
+;; (setq helm-lisp-fuzzy-completion t)
+
+
+;; TODO: helm-descbinds?
+
 
 ;; Bound these in Helm right now. Put these in (use-package ido...) :bind section if needed again?
 ;; Invoke M-x w/o the Alt key.
