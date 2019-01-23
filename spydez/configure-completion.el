@@ -53,6 +53,37 @@
 	 ))
 
 ;;---
+;; Helm: Swoop
+;;---
+;; List match lines to another buffer, which is able to squeeze by any words you
+;; input. At the same time, the original buffer's cursor is jumping line to line
+;; according to moving up and down the line list.
+;;   https://github.com/ShingoFukuyama/helm-swoop
+;;   https://wikemacs.org/wiki/Helm-swoop
+
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#orga9c79c3
+;; Trial: [2019-01-23]
+(use-package helm-swoop
+  :bind
+  (("C-S-s" . helm-swoop)
+   ("M-i" . helm-swoop)
+   ("M-s s" . helm-swoop)
+   ("M-s M-s" . helm-swoop)
+   ("M-I" . helm-swoop-back-to-last-point)
+   ("C-c M-i" . helm-multi-swoop)
+   ("C-x M-i" . helm-multi-swoop-all)
+   )
+  :config
+  (progn
+    (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
+    (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop))
+  )
+
+;; Use C-S-s for search. Can go into "Edit Mode" with C-c C-e.
+;; Before enter the edit mode, you can choose some lines marked by C-SPC
+;; or M-SPC to edit. Apply changes to original buffer type C-x C-s.
+
+;;---
 ;; Helm: Fuzzy Matching
 ;;---
 

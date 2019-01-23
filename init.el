@@ -414,6 +414,11 @@
 ;; Config TRAMP for getting at server text files?
 ;; I don't need it day-to-day, but it'd be nice to already have if I do need it.
 
+;; TODO: doom modeline?
+;; https://github.com/hlissner/emacs-doom-themes
+
+;; TODO: row, column in modeline?
+;;   - right now it has "%/Bot/Top L<line num>" and don't want that?
 
 ;;------------------------------------------------------------------------------
 ;; The End.
