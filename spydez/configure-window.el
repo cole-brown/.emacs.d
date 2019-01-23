@@ -29,11 +29,13 @@
 ;; See: http://pages.sachachua.com/.emacs.d/Sacha.html (find "when window") for a
 ;; set conditional on gui interface.
 
+
 ;;------------------------------------------------------------------------------
 ;; Color scheme: Zenburn
 ;;------------------------------------------------------------------------------
 (use-package zenburn-theme)
 ;; Seems to work fine without 'load-theme
+
 
 ;;------------------------------------------------------------------------------
 ;; Mode line: Time
@@ -58,11 +60,15 @@
       ))
 (display-time-mode t)
 
-;;------------------------------------------------------------------------------
-;; Mode line
-;;------------------------------------------------------------------------------
+;; todo: color clock if late, or approaching late?
 
-;; todo: there more somewhere...
+
+;;------------------------------------------------------------------------------
+;; Zoom in/out? / Repeatable Commands
+;;------------------------------------------------------------------------------
+;; todo: I would never use this, but it is cool...
+;; from: https://oremacs.com/2015/01/14/repeatable-commands/
+;;   from: http://pages.sachachua.com/.emacs.d/Sacha.html#orgfdc65f7
 
 
 ;;------------------------------------------------------------------------------

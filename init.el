@@ -347,7 +347,8 @@
 
 
 ;; todo: configure parenthesis
-;; rainbow? What I do in old .emacs?
+
+;; todo: give rainbow-mode a try. What I do in old .emacs?
 
 
 ;; todo: configure code modes
