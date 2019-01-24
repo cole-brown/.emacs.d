@@ -68,6 +68,7 @@
 ;;------------------------------------------------------------------------------
 ;; https://www.emacswiki.org/emacs/WindMove
 ;; http://pragmaticemacs.com/emacs/whizz-between-windows-with-windmove/
+;; https://github.com/emacs-mirror/emacs/blob/master/lisp/windmove.el
 ;; Trial: [2019-01-23]
 (use-package windmove
   ;; 2 column editing uses F2... -_- So no to this then as well.
@@ -90,6 +91,8 @@
   (setq windmove-wrap-around t)
   )
 ;; TODO: Not quite sure what to do with this.
+;;   Maybe try org-mode's solution:
+;;     - https://emacs.stackexchange.com/questions/22286/shiftarrow-to-change-window-does-not-work-in-org-mode
 ;; TODO: Try out default for now - see how much my org-mode usage (not much)
 ;;   is affected (probably also not much).
 

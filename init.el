@@ -69,6 +69,19 @@
 ;;  e.g. http://ergoemacs.org/emacs/organize_your_dot_emacs.html
 ;;  but I'd still need all the stuff setting up the paths, probably?
 
+;; TODO: For when compiling... https://github.com/jwiegley/use-package#byte-compiling-your-emacs
+;;
+;; Another feature of use-package is that it always loads every file that it can
+;; when .emacs is being byte-compiled. This helps to silence spurious warnings
+;; about unknown variables and functions.
+;;
+;; However, there are times when this is just not enough. For those times, use
+;; the :defines and :functions keywords to introduce dummy variable and function
+;; declarations solely for the sake of the byte-compiler.
+;;
+;; So... TODO: figure out recompiling everything and define some
+;; dummy vars/funcs as needed (if they don't exist).
+
 
 ;;---
 ;; Trials and Try-outs.
@@ -448,6 +461,9 @@
 ;   - sanity ido-mode off?
 ;   - sanity other things? emacs version complainer? platform complainer?
 (require 'finalize-sanity)
+
+;; TODO: define shortcuts to frequently used files?
+;;   http://pages.sachachua.com/.emacs.d/Sacha.html#org9750649
 
 ;; TODO: move to a finalize probably
 (defun spydez/auto-open-files ()
