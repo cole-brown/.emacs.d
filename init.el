@@ -312,7 +312,6 @@
 ;; Make sure emacs server daemon is running.
 (require 'configure-daemons)
 
-;; TODO: HELM HERE PLZ
 ;; Helm/ido/etc
 (require 'configure-completion)
 
@@ -335,6 +334,9 @@
 ;; todo: configure version control?
 (require 'configure-version-control)
 
+;; TODO: git, magit, svn-of-some-sort vs hydra
+;; TODO-maybe-as-well: multiple git users, upload to github repo
+;;   good instructions so it's easy to setup in order to download .emacs.d from github repo next time.
 
 ;; todo: configure IDE?
 ;;
