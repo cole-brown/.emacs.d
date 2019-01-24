@@ -9,6 +9,7 @@
 *~
 \#*\#
 *.elc
+.\#*
 
 ##---
 ## Auto-gen, packages, etc.

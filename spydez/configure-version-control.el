@@ -28,6 +28,8 @@
 ;;   1) SSH key per Github account
 ;;      - ssh-keygen -t rsa -C "your-email-address"
 ;;   2) Log into Github and attach new key to its account.
+;;      - Note that my created keys are in one place and the key used by the
+;;        GitHub app is in an entirely different place on my computer's HDD.
 
 ;;------------------------------------------------------------------------------
 ;; git
