@@ -121,6 +121,7 @@
   :bind
   ;; some defaults: https://www.emacswiki.org/emacs/VersionControl
   ;; I want to overwrite some of those, I think? magit-status is superior to vc-directory.
+  ;; Or should git be the VC, and magit be its own special thing? Going with overwrite for now.
   (("C-x v d" . magit-status)
    ("C-x v p" . magit-push)
    ;("C-x v C-d" . my/magit-status-in-directory)
