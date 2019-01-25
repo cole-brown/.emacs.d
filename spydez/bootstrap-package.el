@@ -41,6 +41,13 @@
 ;;  (require 'use-package))
 (require 'use-package)
 
+;; use-package is now bootstrapped.
+
+;; If you get an error like this on installing a new package:
+;;   Error (use-package): Failed to install magit: http://melpa.org/packages/magit-20190113.1949.tar: Not found
+;;   Error (use-package): Cannot load magit
+;; Just evalulate (package-refresh-contents) again.
+
 ;; https://github.com/emacscollective/auto-compile
 ;; Pull in auto-compile here, set to on-load mode.
 (use-package auto-compile
