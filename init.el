@@ -262,12 +262,12 @@
     ("git" . "") ; in windows system env var PATH  right now
     ("diff" . "C:/Users/cole/AppData/Local/GitHub/PortableGit_69bd5e6f85e4842f07db71c9618a621154c52254/usr/bin")
     )
-  "An alist for tool name -> ...?")
+  "An alist for tool name -> exec path. These will be front-to-back appended to list, so if e.g. there's several git binaries and only one will work, put git in front of this alist.")
 ;; set up PATHs so external tools can be found.
 (when (boundp 'spydez/tools/external)
   (dolist (tool spydez/tools/external)
     (unless (executable-find (car tool))
-      (add-to-list 'exec-path (cdr tool) t))
+      (add-to-list 'exec-path (cdr tool) t)) ;; append to end
     ))
 ;; find in alist: (when (assoc 'diff spydez/tools/external) (message "truedat"))
 ;; todo: move this to bootstrap-externals
