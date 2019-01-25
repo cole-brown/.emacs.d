@@ -31,6 +31,7 @@
 ;;   2) Log into GitHub and attach new key to its account.
 ;;      - Note that my created keys are in one place and the key used by the
 ;;        GitHub app is in an entirely different place on my computer's HDD.
+;;        - GitHub app uses c:/Users/<user>/.ssh whereas I use c:/home/<user>/.ssh currently.
 ;;   3) Fail everything, go on a wile goose chase. Blame GitHub desktop app vs
 ;;      git bash, then https vs ssh, then old personal vs new company vs new person
 ;;      accounts/credentials/voodoo rituals...
@@ -43,8 +44,6 @@
 ;;      - It does matter https vs SSH (e.g. remote origin urls of git@github.com vs https://), maybe.
 ;;      - You do have to create it on GitHub before you can push it to GitHub.
 ;;   6) It works.
-;;
-;; Note: GitHub app uses c:/Users/<user>/.ssh whereas I use c:/home/<user>/.ssh currently.
 
 
 ;;------------------------------------------------------------------------------
@@ -52,7 +51,15 @@
 ;;------------------------------------------------------------------------------
 ;; It's all the rage.
 
-;; todo: anything for git in general that isn't magit?
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#orgfb77d93
+;; Trial: [2019-01-25]
+(use-package git-messenger
+  :bind (("C-x v m" . git-messenger:popup-message)))
+;; Oh wow - that's awesome. Commit message for line at point.
+;; TODO: Way to include author in there?
+
+;; I guess mostly we're just using magit...
+;; So..... Next section!:
 
 
 ;;------------------------------------------------------------------------------
@@ -79,12 +86,61 @@
 ;;     - I'm adding this git to my path for now.
 ;; I should just install a Git in a better place, but now I want to figure this out...
 ;;
-;; TODO: Check this path for git executable for making our own better warning?
-;;   (defconst spydez/git-path "C:/Users/<user>/AppData/Local/GitHub/PortableGit_<guid>/cmd")
-;;
 ;; Yep - that worked. Added path to PortableGit/cmd dir to end of system PATH var.
 
-(use-package magit)
+(use-package magit
+  :config
+  ;;---
+  ;; git setup
+  ;;---
+  ;; NOTE: See spydez/tools/external for current git/diff check.
+  ;;; If on windows and don't currently know where git is, check spydez/exe/git-path.
+  ;;; It may be the answer, or maybe we just complain.
+  ;;; todo: Change to check this (executable-find "git")
+  ;;;   - in finalize-sanity (also sanity for "diff")
+  ;(when (and (equal system-type 'windows-nt)
+  ;	     (not (boundp 'magit-git-executable)))
+  ;  (if (boundp 'spydez/exe/git-path)
+  ;	(setq magit-git-executable spydez/exe/git-path)
+  ;    (error "init/configure-version-control:: use-package magit: no git path known?")))
+
+  ;;---
+  ;; Diff options
+  ;;---
+
+  ;; TODO: not working currently. Does my external `diff` not know inline diffing?
+  ;; Show word differences, not just "line has changed".
+  ;; https://emacs.stackexchange.com/questions/43643/magit-how-to-show-differences-within-lines
+  (setq magit-diff-refine-hunk 'all
+	magit-diff-section-arguments '("--ignore-space-change"))
+  ;; but for that to work I need it to find the diff exe...
+  ;;(executable-find "diff")
+  ;;(executable-find "git")
+  ;; So we set that up in the spydez/tools/external bootstrap.
+
+  :bind
+  ;; some defaults: https://www.emacswiki.org/emacs/VersionControl
+  ;; I want to overwrite some of those, I think? magit-status is superior to vc-directory.
+  (("C-x v d" . magit-status)
+   ("C-x v p" . magit-push)
+   ;("C-x v C-d" . my/magit-status-in-directory)
+   ;("C-x v c" . my/magit-commit-all) ;; this overrides "cancel"... any better one to steal?
+   )
+  )
+
+;; Trial: [2019-01-25]
+(use-package magit-gh-pulls)
+
+;; From http://pages.sachachua.com/.emacs.d/Sacha.html#magit
+;; From http://endlessparentheses.com/merging-github-pull-requests-from-emacs.html
+(defun endless/load-gh-pulls-mode ()
+  "Start `magit-gh-pulls-mode' only after a manual request."
+  (interactive)
+  (require 'magit-gh-pulls)
+  (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls)
+  (magit-gh-pulls-mode 1)
+  (magit-gh-pulls-reload))
+
 
 ;;------------------------------------------------------------------------------
 ;; subversion? I do still use this...

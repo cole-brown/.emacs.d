@@ -82,6 +82,8 @@
 ;; So... TODO: figure out recompiling everything and define some
 ;; dummy vars/funcs as needed (if they don't exist).
 
+;; TODO: tags files? http://pages.sachachua.com/.emacs.d/Sacha.html#orgfb77d93
+
 
 ;;---
 ;; Trials and Try-outs.
@@ -251,6 +253,26 @@
   (message "No secrets to load."))
 
 ;;---
+;; External Tools
+;;---
+;; Do I want to do the "find git" on windows like this or like in the Windows PATH env var?
+;; Associative List of tool symbol to... tool path.
+(defconst spydez/tools/external
+  '(;; magit wants git and diff
+    ("git" . "") ; in windows system env var PATH  right now
+    ("diff" . "C:/Users/cole/AppData/Local/GitHub/PortableGit_69bd5e6f85e4842f07db71c9618a621154c52254/usr/bin")
+    )
+  "An alist for tool name -> ...?")
+;; set up PATHs so external tools can be found.
+(when (boundp 'spydez/tools/external)
+  (dolist (tool spydez/tools/external)
+    (unless (executable-find (car tool))
+      (add-to-list 'exec-path (cdr tool) t))
+    ))
+;; find in alist: (when (assoc 'diff spydez/tools/external) (message "truedat"))
+;; todo: move this to bootstrap-externals
+
+;;---
 ;; Try-Load overrides (from bootstrap-vars.el)?
 ;;---
 ;(when (require bootstrap-vars nil 'noerror)
@@ -330,13 +352,19 @@
 
 ;; Text: fill-column, UTF-8, etc.
 (require 'configure-text)
+;; todo: make a note or something about M-x goto-address-mode?
+;;   https://www.gnu.org/software/emacs/manual/html_node/emacs/Goto-Address-mode.html
+;;   Its neat but I'll probably not often use it.
 
 ;; todo: configure version control?
 (require 'configure-version-control)
 
-;; TODO: git, magit, svn-of-some-sort vs hydra
+;; TODO: git, magit, svn-of-some-sort
 ;; TODO-maybe-as-well: multiple git users, upload to github repo
 ;;   good instructions so it's easy to setup in order to download .emacs.d from github repo next time.
+
+;; TODO: key-chords
+;; TODO: hydra
 
 ;; todo: configure IDE?
 ;;
@@ -473,6 +501,12 @@
       (dolist (file spydez/auto-open-list)
         (find-file file))))
 (add-hook 'emacs-startup-hook 'spydez/auto-open-files)
+
+;; TODO: finalize help - maybe some how-to in a buffer?
+;; for zzz-finalize to choose as shown.
+;; for my custom stuff or new stuff e.g. magit, hydra, my shortcuts...
+;; Choose a random one maybe. Have various things push their
+;; help info for this into a list during use-package init or config...
 
 (require 'zzz-finalize)
 ;; fin
