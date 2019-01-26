@@ -67,6 +67,14 @@
 ;; Oh wow - that's awesome. Commit message for line at point.
 ;; TODO: Way to include author in there?
 
+;; Note: I cannot find a person on the internet that has asked about magit and
+;; git's IncludeIf. I have repos in HOME set to use one name, and a default
+;; global other name. Magit only knows the default global - same for git in eshell.
+;; For now, setting a repo-local user.name, user.email for non-default repos.
+;;   In git bash in .emacs.d:
+;;     $ git config user.name "Cole Brown"
+;;     $ git config user.email "git@spydez.com"
+
 ;; I guess mostly we're just using magit...
 ;; So..... Next section!:
 
