@@ -58,11 +58,6 @@
 ;;  )
 ;; But a nicer way to do that? (let ((vars...)) (load "actual-init")) maybe?
 
-;; TODO: for my init files...
-;;   do: (load "file") instead of (load "file.el") ??
-;;   or even: (require 'file)/(provides 'file) ???
-;; https://emacs.stackexchange.com/questions/3310/difference-between-load-file-and-load
-
 ;; TODO: check if missed any of old .emacs files
 
 ;; TODO: reduce this down to as few lines as possible? 
@@ -102,6 +97,7 @@
 ;;     https://www.reddit.com/r/emacs/comments/7yns85/emacs_adds_support_for_a_second_read_earlier_init/
 ;;     https://git.savannah.gnu.org/cgit/emacs.git/commit/?id=24acb31c04b4048b85311d794e600ecd7ce60d3b
 
+
 ;; init.el:
 ;;   First, emacs loads init.el.
 ;;   Our init.el will then load our files in this order:
@@ -112,9 +108,13 @@
 ;;   However now my ordering is not also alphabetical...
 ;; TODO: bootstrap-*, configure-*, finalize-* maybe?
 
+
 ;; I don't want a megalithic emacs init file. So how best to break it up?
+;;
 ;; Trying require/provide now.
 ;;   http://www.gnu.org/software/emacs/manual/html_node/elisp/Named-Features.html
+;;   https://emacs.stackexchange.com/questions/3310/difference-between-load-file-and-load
+;;
 ;; Note: 'require' works off of file name (just like load) if not already
 ;; loaded. 'provide' can provide anything.  But if we want 'require' to find the
 ;; right thing, we'll have to have require/provide/filename on the same page.
@@ -305,7 +305,7 @@
 (require 'bootstrap-package)
 
 ;; ASAP after use-package is available (debug prints, init load timings)
-(require 'init-debug)
+(require 'init-debug) ;; TODO: rename to... configure-debug?
 
 ;; todo: mess with garbage collection at all?
 ;; todo: up this a waybunch? May be a more annoying hit to gc huge chunks infrequently instead of tiny chunks frequently.
@@ -356,12 +356,14 @@
 ;;   https://www.gnu.org/software/emacs/manual/html_node/emacs/Goto-Address-mode.html
 ;;   Its neat but I'll probably not often use it.
 
-;; todo: configure version control?
+;; VC: git, magit, svn, etc.
 (require 'configure-version-control)
-
-;; TODO: git, magit, svn-of-some-sort
+;; todo: finish this.
+;; TODO: svn-of-some-sort
 ;; TODO-maybe-as-well: multiple git users, upload to github repo
 ;;   good instructions so it's easy to setup in order to download .emacs.d from github repo next time.
+
+;; TODO-now: magit familiarity, use magit instead of git cmds for rest of .emacs.d work.
 
 ;; TODO: key-chords
 ;; TODO: hydra
@@ -405,11 +407,11 @@
 
 ;; todo: give rainbow-mode a try. What I do in old .emacs?
 
-
+;; Programming Modes
+(require 'configure-csharp)
 ;; todo: configure code modes
 ;;  - C
 ;;  - C++
-;;  - C#
 ;;  - python
 ;;  - go?
 

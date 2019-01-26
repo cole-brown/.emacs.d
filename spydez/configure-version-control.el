@@ -1,9 +1,18 @@
 ;; -*- emacs-lisp -*-
 
 
+;; magit commit flow:
+;;  1) C-x v d         -> magit status buffer
+;;  2) s or S on stuff -> stage changes
+;;  3) c c             -> commit buffers (commit message and commit diff)
+;;  4) C-c C-c         -> Done editting commit message - commit it.
+
+;; TODO: magit rebase flow?
+
 ;; TODO: an encrypted git repo (git crypt or something?) for my emacs.secrets
 ;;   that has stuff like all my GitHub keys, other stuff. Use 2fa and/or
 ;;   password manager (1Pass or something)?
+
 
 ;;------------------------------------------------------------------------------
 ;; General version control settings
