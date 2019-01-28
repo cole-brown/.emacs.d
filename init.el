@@ -363,8 +363,6 @@
 ;; TODO-maybe-as-well: multiple git users, upload to github repo
 ;;   good instructions so it's easy to setup in order to download .emacs.d from github repo next time.
 
-;; TODO-now: magit familiarity, use magit instead of git cmds for rest of .emacs.d work.
-
 ;; TODO: key-chords
 ;; TODO: hydra
 

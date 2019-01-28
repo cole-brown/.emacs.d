@@ -139,10 +139,11 @@
   ;; some defaults: https://www.emacswiki.org/emacs/VersionControl
   ;; I want to overwrite some of those, I think? magit-status is superior to vc-directory.
   ;; Or should git be the VC, and magit be its own special thing? Going with overwrite for now.
+  ;; todo: consider "C-x g" for magit-status? 
   (("C-x v d" . magit-status)
    ("C-x v p" . magit-push)
    ;("C-x v C-d" . my/magit-status-in-directory)
-   ;("C-x v c" . my/magit-commit-all) ;; this overrides "cancel"... any better one to steal?
+   ;("C-x v c" . my/magit-commit-all) ;; this overrides vc "cancel"... any better one to steal?
    )
   )
 
