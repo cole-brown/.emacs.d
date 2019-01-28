@@ -79,12 +79,21 @@
 
 ;; TODO: tags files? http://pages.sachachua.com/.emacs.d/Sacha.html#orgfb77d93
 
+;; TODO: (require 'nothing) or something for useful comments not attached to init code or even emacs?
+;;  like this for speeding up builds on windows?
+;;    - https://github.com/Microsoft/WSL/issues/1932#issuecomment-294362848
+;;      - https://support.microsoft.com/en-us/help/4028485/windows-10-add-an-exclusion-to-windows-security
+
 
 ;;---
 ;; Trials and Try-outs.
 ;;---
 ;; Packages and experiments should be marked with something like... 
 ;; Trial: [yyyy-mm-dd]
+;;
+;; TODO: change to some sort of elisp documentation or annotation?
+;; TODO: maybe with some help text about how to use the feature on trial?
+;; TODO: Then we can, somewhere in finalize, choose one of those helps to add into scratch buffer message?
 
 
 ;;------------------------------------------------------------------------------
@@ -319,12 +328,13 @@
 ;; Setup backups, autosaves, and history.
 (require 'bootstrap-backups)
 
+;; keyboard stuff
+(require 'bootstrap-keyboard)
+
 ;; todo:
 ;; conditional use-package stuff? 
 ;; https://jwiegley.github.io/use-package/keywords/
 
-
-; (unless (server-running-p) (server-start))
 
 ;;------------------------------------------------------------------------------
 ;; Configuration.
@@ -363,8 +373,8 @@
 ;; TODO-maybe-as-well: multiple git users, upload to github repo
 ;;   good instructions so it's easy to setup in order to download .emacs.d from github repo next time.
 
-;; TODO: key-chords
-;; TODO: hydra
+;; key-chords, hydra, some helper functions
+(require 'configure-hydra)
 
 ;; todo: configure IDE?
 ;;
@@ -431,6 +441,9 @@
 ;;   http://ergoemacs.org/emacs/emacs_keybinding_redesign_2.html
 ;;   http://ergoemacs.org/misc/ergoemacs_vi_mode.html
 ;; TODO: does this apply to key-chord and/or hydra packages?
+
+;; TODO: Autorevert. Tweak ARev minor mode? Disable it?
+
 
 ;;---
 ;; Misc Config

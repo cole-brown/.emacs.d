@@ -13,6 +13,9 @@
 ;;   that has stuff like all my GitHub keys, other stuff. Use 2fa and/or
 ;;   password manager (1Pass or something)?
 
+;; TODO: magit is supposed to auto-notice changes that happen in emacs, right?
+;;   - if so, it's not auto-updating changes I do when magit-status
+;;     is up and it should be fixed...
 
 ;;------------------------------------------------------------------------------
 ;; General version control settings
