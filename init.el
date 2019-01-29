@@ -1,4 +1,5 @@
 ;; -*- emacs-lisp -*-
+;; TODO: those code headers I see in emacs packages?
 
 ;; TODO: add license? MIT probably?
 ;; https://snyk.io/blog/mit-apache-bsd-fairest-of-them-all/
@@ -47,6 +48,8 @@
 ;; TODOs and Misc.
 ;;---
 
+;; TODO: overwrite selection with paste
+
 ;; TODO: defer load absolutely nothing? Seems to make for just random pauses for a while when you do something
 ;; after loading emacs. An extra second or two at start might be less annoying?
 
@@ -84,6 +87,8 @@
 ;;    - https://github.com/Microsoft/WSL/issues/1932#issuecomment-294362848
 ;;      - https://support.microsoft.com/en-us/help/4028485/windows-10-add-an-exclusion-to-windows-security
 
+;; TODO: does a gen'd http://emacs-bootstrap.com/ have anything neat in it?
+;;   downloaded and unzipped to C:\home\cole\zzz_new-emacs\emacs.d
 
 ;;---
 ;; Trials and Try-outs.
@@ -109,7 +114,7 @@
 
 ;; init.el:
 ;;   First, emacs loads init.el.
-;;   Our init.el will then load our files in this order:
+;;   Our init.el will then load our files roughly in this order:
 ;;     1) bootstrap-*.el
 ;;     2) init-*.el
 ;;     3) configure-*.el
