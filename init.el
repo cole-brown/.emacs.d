@@ -90,6 +90,11 @@
 ;; TODO: does a gen'd http://emacs-bootstrap.com/ have anything neat in it?
 ;;   downloaded and unzipped to C:\home\cole\zzz_new-emacs\emacs.d
 
+;; TODO: this is neat... move it to that file we were going to create for that neat link thing...?
+;; https://orgmode.org/manual/Creating-timestamps.html
+;; Use M-x org-time-stamp-inactive for inserting `[2019-01-29 Tue]' stamps into current non-org-mode buffer.
+
+
 ;;---
 ;; Trials and Try-outs.
 ;;---

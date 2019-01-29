@@ -55,6 +55,26 @@
 
 ;; TODO: Do we have more setting for it? Like default size/format of line number gutter?
 
+;;---
+;; Also column numbers
+;;---
+(column-number-mode t)
+
+
+;;------------------------------------------------------------------------------
+;; Smartscan for jumping to next instance of symbol-at-point
+;;------------------------------------------------------------------------------
+;; TODO: here in text, or elsewhere? configure-dev-env?
+;; From http://pages.sachachua.com/.emacs.d/Sacha.html
+;; Trial [2019-01-29]
+;; M-n and M-p for next/previous symbol
+(use-package smartscan
+  ;; This defer seems to make it not load?
+  ;; TODO: see if e.g. `:init' instead of `:config' makes it any better w/ defer?
+  ;; :defer t
+  :config
+  (global-smartscan-mode t))
+
 
 ;;------------------------------------------------------------------------------
 ;; TODO: these. Parenthesis, bells?
