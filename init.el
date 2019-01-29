@@ -48,6 +48,8 @@
 ;; TODOs and Misc.
 ;;---
 
+;; TODO: my current configure-<functionality> versus what most others seem to do: configure-<package>
+
 ;; TODO: overwrite selection with paste
 
 ;; TODO: defer load absolutely nothing? Seems to make for just random pauses for a while when you do something
@@ -370,12 +372,6 @@
 ;; I need somebody...
 (require 'configure-help)
 
-;; Text: fill-column, UTF-8, etc.
-(require 'configure-text)
-;; todo: make a note or something about M-x goto-address-mode?
-;;   https://www.gnu.org/software/emacs/manual/html_node/emacs/Goto-Address-mode.html
-;;   Its neat but I'll probably not often use it.
-
 ;; VC: git, magit, svn, etc.
 (require 'configure-version-control)
 ;; todo: finish this.
@@ -386,6 +382,15 @@
 ;; key-chords, hydra, some helper functions
 (require 'configure-hydra)
 
+;; Text: fill-column, UTF-8, etc.
+(require 'configure-text)
+;; todo: make a note or something about M-x goto-address-mode?
+;;   https://www.gnu.org/software/emacs/manual/html_node/emacs/Goto-Address-mode.html
+;;   Its neat but I'll probably not often use it.
+
+;; dired mode - seems IDE adjacent so it may go into configure-dev-env. Putting it there for now.
+;; It could go into its own configure-dired though
+(require 'configure-dired)
 ;; todo: configure IDE?
 ;;
 ;; Setup Visual Studio to auto check/notice changed files? (or does it do that by default?)
