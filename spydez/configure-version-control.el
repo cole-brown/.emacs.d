@@ -7,6 +7,11 @@
 ;;  3) c c             -> commit buffers (commit message and commit diff)
 ;;  4) C-c C-c         -> Done editting commit message - commit it.
 
+;; magit push to origin flow:
+;;  1) C-x v d         -> magit status buffer
+;;  2) P               -> (p)ush popup
+;;  3) u               -> Push to (u)pstream
+
 ;; TODO: magit rebase flow?
 
 ;; TODO: an encrypted git repo (git crypt or something?) for my emacs.secrets
