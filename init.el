@@ -48,6 +48,11 @@
 ;; TODOs and Misc.
 ;;---
 
+;; TODO: resume in emaics/org-mode/latex?
+;; https://www.reddit.com/r/emacs/comments/6pp9z3/noob_using_emacs_to_write_a_resume/
+;; https://github.com/xiaohanyu/resume
+;; https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=org%20mode%20resume&=&=&oq=&gs_l=&pbx=1
+
 ;; TODO: bind-key vs global-set-key vs define-key vs the 50 other ways... which one should we be using where?
 ;; https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=bind-key%20vs%20global-set-key&=&=&oq=&gs_l=&pbx=1
 ;;  - https://www.reddit.com/r/emacs/comments/6hbb22/when_do_you_use_definekey_vs_globalsetkey/
