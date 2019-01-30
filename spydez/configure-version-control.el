@@ -90,6 +90,8 @@
 ;;     $ git config user.name "Cole Brown"
 ;;     $ git config user.email "git@spydez.com"
 
+;; TODO: what is git-gutter and do I want it?
+
 ;; I guess mostly we're just using magit...
 ;; So..... Next section!:
 

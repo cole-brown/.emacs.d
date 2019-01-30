@@ -340,6 +340,7 @@
 
 ;; Packages used by other packages.
 (use-package diminish)
+;; TODO: diminish vs delight? Do I care enough to try delight?
 
 ;; Setup backups, autosaves, and history.
 (require 'bootstrap-backups)
