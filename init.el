@@ -48,6 +48,10 @@
 ;; TODOs and Misc.
 ;;---
 
+;; TODO: bind-key vs global-set-key vs define-key vs the 50 other ways... which one should we be using where?
+;; https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=bind-key%20vs%20global-set-key&=&=&oq=&gs_l=&pbx=1
+;;  - https://www.reddit.com/r/emacs/comments/6hbb22/when_do_you_use_definekey_vs_globalsetkey/
+
 ;; TODO: my current configure-<functionality> versus what most others seem to do: configure-<package>
 
 ;; TODO: overwrite selection with paste
@@ -382,6 +386,14 @@
 ;; key-chords, hydra, some helper functions
 (require 'configure-hydra)
 
+;; For moving around in and messing with text via or at point and/or mark.
+;; Hi Mark.
+;; Obviously this and configure-text and configure-dev-env
+(require 'configure-point-and-mark)
+
+;; Dired, recentf, other file or folder operations
+(provide 'configure-files-and-folders)
+
 ;; Text: fill-column, UTF-8, etc.
 (require 'configure-text)
 ;; todo: make a note or something about M-x goto-address-mode?
@@ -390,7 +402,7 @@
 
 ;; dired mode - seems IDE adjacent so it may go into configure-dev-env. Putting it there for now.
 ;; It could go into its own configure-dired though
-(require 'configure-dired)
+(require 'configure-dev-env)
 ;; todo: configure IDE?
 ;;
 ;; Setup Visual Studio to auto check/notice changed files? (or does it do that by default?)

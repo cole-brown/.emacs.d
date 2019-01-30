@@ -1,5 +1,8 @@
 ;; -*- emacs-lisp -*-
 
+;; TODO: configure-text, configure-point-and-mark, configure-dev-env, configure-files-and-folders...
+;; check to see if they've got the correct pieces
+
 ;;------------------------------------------------------------------------------
 ;; General text settings, global settings, etc
 ;;------------------------------------------------------------------------------
@@ -68,6 +71,7 @@
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html
 ;; Trial [2019-01-29]
 ;; M-n and M-p for next/previous symbol
+;; TODO: M-n/M-p fucks with magit status buffer...
 (use-package smartscan
   ;; This defer seems to make it not load?
   ;; TODO: see if e.g. `:init' instead of `:config' makes it any better w/ defer?
