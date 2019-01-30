@@ -472,6 +472,8 @@
 
 ;; TODO: Autorevert. Tweak ARev minor mode? Disable it?
 
+;; Shh...
+(require 'configure-fun)
 
 ;;---
 ;; Misc Config

@@ -19,14 +19,17 @@
 /auto-save-list/
 /backups/
 /savehist
-/eshell/
-/recentf
 
 # package.el repository
 /elpa/
 
-# server/daemon
+# emacs... processes?
 /server/
+/eshell/
+
+# packages:
+/xkcd
+/recentf
 
 ##---
 ## Misc
