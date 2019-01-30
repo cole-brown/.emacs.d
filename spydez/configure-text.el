@@ -7,6 +7,16 @@
 ;; General text settings, global settings, etc
 ;;------------------------------------------------------------------------------
 
+;; "visual-line-mode is so much better than auto-fill-mode. It doesn't actually break the text into multiple lines - it only looks that way."
+;;   - http://pages.sachachua.com/.emacs.d/Sacha.html#org3dd06d8
+;; Trial [2019-01-30]
+(remove-hook 'text-mode-hook #'turn-on-auto-fill)
+(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+;; Can do more Visual Line Mode stuff if I like it, like limit to 80 columns...
+;;   https://www.emacswiki.org/emacs/VisualLineMode
+;; ...But try visual-fill-column before those shenanigans.
+;;   https://www.reddit.com/r/emacs/comments/9td154/is_there_a_way_to_get_better_word_wrapping_in/
+
 ;; Sentences end with a single space. This makes sentence navigation commands work better?
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org892ee89
 ;; TODO: What does this do, exactly?
@@ -14,6 +24,13 @@
 
 ;; probably want this overridable
 (setq-default fill-column 80)
+
+;; Randomize. Shuffle. Chaos...
+;; shuffle-lines-in-region from Sacha:
+;;   - http://pages.sachachua.com/.emacs.d/Sacha.html#orgf6f5f9d
+;; Shuffle/randomize from StackOverflow:
+;;   - https://stackoverflow.com/questions/6172054/how-can-i-random-sort-lines-in-a-buffer
+;;     - randomize-region.el https://www.mail-archive.com/gnu-emacs-sources@gnu.org/msg00034.html
 
 
 ;;------------------------------------------------------------------------------
@@ -93,6 +110,40 @@
 ;; bell? (this doesn't work...)
 ;; (setq ring-bell-function 'ignore)
 ;; (setq visible-bell t)
+
+
+;;------------------------------------------------------------------------------
+;; Reading Mode (Documents, Novels, whatever)
+;;------------------------------------------------------------------------------
+;; Make stuff look a bit weird... but more readable maybe?
+;; http://ergoemacs.org/emacs/emacs_novel_reading_mode.html
+;; Trial [2019-01-30]
+(defun xah-toggle-read-novel-mode ()
+  "Setup current buffer to be suitable for reading long novel/article text.
+
+• Line wrap at word boundaries.
+• Set a right margin.
+• line spacing is increased.
+• variable width font is used.
+
+Call again to toggle back.
+URL `http://ergoemacs.org/emacs/emacs_novel_reading_mode.html'
+Version 2017-02-27"
+  (interactive)
+  (if (null (get this-command 'state-on-p))
+      (progn
+        (set-window-margins nil 0 9)
+        (variable-pitch-mode 1)
+        (setq line-spacing 0.4)
+        (setq word-wrap t)
+        (put this-command 'state-on-p t))
+    (progn
+      (set-window-margins nil 0 0)
+      (variable-pitch-mode 0)
+      (setq line-spacing nil)
+      (setq word-wrap nil)
+      (put this-command 'state-on-p nil)))
+  (redraw-frame (selected-frame)))
 
 
 ;;------------------------------------------------------------------------------

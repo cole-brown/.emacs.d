@@ -60,6 +60,70 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Copy Filename
+;;------------------------------------------------------------------------------
+;; This (or similar (prelude-copy-file-name-to-clipboard)) used to be in Prelude emacs.
+;; https://github.com/bbatsov/prelude/issues/764
+;; But they use easy-kill.el now for stuff, and I'm not sure I want all of it.
+;; Trial [2019-01-30]
+(defun spydez/copy-file-name-to-clipboard ()
+  "Copy the current file name to the clipboard"
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory
+                    (buffer-file-name))))
+    (when filename
+      (with-temp-buffer
+        (insert filename)
+        (clipboard-kill-region (point-min) (point-max)))
+      (message "Copied buffer file name '%s' to the clipboard." filename)
+      )))
+
+
+;; This is more complex. Can do buffer file path or dired. C-u for folder instead of file.
+;; http://ergoemacs.org/emacs/emacs_copy_file_path.html
+;; Trial [2019-01-30]
+(defun xah-copy-file-path (&optional @dir-path-only-p)
+  "Copy the current buffer's file path or dired path to `kill-ring'.
+Result is full path.
+If `universal-argument' is called first, copy only the dir path.
+
+If in dired, copy the file/dir cursor is on, or marked files.
+
+If a buffer is not file and not dired, copy value of `default-directory' (which is usually the “current” dir when that buffer was created)
+
+URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
+Version 2017-09-01"
+  (interactive "P")
+  (let (($fpath
+         (if (string-equal major-mode 'dired-mode)
+             (progn
+               (let (($result (mapconcat 'identity (dired-get-marked-files) "\n")))
+                 (if (equal (length $result) 0)
+                     (progn default-directory )
+                   (progn $result))))
+           (if (buffer-file-name)
+               (buffer-file-name)
+             (expand-file-name default-directory)))))
+    (kill-new
+     (if @dir-path-only-p
+         (progn
+           (message "Directory path copied: 「%s」" (file-name-directory $fpath))
+           (file-name-directory $fpath))
+       (progn
+         (message "File path copied: 「%s」" $fpath)
+         $fpath )))))
+
+
+;;------------------------------------------------------------------------------
+;; Open files externally
+;;------------------------------------------------------------------------------
+;; This doesn't have a use for me right now, but I might want it eventually.
+;; Would have to figure out the windows case of it:
+;; https://emacsredux.com/blog/2013/03/27/open-file-in-external-program/
+
+
+;;------------------------------------------------------------------------------
 ;; Smartscan
 ;;------------------------------------------------------------------------------
 ;; here or configure-text? text right now.
