@@ -392,7 +392,7 @@
 (require 'configure-point-and-mark)
 
 ;; Dired, recentf, other file or folder operations
-(provide 'configure-files-and-folders)
+(require 'configure-files-and-folders)
 
 ;; Text: fill-column, UTF-8, etc.
 (require 'configure-text)

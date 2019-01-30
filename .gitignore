@@ -20,6 +20,7 @@
 /backups/
 /savehist
 /eshell/
+/recentf
 
 # package.el repository
 /elpa/

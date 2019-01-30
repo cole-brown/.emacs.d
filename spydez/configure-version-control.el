@@ -14,6 +14,13 @@
 
 ;; TODO: magit rebase flow?
 
+;; magit ignore fuckery:
+;; http://mbork.pl/2018-10-14_Magit_and_C-u_i
+;; TL;DR: Magit status, press i, choose 'local' (instead of 'global') expecting
+;;   .gitignore update... Nope. It's hiding somewhere weird and fucked up.
+;;     .git/info/execlude
+;; So... Choose global maybe? Just do it in git CLI? IDK.
+
 ;; TODO: an encrypted git repo (git crypt or something?) for my emacs.secrets
 ;;   that has stuff like all my GitHub keys, other stuff. Use 2fa and/or
 ;;   password manager (1Pass or something)?
