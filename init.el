@@ -48,6 +48,9 @@
 ;; TODOs and Misc.
 ;;---
 
+;; TODO: change functions I've acquired (e.g. "xah-") over to "spydez/" prefix so there's one search for them.
+;;   Note the old name in comment or docstring.
+
 ;; TODO: resume in emaics/org-mode/latex?
 ;; https://www.reddit.com/r/emacs/comments/6pp9z3/noob_using_emacs_to_write_a_resume/
 ;; https://github.com/xiaohanyu/resume
@@ -100,10 +103,6 @@
 
 ;; TODO: does a gen'd http://emacs-bootstrap.com/ have anything neat in it?
 ;;   downloaded and unzipped to C:\home\cole\zzz_new-emacs\emacs.d
-
-;; TODO: this is neat... move it to that file we were going to create for that neat link thing...?
-;; https://orgmode.org/manual/Creating-timestamps.html
-;; Use M-x org-time-stamp-inactive for inserting `[2019-01-29 Tue]' stamps into current non-org-mode buffer.
 
 
 ;;---
@@ -402,9 +401,6 @@
 
 ;; Text: fill-column, UTF-8, etc.
 (require 'configure-text)
-;; todo: make a note or something about M-x goto-address-mode?
-;;   https://www.gnu.org/software/emacs/manual/html_node/emacs/Goto-Address-mode.html
-;;   Its neat but I'll probably not often use it.
 
 ;; dired mode - seems IDE adjacent so it may go into configure-dev-env. Putting it there for now.
 ;; It could go into its own configure-dired though
