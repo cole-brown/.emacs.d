@@ -93,6 +93,97 @@
 ;;   :load-path "~/elisp/org-gcal.el"
 ;;   :init (fset 'org-gcal-notify 'my/org-gcal-notify))
 
+;;------------------------------------------------------------------------------
+;; Publishing
+;;------------------------------------------------------------------------------
+;; Maybe I'll need some of this in the future...
+;; But I'm definitely not a horder.
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org763275b
+
+;; ;; Timestamps and section numbers make my published files look more complicated
+;; ;; than they are. Let's turn them off by default.
+;; (setq org-export-with-section-numbers nil)
+;; (setq org-html-include-timestamps nil)
+;; (setq org-export-with-sub-superscripts nil)
+;; (setq org-export-with-toc nil)
+;; (setq org-html-toplevel-hlevel 2)
+;; (setq org-export-htmlize-output-type 'css)
+;;
+;; ;; Sometimes I have broken or local links, and that's okay.
+;; (setq org-export-with-broken-links t)
+;;
+;; ;; Don't wrap ASCII exports.
+;; (setq org-ascii-text-width 10000)
+
+
+;; UTF-8 checkboxes
+;;
+;; This snippet turns - [X] into ☑ and - [ ] into ☐, but leaves [-] alone.
+;;
+;; (setq org-html-checkbox-type 'unicode)
+;; (setq org-html-checkbox-types
+;;  '((unicode (on . "<span class=\"task-done\">&#x2611;</span>")
+;;             (off . "<span class=\"task-todo\">&#x2610;</span>")
+;;             (trans . "<span class=\"task-in-progress\">[-]</span>"))))
+
+
+;;------------------------------------------------------------------------------
+;; Org-Mode and Links
+;;------------------------------------------------------------------------------
+;; Uh... does this belong in org-mode or links?..
+
+;; Quick Links
+;; (setq org-link-abbrev-alist
+;;       '(("google" . "http://www.google.com/search?q=")
+;; 	("gmap" . "http://maps.google.com/maps?q=%s")))
+
+
+;;------------------------------------------------------------------------------
+;;  Attachments..?
+;;------------------------------------------------------------------------------
+
+;; Org lets you attach files to an Org file. Apparently.
+;; (setq org-attach-store-link-p 'attached)
+;; (setq org-attach-auto-tag nil)
+
+
+;;------------------------------------------------------------------------------
+;; Org-Mode HTTP Requests?!
+;;------------------------------------------------------------------------------
+;; ...this is getting ridiculuous.
+;; https://github.com/zweifisch/ob-http
+;; (use-package ob-http)
+
+
+;;------------------------------------------------------------------------------
+;; Diagrams and Graphics
+;;------------------------------------------------------------------------------
+;; It can be done. Ditaa and Graphviz or something.
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org1683357
+
+
+;;------------------------------------------------------------------------------
+;; Literate Programming
+;;------------------------------------------------------------------------------
+;; I do want to do this... but it would involve rewriting all my emacs files?
+;; ...which I'm barely started on... but there's so much there already...
+
+;; TODO: try this literate programming out
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org2f334cf
+
+
+;;------------------------------------------------------------------------------
+;; Invoices, Invoicing
+;;------------------------------------------------------------------------------
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org0d10995
+;; Don't do any clocking or consultant work, but I have in the past and
+;; this would've been useful then.
+
+
+;;------------------------------------------------------------------------------
+;; Kitchen Sink
+;;------------------------------------------------------------------------------
+
 
 ;;------------------------------------------------------------------------------
 ;; Provide this.
