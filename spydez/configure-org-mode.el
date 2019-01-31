@@ -181,6 +181,59 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Presentations
+;;------------------------------------------------------------------------------
+;; Absolutely no use for this org->HTML/JS slideshow right now but kinda neat.
+;; https://github.com/hexmode/ox-reveal
+;; (use-package ox-reveal :disabled t)
+
+
+;;------------------------------------------------------------------------------
+;; Reddit
+;;------------------------------------------------------------------------------
+;; TODO: org and reddit here, or in configure-fun? Probably fun...
+;; TODO: throw my reddit users' JSON feeds into emacs.secrets.
+;; TODO: make this more general so it can work on saved, upvotes, others.
+;;   - Multiple funcs? (spydez/reddit-list/upvoted ...) (spydez/reddit-list/saved ...)
+;;   - More generic? (spydez/reddit-list 'user-list-var ...)
+;;   - All of the above?
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org1807373
+(defconst spydez/reddit-upvoted-json "todo")
+(defun spydez/reddit-list-upvoted (date)
+  (interactive (list (org-read-date)))
+  (let ((threshold (org-read-date nil t (concat (substring date 0 (min (length date) 10)) " 0:00"))))
+    (with-current-buffer (url-retrieve-synchronously spydez/reddit-upvoted-json)
+      (goto-char (point-min))
+      (re-search-forward "^$")
+      (let* ((data (json-read))
+             (items (assoc-default 'children (assoc-default 'data data)))
+             (result
+              (mapconcat
+               (lambda (item)
+                 (let* ((o (assoc-default 'data item))
+                        (title (assoc-default 'title o))
+                        (url (assoc-default 'url o))
+                        (date (seconds-to-time (assoc-default 'created_utc o)))
+                        (permalink (concat "https://reddit.com" (assoc-default 'permalink o)))
+                        (num-comments (assoc-default 'num_comments o 'eq 0)))
+                   (when (time-less-p threshold date)
+                     (if (and (> num-comments 0) (not (string-match "reddit\\.com" url)))
+                         (format "- [[%s][%s]] ([[%s][Reddit]])\n" url title permalink)
+                       (format "- [[%s][%s]]\n" url title)))))
+               items "")))
+        (if (called-interactively-p 'any)
+            (message "%s" result)
+          result)))))
+
+;; Usage: (spydez/reddit-list-upvoted "-mon")
+;; Usage: (spydez/reddit-list-upvoted "[2019-01-31 Thu]")
+
+;; TODO: more reddit stuff?
+;; https://www.reddit.com/r/emacs/comments/7ro9xx/an_emacs_package_for_browsing_reddit_just/
+;; https://github.com/ahungry/md4rd
+
+
+;;------------------------------------------------------------------------------
 ;; Kitchen Sink
 ;;------------------------------------------------------------------------------
 

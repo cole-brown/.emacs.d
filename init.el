@@ -15,8 +15,9 @@
 ;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep "provide"
 
 
-;; can 'literate programming' do multiple files?
+;; TODO: can 'literate programming' do multiple files?
 ;; http://www.howardism.org/Technical/Emacs/literate-programming-tutorial.html
+;; https://en.wikipedia.org/wiki/Literate_programming
 
 
 ;;---
@@ -47,6 +48,8 @@
 ;;---
 ;; TODOs and Misc.
 ;;---
+
+;; TODO: Ctrl-del shouldn't push to kill ring
 
 ;; TODO: change functions I've acquired (e.g. "xah-") over to "spydez/" prefix so there's one search for them.
 ;;   Note the old name in comment or docstring.
