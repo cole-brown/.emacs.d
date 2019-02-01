@@ -77,6 +77,7 @@
 ;; Smartparen
 ;;---
 
+
 ;;---
 ;; Rainbow Delimiters
 ;;---
@@ -84,6 +85,7 @@
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org36b0308
 ;; (use-package rainbow-delimiters
 ;;   :disabled t)
+
 
 ;;------------------------------------------------------------------------------
 ;; TODO: Kill back to indentation?
@@ -97,6 +99,28 @@
 ;;     (kill-region (point) prev-pos)))
 ;;
 ;; (bind-key "C-M-<backspace>" 'spydez/kill-back-to-indentation)
+
+
+;;------------------------------------------------------------------------------
+;; Expand Region
+;;------------------------------------------------------------------------------
+;; This gradually expands the selection. Handy for Emacs Lisp? But will it be
+;; actually used?.. Not sure.
+;; Trial [2019-01-31]
+;; TODO: Might should go elsewhere. configure-kill-ring maybe as it might be used
+;; mostly for killing regions? (Already moved it from hydra to dev-env...)
+;; https://github.com/magnars/expand-region.el
+(use-package expand-region
+  :defer t
+  :bind
+  ("C-=" . er/expand-region)
+  ("C-<prior>" . er/expand-region)
+  ("C-<next>" . er/contract-region)
+  )
+;; See readme on GitHub for info on improving in certain modes.
+
+;; NOTE: f.lux uses M-<PageUp> and M-<PageDown> (aka M-<prev>/M-<next>)
+;; Disable it in the f.lux settings.
 
 
 ;;------------------------------------------------------------------------------

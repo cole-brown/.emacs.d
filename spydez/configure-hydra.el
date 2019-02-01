@@ -11,19 +11,6 @@
 
 ;; We could put some general keybinding in here if we want a place for it?
 
-;; Might should go elsewhere. configure-kill-ring maybe as it might be used
-;; mostly for killing regions?
-;; https://github.com/magnars/expand-region.el
-;; Trial: [2019-01-28]
-(use-package expand-region
-  :defer t
-  :bind
-  ("C-=" . er/expand-region)
-  ("C-<prior>" . er/expand-region)
-  ("C-<next>" . er/contract-region)
-  )
-;; See readme on GitHub for info on improving in certain modes.
-
 
 ;;------------------------------------------------------------------------------
 ;; key-chord

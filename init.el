@@ -21,6 +21,18 @@
 
 
 ;;---
+;; Help I Often Forget.
+;;---
+;; It doesn't help when you just totally space on something though.
+
+;; which key is what function
+;; command -> keybind: C-h w <cmd>
+;; keybind -> command: C-h k <keys>
+;; C-h f <cmd> -> help for function name
+;; C-h a -> helm-apropos: Helm-driven function search, kinda
+
+
+;;---
 ;; References.
 ;;---
 
@@ -422,6 +434,7 @@
 ;; TODO-maybe-as-well: multiple git users, upload to github repo
 ;;   good instructions so it's easy to setup in order to download .emacs.d from github repo next time.
 
+;; TODO: Reorder? hydra might depend on later stuff maybe?
 ;; key-chords, hydra, some helper functions
 (require 'configure-hydra)
 
@@ -445,6 +458,7 @@
 ;;   - It could go into its own configure-dired though
 ;; Auto-Complete - hippie and dabbrev
 ;; Parenthesis Matching/Delimiters
+;; Basically stuff that is development/programmer in nature but global or for multiple modes?
 (require 'configure-dev-env)
 ;; todo: configure IDE?
 ;;
@@ -485,20 +499,21 @@
 
 ;; todo: give rainbow-mode a try. What I do in old .emacs?
 
+;; todo: yasnippet?
+
 ;; Programming Modes
 (require 'configure-csharp)
 ;; todo: configure code modes
 ;;  - C
 ;;  - C++
-;;  - python
 ;;  - go?
+(require 'configure-python)
+(require 'configure-elisp)
 
 ;; todo: htmlize?
 ;; TODO: web-mode for django work?
 ;;   - http://pages.sachachua.com/.emacs.d/Sacha.html#org0acdde9
 ;;   - http://web-mode.org/
-
-;; todo: yasnippet?
 
 ;; todo: configure keyboard?
 ;; Y'know...
