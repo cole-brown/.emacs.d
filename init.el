@@ -44,10 +44,15 @@
 ;;
 ;; http://ergoemacs.org
 
+;; Maybe look at all the settings in here:
+;; https://github.com/purcell/emacs.d/blob/master/lisp/init-editing-utils.el
+
 
 ;;---
 ;; TODOs and Misc.
 ;;---
+
+;; TODO: read this maybe https://sanctum.geek.nz/arabesque/series/unix-as-ide/
 
 ;; TODO: Ctrl-del shouldn't push to kill ring
 
@@ -163,6 +168,7 @@
 ;; cross-platform init with proper places for overriding things will probably
 ;; have to wait until I encounter it.
 
+
 ;;---
 ;; Setup some very basics, so we can get moving...
 ;;---
@@ -235,6 +241,7 @@
   (expand-file-name "savehist" spydez/dir/setup-emacs)
   "History of commands, etc.")
 
+
 ;;---
 ;; Identity / Personal Information
 ;;---
@@ -242,6 +249,7 @@
 (setq user-full-name "Cole Brown"
       user-mail-address "git@spydez.com")
 ;; user-login-name exists if needed
+
 
 ;;---
 ;; Add stuff to our load path.
@@ -256,11 +264,13 @@
 (add-to-list 'load-path spydez/dir/setup-domain-specific)
 (add-to-list 'load-path spydez/dir/setup-comp-specific) ;; most specific to this computer last
 
+
 ;;---
 ;; Debug
 ;;---
 ;; All the way down here because I want my load paths, but we could put at the top if needed with a little adjustment.
 (require 'bootstrap-debug)
+
 
 ;;---
 ;; Custom file
@@ -275,6 +285,7 @@
 ;; Possibly move custom-file setting up, and loading down below loading of bootstrap-vars overrides.
 (load custom-file t)
 
+
 ;;---
 ;; Misc Stuff
 ;;---
@@ -283,6 +294,19 @@
     (not
      (load (expand-file-name ".emacs.secrets" spydez/dir/common-doc-save) 'noerror))
   (message "No secrets to load."))
+
+
+;;---
+;; Dev Env vars
+;;---
+;; TODO: put in bootstrap-consts? bootstrap-vars? bootstrap-data?
+
+;; Tab widths. I like a smaller one for verbose/highly indented code (web dev mainly).
+;; Normally use a larger one for non-web programming.
+(defconst spydez/dev-env/tab/min 2
+  "Small tab width for more compact but readable code.")
+(defconst spydez/dev-env/tab/normal 4
+  "Normal tab width for more usual use cases for code languages like C++, C#...")
 
 ;;---
 ;; External Tools
@@ -304,6 +328,7 @@
 ;; find in alist: (when (assoc 'diff spydez/tools/external) (message "truedat"))
 ;; todo: move this to bootstrap-externals
 
+
 ;;---
 ;; Try-Load overrides (from bootstrap-vars.el)?
 ;;---
@@ -313,6 +338,12 @@
 ;; todo: rename to override-bootstrap-vars?
 ;; override-vars? bootstrap-override?
 ;; bootstrap-refine? bootstrap-post? post-bootstrap?
+;; hm...
+;;   second take: I like:
+;;     1) bootstrap-overrides maybe.
+;;     2) bootstrap-local maybe
+;;     3) bootstrap-preload-local-overrides... no
+
 
 ;;------------------------------------------------------------------------------
 ;; Bootstrap.
@@ -405,8 +436,15 @@
 ;; Text: fill-column, UTF-8, etc.
 (require 'configure-text)
 
-;; dired mode - seems IDE adjacent so it may go into configure-dev-env. Putting it there for now.
-;; It could go into its own configure-dired though
+;; Any windows vs Linux vs etc stuff.
+;; Also a decent place for XEmacs vs Emacs if we need any of that.
+;; Mainly just windows stuff...
+(require 'configure-os)
+
+;; Dired Mode - seems IDE adjacent so it may go into configure-dev-env. Putting it there for now.
+;;   - It could go into its own configure-dired though
+;; Auto-Complete - hippie and dabbrev
+;; Parenthesis Matching/Delimiters
 (require 'configure-dev-env)
 ;; todo: configure IDE?
 ;;
@@ -456,6 +494,9 @@
 ;;  - go?
 
 ;; todo: htmlize?
+;; TODO: web-mode for django work?
+;;   - http://pages.sachachua.com/.emacs.d/Sacha.html#org0acdde9
+;;   - http://web-mode.org/
 
 ;; todo: yasnippet?
 

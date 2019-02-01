@@ -51,6 +51,55 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Defaults
+;;------------------------------------------------------------------------------
+
+;; TODO: tabs as spaces setting?
+
+;; tab width
+(setq-default tab-width spydez/dev-env/tab/normal)
+
+;; TODO: is this global or per-mode in old .emacs?
+;; New lines are always indented
+;;(global-set-key (kbd "RET") 'newline-and-indent)
+
+
+;;------------------------------------------------------------------------------
+;; Parenthesis
+;;------------------------------------------------------------------------------
+;; TODO: disable electric-pair-mode if needed.
+
+;; TODO: used mic-paren.el in old .emacs.
+;;   Try smartparen and/or rainbow delimiters.
+;;   Decided which I like.
+
+;;---
+;; Smartparen
+;;---
+
+;;---
+;; Rainbow Delimiters
+;;---
+;; TODO: Trial this... Does it slows things down a little.
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org36b0308
+;; (use-package rainbow-delimiters
+;;   :disabled t)
+
+;;------------------------------------------------------------------------------
+;; TODO: Kill back to indentation?
+;;------------------------------------------------------------------------------
+;;  From https://github.com/purcell/emacs.d/blob/master/lisp/init-editing-utils.el
+;; (defun spydez/kill-back-to-indentation ()
+;;   "Kill from point back to the first non-whitespace character on the line."
+;;   (interactive)
+;;   (let ((prev-pos (point)))
+;;     (back-to-indentation)
+;;     (kill-region (point) prev-pos)))
+;;
+;; (bind-key "C-M-<backspace>" 'spydez/kill-back-to-indentation)
+
+
+;;------------------------------------------------------------------------------
 ;; Provide this.
 ;;------------------------------------------------------------------------------
 (provide 'configure-dev-env)
