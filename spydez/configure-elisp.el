@@ -21,10 +21,14 @@
 
 ;; Don't think I have settings in hook in old .emacs...
 ;; Might not have any settings at all besides tab size...
+;; TODO: few to check here: https://www.emacswiki.org/emacs/EmacsLispMode
 (defun spydez/hook/emacs-lisp-mode ()
-  ;; TODO: settings for elisp?
+  ;; TODO: more settings for elisp?
+  (setq tab-width spydez/dev-env/tab/min) ; lisp gets the smaller tab width
+  (define-key emacs-lisp-mode-map "\C-x\C-e" 'pp-eval-last-sexp) ; todo: bind-key?
   )
 
+(add-hook 'emacs-lisp-mode-hook 'spydez/hook/emacs-lisp-mode)
 
 ;;------------------------------------------------------------------------------
 ;; ElDoc

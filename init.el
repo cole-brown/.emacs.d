@@ -438,6 +438,24 @@
 ;; key-chords, hydra, some helper functions
 (require 'configure-hydra)
 
+
+;; TODO: move this to proper place
+;;------------------------------------------------------------------------------
+;; Tab Settings
+;;------------------------------------------------------------------------------
+;; Winging this in here for now - belongs in text or dev-env or something.
+;; https://www.emacswiki.org/emacs/NoTabs
+;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Just-Spaces.html
+;; https://www.emacswiki.org/emacs/TabsAreEvil
+;; https://www.emacswiki.org/emacs/SmartTabs
+(setq-default indent-tabs-mode nil)   ; always replace tabs with spaces
+(setq-default tab-width spydez/dev-env/tab/normal) ; set default tab width for all buffers
+;; https://www.emacswiki.org/emacs/TabStopList
+;; (setq tab-stop-list (spydez/range 0 120 spydez/tab-width)) ; TODO: pull range function over from old
+
+;; NOTE: M-x tabify and M-x untabify exist and work on regions.
+
+
 ;; For moving around in and messing with text via or at point and/or mark.
 ;; Hi Mark.
 ;; Obviously this and configure-text and configure-dev-env
@@ -494,12 +512,13 @@
 ;; (setq explicit-shell-file-name "C:/git-for-windows/bin/bash.exe")
 ;; (setq explicit-bash.exe-args '("--login" "-i"))
 
-
 ;; todo: configure parenthesis
 
 ;; todo: give rainbow-mode a try. What I do in old .emacs?
 
 ;; todo: yasnippet?
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org656616c
+;; TODO: you were here... where did you go?
 
 ;; Programming Modes
 (require 'configure-csharp)
@@ -532,8 +551,11 @@
 
 ;; TODO: Autorevert. Tweak ARev minor mode? Disable it?
 
-;; Shh...
-(require 'configure-fun)
+
+(require 'configure-fulfillment)
+
+;; org-d20, dice roller?, other sources of random
+(require 'configure-dice)
 
 ;;---
 ;; Misc Config

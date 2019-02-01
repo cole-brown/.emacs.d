@@ -203,6 +203,14 @@ Repeated invocations toggle between the two most recently open buffers."
 
 
 ;;------------------------------------------------------------------------------
+;; TODOs
+;;------------------------------------------------------------------------------
+;; https://www.reddit.com/r/emacs/comments/am0kbn/new_package_majormodehydra_inspired_by_spacemacs/
+;; TODO: major-mode-hydra?
+;; TODO: pretty-hydra?
+
+
+;;------------------------------------------------------------------------------
 ;; Provide this.
 ;;------------------------------------------------------------------------------
 (provide 'configure-hydra)

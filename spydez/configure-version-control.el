@@ -122,6 +122,9 @@
 ;;
 ;; Yep - that worked. Added path to PortableGit/cmd dir to end of system PATH var.
 
+;; TODO: some sort of throbber or status buffer or something for magit pushing to upstream?
+;;  - I get bored and distracted waiting...
+
 (use-package magit
   :config
   ;;---
