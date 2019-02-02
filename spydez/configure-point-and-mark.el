@@ -44,6 +44,8 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key [remap move-beginning-of-line]
                 'spydez/smarter-move-beginning-of-line)
 
+;; TODO: not liking C-a having unexpected effects. May want this undone.
+;;   Makes it hard to spam C-a.
 
 ;;------------------------------------------------------------------------------
 ;; Provide this.

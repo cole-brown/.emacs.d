@@ -72,7 +72,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
     ;; TODO: A... yasnippet command?
     ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org656616c
-    ;; (key-chord-define-global "  "     'spydez/insert-space-or-expand)
+    (key-chord-define-global "  "     'spydez/insert-space-or-expand)
 
     ;; Not using avy right now. Similar to ace-jump or easymotion.
     ;; https://github.com/abo-abo/avy

@@ -14,6 +14,8 @@
 
 ;; TODO: magit rebase flow?
 
+;; TODO: magit commit whitespace change? Do I have to turn whitespace back on?
+
 ;; magit ignore fuckery:
 ;; http://mbork.pl/2018-10-14_Magit_and_C-u_i
 ;; TL;DR: Magit status, press i, choose 'local' (instead of 'global') expecting

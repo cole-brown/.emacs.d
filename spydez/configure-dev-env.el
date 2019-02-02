@@ -27,7 +27,7 @@
 
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org84a9889
 ;; TODO: when yasnippets is added, add its completion to hippie's list.
-;;(add-to-list 'hippie-expand-try-functions-list yas-hippie-try-expand)
+(add-to-list 'hippie-expand-try-functions-list 'yas-hippie-try-expand)
 ;; TODO: others as well?
 
 

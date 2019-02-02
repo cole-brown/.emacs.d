@@ -5,7 +5,6 @@
 ;; TODO: General Settings?
 ;;------------------------------------------------------------------------------
 
-;; TODO: these might belong in their own file...
 
 ;;---
 ;; Jumping to code
@@ -25,7 +24,7 @@
 (defun spydez/hook/emacs-lisp-mode ()
   ;; TODO: more settings for elisp?
   (setq tab-width spydez/dev-env/tab/min) ; lisp gets the smaller tab width
-  (define-key emacs-lisp-mode-map "\C-x\C-e" 'pp-eval-last-sexp) ; todo: bind-key?
+  (define-key emacs-lisp-mode-map "\C-x\C-e" 'pp-eval-last-sexp) ; todo: bind-key instead?
   )
 
 (add-hook 'emacs-lisp-mode-hook 'spydez/hook/emacs-lisp-mode)

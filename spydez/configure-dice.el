@@ -1,4 +1,4 @@
-;; -*- mode: emacs-lisp; ignored-local-variables: org-d20-party -*-
+;; -*- emacs-lisp -*-
 
 
 ;;------------------------------------d20---------------------------------------

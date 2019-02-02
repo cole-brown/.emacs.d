@@ -216,7 +216,7 @@
 (defconst spydez/dir/setup-personal (spydez/dir-name "spydez" spydez/dir/setup-emacs)
   "All of my own personal/custom setup code/vars/definitions...")
 (defconst spydez/dir/setup-defaults (spydez/dir-name "defaults" spydez/dir/setup-personal)
-  "All of my optional/default setup elisp files...")
+  "All of my optional/default setup elisp files...") ; TODO: rename to "overrides" or something?
 (defconst spydez/dir/setup-domain-specific (spydez/dir-name spydez/name/setup-domain spydez/dir/setup-personal)
   "Anything that has to be domain specific. Tab widths or whatnot.")
 (defconst spydez/dir/setup-comp-specific (spydez/dir-name spydez/name/setup-comp spydez/dir/setup-domain-specific)
@@ -252,6 +252,11 @@
 (defconst spydez/file/save-history
   (expand-file-name "savehist" spydez/dir/setup-emacs)
   "History of commands, etc.")
+
+(defconst spydez/dir/yasnippets
+  (expand-file-name "snippets" spydez/dir/setup-personal)
+  "Yasnippets directory.")
+;; Could add an override of my own snippets if needed.
 
 
 ;;---
@@ -505,6 +510,9 @@
 
 ;; TODO: shortcut for building Pathfinder_Everything in Emacs with Emacs output buffer?
 
+;; TODO: company-mode? http://company-mode.github.io/
+;;   How's this compete/interact with yasnippets, dabbrev, hippie, etc..?
+
 ;; todo: configure shell?
 ;; will need an 'if windows'?
 ;; ...and maybe an 'if git bash exists'
@@ -519,6 +527,7 @@
 ;; todo: yasnippet?
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org656616c
 ;; TODO: you were here... where did you go?
+(require 'configure-templates)
 
 ;; Programming Modes
 (require 'configure-csharp)
