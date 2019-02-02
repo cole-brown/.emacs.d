@@ -92,6 +92,11 @@
 ;;     $ git config user.name "Cole Brown"
 ;;     $ git config user.email "git@spydez.com"
 
+;; Don't show whitespace in diff, but show context
+;; (setq vc-diff-switches '("-b" "-B" "-u"))
+;; (setq vc-git-diff-switches nil)
+;; TODO: why set vc-diff-switches instead of vc-git-diff-switches?
+
 ;; TODO: what is git-gutter and do I want it?
 
 ;; I guess mostly we're just using magit...

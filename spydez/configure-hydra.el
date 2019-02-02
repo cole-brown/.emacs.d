@@ -70,7 +70,9 @@ Repeated invocations toggle between the two most recently open buffers."
     (key-chord-define-global "hh"     'spydez/key-chord-commands/body)
     (key-chord-define-global "xx"     'er/expand-region)
 
-    ;; TODO: A... yasnippet command?
+    ;; TODO: Hold down spacebar to space something out 10 or 20 spaces or whatever...
+    ;;   and this gets called. I don't think I like space-space as a chord?..
+    ;;   M-/ might be enough for expanding. It was before this update/upgrade.
     ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org656616c
     (key-chord-define-global "  "     'spydez/insert-space-or-expand)
 

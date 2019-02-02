@@ -86,6 +86,7 @@
 
 ;; TODO: defer load absolutely nothing? Seems to make for just random pauses for a while when you do something
 ;; after loading emacs. An extra second or two at start might be less annoying?
+;; A global setting would be cool... (if/when (spydez/defer-load-p) ...)
 
 ;; TODO: try a let or something for vars that should be different during my init
 ;; e.g. gc threshold.
@@ -266,6 +267,8 @@
 (setq user-full-name "Cole Brown"
       user-mail-address "git@spydez.com")
 ;; user-login-name exists if needed
+
+;; TODO: some consts for significant files or folders to jump to for e.g. opening a work project file.
 
 
 ;;---
@@ -483,6 +486,16 @@
 ;; Parenthesis Matching/Delimiters
 ;; Basically stuff that is development/programmer in nature but global or for multiple modes?
 (require 'configure-dev-env)
+
+;; projectile, helm-projectile
+(require 'configure-project)
+
+;; TODO: Tags and tag files?
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#orgfb77d93
+;; They belong in dev-env or ide...
+;; But they may not be used if company or cedet or something is used.
+;; Gnu Global for tags? https://stackoverflow.com/questions/1598351/emacs-etags-and-using-emacs-as-an-ide
+
 ;; todo: configure IDE?
 ;;
 ;; Setup Visual Studio to auto check/notice changed files? (or does it do that by default?)
@@ -538,10 +551,15 @@
 (require 'configure-python)
 (require 'configure-elisp)
 
-;; todo: htmlize?
-;; TODO: web-mode for django work?
+;; todo: htmlize? I forget what it's for...
+;; TODO-maybe?: web-mode for django work?
 ;;   - http://pages.sachachua.com/.emacs.d/Sacha.html#org0acdde9
 ;;   - http://web-mode.org/
+;; TODO-maybe?: Javascript config?: http://pages.sachachua.com/.emacs.d/Sacha.html#org457f5a6
+;;   - js2-mode, coffee-mode, jasminejs-mode
+;; TODO-maybe?: HTML config?
+;; Skewer-mode lets you send HTML/CSS/JS fragments to Chrome...
+;;   http://pages.sachachua.com/.emacs.d/Sacha.html#org915393b
 
 ;; todo: configure keyboard?
 ;; Y'know...
