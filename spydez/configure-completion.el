@@ -187,6 +187,19 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Company Mode (COMPlete ANYthing)
+;;------------------------------------------------------------------------------
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#orga5f9808
+(use-package company
+  :config
+  (add-hook 'prog-mode-hook 'company-mode))
+;; TODO: more config?
+;; TODO: I AM HERE. WITH THIS:
+;;   http://pages.sachachua.com/.emacs.d/Sacha.html#orga5f9808
+;;   https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=emacs%20company&=&=&oq=&gs_l=&pbx=1
+
+
+;;------------------------------------------------------------------------------
 ;; Provide this.
 ;;------------------------------------------------------------------------------
 (provide 'configure-completion)

@@ -560,6 +560,7 @@
 ;; TODO-maybe?: HTML config?
 ;; Skewer-mode lets you send HTML/CSS/JS fragments to Chrome...
 ;;   http://pages.sachachua.com/.emacs.d/Sacha.html#org915393b
+;; Tern (for js): http://pages.sachachua.com/.emacs.d/Sacha.html#org17343fb
 
 ;; todo: configure keyboard?
 ;; Y'know...
