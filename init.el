@@ -334,7 +334,12 @@
 ;; Do I want to do the "find git" on windows like this or like in the Windows PATH env var?
 ;; Associative List of tool symbol to... tool path.
 (defconst spydez/tools/external
-  '(;; magit wants git and diff
+  '(
+    ;; configure-shell wants bash (git bash (same path as diff))
+    ;; here and in Windows PATH atm... (debugging eshell)
+    ("bash" . "C:/Users/cole/AppData/Local/GitHub/PortableGit_69bd5e6f85e4842f07db71c9618a621154c52254/usr/bin")
+
+    ;; magit wants git and diff
     ("git" . "") ; in windows system env var PATH  right now
     ("diff" . "C:/Users/cole/AppData/Local/GitHub/PortableGit_69bd5e6f85e4842f07db71c9618a621154c52254/usr/bin")
     )
@@ -345,9 +350,8 @@
     (unless (executable-find (car tool))
       (add-to-list 'exec-path (cdr tool) t)) ;; append to end
     ))
-;; find in alist: (when (assoc 'diff spydez/tools/external) (message "truedat"))
+;; find in alist: (when (assoc "diff" spydez/tools/external) (message "found %s in alist" "diff"))
 ;; todo: move this to bootstrap-externals
-
 
 ;;---
 ;; Try-Load overrides (from bootstrap-vars.el)?
@@ -416,6 +420,12 @@
 ;;------------------------------------------------------------------------------
 ;; Loading and init are done - now do any more required setup.
 
+;; OS: May need to add a bootstrap-os if need anything earlier than this...
+;; Any windows vs Linux vs etc stuff.
+;; Also a decent place for XEmacs vs Emacs if we need any of that.
+;; Mainly just windows stuff...
+(require 'configure-os)
+
 ;; Make sure emacs server daemon is running.
 (require 'configure-daemons)
 
@@ -475,11 +485,6 @@
 ;; Text: fill-column, UTF-8, etc.
 (require 'configure-text)
 
-;; Any windows vs Linux vs etc stuff.
-;; Also a decent place for XEmacs vs Emacs if we need any of that.
-;; Mainly just windows stuff...
-(require 'configure-os)
-
 ;; Dired Mode - seems IDE adjacent so it may go into configure-dev-env. Putting it there for now.
 ;;   - It could go into its own configure-dired though
 ;; Auto-Complete - hippie and dabbrev
@@ -535,6 +540,7 @@
 ;; https://emacs.stackexchange.com/questions/22049/git-bash-in-emacs-on-windows
 ;; (setq explicit-shell-file-name "C:/git-for-windows/bin/bash.exe")
 ;; (setq explicit-bash.exe-args '("--login" "-i"))
+(require 'configure-shell)
 
 ;; todo: configure parenthesis
 
@@ -582,6 +588,8 @@
 
 ;; TODO: Autorevert. Tweak ARev minor mode? Disable it?
 
+;; chat, social stuff
+(require 'configure-chat)
 
 (require 'configure-fulfillment)
 
