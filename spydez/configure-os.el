@@ -31,6 +31,13 @@
   ;; (add-hook 'comint-output-filter-functions 'shell-strip-ctrl-m nil t)
   ;; (add-hook 'comint-output-filter-functions 'comint-watch-for-password-prompt nil t)
 
+
+  ;;---
+  ;; GnuTLS on Windows?
+  ;;---
+  ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org7149e50
+  ;; http://xn--9dbdkw.se/diary/how_to_enable_GnuTLS_for_Emacs_24_on_Windows/index.en.html has lots of tips.
+  ;; (setq gnutls-trustfiles '("c:/sacha/cacert.pem.txt"))
   )
 
 

@@ -202,10 +202,8 @@
 ;; Search through the completions with C-s, C-r and C-o. Press M-(digit) to
 ;; quickly complete with one of the first 10 candidates.
 
-;; TODO: more config?
-;; TODO: I AM HERE. WITH THIS:
-;;   http://pages.sachachua.com/.emacs.d/Sacha.html#orga5f9808
-;;   https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=emacs%20company&=&=&oq=&gs_l=&pbx=1
+;; https://melpa.org/#/helm-company
+;; TODO: use-package helm-company?
 
 
 ;;------------------------------------------------------------------------------
