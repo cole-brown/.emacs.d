@@ -190,9 +190,18 @@
 ;; Company Mode (COMPlete ANYthing)
 ;;------------------------------------------------------------------------------
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#orga5f9808
+;; http://company-mode.github.io/
+;; Trial [2019-02-06]
 (use-package company
   :config
+  ;; Enable Company-Mode in any programming mode.
   (add-hook 'prog-mode-hook 'company-mode))
+
+;; Completion will start automatically after you type a few letters. Use M-n and
+;; M-p to select, <return> to complete or <tab> to complete the common part.
+;; Search through the completions with C-s, C-r and C-o. Press M-(digit) to
+;; quickly complete with one of the first 10 candidates.
+
 ;; TODO: more config?
 ;; TODO: I AM HERE. WITH THIS:
 ;;   http://pages.sachachua.com/.emacs.d/Sacha.html#orga5f9808

@@ -487,6 +487,9 @@
 ;; Basically stuff that is development/programmer in nature but global or for multiple modes?
 (require 'configure-dev-env)
 
+;; DevOps - ain't got much right now
+(require 'configure-dev-ops)
+
 ;; projectile, helm-projectile
 (require 'configure-project)
 

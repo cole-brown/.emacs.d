@@ -9,7 +9,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (helm-projectile projectile yasnippet-snippets yasnippet-snippet yasnippet org-d20 xkcd peep-dired smartscan expand-region hydra key-chord csharp-mode magit-gh-pulls git-messenger magit switch-window helm-descbinds helm-swoop helm uniquify miniedit diminish guide-key undo-tree smart-mode-line benchmark-init auto-compile zenburn-theme use-package))))
+    (company helm-projectile projectile yasnippet-snippets yasnippet-snippet yasnippet org-d20 xkcd peep-dired smartscan expand-region hydra key-chord csharp-mode magit-gh-pulls git-messenger magit switch-window helm-descbinds helm-swoop helm uniquify miniedit diminish guide-key undo-tree smart-mode-line benchmark-init auto-compile zenburn-theme use-package))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
