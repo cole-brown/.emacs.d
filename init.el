@@ -596,6 +596,11 @@
 ;; org-d20, dice roller?, other sources of random
 (require 'configure-dice)
 
+;; money, accounting, or other such stuff?
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#orgc91b6e1
+;; TODO: https://github.com/ledger/ledger-mode
+
+
 ;;---
 ;; Misc Config
 ;;---

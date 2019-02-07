@@ -47,6 +47,15 @@ point reaches the beginning or end of the buffer, stop there."
 ;; TODO: not liking C-a having unexpected effects. May want this undone.
 ;;   Makes it hard to spam C-a.
 
+
+;;------------------------------------------------------------------------------
+;; Multiple Cursors
+;;------------------------------------------------------------------------------
+;; TODO: test these out?
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org1d6dd7c
+;; https://github.com/magnars/multiple-cursors.el
+
+
 ;;------------------------------------------------------------------------------
 ;; Provide this.
 ;;------------------------------------------------------------------------------

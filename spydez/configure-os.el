@@ -38,6 +38,12 @@
   ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org7149e50
   ;; http://xn--9dbdkw.se/diary/how_to_enable_GnuTLS_for_Emacs_24_on_Windows/index.en.html has lots of tips.
   ;; (setq gnutls-trustfiles '("c:/sacha/cacert.pem.txt"))
+
+  ;;---
+  ;; TRAMP and SSH
+  ;;---
+  ;; TODO: get this working if I need TRAMP?
+  ;; http://pages.sachachua.com/.emacs.d/Sacha.html#orgd9057e7
   )
 
 
