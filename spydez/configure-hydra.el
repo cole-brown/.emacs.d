@@ -71,10 +71,11 @@ Repeated invocations toggle between the two most recently open buffers."
     (key-chord-define-global "xx"     'er/expand-region)
 
     ;; TODO: Hold down spacebar to space something out 10 or 20 spaces or whatever...
-    ;;   and this gets called. I don't think I like space-space as a chord?..
+    ;;   and this gets called a lot. I don't think I like space-space as a chord?..
     ;;   M-/ might be enough for expanding. It was before this update/upgrade.
     ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org656616c
-    (key-chord-define-global "  "     'spydez/insert-space-or-expand)
+    ;; Trial: [2019-01-28]; Disabled: [2019-02-06]
+    ;;(key-chord-define-global "  "     'spydez/insert-space-or-expand)
 
     ;; Not using avy right now. Similar to ace-jump or easymotion.
     ;; https://github.com/abo-abo/avy
@@ -165,10 +166,15 @@ Repeated invocations toggle between the two most recently open buffers."
   (defhydra spydez/engine-mode-hydra (:color blue)
     "Engine mode"
     ("g" engine/search-google "google")
-    ("e" engine/search-emacswiki "emacswiki"))
-    ("#" engine/search-emacswiki "c#"))
+    ("e" engine/search-emacswiki "emacswiki")
+    ("w" engine/search-wikipedia "wikipedia")
+
+    ("#" engine/search-csharp "c#")
+    ("s" engine/search-stack-overflow "stack overflow")
+    ("h" engine/search-github "github")
+
     ("m" engine/search-mail "mail")
-  )
+  ))
 
 ;; TODO: Consider C-t for a hydra entry point?
 ;; "Hmm, good point about C-t being more useful as a Hydra than as
@@ -183,17 +189,26 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;------------------------------------------------------------------------------
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org12309ed
 ;; https://github.com/hrs/engine-mode
+;; Trial [2019-02-06]
 (use-package engine-mode
   :config
   ;; NOTE: keep synced with engine-mode-hydra?
+  ;; NOTE: Escape any % needed with another %. E.g. here: "c%%23" -> url: "c%23" -> search term: "c#"
+  ;; NOTE: ones without keybind/hydra can be got at via engine/search-<engine>
   (progn
     ;; general
-    (defengine google "http://google.com/search?q=%s" :keybinding "g")
+    (defengine google "http://google.com/search?ie=utf-8&oe=utf-8&q=%s" :keybinding "g")
     (defengine emacswiki "http://google.com/search?q=site:emacswiki.org+%s" :keybinding "e")
+    (defengine wikipedia
+      "http://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s"
+      :keybinding "w"
+      :docstring "Searchin' the wikis.")
 
     ;; code
-    (defengine csharp "http://google.com/search?q=c%23+%s" :keybinding "#")
-    ;; todo: python, c++, c?, django?
+    (defengine csharp "https://google.com/search?q=c%%23+%s" :keybinding "#")
+    ;; TODO: python, c++, c?, django?
+    (defengine stack-overflow "https://stackoverflow.com/search?q=%s")
+    (defengine github "https://github.com/search?ref=simplesearch&q=%s")
 
     ;; gmail - which google user will this use? 
     (defengine mail "https://mail.google.com/mail/u/0/#search/%s" :keybinding "m")
@@ -201,6 +216,26 @@ Repeated invocations toggle between the two most recently open buffers."
     ;; google w/ "site:foo.bar"
     ;; (defengine emacswiki "http://google.com/search?q=site:emacswiki.org+%s" :keybinding "e")
 
+    ;; more here: https://github.com/hrs/engine-mode#engine-examples
+    (defengine amazon "http://www.amazon.com/s/ref=nb_sb_noss?field-keywords=%s")
+    (defengine duckduckgo "https://duckduckgo.com/?q=%s" :keybinding "d")
+    (defengine google-images
+      "http://www.google.com/images?hl=en&source=hp&biw=1440&bih=795&gbv=2&aq=f&aqi=&aql=&oq=&q=%s")
+    (defengine google-maps
+      "http://maps.google.com/maps?q=%s"
+      :docstring "Mappin' it up.")
+    (defengine project-gutenberg
+      "http://www.gutenberg.org/ebooks/search/?query=%s")
+    (defengine rfcs
+      "http://pretty-rfc.herokuapp.com/search?q=%s")
+    (defengine twitter
+      "https://twitter.com/search?q=%s")
+    (defengine wiktionary
+      "https://www.wikipedia.org/search-redirect.php?family=wiktionary&language=en&go=Go&search=%s")
+    (defengine wolfram-alpha
+      "http://www.wolframalpha.com/input/?i=%s")
+    (defengine youtube
+      "http://www.youtube.com/results?aq=f&oq=&search_query=%s")
 
     (bind-key* "C-c /" 'spydez/engine-mode-hydra/body)
     (engine-mode)))
