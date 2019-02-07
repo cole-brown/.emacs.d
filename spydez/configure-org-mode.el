@@ -35,6 +35,31 @@
 ;;      (setq org-yank-adjusted-subtrees t))
 
 
+;; Strike through DONE headlines?
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#orga092ba0
+;; TODO: try it out? Hopefully with a zenburn face?
+;;
+;; I wanted a quick way to visually distinguish DONE tasks from tasks I still need to do. This handy snippet from the Emacs Org-mode mailing list does the trick by striking through the headlines for DONE tasks.
+;;
+;; (setq org-fontify-done-headline t)
+;; (custom-set-faces
+;;  '(org-done ((t (:foreground "PaleGreen"
+;;                  :weight normal
+;;                  :strike-through t))))
+;;  '(org-headline-done
+;;             ((((class color) (min-colors 16) (background dark))
+;;                (:foreground "LightSalmon" :strike-through t)))))
+
+
+;; send to bottom of list?
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org28359a7
+
+
+;; encryption
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org712e999
+;; org-crypt
+
+
 ;;------------------------------------------------------------------------------
 ;; Org Keybinds
 ;;------------------------------------------------------------------------------

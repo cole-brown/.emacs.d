@@ -135,6 +135,7 @@
 ;; TODO: change to some sort of elisp documentation or annotation?
 ;; TODO: maybe with some help text about how to use the feature on trial?
 ;; TODO: Then we can, somewhere in finalize, choose one of those helps to add into scratch buffer message?
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#orgfb9b12e
 
 
 ;;------------------------------------------------------------------------------

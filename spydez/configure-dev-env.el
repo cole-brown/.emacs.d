@@ -76,6 +76,10 @@
 ;;---
 ;; Smartparen
 ;;---
+;; TODO: try out smartparen. But I want to try it out after basic paren stuff is
+;; in place (hilighting paired paren reliably).
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#orge88d9c9
+;; https://github.com/Fuco1/smartparens
 
 
 ;;---
