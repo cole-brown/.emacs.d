@@ -155,7 +155,7 @@ Repeated invocations toggle between the two most recently open buffers."
     ;; ("x" spydez/org-finish-previous-task-and-clock-in-new-one "Finish and clock in" :color blue)
     ;; ("i" spydez/org-quick-clock-in-task "Clock in" :color blue)
     ;; ("o" spydez/org-off-my-computer :color blue)
-    ;; ("w" spydez/engine-mode-hydra/body "web" :exit t)
+    ("w" spydez/engine-mode-hydra/body "web" :exit t)
     ;; ("a" spydez/org-check-agenda :color blue)
     ;; ("r" spydez/describe-random-interactive-function)
     ;; ("L" spydez/org-insert-link)
@@ -164,11 +164,10 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; TODO: define shortcut into this hydra?
   (defhydra spydez/engine-mode-hydra (:color blue)
     "Engine mode"
-    ("b" engine/search-my-blog "blog") ;; probably no
-    ("f" engine/search-my-photos "flickr") ;; probably no
-    ("m" engine/search-mail "mail") ;; probably no
-    ("g" engine/search-google "google") ;; maybe?
-    ("e" engine/search-emacswiki "emacswiki")) ;; maybe?
+    ("g" engine/search-google "google")
+    ("e" engine/search-emacswiki "emacswiki"))
+    ("#" engine/search-emacswiki "c#"))
+    ("m" engine/search-mail "mail")
   )
 
 ;; TODO: Consider C-t for a hydra entry point?
@@ -177,6 +176,34 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; always add it back as an option."
 ;;   - http://pages.sachachua.com/.emacs.d/Sacha.html#key-chord
 ;; (bind-key "C-t" 'my/key-chord-commands/body)
+
+
+;;------------------------------------------------------------------------------
+;; Search
+;;------------------------------------------------------------------------------
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org12309ed
+;; https://github.com/hrs/engine-mode
+(use-package engine-mode
+  :config
+  ;; NOTE: keep synced with engine-mode-hydra?
+  (progn
+    ;; general
+    (defengine google "http://google.com/search?q=%s" :keybinding "g")
+    (defengine emacswiki "http://google.com/search?q=site:emacswiki.org+%s" :keybinding "e")
+
+    ;; code
+    (defengine csharp "http://google.com/search?q=c%23+%s" :keybinding "#")
+    ;; todo: python, c++, c?, django?
+
+    ;; gmail - which google user will this use? 
+    (defengine mail "https://mail.google.com/mail/u/0/#search/%s" :keybinding "m")
+
+    ;; google w/ "site:foo.bar"
+    ;; (defengine emacswiki "http://google.com/search?q=site:emacswiki.org+%s" :keybinding "e")
+
+
+    (bind-key* "C-c /" 'spydez/engine-mode-hydra/body)
+    (engine-mode)))
 
 
 ;;------------------------------------------------------------------------------
