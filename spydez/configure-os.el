@@ -24,6 +24,15 @@
 (when (eq system-type 'windows-nt)
 
   ;;---
+  ;; PATH
+  ;;---
+  ;; Do I need to add anything specifically for windows here?
+  ;; (when (eq system-type 'windows-nt)
+  ;;   (setenv "PATH" (concat "\"c:/program files/postgresql/9.3/bin;\"" (getenv "PATH"))))
+
+
+
+  ;;---
   ;; Cygwin? (TODO: I would rather Msys probably..?)
   ;;---
   ;; (setenv "CYGWIN" "nodosfilewarning")
