@@ -107,6 +107,16 @@
 ;; (setq ring-bell-function 'ignore)
 ;; (setq visible-bell t)
 
+;; from old .emacs for aluminum
+;; bell ringing sucks, but may be wanted occasionally...
+;; (setq ring-bell-function 
+;;   (lambda ()
+;;     (unless (memq this-command
+;;                   '(isearch-abort abort-recursive-edit 
+;;                     exit-minibuffer keyboard-quit mwheel-scroll
+;;                     next-line previous-line))
+;;       (ding))))
+
 
 ;;------------------------------------------------------------------------------
 ;; Reading Mode (Documents, Novels, whatever)
