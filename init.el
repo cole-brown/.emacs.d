@@ -337,6 +337,11 @@
   "Small tab width for more compact but readable code.")
 (defconst spydez/dev-env/tab/normal 4
   "Normal tab width for more usual use cases for code languages like C++, C#...")
+(defconst spydez/dev-env/fill-column/normal 80
+  "Normal tab width for more usual use cases for code languages like C++, C#...")
+(defconst spydez/dev-env/fill-column/long 100 ;; 120
+  ;; 120 would be nice, but 2 equal panes on 1080p monitor is more like 100 (~109 actual, 100 to be safer)
+  "Normal tab width for more usual use cases for code languages like C++, C#...")
 
 ;;---
 ;; External Tools

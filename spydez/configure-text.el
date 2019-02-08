@@ -22,8 +22,8 @@
 ;; TODO: What does this do, exactly?
 (setq sentence-end-double-space nil)
 
-;; probably want this overridable
-(setq-default fill-column 80)
+;; /normal is usually around 80 can do /long for usually around 100...
+(setq-default fill-column spydez/dev-env/fill-column/normal)
 
 ;; Randomize. Shuffle. Chaos...
 ;; shuffle-lines-in-region from Sacha:
