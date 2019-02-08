@@ -13,6 +13,7 @@
 
 ;; search...
 ;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep "provide"
+;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep "
 
 
 ;; TODO: can 'literate programming' do multiple files?
@@ -37,8 +38,15 @@
 ;;---
 
 ;; Special extra useful links:
+;;   1) Sacha's init.org: http://pages.sachachua.com/.emacs.d/Sacha.html
+;;      - Firmly in number 1. Followed her init pretty exclusively until done
+;;        with it, then branched off to other's stuff (like my own old .emacs).
+;;   2) nhoffman's init.org: https://github.com/nhoffman/.emacs.d/blob/master/init.org
+;;      - Well set up init.org. Second in line (well, third after my old .emacs).
+
 ;; Todo: Do we want ./spydez/references/ ignored or saved in git?
-;; TODO: Finish: Sacha init.el: http://pages.sachachua.com/.emacs.d/Sacha.html
+;;   - Don't really want to save if public in repo...
+;;
 ;; TODO: Start: zzamboni init.el: https://github.com/zzamboni/dot-emacs/blob/master/init.org
 ;; Many neat things?: https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
 ;;   todo: see if I want more of them.
@@ -136,6 +144,7 @@
 ;; TODO: maybe with some help text about how to use the feature on trial?
 ;; TODO: Then we can, somewhere in finalize, choose one of those helps to add into scratch buffer message?
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#orgfb9b12e
+;; Add advice to funcs? https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html
 
 
 ;;------------------------------------------------------------------------------
@@ -561,7 +570,11 @@
 (require 'configure-python)
 (require 'configure-elisp)
 
-;; todo: htmlize? I forget what it's for...
+;; todo: htmlize? I don't think I ever really used it...
+;; converts buffers to html
+;; http://fly.srk.fer.hr/~hniksic/emacs/htmlize.el
+;; (require 'htmlize)
+
 ;; TODO-maybe?: web-mode for django work?
 ;;   - http://pages.sachachua.com/.emacs.d/Sacha.html#org0acdde9
 ;;   - http://web-mode.org/

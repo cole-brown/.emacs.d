@@ -32,6 +32,8 @@
 ;;   - https://stackoverflow.com/questions/6172054/how-can-i-random-sort-lines-in-a-buffer
 ;;     - randomize-region.el https://www.mail-archive.com/gnu-emacs-sources@gnu.org/msg00034.html
 
+;; NOTE: Parenthesis settings are in dev-env.
+
 
 ;;------------------------------------------------------------------------------
 ;; UTF-8
@@ -98,14 +100,8 @@
 
 
 ;;------------------------------------------------------------------------------
-;; TODO: these. Parenthesis, bells?
+;; TODO: bells?
 ;;------------------------------------------------------------------------------
-
-;; parenthesis?
-;; (setq blink-matching-paren nil)
-;; (show-paren-mode t)
-;; (setq show-paren-delay 0)
-;; (setq show-paren-style 'expression)
 
 ;; bell? (this doesn't work...)
 ;; (setq ring-bell-function 'ignore)

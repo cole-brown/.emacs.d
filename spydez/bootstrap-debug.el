@@ -3,6 +3,7 @@
 ;; Show *Messages* buffer.
 ;;   https://stackoverflow.com/questions/40075912/want-to-view-emacs-messages-buffer-while-emacs-loads
 
+
 (defconst spydez/init-debug t) ;; nil)
 (defun spydez/debugging-p ()
   (bound-and-true-p spydez/init-debug))
@@ -26,6 +27,11 @@
 ;;
 ;; Or alternatively, you could just M-x toggle-debug-on-error and reload your 
 ;; init-file (M-x load-file RET ~/.emacs.d/init.el RET).
+;;
+;; Or these:
+;; Enable debugging
+;; (setq debug-on-error t)
+;; (setq debug-on-signal t)
 
 
 ;;------------------------------------------------------------------------------

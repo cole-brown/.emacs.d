@@ -67,11 +67,63 @@
 ;;------------------------------------------------------------------------------
 ;; Parenthesis
 ;;------------------------------------------------------------------------------
-;; TODO: disable electric-pair-mode if needed.
+;; TODO: disable electric-pair-mode if needed?
 
-;; TODO: used mic-paren.el in old .emacs.
-;;   Try smartparen and/or rainbow delimiters.
-;;   Decided which I like.
+;; Used mic-paren in old .emacs, but it looks like:
+;;   a) mic-paren is basically derelict (last updated 2013)
+;;   b) emacs 26 has equivalent enough replacement in show-paren-mode now.
+(require 'paren)
+
+;; good show-paren-mode info here: http://emacs-fu.blogspot.com/2009/01/balancing-your-parentheses.html
+
+;; Trying out default 0.125 - might like it. Might want faster but still non-instant?
+;; NOTE: It can be deactivated with the following (which you have to do before
+;; activating show-paren-mode in your .emacs):
+;;   - https://www.emacswiki.org/emacs/ShowParenMode
+;; (setq show-paren-delay 0)
+
+(setq blink-matching-paren nil)
+
+;; 'parenthesis: for just the parens
+;; 'expression: for hilighting everything
+;; 'mixed: will behave like 'parenthesis when the matching parenthesis is visible,
+;;         and like 'expression otherwise. 
+;;(setq show-paren-style 'expression)
+;;(setq show-paren-style 'parenthesis)
+;; 'expression has its uses in elisp code, might could set it to that for the mode
+
+(show-paren-mode t)
+
+;; TODO: Set up a red face for missing (like in old .emacs custom.el)?
+;; To change the color/face:
+;; (require 'paren)
+;; (set-face-background 'show-paren-match (face-background 'default))
+;; (set-face-foreground 'show-paren-match "#def")
+;; (set-face-attribute 'show-paren-match nil :weight 'extra-bold)
+;; Note that show-paren-mode can also detect mismatches, e.g. when try to close
+;;   a '(' with a ']'. You can tune this with show-paren-mismatch-face, e.g.:
+;; (set-face-foreground 'show-paren-mismatch-face "red") 
+;; (set-face-attribute 'show-paren-mismatch-face nil 
+;;                     :weight 'bold :underline t :overline nil :slant 'normal)
+;; http://emacs-fu.blogspot.com/2009/01/balancing-your-parentheses.html
+
+;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Blinking.html
+;; orig name: interactive-blink-matching-open
+(defun spydez/blink-paren ()
+  "Indicate momentarily the start of parenthesized sexp before point."
+  (interactive)
+  (let ((blink-matching-paren-distance
+         (buffer-size))
+        (blink-matching-paren t))
+    (blink-matching-open)))
+
+;; There are default keybindings for jumping to opening and closing delimiters
+;;   C-M b (move backward)
+;;   C-M f (move forward)
+;; See http://www.emacswiki.org/emacs/ParenthesisMatching#toc2 for details 
+
+
+;; TODO: Try smartparen and/or rainbow delimiters.
 
 ;;---
 ;; Smartparen
