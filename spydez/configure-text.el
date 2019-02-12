@@ -76,6 +76,7 @@
     (global-display-line-numbers-mode)))
 
 ;; TODO: Do we have more setting for it? Like default size/format of line number gutter?
+;; TODO: Bigger default gutter would be great; I have 6k+ line files I visit regularly...
 
 ;;---
 ;; Also column numbers

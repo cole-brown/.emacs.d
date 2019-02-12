@@ -72,6 +72,11 @@
 ;; TODOs and Misc.
 ;;---
 
+;; TODO: go through saved-off files of old.emacs in spydez/references/my-old-emacs
+
+;; TODO: see if any settings from custom.el.my-old.todo file should go in this new one.
+;;       org-mode, transient-mark-mode(?), paren-* settings, paren-face-* settings (match, mismatch), ...
+
 ;; TODO: read this maybe https://sanctum.geek.nz/arabesque/series/unix-as-ide/
 
 ;; TODO: Ctrl-del shouldn't push to kill ring
@@ -147,6 +152,14 @@
 ;; Add advice to funcs? https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html
 
 
+;;---
+;; License, Licensing, and Limericks
+;;---
+
+;; MIT Licensed.
+;; See LICENSE file in top level of this git repo for details.
+
+
 ;;------------------------------------------------------------------------------
 ;; Layout.
 ;;------------------------------------------------------------------------------
@@ -180,6 +193,24 @@
 ;; right thing, we'll have to have require/provide/filename on the same page.
 ;; Alternative is, like, (require 'spydez/bootstrap/debug "bootstrap-debug")?
 ;; Don't think that looks great.
+
+;; TODO: if we try to get this optimized, the endgame is (probably?):
+;;  1) barest basic setup
+;;     - make sure to call something for overrides
+;;  2) (bootstrap ...) or something
+;;     1) overrides here?
+;;     2) all bootstrapping here
+;;  3) (configure ...) or soemthing
+;;     1) calls out to various configures for packages and settings here
+;;  4) (finalize ...) or something
+;;     1) calls out to finalize steps here (sanity checks, etc)
+;;  So this file becomes very small (code-wise) with some decent text filler explaining things.
+;;    - e.g.: old .emacs's .emacs file (aka <computer-name>.emacs)
+;;            spydez/references/bootstrap.el
+;;    - e.g.: https://github.com/kaushalmodi/.emacs.d/blob/master/init.el
+;;            (kinda - bit of a hybrid (steps 2-4 in init.el instead of sub-files))
+;;  Alternatively, megalithic:
+;;    - e.g.: Sacha.org's file
 
 
 ;;------------------------------------------------------------------------------
@@ -362,11 +393,13 @@
 ;; set up PATHs so external tools can be found.
 (when (boundp 'spydez/tools/external)
   (dolist (tool spydez/tools/external)
+    ;; add to exec-path unless it's already a known executable
     (unless (executable-find (car tool))
       (add-to-list 'exec-path (cdr tool) t)) ;; append to end
     ))
 ;; find in alist: (when (assoc "diff" spydez/tools/external) (message "found %s in alist" "diff"))
-;; todo: move this to bootstrap-externals
+;; todo: move this to bootstrap-externals? configure-os? config os feels right but might need sooner.
+;;   - so... bootstrap-os.el needed here probably. Or after overrides - move to bootstrap section proper.
 
 ;;---
 ;; Try-Load overrides (from bootstrap-vars.el)?
@@ -614,6 +647,12 @@
 
 ;; org-d20, dice roller?, other sources of random
 (require 'configure-dice)
+;; TODO: anything useful in my old emacs/ERC dice roller (sasta.el)?
+;;   - may have to go back to find author I derived from?
+;;     - (did I?)
+;;       - limerick license:
+;;         https://writing.stackexchange.com/questions/6428/converting-the-mit-license-into-a-limerick
+;;         https://www.google.com/search?client=firefox-b-1-d&q=This+work+%27as-is%27+we+provide.No+warranty%2C+express+or+implied.We%27ve+done+our+best%2Cto+debug+and+test.Liability+for+damages+denied.Permission+is+granted+hereby%2Cto+copy%2C+share%2C+and+modify.Use+as+is+fit%2Cfree+or+for+profit.On+this+notice+these+rights+rely.
 
 ;; money, accounting, or other such stuff?
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#orgc91b6e1
@@ -642,6 +681,7 @@
 ;; TODO: see what I was using first. Some of this is dead links.
 ;; https://webcache.googleusercontent.com/search?q=cache:nvHM1b9JhGcJ:https://github.com/suzp1984/auto-complete+&cd=1&hl=en&ct=clnk&gl=us
 ;; https://webcache.googleusercontent.com/search?q=cache:pccrs3LhmCoJ:https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html+&cd=1&hl=en&ct=clnk&gl=us&client=firefox-b-1
+;; TODO: was using fuzzy-match.el ver 1.04 (2008)
 
 
 ;; Templates/snippets

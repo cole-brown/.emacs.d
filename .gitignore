@@ -42,4 +42,14 @@ test.txt
 ##---
 ## Inspiration
 ##---
-/spydez/references/
+# Ignore almost everything right now...
+/spydez/references/*
+
+# But don't ignore the rest...
+#   (negate ignore pattern first for my dir)
+!/spydez/references/my-old-emacs/
+#   (now un-ignore desired refs (the files in my dir)
+!/spydez/references/my-old-emacs/*
+
+#...But do ignore these...
+/spydez/references/my-old-emacs/old-snippets/c++-mode/*

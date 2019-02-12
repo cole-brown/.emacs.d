@@ -30,6 +30,14 @@
   ;; (when (eq system-type 'windows-nt)
   ;;   (setenv "PATH" (concat "\"c:/program files/postgresql/9.3/bin;\"" (getenv "PATH"))))
 
+  ;; Add each external tool to env PATH?
+  ;; And add msys or cygwin too?
+  ;; ;; Add gnuwin utils to env PATH as well?
+  ;; ;; This is so diff and find can work.
+  ;; (setenv "PATH" (concat "C:/util/gnuwin/bin;"
+  ;;                        "C:/msys/1.0/bin;"
+  ;;                        (getenv "PATH")))
+
 
 
   ;;---
