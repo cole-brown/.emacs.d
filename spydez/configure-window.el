@@ -1,6 +1,16 @@
 ;; -*- emacs-lisp -*-
 
 ;;------------------------------------------------------------------------------
+;; TODOs
+;;------------------------------------------------------------------------------
+
+;; TODO: skip all or most of this:
+;;    (unless window-system (message "hi"))
+;; Or maybe do all/most of this:
+;;    (when window-system (message "hi"))
+
+
+;;------------------------------------------------------------------------------
 ;; Window/GUI Setup
 ;;------------------------------------------------------------------------------
 
@@ -28,6 +38,8 @@
 ;; todo: fonts here, own configure file, or custom.el?
 ;; See: http://pages.sachachua.com/.emacs.d/Sacha.html (find "when window") for a
 ;; set conditional on gui interface.
+;;   Consolas is good for Windows. Or was, anyways.
+;;   Inconsolata was FOSS equivalant?
 
 
 ;;------------------------------------------------------------------------------
@@ -35,6 +47,14 @@
 ;;------------------------------------------------------------------------------
 (use-package zenburn-theme)
 ;; Seems to work fine without 'load-theme
+
+;; Old links, but wanted to carry them over from old .emcas:
+;;   Zenburn theme from: http://www.brockman.se/software/zenburn/zenburn.el
+;;     - dinosaur link
+;;   Zenburn for various other programs: http://www.brockman.se/software/zenburn/
+;;     - dead link
+;;   Zenburn for VS 05: http://www.codinghorror.com/blog/archives/000682.html
+;;     - dead link
 
 
 ;;------------------------------------------------------------------------------
