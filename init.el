@@ -214,6 +214,23 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Vars and Funcs
+;;------------------------------------------------------------------------------
+;; TODO: figure out naming scheme and put info here maybe
+;; TODO: do I want to follow:
+;;   - Emacs/Elisp conventions (e.g. spydez--)?
+;;   - common lisp (*var-name*, +const-name+)?
+;;     - https://en.wikipedia.org/wiki/Naming_convention_(programming)#Lisp
+;;
+;; Currently kinda:
+;; prefix/namespace: spydez/
+;; domain/concern/concept separator: /
+;;   e.g.: spydez/dir/, spydez/hash/, spydez/setup/
+;; word joiner: -
+;;   e.g.: spydez/hash-and-reduce, spydez/backup-files
+;; TODO: Do I want anything for func vs var in name?
+
+;;------------------------------------------------------------------------------
 ;; Initial vars bootstrap.
 ;;------------------------------------------------------------------------------
 ;; We probably need to setup some vars, load paths, etc in our init.el before getting going.
@@ -294,22 +311,30 @@
 
 ;; TODO: spydez/dir/setup-blah, spydez/dir/setup/blah, spydez/setup/dir/blah, spydez/dir/blah....?
 
-(defconst spydez/dir/setup-emacs (expand-file-name user-emacs-directory)
+(defconst spydez/dir/emacs (expand-file-name user-emacs-directory)
   ;; user-init-file and user-emacs-directory can be helpful here
-  "This should be a platform-agnostic way to find .emacs.d.")
+  "This should be a platform-agnostic way to find .emacs.d. Especially when I
+can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
 
 ;; Path dirs, and places for overrides to exist.
 ;;   ./spydez/defaults/
 ;;   ./spydez/
 ;;   ./spydez/work/
 ;;   ./spydez/work/pfo-dead-beef/
-(defconst spydez/dir/setup-personal (spydez/dir-name "spydez" spydez/dir/setup-emacs)
+(defconst spydez/dir/emacs/personal (spydez/dir-name "spydez" spydez/dir/emacs)
   "All of my own personal/custom setup code/vars/definitions...")
-(defconst spydez/dir/setup-defaults (spydez/dir-name "defaults" spydez/dir/setup-personal)
+
+;; TODO: personal to "personal", or maybe a list of guesses at where the "defaults" would be...
+;; Then the min necessary for loading/getting file from defaults that contains these
+;; consts and funcs necessary for 1st step of bootstrap?
+;; derived-TODO: move personal to "personal"? OR guess "personal", then "spydez"... etc?
+
+
+(defconst spydez/dir/personal/defaults (spydez/dir-name "defaults" spydez/dir/emacs/personal)
   "All of my optional/default setup elisp files...") ; TODO: rename to "overrides" or something?
-(defconst spydez/dir/setup-domain-specific (spydez/dir-name spydez/setup/domain/name spydez/dir/setup-personal)
-  "Anything that has to be domain specific. Tab widths or whatnot.")
-(defconst spydez/dir/setup-comp-specific (spydez/dir-name spydez/setup/system/hash spydez/dir/setup-domain-specific)
+(defconst spydez/dir/personal/domain (spydez/dir-name spydez/setup/domain/name spydez/dir/emacs/personal)
+  "Anything that has to  be domain specific. Tab widths or whatnot.")
+(defconst spydez/dir/domain/comp (spydez/dir-name spydez/setup/system/hash spydez/dir/personal/domain)
   "Anything that has to be computer specific. Overriding tab widths or whatnot.")
 
 ;; todo: updated to c:/home/<user>/documents
@@ -328,23 +353,23 @@
     (expand-file-name "work.org" spydez/dir/common-doc-save)
 
     ;; Working on .emacs.d a lot right now so add these in.
-    (expand-file-name "init.el" spydez/dir/setup-emacs)
-    (expand-file-name "configure-completion.el" spydez/dir/setup-personal)
+    (expand-file-name "init.el" spydez/dir/emacs)
+    (expand-file-name "configure-completion.el" spydez/dir/emacs/personal)
     ))
 
 ;; folders for auto-save files and backup-files (#*# and *~)
 (defconst spydez/dir/backup-files
-  (spydez/dir-name "backups" spydez/dir/setup-emacs))
+  (spydez/dir-name "backups" spydez/dir/emacs))
 
 (defconst spydez/dir/auto-save-files
-  (spydez/dir-name "auto-save-list" spydez/dir/setup-emacs))
+  (spydez/dir-name "auto-save-list" spydez/dir/emacs))
 
 (defconst spydez/file/save-history
-  (expand-file-name "savehist" spydez/dir/setup-emacs)
+  (expand-file-name "savehist" spydez/dir/emacs)
   "History of commands, etc.")
 
 (defconst spydez/dir/yasnippets
-  (expand-file-name "snippets" spydez/dir/setup-personal)
+  (expand-file-name "snippets" spydez/dir/emacs/personal)
   "Yasnippets directory.")
 ;; Could add an override of my own snippets if needed.
 
@@ -367,11 +392,11 @@
 ;;
 ;; Don't use .emacs.d. 
 ;; https://stackoverflow.com/questions/24779041/disable-warning-about-emacs-d-in-load-path
-;; (add-to-list 'load-path spydez/dir/setup-emacs)
-(add-to-list 'load-path spydez/dir/setup-defaults) ;; defaults first so everything else overrides.
-(add-to-list 'load-path spydez/dir/setup-personal)
-(add-to-list 'load-path spydez/dir/setup-domain-specific)
-(add-to-list 'load-path spydez/dir/setup-comp-specific) ;; most specific to this computer last
+;; (add-to-list 'load-path spydez/dir/emacs)
+(add-to-list 'load-path spydez/dir/personal/defaults) ;; defaults first so everything else overrides.
+(add-to-list 'load-path spydez/dir/emacs/personal)
+(add-to-list 'load-path spydez/dir/personal/domain)
+(add-to-list 'load-path spydez/dir/domain/comp) ;; most specific to this computer last
 
 
 ;;---
@@ -388,7 +413,7 @@
 
 ;; Some packages want to write to our custom file, so set that up first.
 ;; An unadorned filename (just "custom.el") wasn't getting picked up as the custom file, so for now:
-(setq custom-file (expand-file-name "custom.el" spydez/dir/setup-personal))
+(setq custom-file (expand-file-name "custom.el" spydez/dir/emacs/personal))
 ;; May need a better setter if custom-file needs adjusted per computer...
 ;; todo: Helper func to look for file to define place or maybe try provide/require?
 ;; Possibly move custom-file setting up, and loading down below loading of bootstrap-vars overrides.
