@@ -238,14 +238,62 @@
 ;; cross-platform dir and file names:
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Directory-Names.html#Directory-Names
 
+;;---
+;; Hashing
+;;---
+(defconst spydez/hash/default 'sha512
+  "Default hashing function to use for spydez/hash-input.")
+(defconst spydez/hash/slice 4
+  "Default hashing slice size to use for spydez/hash-and-reduce.")
+(defconst spydez/hash/join "-"
+  "Default hashing slice size to use for spydez/hash-and-reduce.")
+(defconst spydez/hash/prefix "hash"
+  "Default hashing slice size to use for spydez/hash-and-reduce.")
+
+
+;; wanted to use dash for this but its way before packages have been bootstrapped.
+(defun spydez/hash-input (input &optional hash)
+  "Returns a hash string of input. Hard-coded to sha512 atm."
+  (let ((hash (or hash spydez/hash/default))) ;; set hash to default if unspecified
+    (if (member hash (secure-hash-algorithms)) ;; make sure it exists as a supported algorithm
+        (secure-hash hash input)
+      (error "Unknown hash: %s" hash))
+    ))
+(defun spydez/hash-and-reduce (input &optional prefix hash slice join)
+  (let* ((hash-full (spydez/hash-input input hash))
+         ;; (hash-len (length hash-full)) ;; negative numbers work in substring, yay
+         (slice (or slice spydez/hash/slice))
+         (join (or join spydez/hash/join))
+         (prefix (or prefix spydez/hash/prefix)))
+    (message "hashed: %s %s %s %s" input prefix hash slice join)
+    (mapconcat 'identity
+               (list prefix
+                     (substring hash-full 0 slice)
+                     (substring hash-full (- slice) nil))
+               join)
+    ))
+
+;;---
+;; Domain & System Setup
+;;---
+(defconst spydez/setup/domain/name "work"
+  "A domain/folder for setups similar to this. E.g. work vs personal.")
+(defconst spydez/setup/domain/subname "computer"
+  "A sub-domain/folder for setups similar to this. E.g. work laptop vs work PC.")
+(defconst spydez/setup/system/name (system-name)
+  "(Plain String) Intended for this specific computer's setup folder.")
+(defconst spydez/setup/system/hash (spydez/hash-and-reduce spydez/setup/system/name spydez/setup/domain/subname)
+  "(Hashed) Intended for this specific computer's setup folder.")
+
+;;---
+;; Directories
+;;---
 (defun spydez/dir-name (name parent)
   "Expand name as child dir of parent in platform-agnostic manner."
-    (file-name-as-directory (expand-file-name name parent)))
+  (file-name-as-directory (expand-file-name name parent)))
 
-(defconst spydez/name/setup-domain "work"
-  "A domain/folder for setups similar to this. E.g. work vs personal.")
-(defconst spydez/name/setup-comp (system-name)
-  "Intended for this specific computer's setup folder.")
+;; TODO: spydez/dir/setup-blah, spydez/dir/setup/blah, spydez/setup/dir/blah, spydez/dir/blah....?
+
 (defconst spydez/dir/setup-emacs (expand-file-name user-emacs-directory)
   ;; user-init-file and user-emacs-directory can be helpful here
   "This should be a platform-agnostic way to find .emacs.d.")
@@ -254,14 +302,14 @@
 ;;   ./spydez/defaults/
 ;;   ./spydez/
 ;;   ./spydez/work/
-;;   ./spydez/work/WORK-PC-NAME/
+;;   ./spydez/work/pfo-dead-beef/
 (defconst spydez/dir/setup-personal (spydez/dir-name "spydez" spydez/dir/setup-emacs)
   "All of my own personal/custom setup code/vars/definitions...")
 (defconst spydez/dir/setup-defaults (spydez/dir-name "defaults" spydez/dir/setup-personal)
   "All of my optional/default setup elisp files...") ; TODO: rename to "overrides" or something?
-(defconst spydez/dir/setup-domain-specific (spydez/dir-name spydez/name/setup-domain spydez/dir/setup-personal)
+(defconst spydez/dir/setup-domain-specific (spydez/dir-name spydez/setup/domain/name spydez/dir/setup-personal)
   "Anything that has to be domain specific. Tab widths or whatnot.")
-(defconst spydez/dir/setup-comp-specific (spydez/dir-name spydez/name/setup-comp spydez/dir/setup-domain-specific)
+(defconst spydez/dir/setup-comp-specific (spydez/dir-name spydez/setup/system/hash spydez/dir/setup-domain-specific)
   "Anything that has to be computer specific. Overriding tab widths or whatnot.")
 
 ;; todo: updated to c:/home/<user>/documents
@@ -400,6 +448,7 @@
 ;; find in alist: (when (assoc "diff" spydez/tools/external) (message "found %s in alist" "diff"))
 ;; todo: move this to bootstrap-externals? configure-os? config os feels right but might need sooner.
 ;;   - so... bootstrap-os.el needed here probably. Or after overrides - move to bootstrap section proper.
+;; (executable-find "git")
 
 ;;---
 ;; Try-Load overrides (from bootstrap-vars.el)?
@@ -451,6 +500,11 @@
 ;; Packages used by other packages.
 (use-package diminish)
 ;; TODO: diminish vs delight? Do I care enough to try delight?
+
+;; library used for some list functions (by me and by some packages)
+;; making it explicit now that I use it too
+;; https://github.com/magnars/dash.el
+(use-package dash)
 
 ;; Setup backups, autosaves, and history.
 (require 'bootstrap-backups)
