@@ -6,6 +6,9 @@
 ;; ...configure-links...
 ;; check to see if they've got the correct pieces
 
+;; https://github.com/ahungry/md4rd
+;;   https://www.reddit.com/r/emacs/comments/apu0ii/browse_reddit_in_emacs/
+;; https://www.reddit.com/r/linux/comments/aot1ga/benno_rice_the_tragedy_of_systemd_linuxconfau_2019/
 
 ;;------------------------------------------------------------------------------
 ;; M-x goto-address-mode
