@@ -234,6 +234,7 @@
 ;;----------------------------------------------------------------------------;;
 ;;                                 Bootstrap.                                 ;;
 ;;---To pull oneself up by the bootstraps, one must first find one's boots.---;;
+;;                           ...Where are my boots?
 
 ;;---
 ;; Bootloader loading...
@@ -249,27 +250,32 @@
 ;; Not too much.
 (unless (and
          (boundp 'spydez/bootstrap/complete)
-         (eq spydez/bootstrap/complete 'early)
+         (eq spydez/bootstrap/complete 'early))
   (error "Bootstrap: Early Bootstrap sanity check failed."))
+;; TODO: copy important errors into scratch buffer or something?
+;; Probably or something.
+;; And then make sure it gets focus in final finalize.
 
 
 ;;---
 ;; Bootloader loading...
 ;;---
 (require 'bootstrap-this)
-;; TODO: You are here. Home. todo-from-home? todo from home?
+;; TODO: You are here. Home. todo-from-home? todo from home? todo today
 
 
 ;;---
 ;; Little bit of Sanity...
 ;;---
 ;; Not too much.
-(unless (and
-         (boundp 'spydez/bootstrap/complete)
-         (eq spydez/bootstrap/complete 'specific)
-  (message "Bootstrap: Specific Bootstrap does not exist for this computer: %s" spydez/setup/system/hash)))
-  ;; TODO: also check for 'default
-  ;; TODO: also have bootstrap-this set it.
+;; TODO: also have bootstrap-this set it.
+(cond ((eq spydez/bootstrap/complete 'specific) t) ;; good to go
+      ;; using default - should probably warn
+      ((eq spydez/bootstrap/complete 'default)
+       (message "Bootstrap: Specific Bootstrap does not exist for this computer: %s %s" spydez/bootstrap/complete spydez/setup/system/hash))
+      ;; fallthrough cases - nothing used
+      (t (error (message "Bootstrap: No Bootstrap for this computer?: %s %s" spydez/bootstrap/complete spydez/setup/system/hash))))
+
 
 ;;------------------------------------------------------------------------------
 ;; Initial vars bootstrap.
@@ -371,8 +377,8 @@
 ;; (add-to-list 'load-path spydez/dir/emacs)
 (add-to-list 'load-path spydez/dir/personal/defaults) ;; defaults first so everything else overrides.
 (add-to-list 'load-path spydez/dir/emacs/personal)
-(add-to-list 'load-path spydez/dir/personal/domain)
-(add-to-list 'load-path spydez/dir/domain/comp) ;; most specific to this computer last
+(add-to-list 'load-path spydez/dir/personal/domain-this)
+(add-to-list 'load-path spydez/dir/personal/comp-this) ;; most specific to this computer last
 
 
 ;;---

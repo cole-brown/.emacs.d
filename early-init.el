@@ -9,6 +9,7 @@
 ;;---To pull oneself up by the bootstraps, one must first find one's boots.---;;
 ;;                           ...Oh, there they are.
 
+
 ;; After agonizing about this for all of [2019-02-13], and various points
 ;; throughout from the start, I think the new early-init.el is the best place to
 ;; put enough of the bootstrap to find the local settings here.
@@ -114,9 +115,15 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
 
 (defconst spydez/dir/personal/defaults (spydez/dir-name "defaults" spydez/dir/emacs/personal)
   "All of my optional/default setup elisp files...") ; TODO: rename to "overrides" or something? Add another one for overrides?
-(defconst spydez/dir/personal/domain (spydez/dir-name spydez/setup/domain/name spydez/dir/emacs/personal)
-  "Anything that has to  be domain specific. Tab widths or whatnot.")
-(defconst spydez/dir/domain/comp (spydez/dir-name spydez/setup/system/hash spydez/dir/personal/domain)
+
+(defconst spydez/dir/personal/domain-all (spydez/dir-name "domains" spydez/dir/emacs/personal)
+  "Domains folder. For subdirs of work, home, etc.")
+(defconst spydez/dir/personal/domain-this (spydez/dir-name spydez/setup/domain/name spydez/dir/personal/domain-all)
+  "Anything that has to be domain specific. Tab widths or whatnot.")
+
+(defconst spydez/dir/personal/comp-all (spydez/dir-name "computers" spydez/dir/emacs/personal)
+  "Computers folder. For subdirs of different computers.")
+(defconst spydez/dir/personal/comp-this (spydez/dir-name spydez/setup/system/hash spydez/dir/personal/comp-all)
   "Anything that has to be computer specific. Overriding tab widths or whatnot.")
 
 ;;---
@@ -129,10 +136,12 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
 ;; Load-Path dirs for finding bootstrapping files:
 (add-to-list 'load-path spydez/dir/personal/defaults) ;; defaults first so everything else overrides.
 ;; Could add a domain level if needed?
-(add-to-list 'load-path spydez/dir/domain/comp) ;; most specific to this computer last
+(add-to-list 'load-path spydez/dir/personal/comp-this) ;; most specific to this computer last
 
 
-
+;;------------------------------------------------------------------------------
+;; The End.
+;;------------------------------------------------------------------------------
 (defconst spydez/bootstrap/complete 'early
   "values: nil, 'early, 'default, 'specific
 compare: (eq spydez/bootstrap/complete 'early)")

@@ -16,10 +16,12 @@
 ;; TODOs
 ;;------------------------------------------------------------------------------
 
+;; TODO: You are here. Home. todo-from-home? todo from home? todo today
 (message "hello there from this here")
 
 
 ;;------------------------------------------------------------------------------
 ;; Provide this.
 ;;------------------------------------------------------------------------------
+(setq spydez/bootstrap/complete 'default)
 (provide 'bootstrap-this)
