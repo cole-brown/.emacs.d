@@ -1,9 +1,8 @@
 ;; -*- emacs-lisp -*-
 ;; TODO: those code headers I see in emacs packages?
 
-;; TODO: add license? MIT probably?
-;; https://snyk.io/blog/mit-apache-bsd-fairest-of-them-all/
-;; TODO: Short copyright in header pointing to LICENSE.txt or something.
+
+;; TODO: a pretty centered header or something here for to be pretty
 
 
 ;;------------------------------------------------------------------------------
@@ -159,6 +158,8 @@
 ;; MIT Licensed.
 ;; See LICENSE file in top level of this git repo for details.
 
+;; Note: explains MIT vs BSD vs Apache 2.0: https://snyk.io/blog/mit-apache-bsd-fairest-of-them-all/
+
 
 ;;------------------------------------------------------------------------------
 ;; Layout.
@@ -230,6 +231,46 @@
 ;;   e.g.: spydez/hash-and-reduce, spydez/backup-files
 ;; TODO: Do I want anything for func vs var in name?
 
+;;----------------------------------------------------------------------------;;
+;;                                 Bootstrap.                                 ;;
+;;---To pull oneself up by the bootstraps, one must first find one's boots.---;;
+
+;;---
+;; Bootloader loading...
+;;---
+;; I'm from the Future.
+;; Compatibility with versions 26 and below.
+(unless (boundp 'early-init-file)
+  (load (expand-file-name "early-init" user-emacs-directory)))
+
+;;---
+;; Little bit of Sanity...
+;;---
+;; Not too much.
+(unless (and
+         (boundp 'spydez/bootstrap/complete)
+         (eq spydez/bootstrap/complete 'early)
+  (error "Bootstrap: Early Bootstrap sanity check failed."))
+
+
+;;---
+;; Bootloader loading...
+;;---
+(require 'bootstrap-this)
+;; TODO: You are here. Home. todo-from-home? todo from home?
+
+
+;;---
+;; Little bit of Sanity...
+;;---
+;; Not too much.
+(unless (and
+         (boundp 'spydez/bootstrap/complete)
+         (eq spydez/bootstrap/complete 'specific)
+  (message "Bootstrap: Specific Bootstrap does not exist for this computer: %s" spydez/setup/system/hash)))
+  ;; TODO: also check for 'default
+  ;; TODO: also have bootstrap-this set it.
+
 ;;------------------------------------------------------------------------------
 ;; Initial vars bootstrap.
 ;;------------------------------------------------------------------------------
@@ -255,87 +296,10 @@
 ;; cross-platform dir and file names:
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Directory-Names.html#Directory-Names
 
-;;---
-;; Hashing
-;;---
-(defconst spydez/hash/default 'sha512
-  "Default hashing function to use for spydez/hash-input.")
-(defconst spydez/hash/slice 4
-  "Default hashing slice size to use for spydez/hash-and-reduce.")
-(defconst spydez/hash/join "-"
-  "Default hashing slice size to use for spydez/hash-and-reduce.")
-(defconst spydez/hash/prefix "hash"
-  "Default hashing slice size to use for spydez/hash-and-reduce.")
-
-
-;; wanted to use dash for this but its way before packages have been bootstrapped.
-(defun spydez/hash-input (input &optional hash)
-  "Returns a hash string of input. Hard-coded to sha512 atm."
-  (let ((hash (or hash spydez/hash/default))) ;; set hash to default if unspecified
-    (if (member hash (secure-hash-algorithms)) ;; make sure it exists as a supported algorithm
-        (secure-hash hash input)
-      (error "Unknown hash: %s" hash))
-    ))
-(defun spydez/hash-and-reduce (input &optional prefix hash slice join)
-  (let* ((hash-full (spydez/hash-input input hash))
-         ;; (hash-len (length hash-full)) ;; negative numbers work in substring, yay
-         (slice (or slice spydez/hash/slice))
-         (join (or join spydez/hash/join))
-         (prefix (or prefix spydez/hash/prefix)))
-    (message "hashed: %s %s %s %s" input prefix hash slice join)
-    (mapconcat 'identity
-               (list prefix
-                     (substring hash-full 0 slice)
-                     (substring hash-full (- slice) nil))
-               join)
-    ))
-
-;;---
-;; Domain & System Setup
-;;---
-(defconst spydez/setup/domain/name "work"
-  "A domain/folder for setups similar to this. E.g. work vs personal.")
-(defconst spydez/setup/domain/subname "computer"
-  "A sub-domain/folder for setups similar to this. E.g. work laptop vs work PC.")
-(defconst spydez/setup/system/name (system-name)
-  "(Plain String) Intended for this specific computer's setup folder.")
-(defconst spydez/setup/system/hash (spydez/hash-and-reduce spydez/setup/system/name spydez/setup/domain/subname)
-  "(Hashed) Intended for this specific computer's setup folder.")
 
 ;;---
 ;; Directories
 ;;---
-(defun spydez/dir-name (name parent)
-  "Expand name as child dir of parent in platform-agnostic manner."
-  (file-name-as-directory (expand-file-name name parent)))
-
-;; TODO: spydez/dir/setup-blah, spydez/dir/setup/blah, spydez/setup/dir/blah, spydez/dir/blah....?
-
-(defconst spydez/dir/emacs (expand-file-name user-emacs-directory)
-  ;; user-init-file and user-emacs-directory can be helpful here
-  "This should be a platform-agnostic way to find .emacs.d. Especially when I
-can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
-
-;; Path dirs, and places for overrides to exist.
-;;   ./spydez/defaults/
-;;   ./spydez/
-;;   ./spydez/work/
-;;   ./spydez/work/pfo-dead-beef/
-(defconst spydez/dir/emacs/personal (spydez/dir-name "spydez" spydez/dir/emacs)
-  "All of my own personal/custom setup code/vars/definitions...")
-
-;; TODO: personal to "personal", or maybe a list of guesses at where the "defaults" would be...
-;; Then the min necessary for loading/getting file from defaults that contains these
-;; consts and funcs necessary for 1st step of bootstrap?
-;; derived-TODO: move personal to "personal"? OR guess "personal", then "spydez"... etc?
-
-
-(defconst spydez/dir/personal/defaults (spydez/dir-name "defaults" spydez/dir/emacs/personal)
-  "All of my optional/default setup elisp files...") ; TODO: rename to "overrides" or something?
-(defconst spydez/dir/personal/domain (spydez/dir-name spydez/setup/domain/name spydez/dir/emacs/personal)
-  "Anything that has to  be domain specific. Tab widths or whatnot.")
-(defconst spydez/dir/domain/comp (spydez/dir-name spydez/setup/system/hash spydez/dir/personal/domain)
-  "Anything that has to be computer specific. Overriding tab widths or whatnot.")
 
 ;; todo: updated to c:/home/<user>/documents
 (defconst spydez/dir/common-doc-save "c:/home/documents"
@@ -386,8 +350,20 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
 
 
 ;;---
-;; Add stuff to our load path.
+;; Load Path
 ;;---
+
+;; Reset to orginal first. We had some subset in for bootstrapping. Now we're ready for the full set.
+;; TODO: sanity check? boundp and set to anything...
+(setq load-path spydez/dir/load-path/orig)
+
+;; Load-Path dirs, and places for overrides to exist (in ascending order):
+;;   ./spydez/defaults/
+;;   ./spydez/
+;;   ./spydez/domains/[work, home, whatever]
+;;   ./spydez/computers/[pfo-dead-beef, home-1234-abcd, whatever]
+;; (Assuming default dir names for personal, etc.)
+
 ;; Setting overrides towards front of load-path (add-to-list does this for us).
 ;;
 ;; Don't use .emacs.d. 
@@ -462,7 +438,10 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
     ("git" . "") ; in windows system env var PATH  right now
     ("diff" . "C:/Users/cole/AppData/Local/GitHub/PortableGit_69bd5e6f85e4842f07db71c9618a621154c52254/usr/bin")
     )
-  "An alist for tool name -> exec path. These will be front-to-back appended to list, so if e.g. there's several git binaries and only one will work, put git in front of this alist.")
+  "An alist for tool name -> exec path. These will be front-to-back appended to list, so if e.g. there's several git binaries and only one will work, put git in front of this alist."
+  ;; If I need more than a pair or triple tuple:
+  ;;   Options for Structured Data in Emacs Lisp: https://nullprogram.com/blog/2018/02/14/
+  )
 ;; set up PATHs so external tools can be found.
 (when (boundp 'spydez/tools/external)
   (dolist (tool spydez/tools/external)
