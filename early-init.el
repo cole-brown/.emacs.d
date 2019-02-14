@@ -1,13 +1,15 @@
 
 ;; TODO: notes, pretty this, etc
 
-
+;; TODO: a prefix for messages during init or that spit-things-out-to-a-special-buffer-then-show-that thing?
+;; Or both. My own func that does both and can be easily called from the rest of init.
+;; TODO: first debug step happens in here and has that func?
 
 
 ;;----------------------------------------------------------------------------;;
 ;;                                 Bootstrap.                                 ;;
 ;;---To pull oneself up by the bootstraps, one must first find one's boots.---;;
-;;                           ...Oh, there they are.
+;;                           ...Oh, here they are.
 
 
 ;; After agonizing about this for all of [2019-02-13], and various points
@@ -63,7 +65,7 @@
          (slice (or slice spydez/hash/slice))
          (join (or join spydez/hash/join))
          (prefix (or prefix spydez/hash/prefix)))
-    (message "hashed: %s %s %s %s" input prefix hash slice join)
+    ;; (message "hashed: %s %s %s %s" input prefix hash slice join)
     (mapconcat 'identity
                (list prefix
                      (substring hash-full 0 slice)
@@ -75,7 +77,7 @@
 ;;---
 ;; Domain & System Setup
 ;;---
-(defconst spydez/file/bootstrap/local "local.el"
+(defconst spydez/file/bootstrap/local "bootstrap-this.el"
   "Definitions for how this computer is different from others, for getting bootstrap started.")
 (defconst spydez/setup/domain/name "work"
   "A domain/folder for setups similar to this. E.g. work vs personal.")
@@ -86,6 +88,31 @@
 (defconst spydez/setup/system/hash (spydez/hash-and-reduce spydez/setup/system/name spydez/setup/domain/subname)
   "(Hashed) Intended for this specific computer's setup folder.")
 
+;;---
+;; Master List & Reason I'm doing system/hash.
+;;---
+;; C-u C-x C-e with point on end of next line to find out your hash:
+;;   spydez/setup/system/hash
+;;   e.g.: "computer-898a-27ab"
+;; This is so bootstrap-this.el can live in its proper home, and be found with
+;; an easy (load ...) or (require ...)
+
+;; Find this system, setup domain names, reform reduced hash string.
+(defvar spydez/bootstrap/system/known-p t)
+(cond ((equal spydez/setup/system/hash "computer-898a-27ab")
+       (setq spydez/setup/domain/name "work"
+             spydez/setup/domain/subname "pfo"
+             spydez/setup/system/hash (spydez/hash-and-reduce spydez/setup/system/name spydez/setup/domain/subname)))
+
+      ;; next system here:
+      ;; ((equal spydez/setup/system/hash "<something>")
+      ;;  (setq spydez/setup/domain/name "home"
+      ;;        spydez/setup/domain/subname "comp"
+      ;;        spydez/setup/system/hash (spydez/hash-and-reduce spydez/setup/system/name spydez/setup/domain/subname)))
+
+      ;; fallthrough case - nothing specified so defaults will be used
+      (t (message "Update 'Master List' for this system (%s) here." spydez/setup/system/hash)
+         (setq spydez/bootstrap/system/exists-p nil)))
 
 ;;---
 ;; Directories
@@ -121,10 +148,11 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
 (defconst spydez/dir/personal/domain-this (spydez/dir-name spydez/setup/domain/name spydez/dir/personal/domain-all)
   "Anything that has to be domain specific. Tab widths or whatnot.")
 
-(defconst spydez/dir/personal/comp-all (spydez/dir-name "computers" spydez/dir/emacs/personal)
+(defconst spydez/dir/personal/system-all (spydez/dir-name "computers" spydez/dir/emacs/personal)
   "Computers folder. For subdirs of different computers.")
-(defconst spydez/dir/personal/comp-this (spydez/dir-name spydez/setup/system/hash spydez/dir/personal/comp-all)
+(defconst spydez/dir/personal/system-this (spydez/dir-name spydez/setup/system/hash spydez/dir/personal/system-all)
   "Anything that has to be computer specific. Overriding tab widths or whatnot.")
+
 
 ;;---
 ;; Load Path
@@ -136,7 +164,7 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
 ;; Load-Path dirs for finding bootstrapping files:
 (add-to-list 'load-path spydez/dir/personal/defaults) ;; defaults first so everything else overrides.
 ;; Could add a domain level if needed?
-(add-to-list 'load-path spydez/dir/personal/comp-this) ;; most specific to this computer last
+(add-to-list 'load-path spydez/dir/personal/system-this) ;; most specific to this computer last
 
 
 ;;------------------------------------------------------------------------------

@@ -12,10 +12,10 @@
 ;; from:
 ;;   https://github.com/kaushalmodi/.emacs.d/blob/master/personal/setup-var-overrides-EXAMPLE.el
 
-(message "Empty bootstrap-vars; no overrides.")
+(message "Empty bootstrap-this-late; no overrides.")
 
 
 ;;------------------------------------------------------------------------------
 ;; Provide this.
 ;;------------------------------------------------------------------------------
-(provide 'bootstrap-vars)
+(provide 'bootstrap-this-late)

@@ -166,6 +166,7 @@
 ;;------------------------------------------------------------------------------
 
 ;; early-init.el:
+;;   TODO: update this now that I'm using it...
 ;;   Not used right now.
 ;;   Can do some even earlier stuff with early-init.el if needed...
 ;;     https://www.reddit.com/r/emacs/comments/7yns85/emacs_adds_support_for_a_second_read_earlier_init/
@@ -231,10 +232,22 @@
 ;;   e.g.: spydez/hash-and-reduce, spydez/backup-files
 ;; TODO: Do I want anything for func vs var in name?
 
+
 ;;----------------------------------------------------------------------------;;
 ;;                                 Bootstrap.                                 ;;
 ;;---To pull oneself up by the bootstraps, one must first find one's boots.---;;
 ;;                           ...Where are my boots?
+
+
+;;---
+;; We need to setup some vars, load paths, etc before getting going. But those
+;; might should be different for different domains (work vs home), subdomains
+;; (company a vs consulting), systems (old pc vs new, pc vs tablet/laptop), etc.
+;;
+;; So we do part of that in early-init, and another part in bootstrap-this-early.
+;; After which we can finish bootstrapping and get ready for the main emacs init.
+;;---
+
 
 ;;---
 ;; Bootloader loading...
@@ -260,15 +273,18 @@
 ;;---
 ;; Bootloader loading...
 ;;---
-(require 'bootstrap-this)
-;; TODO: You are here. Home. todo-from-home? todo from home? todo today
+(require 'bootstrap-this-early)
+;; The default bootstrap-this-early provider will check...
+;; if system/known-p and no this-comp dir:
+;;   - make this-comp dir
+;;   - copy a default bootstrap-this-early there
 
 
 ;;---
 ;; Little bit of Sanity...
 ;;---
 ;; Not too much.
-;; TODO: also have bootstrap-this set it.
+;; TODO: also have bootstrap-this-early set it.
 (cond ((eq spydez/bootstrap/complete 'specific) t) ;; good to go
       ;; using default - should probably warn
       ((eq spydez/bootstrap/complete 'default)
@@ -277,14 +293,23 @@
       (t (error (message "Bootstrap: No Bootstrap for this computer?: %s %s" spydez/bootstrap/complete spydez/setup/system/hash))))
 
 
+;; TODO: move these comments/headings about bootstrap up?
 ;;------------------------------------------------------------------------------
 ;; Initial vars bootstrap.
 ;;------------------------------------------------------------------------------
-;; We probably need to setup some vars, load paths, etc in our init.el before getting going.
+
+;; Evolving vars seem to be emerging into these groups:
+;;   - early-init: needed by all, used to figure out my system and specifics
+;;   - bootstrap-this-early:
+;;     - needed early (before now, after early-init) to bootstrap this system
+;;     - or only applicable/used by this system (e.g. "work.org" isn't a file at home)
+;;   - this section:
+;;     - defaults - can be overridden by bootstrap-this-late at the end off bootstrapping
 
 ;; I don't have any more than just some Windowses (7, 10) right now so a robust
 ;; cross-platform init with proper places for overriding things will probably
 ;; have to wait until I encounter it.
+;; I think this is it (probably this is overkill), but I can't properly test.
 
 
 ;;---
@@ -304,28 +329,8 @@
 
 
 ;;---
-;; Directories
+;; Directories for Emacs or Packages
 ;;---
-
-;; todo: updated to c:/home/<user>/documents
-(defconst spydez/dir/common-doc-save "c:/home/documents"
-  "Place for auto-open files or secrets or something to be.")
-
-;; todo: move to an end script or something? Or leave up here so it can be overridden...
-;; auto-open this file list at end of emacs init/setup
-(defvar spydez/auto-open-list
-  ;; don't do: '(
-  ;; do this: (list
-  ;; Need a thing that will eval the list items to strings either now or in auto-open-files.
-  ;; So we choose now.
-  (list
-    ;; top level work org-mode file for notes & such
-    (expand-file-name "work.org" spydez/dir/common-doc-save)
-
-    ;; Working on .emacs.d a lot right now so add these in.
-    (expand-file-name "init.el" spydez/dir/emacs)
-    (expand-file-name "configure-completion.el" spydez/dir/emacs/personal)
-    ))
 
 ;; folders for auto-save files and backup-files (#*# and *~)
 (defconst spydez/dir/backup-files
@@ -348,6 +353,8 @@
 ;; Identity / Personal Information
 ;;---
 ;; http://www.gnu.org/software/emacs/manual/html_node/elisp/User-Identification.html
+;; TODO: change these in a projectile hook or something for repo-dependant git identity?
+;; TODO: but only change after secrets are loaded so as not to leak irrelevant work email addrs
 (setq user-full-name "Cole Brown"
       user-mail-address "git@spydez.com")
 ;; user-login-name exists if needed
@@ -370,7 +377,8 @@
 ;;   ./spydez/computers/[pfo-dead-beef, home-1234-abcd, whatever]
 ;; (Assuming default dir names for personal, etc.)
 
-;; Setting overrides towards front of load-path (add-to-list does this for us).
+;; This is setting priorities for overrides towards the front/head/car of
+;; load-path (add-to-list does this for us).
 ;;
 ;; Don't use .emacs.d. 
 ;; https://stackoverflow.com/questions/24779041/disable-warning-about-emacs-d-in-load-path
@@ -378,7 +386,7 @@
 (add-to-list 'load-path spydez/dir/personal/defaults) ;; defaults first so everything else overrides.
 (add-to-list 'load-path spydez/dir/emacs/personal)
 (add-to-list 'load-path spydez/dir/personal/domain-this)
-(add-to-list 'load-path spydez/dir/personal/comp-this) ;; most specific to this computer last
+(add-to-list 'load-path spydez/dir/personal/system-this) ;; most specific to this computer last
 
 
 ;;---
@@ -386,6 +394,8 @@
 ;;---
 ;; All the way down here because I want my load paths, but we could put at the top if needed with a little adjustment.
 (require 'bootstrap-debug)
+;; TODO: sanity check: make sure every var in a list is boundp so my vars/consts can't just wander off on me.
+;; TODO: sanity check: make sure every func in a list is fboundp so my funcs can't just wander off on me.
 
 
 ;;---
@@ -398,7 +408,7 @@
 (setq custom-file (expand-file-name "custom.el" spydez/dir/emacs/personal))
 ;; May need a better setter if custom-file needs adjusted per computer...
 ;; todo: Helper func to look for file to define place or maybe try provide/require?
-;; Possibly move custom-file setting up, and loading down below loading of bootstrap-vars overrides.
+;; Possibly move custom-file setting up, and loading down below loading of bootstrap-this-late overrides.
 (load custom-file t)
 
 
@@ -415,7 +425,7 @@
 ;;---
 ;; Dev Env vars
 ;;---
-;; TODO: put in bootstrap-consts? bootstrap-vars? bootstrap-data?
+;; TODO: put in bootstrap-consts? bootstrap-this-late? bootstrap-data?
 
 ;; Tab widths. I like a smaller one for verbose/highly indented code (web dev mainly).
 ;; Normally use a larger one for non-web programming.
@@ -428,6 +438,12 @@
 (defconst spydez/dev-env/fill-column/long 100 ;; 120
   ;; 120 would be nice, but 2 equal panes on 1080p monitor is more like 100 (~109 actual, 100 to be safer)
   "Normal tab width for more usual use cases for code languages like C++, C#...")
+
+;; TODOS:
+;;  bootstrap-this-early, bootstrap-this-late?
+;;  copy external tools to bootstrap-this-late for this pc
+;;    - make default/empty here
+;;    - do tool exec/env step after bootstrap (or at end of bootstrap?)
 
 ;;---
 ;; External Tools
@@ -461,23 +477,15 @@
 ;; (executable-find "git")
 
 ;;---
-;; Try-Load overrides (from bootstrap-vars.el)?
+;; Try-Load overrides (from bootstrap-this-late.el)?
 ;;---
-;(when (require bootstrap-vars nil 'noerror)
-;  (message "Empty bootstrap-vars."))
-(require 'bootstrap-vars nil 'noerror)
-;; todo: rename to override-bootstrap-vars?
-;; override-vars? bootstrap-override?
-;; bootstrap-refine? bootstrap-post? post-bootstrap?
-;; hm...
-;;   second take: I like:
-;;     1) bootstrap-overrides maybe.
-;;     2) bootstrap-local maybe
-;;     3) bootstrap-preload-local-overrides... no
+;(when (require bootstrap-this-late nil 'noerror)
+;  (message "Empty bootstrap-this-late."))
+(require 'bootstrap-this-late nil 'noerror)
 
 
 ;;------------------------------------------------------------------------------
-;; Bootstrap.
+;; Final Bootstrap.
 ;;------------------------------------------------------------------------------
 ;; Actual bootstrapping, or finalizing of bootstrap, depending on how you look
 ;; at it. The above was, essentially, the min needed to get ready for
