@@ -16,6 +16,9 @@
 
 (setq dabbrev-friend-buffer-function 'spydez/dabbrev-friend-buffer)
 
+;; Make sure case is preserved when using M-/ completion
+(setq dabbrev-case-replace nil)
+
 
 ;;------------------------------------------------------------------------------
 ;; Hippie Expand
@@ -54,7 +57,11 @@
 ;; Defaults
 ;;------------------------------------------------------------------------------
 
-;; TODO: tabs as spaces setting?
+;;---
+;; Tabs
+;;---
+;; TODO: tabs as spaces setting? We added that somewhere. Maybe these settings
+;; don't belong in this file anymore.
 
 ;; tab width
 (setq-default tab-width spydez/dev-env/tab/normal)
@@ -62,6 +69,18 @@
 ;; TODO: is this global or per-mode in old .emacs?
 ;; New lines are always indented
 ;;(global-set-key (kbd "RET") 'newline-and-indent)
+
+;;---
+;; Undo Size
+;;---
+
+;; give a larger undo buffer
+(when (and (boundp 'spydez/undo-limit)
+           (> spydez/undo-limit undo-limit))
+  (setq undo-limit spydez/undo-limit))
+(when (and (boundp 'spydez/undo-strong-limit)
+           (> spydez/undo-strong-limit undo-strong-limit))
+  (setq undo-strong-limit spydez/undo-strong-limit))
 
 
 ;;------------------------------------------------------------------------------

@@ -372,6 +372,15 @@
 
 
 ;;---
+;; Misc
+;;---
+(defconst spydez/undo-limit 160000
+  "Upscale the default soft undo-limit. 80kB isn't a lot, so double it?")
+(defconst spydez/undo-strong-limit (* 2 spydez/undo-limit)
+  "Upscale default hard undo-limit as well. 120kB -> double soft limit.")
+
+
+;;---
 ;; Load Path
 ;;---
 
@@ -596,7 +605,7 @@
 (setq-default indent-tabs-mode nil)   ; always replace tabs with spaces
 (setq-default tab-width spydez/dev-env/tab/normal) ; set default tab width for all buffers
 ;; https://www.emacswiki.org/emacs/TabStopList
-;; (setq tab-stop-list (spydez/range 0 120 spydez/tab-width)) ; TODO: pull range function over from old
+;; (setq tab-stop-list (spydez/range 0 120 spydez/tab-width)) ; TODO: range function is in lisp/misc-functions... load them earlier?
 
 ;; NOTE: M-x tabify and M-x untabify exist and work on regions.
 
@@ -815,7 +824,9 @@
 
 ;; TODO: move to a finalize probably?
 ;; Have a shell open and ready.
-(when window-system (shell)) ;; TODO: set a default dir for shell to open to?
+;; (when window-system (shell))
+;; TODO: set a default dir for shell to open to?
+;; TODO: why does (shell) here cause a vertical split? I want it in background.
 
 ;; TODO: finalize help - maybe some how-to in a buffer?
 ;; for zzz-finalize to choose as shown.
