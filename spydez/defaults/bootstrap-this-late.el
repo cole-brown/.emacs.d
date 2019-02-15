@@ -45,8 +45,8 @@
 ;;     Format to be used: (setq disable-pkg-PKGNAME t)"
 ;;   Note: all packages CANNOT be disabled in this manner.
 ;;   Note 2: No idea how that pkg disabling is done.
-;; from:
-;;   https://github.com/kaushalmodi/.emacs.d/blob/master/personal/setup-var-overrides-EXAMPLE.el
+;;   from:
+;;     https://github.com/kaushalmodi/.emacs.d/blob/master/personal/setup-var-overrides-EXAMPLE.el
 
 
 ;;------------------------------------------------------------------------------

@@ -193,7 +193,7 @@
 ;; Note: 'require' works off of file name (just like load) if not already
 ;; loaded. 'provide' can provide anything.  But if we want 'require' to find the
 ;; right thing, we'll have to have require/provide/filename on the same page.
-;; Alternative is, like, (require 'spydez/bootstrap/debug "bootstrap-debug")?
+;; Alternative is, like, (require 'spydez/bootstrap/debug/early "bootstrap-debug-early")?
 ;; Don't think that looks great.
 
 ;; TODO: if we try to get this optimized, the endgame is (probably?):
@@ -323,6 +323,8 @@
 ;; Bootstrap Consts, Vars, and Funcs.
 ;;------------------------------------------------------------------------------
 
+;; TODO: shift even more out into bootstrap-* files/steps?
+
 ;;---
 ;; Setup some very basics, so we can get moving...
 ;;---
@@ -400,7 +402,7 @@
 ;; Debug
 ;;---
 ;; All the way down here because I want my load paths, but we could put at the top if needed with a little adjustment.
-(require 'bootstrap-debug)
+(require 'bootstrap-debug-early)
 ;; TODO: sanity check: make sure every var in a list is boundp so my vars/consts can't just wander off on me.
 ;; TODO: sanity check: make sure every func in a list is fboundp so my funcs can't just wander off on me.
 
@@ -476,8 +478,9 @@
 ;;---
 ;; Try-Load overrides (from bootstrap-this-late.el)?
 ;;---
-;(when (require bootstrap-this-late nil 'noerror)
-;  (message "Empty bootstrap-this-late."))
+;;(when (require bootstrap-this-late nil 'noerror)
+;;  (message "Empty bootstrap-this-late."))
+;; I'm fine if this system has no late step.
 (require 'bootstrap-this-late nil 'noerror)
 
 
@@ -486,7 +489,7 @@
 ;;------------------------------------------------------------------------------
 ;; Actual bootstrapping, or finalizing of bootstrap, depending on how you look
 ;; at it. The above was, essentially, the min needed to get ready for
-;; use-package which is the min needed for init-debug which is possibly useful
+;; use-package which is the min needed for bootstrap-debug-late which is possibly useful
 ;; for debugging as I go through the rest of this init.el rewrite.
 
 ;; Bootstrap of OS and External Tools.
@@ -510,7 +513,7 @@
 (require 'bootstrap-package)
 
 ;; ASAP after use-package is available (debug prints, init load timings)
-(require 'init-debug) ;; TODO: rename to... configure-debug?
+(require 'bootstrap-debug-late)
 
 ;; todo: mess with garbage collection at all?
 ;; todo: up this a waybunch? May be a more annoying hit to gc huge chunks infrequently instead of tiny chunks frequently.

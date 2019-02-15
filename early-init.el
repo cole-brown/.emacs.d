@@ -80,8 +80,8 @@
     ;; (message "hashed: %s %s %s %s" input prefix hash slice join)
     (spydez/list-join join
                       prefix
-                     (substring hash-full 0 slice)
-                     (substring hash-full (- slice) nil))
+                      (substring hash-full 0 slice)
+                      (substring hash-full (- slice) nil))
     ))
 
 
