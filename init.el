@@ -162,7 +162,7 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Layout.
+;; About Layout.
 ;;------------------------------------------------------------------------------
 
 ;; early-init.el:
@@ -216,7 +216,7 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Vars and Funcs
+;; Concerning Consts, Vars, and Funcs.
 ;;------------------------------------------------------------------------------
 ;; TODO: figure out naming scheme and put info here maybe
 ;; TODO: do I want to follow:
@@ -231,6 +231,32 @@
 ;; word joiner: -
 ;;   e.g.: spydez/hash-and-reduce, spydez/backup-files
 ;; TODO: Do I want anything for func vs var in name?
+
+;; Evolving vars seem to be emerging into these groups:
+;;   - early-init: needed by all, used to figure out my system and specifics
+;;   - bootstrap-this-early:
+;;     - needed early (before now, after early-init) to bootstrap this system
+;;     - or only applicable/used by this system (e.g. "work.org" isn't a file at home)
+;;   - this section:
+;;     - defaults - can be overridden by bootstrap-this-late at the end off bootstrapping
+
+;; defconst vs defvar vs setq
+;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Defining-Variables.html
+;; Looks like I can use defconst for desired functionality/hinting, while also being
+;; allowed to ignore the const-ness and override via a setq in a later init sub-file.
+
+
+;;---
+;; Cross Platform
+;;---
+
+;; I don't have any more than just some Windowses (7, 10) right now so a robust
+;; cross-platform init with proper places for overriding things will probably
+;; have to wait until I encounter it.
+;; I think this is it (probably this is overkill), but I can't properly test.
+
+;; cross-platform dir and file names:
+;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Directory-Names.html#Directory-Names
 
 
 ;;----------------------------------------------------------------------------;;
@@ -293,39 +319,20 @@
       (t (error (message "Bootstrap: No Bootstrap for this computer?: %s %s" spydez/bootstrap/complete spydez/setup/system/hash))))
 
 
-;; TODO: move these comments/headings about bootstrap up?
 ;;------------------------------------------------------------------------------
-;; Initial vars bootstrap.
+;; Bootstrap Consts, Vars, and Funcs.
 ;;------------------------------------------------------------------------------
-
-;; Evolving vars seem to be emerging into these groups:
-;;   - early-init: needed by all, used to figure out my system and specifics
-;;   - bootstrap-this-early:
-;;     - needed early (before now, after early-init) to bootstrap this system
-;;     - or only applicable/used by this system (e.g. "work.org" isn't a file at home)
-;;   - this section:
-;;     - defaults - can be overridden by bootstrap-this-late at the end off bootstrapping
-
-;; I don't have any more than just some Windowses (7, 10) right now so a robust
-;; cross-platform init with proper places for overriding things will probably
-;; have to wait until I encounter it.
-;; I think this is it (probably this is overkill), but I can't properly test.
-
 
 ;;---
 ;; Setup some very basics, so we can get moving...
 ;;---
-;; These are the defaults. Override with setq later if needed.
+;; Here, early-init, and bootstrap-this-early are the defaults.
+;; To adjust for this system:
+;;   Define differently in early-init;
+;;   Define differently in bootstrap-this-early;
+;;   Or override with setq later in bootstrap-this-late.
 
 ;; TODO: setq vs customize-set-variable (...vs being in the custom file?)
-
-;; defconst vs defvar vs setq
-;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Defining-Variables.html
-;; Looks like I can use defconst for desired functionality/hinting, while also being
-;; allowed to ignore the const-ness and override via a setq in a later init sub-file.
-
-;; cross-platform dir and file names:
-;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Directory-Names.html#Directory-Names
 
 
 ;;---
