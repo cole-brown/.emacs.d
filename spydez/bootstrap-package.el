@@ -58,6 +58,23 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Update/Upgrade Packages Process
+;;------------------------------------------------------------------------------
+;; There are automated ways to upgrade, but I'm thinking manual for now...
+;; TODO: an interactive function for this?
+;;   M-x list-packages
+;;   'U' to mark upgrades
+;;   'x' to upgrade?
+;;
+;; Almost what I want in a function?:
+;;   https://emacs.stackexchange.com/questions/16398/noninteractively-upgrade-all-packages
+
+;; Options for auto-update, or packages for helping update:
+;;   https://emacs.stackexchange.com/questions/31872/how-to-update-packages-installed-with-use-package
+;;   https://github.com/Malabarba/paradox
+
+
+;;------------------------------------------------------------------------------
 ;; Provide this.
 ;;------------------------------------------------------------------------------
 (provide 'bootstrap-package)
