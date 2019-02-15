@@ -556,6 +556,13 @@
 ;;------------------------------------------------------------------------------
 ;; Loading and init are done - now do any more required setup.
 
+;; Interactive funcs I don't use in init but may want sometimes interactively,
+;; as they are interactive functions.
+;; Actually I do use one or two in init:
+;;   - set keybinds to some
+;;   - use e.g. range for e.g. tabstops
+(require 'misc-functions)
+
 ;; OS: May need to add a bootstrap-os if need anything earlier than this...
 ;; Any windows vs Linux vs etc stuff.
 ;; Also a decent place for XEmacs vs Emacs if we need any of that.
@@ -750,10 +757,6 @@
 ;;---
 ;; Misc Config
 ;;---
-
-;; Interactive funcs I don't use in init but may want sometimes interactively,
-;; as they are interactive functions.
-(require 'misc-functions)
 
 ;; autocomplete?
 ;; Can you thrive and profit without auto-completion? Surely. The feature is

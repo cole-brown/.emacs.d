@@ -5,6 +5,30 @@
 ;; So there won't actually be much here right now.
 ;; Like... heck. Probably more like 1 per cent mille.
 
+
+;;------------------------------------------------------------------------------
+;; General Settings
+;;------------------------------------------------------------------------------
+(setq org-log-done t) ; auto-timestamp when TODOs are turned to DONE state
+(setq org-hide-leading-stars t) ; make outline a bit cleaner
+(setq org-odd-levels-only t)    ; make outline a bit cleaner
+
+
+;;------------------------------------------------------------------------------
+;; Hooks
+;;------------------------------------------------------------------------------
+
+;; TODO: not sure if we need to hook yas and org together anymore.
+;;  - make a test org-mode snippet and see if it Just Works (tm)?
+;;
+;; (defun spydez/org-mode-hook ()
+;;   ;; yasnippet
+;;   (make-variable-buffer-local 'yas/trigger-key)
+;;   (setq yas/trigger-key [tab])
+;;   (define-key yas/keymap [tab] 'yas/next-field-group))
+;; (add-hook 'org-mode-hook 'spydez/org-mode-hook)
+
+
 ;;------------------------------------------------------------------------------
 ;; Org Mode!
 ;;------------------------------------------------------------------------------

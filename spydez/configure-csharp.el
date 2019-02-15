@@ -7,7 +7,6 @@
 
 ;; TODO: these might belong in their own file...
 
-
 ;;------------------------------------------------------------------------------
 ;; C#
 ;;------------------------------------------------------------------------------
@@ -15,19 +14,45 @@
 ;; C# isn't very popular as an emacs mode. Who'd've thunk.
 ;; From https://github.com/cbaggers/dotemacs/blob/master/init/csharp.el
 
-;; I know I have settings in hook in old .emacs
-;; but for now, just... leave all this commented out until I get to it.
+;; Some from old emacs config, some from someone else's.
 (defun spydez/hook/csharp-mode ()
+;;; <my old emacs>
+
+  ;; Use BSD in C, C++. Used to use it in C#.
+  ;; But now C# shares a style with Java, so see if that's better.
+  ;; Or go back to BSD if I hate it.
+  ;; (c-set-style "bsd") ;; See c-style-alist for supported types
+  ;; Trial [2019-02-15]
+  (c-set-style "C#") ;; See c-style-alist for supported types
+
+  (setq c-basic-offset spydez/dev-env/tab/normal)
+  (c-set-offset 'innamespace 0) ; Don't indent namespace - waste of indent level
+  (c-set-offset 'case-label '+) ; indent case labels by c-indent-level, too
+
+  ;; Have this set globally.
+  ;; (setq indent-tabs-mode nil)
+
+  (setq c-indent-level spydez/dev-env/tab/normal)
+
+  ;; electric-indent-mode is true and might take care of this?
+  ;; (local-set-key [return] 'newline-and-indent)
+
+  ;; fill-column can use default for now.
+  ;; (setq fill-column spydez/dev-env/fill-column/normal)
+
+  ;; line numbers already on globally
+
+;;; </my old emacs>
+
   ;; TODO: I probably want most or all of these, or some competing package/feature
-;  (paredit-mode 1)
-;  (omnisharp-mode 1)
-;  (my/disable-paredit-spaces-before-paren)
-;  (company-mode 1)
-;  (yas-minor-mode 1)
-;  (flycheck-mode 1)
+  ;; (paredit-mode 1)
+  ;; (omnisharp-mode 1)
+  ;; (my/disable-paredit-spaces-before-paren)
+  ;; (company-mode 1)
+  ;; (yas-minor-mode 1)
+  ;; (flycheck-mode 1)
   )
 
-;; TODO: check my old .emacs
 ;; TODO: check this https://github.com/dholm/dotemacs/blob/master/.emacs.d/lisp/modes/csharp.el
 (use-package csharp-mode
   :config
@@ -53,6 +78,15 @@
 ;;------------------------------------------------------------------------------
 ;; TODOs
 ;;------------------------------------------------------------------------------
+
+;; TODO: some sanity check for things-I-want-in-mode-X-but-are-set-globally?
+;;   - On the one hand, they're set globally, so it's likely I want a bunch of
+;;     things that aren't even in this file or on my mind.
+;;   - On the other hand, I don't like throwing away things that were useful
+;;     before and might be again.
+;;   - On the gripping hand, might as well do everything I can to catch things
+;;     that may go wrong when I'm not familiar with the inner workings of
+;;     all my init files?
 
 ;; TODO: CEDET?
 ;;   - https://github.com/tuhdo/tuhdo.github.io/blob/master/emacs-tutor/cedet.org

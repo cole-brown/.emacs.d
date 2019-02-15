@@ -2,6 +2,15 @@
 
 
 ;;------------------------------------------------------------------------------
+;; General Settings
+;;------------------------------------------------------------------------------
+
+;; Delete selected text on insert instead of just bumping it over.
+;; aka: turn on pending delete (when a region is selected, typing replaces it)
+(delete-selection-mode 1)
+
+
+;;------------------------------------------------------------------------------
 ;; Keybinds
 ;;------------------------------------------------------------------------------
 
@@ -11,7 +20,7 @@
   ([(control z)] . undo) ;; unused keybind - I just don't like C-z hiding emacs window
 
   ;; I don't like C-backspace dumping to the kill ring. I kill line or something instead.
-  ([(control backspace)] 'spydez/backward-delete-word)
+  ([(control backspace)] . spydez/backward-delete-word)
 
   ;; Move backward-kill-word to C-w. Kill-region to C-x C-k...
   ;; from my old emacs config, muscle memory and ultimately:

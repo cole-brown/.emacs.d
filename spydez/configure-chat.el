@@ -19,13 +19,13 @@
 ;; (defun spydez/erc ()
 ;;   "Join pre-speciifed servers and channels."
 ;;   (interactive)
-;;   (erc :server "irc.freenode.net" :port 6667 :nick kooru/erc-nick)
-;;   ;(erc :server "irc.sorcery.net" :port 6667 :nick kooru/erc-nick)
+;;   (erc :server "irc.freenode.net" :port 6667 :nick spydez/erc-nick)
+;;   ;(erc :server "irc.sorcery.net" :port 6667 :nick spydez/erc-nick)
 ;;   )
 ;; 
 ;; ;; to auto-connect, uncomment:
-;; ;;(kooru/erc)
-;; ;; else, just do a "M-x kooru/erc" for manual.
+;; ;;(spydez/erc)
+;; ;; else, just do a "M-x spydez/erc" for manual.
 
 
 ;;------------------------------------------------------------------------------
