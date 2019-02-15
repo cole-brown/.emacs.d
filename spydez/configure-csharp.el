@@ -7,6 +7,7 @@
 
 ;; TODO: these might belong in their own file...
 
+
 ;;------------------------------------------------------------------------------
 ;; C#
 ;;------------------------------------------------------------------------------
@@ -51,6 +52,12 @@
   ;; (company-mode 1)
   ;; (yas-minor-mode 1)
   ;; (flycheck-mode 1)
+
+  ;; TODO: check out these ideas from: https://github.com/dholm/dotemacs/blob/master/.emacs.d/lisp/modes/c-c%2B%2B.el
+  ;; TODO: enable/disable in c-common-hook as well.
+
+  ;; Separate camel-case into separate words.
+  ;; (subword-mode t)
   )
 
 ;; TODO: check this https://github.com/dholm/dotemacs/blob/master/.emacs.d/lisp/modes/csharp.el
