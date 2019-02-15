@@ -200,6 +200,10 @@
 
 ;; todo: which should take precedence if in a svn repo that I also made a git repo.
 
+;; magit's `git svn' extension:
+;; https://github.com/magit/magit-svn
+;; TODO: Start using that if/when I have to move a work repo from svn to git.
+
 
 ;;------------------------------------------------------------------------------
 ;; Provide this.

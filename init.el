@@ -36,6 +36,8 @@
 ;; References.
 ;;---
 
+;; Check this for ideas: ~/zzz_generated-emacs/emacs.d
+
 ;; Special extra useful links:
 ;;   1) Sacha's init.org: http://pages.sachachua.com/.emacs.d/Sacha.html
 ;;      - Firmly in number 1. Followed her init pretty exclusively until done
