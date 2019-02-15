@@ -464,17 +464,7 @@
   ;; If I need more than a pair or triple tuple:
   ;;   Options for Structured Data in Emacs Lisp: https://nullprogram.com/blog/2018/02/14/
   )
-;; set up PATHs so external tools can be found.
-(when (boundp 'spydez/tools/external)
-  (dolist (tool spydez/tools/external)
-    ;; add to exec-path unless it's already a known executable
-    (unless (executable-find (car tool))
-      (add-to-list 'exec-path (cdr tool) t)) ;; append to end
-    ))
-;; find in alist: (when (assoc "diff" spydez/tools/external) (message "found %s in alist" "diff"))
-;; todo: move this to bootstrap-externals? configure-os? config os feels right but might need sooner.
-;;   - so... bootstrap-os.el needed here probably. Or after overrides - move to bootstrap section proper.
-;; (executable-find "git")
+
 
 ;;---
 ;; Try-Load overrides (from bootstrap-this-late.el)?
@@ -492,6 +482,9 @@
 ;; use-package which is the min needed for init-debug which is possibly useful
 ;; for debugging as I go through the rest of this init.el rewrite.
 
+;; Bootstrap of OS and External Tools.
+(require 'bootstrap-os)
+
 ;; Keep near (require 'bootstrap-package):
 ;;---
 ;; Not sure how true this is, but...
@@ -502,6 +495,9 @@
 ;; `(package-initialize)' line present in their init.el.
 ;;   I call this function in bootstrap-packages.el and so am keeping the
 ;; commented out version here so that package.el does not add it again.
+;; TODO: emacs 27: Figure out how true this is.
+(when (boundp 'early-init-file)
+  (message "TODO: figure out how early-init affects call to package-initialize"))
 
 ;; Init use-package so we can use use-package for the rest of the packages we use.
 (require 'bootstrap-package)

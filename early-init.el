@@ -39,6 +39,17 @@
 
 
 ;;---
+;; Strings
+;;---
+(defun spydez/list-join (join prefix &rest args)
+  (let ((full-list (cons prefix args)))
+    ;; (message "s/lj: %s" full-list)
+    (mapconcat (function (lambda (x) (format "%s" x)))
+               full-list
+               join)))
+
+
+;;---
 ;; Hashing
 ;;---
 (defconst spydez/hash/default 'sha512
@@ -59,6 +70,7 @@
         (secure-hash hash input)
       (error "Unknown hash: %s" hash))
     ))
+
 (defun spydez/hash-and-reduce (input &optional prefix hash slice join)
   (let* ((hash-full (spydez/hash-input input hash))
          ;; (hash-len (length hash-full)) ;; negative numbers work in substring, yay
@@ -66,11 +78,10 @@
          (join (or join spydez/hash/join))
          (prefix (or prefix spydez/hash/prefix)))
     ;; (message "hashed: %s %s %s %s" input prefix hash slice join)
-    (mapconcat 'identity
-               (list prefix
+    (spydez/list-join join
+                      prefix
                      (substring hash-full 0 slice)
                      (substring hash-full (- slice) nil))
-               join)
     ))
 
 
@@ -87,6 +98,7 @@
   "(Plain String) Intended for this specific computer's setup folder.")
 (defconst spydez/setup/system/hash (spydez/hash-and-reduce spydez/setup/system/name spydez/setup/domain/subname)
   "(Hashed) Intended for this specific computer's setup folder.")
+
 
 ;;---
 ;; Master List & Reason I'm doing system/hash.
@@ -113,6 +125,7 @@
       ;; fallthrough case - nothing specified so defaults will be used
       (t (message "Update 'Master List' for this system (%s) here." spydez/setup/system/hash)
          (setq spydez/bootstrap/system/exists-p nil)))
+
 
 ;;---
 ;; Directories

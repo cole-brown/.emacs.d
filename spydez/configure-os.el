@@ -5,16 +5,7 @@
 ;; General
 ;;------------------------------------------------------------------------------
 
-(defun spydez/tools/os-and-tool-p (sys-type ext-tool)
-    "t if on system-type and tool exists on system-type, else nil"
-    (if (and
-         ;; on certain OS...
-         (eq system-type sys-type)
-         ;; ...and looking for an expected external tool
-         (and (boundp 'spydez/tools/external)
-              (executable-find ext-tool)))
-        t
-      nil))
+;; os-and-tool-p exists in bootstrap-os.el now
 ;; e.g. (when (spydez/tools/os-and-tool-p 'windows-nt "bash") (message "hello there"))
 
 
