@@ -23,6 +23,7 @@
 ;;   (defalias 'spydez/shell 'spydez/windows/shell)
 ;;   )
 
+;; TODO: move to configure OS?
 ;; Set shell command to use git bash.
 (when (spydez/tools/os-and-tool-p 'windows-nt "bash")
   (let ((bash-path (executable-find "bash")))
@@ -40,8 +41,6 @@
 ;;------------------------------------------------------------------------------
 ;; TODOs
 ;;------------------------------------------------------------------------------
-
-;; TODO: turn this into yasnippet?
 
 
 ;;------------------------------------------------------------------------------

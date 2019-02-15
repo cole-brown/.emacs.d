@@ -166,6 +166,9 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
 (defconst spydez/dir/personal/system-this (spydez/dir-name spydez/setup/system/hash spydez/dir/personal/system-all)
   "Anything that has to be computer specific. Overriding tab widths or whatnot.")
 
+(defconst spydez/dir/personal/lisp (spydez/dir-name "lisp" spydez/dir/emacs/personal)
+  "Extra, non-init files for lisp code I've made or scrounged...")
+
 
 ;;---
 ;; Load Path

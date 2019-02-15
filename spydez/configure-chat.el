@@ -1,11 +1,31 @@
 ;; -*- emacs-lisp -*-
 
 
+;; My old ERC config:
+;;   https://github.com/spydez/emacs/blob/master/libs/custom/erc-config.el
+;; Not using IRC really right now.
+
+
 ;;------------------------------------------------------------------------------
-;; TODO: General Settings?
+;; General Settings
 ;;------------------------------------------------------------------------------
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#orgcef4da0
+;; Just straight up auto-join:
 ;; (erc :server "irc.freenode.net" :port 6667 :nick "sachac")
+
+;; Or, use this func, then call or not here or interactively:
+
+;; ;; Connect to servers
+;; (defun spydez/erc ()
+;;   "Join pre-speciifed servers and channels."
+;;   (interactive)
+;;   (erc :server "irc.freenode.net" :port 6667 :nick kooru/erc-nick)
+;;   ;(erc :server "irc.sorcery.net" :port 6667 :nick kooru/erc-nick)
+;;   )
+;; 
+;; ;; to auto-connect, uncomment:
+;; ;;(kooru/erc)
+;; ;; else, just do a "M-x kooru/erc" for manual.
 
 
 ;;------------------------------------------------------------------------------

@@ -392,6 +392,7 @@
 ;; Don't use .emacs.d. 
 ;; https://stackoverflow.com/questions/24779041/disable-warning-about-emacs-d-in-load-path
 ;; (add-to-list 'load-path spydez/dir/emacs)
+(add-to-list 'load-path spydez/dir/personal/lisp) ;; non-init; don't care about and should be overridable.
 (add-to-list 'load-path spydez/dir/personal/defaults) ;; defaults first so everything else overrides.
 (add-to-list 'load-path spydez/dir/emacs/personal)
 (add-to-list 'load-path spydez/dir/personal/domain-this)
@@ -741,6 +742,10 @@
 ;; Misc Config
 ;;---
 
+;; Interactive funcs I don't use in init but may want sometimes interactively,
+;; as they are interactive functions.
+(require 'misc-functions)
+
 ;; autocomplete?
 ;; Can you thrive and profit without auto-completion? Surely. The feature is
 ;; kind of a comfort blanket for most of us; you will never fail to bild a
@@ -807,6 +812,10 @@
       (dolist (file spydez/auto-open-list)
         (find-file file))))
 (add-hook 'emacs-startup-hook 'spydez/auto-open-files)
+
+;; TODO: move to a finalize probably?
+;; Have a shell open and ready.
+(when window-system (shell)) ;; TODO: set a default dir for shell to open to?
 
 ;; TODO: finalize help - maybe some how-to in a buffer?
 ;; for zzz-finalize to choose as shown.
