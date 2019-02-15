@@ -175,7 +175,13 @@
   )
 
 ;; Trial: [2019-01-25]
-(use-package magit-gh-pulls)
+(use-package magit-gh-pulls
+  :disabled
+  ;; Disabled: [2019-02-15]
+  ;;   A brand new magit version dropped magit-popup and created Transient.
+  ;;   https://www.reddit.com/r/emacs/comments/aqp6jc/transient_released_magitpopup_successor/
+  ;; TODO: wait a bit, update, re-enable?
+  )
 
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#magit
 ;; From http://endlessparentheses.com/merging-github-pull-requests-from-emacs.html

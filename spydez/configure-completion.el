@@ -42,7 +42,11 @@
          ("C-x b" . helm-buffers-list)
          ("M-y" . helm-show-kill-ring)
          ("M-x" . helm-M-x)
+
+         ;; from my old emacs config, muscle memory and ultimately:
+         ;;   http://steve.yegge.googlepages.com/effective-emacs
          ("C-x C-m" . helm-M-x) ; Invoke M-x w/o the Alt key. Useful for Dvorak.
+
          ("C-x c o" . helm-occur)
          ("C-x c s" . helm-swoop)
          ("C-x c y" . helm-yas-complete)
