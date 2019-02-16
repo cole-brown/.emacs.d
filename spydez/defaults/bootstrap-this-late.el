@@ -21,14 +21,26 @@
 ;; if external tool is known by emacs' current environment.
 (defconst spydez/tools/external
   '(
-    ;; configure-shell wants bash (git bash (same path as diff))
-    ;; here and in Windows PATH atm... (debugging eshell)
-    ("bash" . "C:/Users/cole/AppData/Local/GitHub/PortableGit_69bd5e6f85e4842f07db71c9618a621154c52254/usr/bin")
+    ;; Defining these in a first-to-last way as I am (currently) appending
+    ;; to the end of exec-path and env PATH.
 
-    ;; magit wants git and diff
-    ;; TODO: find 2.19+ git that Git Bash & Git GUI are using - on 2.14 right now
-    ("git" . "") ; in windows system env var PATH right now
-    ("diff" . "C:/Users/cole/AppData/Local/GitHub/PortableGit_69bd5e6f85e4842f07db71c9618a621154c52254/usr/bin")
+    ;; magit
+    ("git" . "C:/Program Files/Git/mingw64/bin")
+    ;; Um... or one of these??
+    ;;   C:/Program Files/Git/cmd
+    ;;   C:/Program Files/Git/mingw64/bin
+    ;;   C:/Program Files/Git/usr/bin
+    ;;   C:/Users/cole/AppData/Local/GitHubDesktop/app-1.6.1/resources/app/git/mingw64/bin
+    ;;   C:/Users/cole/AppData/Local/GitHubDesktop/app-1.6.1/resources/app/git/cmd
+
+    ;; EPA
+    ("gpg" . "C:/Program Files/Git/usr/bin")
+
+    ;; shell
+    ("bash" . "C:/Program Files/Git/usr/bin")
+
+    ;; magit for external diff
+    ("diff" . "C:/Program Files/Git/usr/bin")
     )
   "An alist for tool name -> exec path. These will be front-to-back appended to list, so if e.g. there's several git binaries and only one will work, put git in front of this alist."
   ;; If I need more than a pair or triple tuple:

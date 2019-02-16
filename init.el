@@ -36,7 +36,8 @@
 ;; References.
 ;;---
 
-;; Check this for ideas: ~/zzz_generated-emacs/emacs.d
+;; Check this for ideas todo: ~/zzz_generated-emacs/emacs.d
+;; Check this out for more stuff todo: ~/new-emacs.org
 
 ;; Special extra useful links:
 ;;   1) Sacha's init.org: http://pages.sachachua.com/.emacs.d/Sacha.html
@@ -475,11 +476,15 @@
   '(
     ;; configure-shell wants bash (git bash (same path as diff))
     ;; here and in Windows PATH atm... (debugging eshell)
-    ("bash" . "C:/Users/cole/AppData/Local/GitHub/PortableGit_69bd5e6f85e4842f07db71c9618a621154c52254/usr/bin")
+    ("bash" . "")
+
+    ;; Emacs EPA (EasyPG Assistant) should have latest GPG version
+    ;; TODO: add in a check for version numbers when checking for tools?
+    ("gpg" . "")
 
     ;; magit wants git and diff
     ("git" . "") ; in windows system env var PATH  right now
-    ("diff" . "C:/Users/cole/AppData/Local/GitHub/PortableGit_69bd5e6f85e4842f07db71c9618a621154c52254/usr/bin")
+    ("diff" . "")
     )
   "An alist for tool name -> exec path. These will be front-to-back appended to list, so if e.g. there's several git binaries and only one will work, put git in front of this alist."
   ;; If I need more than a pair or triple tuple:
@@ -736,6 +741,8 @@
 ;; TODO: does this apply to key-chord and/or hydra packages?
 
 ;; TODO: Autorevert. Tweak ARev minor mode? Disable it?
+
+(require 'configure-crypt)
 
 ;; chat, social stuff
 (require 'configure-chat)
