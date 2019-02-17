@@ -23,7 +23,8 @@
 
 (unless (server-started-p)
   (when (spydez/debugging-p)
-    (message "Starting server."))
+    ;; @ that todo in early-init.el: yeah, like this.
+    (spydez/debug/message nil "Starting server."))
   (server-start))
 
 

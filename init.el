@@ -5,14 +5,20 @@
 ;; TODO: a pretty centered header or something here for to be pretty
 
 
+(setq spydez/warning/current-type '(spydez interstitial-prose))
+
+
+;; TODO: use-tool package, like use-package, but for external tools like git, gpg
+;; say what versions you want, what os you expect, have ways for packages
+;; to hook in so like gpg can be connected to EPA even if half windows, half MinGW environment.
+
 ;;------------------------------------------------------------------------------
 ;; Notes, TODOs, Links
 ;;------------------------------------------------------------------------------
 
-
-;; search...
-;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep "provide"
-;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep "
+;; search...                                             (knights who say...)
+;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni "provide"
+;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni "
 
 
 ;; TODO: can 'literate programming' do multiple files?
@@ -73,6 +79,8 @@
 ;;---
 ;; TODOs and Misc.
 ;;---
+
+;; TODO: change sanity checks and others over from (and (boundp var) var) to (bound-and-true-p var)
 
 ;; TODO: go through saved-off files of old.emacs in spydez/references/my-old-emacs
 
@@ -221,6 +229,7 @@
 ;;------------------------------------------------------------------------------
 ;; Concerning Consts, Vars, and Funcs.
 ;;------------------------------------------------------------------------------
+(setq spydez/warning/current-type '(spydez bootstrap))
 ;; TODO: figure out naming scheme and put info here maybe
 ;; TODO: do I want to follow:
 ;;   - Emacs/Elisp conventions (e.g. spydez--)?
@@ -317,9 +326,22 @@
 (cond ((eq spydez/bootstrap/complete 'specific) t) ;; good to go
       ;; using default - should probably warn
       ((eq spydez/bootstrap/complete 'default)
-       (message "Bootstrap: Specific Bootstrap does not exist for this computer: %s %s" spydez/bootstrap/complete spydez/setup/system/hash))
+       (spydez/warning/message nil nil "Specific bootstrap does not exist for this computer: %s %s"
+                               spydez/bootstrap/complete spydez/setup/system/hash))
       ;; fallthrough cases - nothing used
-      (t (error (message "Bootstrap: No Bootstrap for this computer?: %s %s" spydez/bootstrap/complete spydez/setup/system/hash))))
+      (t (error (spydez/warning/message nil nil "Bootstrap: No bootstrap for this computer?: %s %s"
+                                        spydez/bootstrap/complete spydez/setup/system/hash))))
+
+;;---
+;; Little bit of Sanity...
+;;---
+;; TODO: move other early sanity checks into here?
+;;   Then move this up earlier and move those checks into functions?
+;;   Then do the sanity check functions at the proper points?
+;;   Then maybe a new file name, maybe not.
+;; TODO: sanity check: make sure every var in a list is boundp so my vars/consts can't just wander off on me.
+;; TODO: sanity check: make sure every func in a list is fboundp so my funcs can't just wander off on me.
+(require 'bootstrap-sanity-early)
 
 
 ;;------------------------------------------------------------------------------
@@ -416,8 +438,6 @@
 ;;---
 ;; All the way down here because I want my load paths, but we could put at the top if needed with a little adjustment.
 (require 'bootstrap-debug-early)
-;; TODO: sanity check: make sure every var in a list is boundp so my vars/consts can't just wander off on me.
-;; TODO: sanity check: make sure every func in a list is fboundp so my funcs can't just wander off on me.
 
 
 ;;---
@@ -438,10 +458,10 @@
 ;; Misc Stuff
 ;;---
 ;; Load sensitive information from outside of .emacs.d
-(when
-    (not
-     (load (expand-file-name ".emacs.secrets" spydez/dir/common-doc-save) 'noerror))
-  (message "No secrets to load."))
+(if (bound-and-true-p spydez/dir/common-doc-save)
+    (when (not (load (expand-file-name ".emacs.secrets" spydez/dir/common-doc-save) 'noerror))
+      (spydez/warning/message nil :debug "No secrets to load."))
+  (spydez/warning/message nil nil "No secrets loaded. Do not know where to look. '%s' undefined." 'spydez/dir/common-doc-save))
 
 
 ;;---
@@ -496,7 +516,7 @@
 ;; Try-Load overrides (from bootstrap-this-late.el)?
 ;;---
 ;;(when (require bootstrap-this-late nil 'noerror)
-;;  (message "Empty bootstrap-this-late."))
+;;  (spydez/warning/message nil nil "Empty bootstrap-this-late."))
 ;; I'm fine if this system has no late step.
 (require 'bootstrap-this-late nil 'noerror)
 
@@ -524,7 +544,7 @@
 ;; commented out version here so that package.el does not add it again.
 ;; TODO: emacs 27: Figure out how true this is.
 (when (boundp 'early-init-file)
-  (message "TODO: figure out how early-init affects call to package-initialize"))
+  (spydez/warning/message nil nil "TODO: figure out how early-init affects call to package-initialize"))
 
 ;; Init use-package so we can use use-package for the rest of the packages we use.
 (require 'bootstrap-package)
@@ -557,10 +577,13 @@
 ;; conditional use-package stuff? 
 ;; https://jwiegley.github.io/use-package/keywords/
 
+(require 'bootstrap-final)
+
 
 ;;------------------------------------------------------------------------------
 ;; Configuration.
 ;;------------------------------------------------------------------------------
+(setq spydez/warning/current-type '(spydez config))
 ;; Loading and init are done - now do any more required setup.
 
 ;; Interactive funcs I don't use in init but may want sometimes interactively,
@@ -812,12 +835,13 @@
 ;;------------------------------------------------------------------------------
 ;; The End.
 ;;------------------------------------------------------------------------------
+(setq spydez/warning/current-type '(spydez finalize))
 
 ;; todo: initial-buffer-choice vs spydez/auto-open-list???
 
 ;; todo: Maybe start a spydez/debugging file?..
 ;; https://www.gnu.org/software/emacs/manual/html_node/eintr/message.html
-;(message "%s" use-package-always-ensure)
+;(spydez/debug/message nil "%s" use-package-always-ensure)
 
 ; todo: require sanity
 ;   - sanity ido-mode off?
@@ -847,6 +871,7 @@
 ;; help info for this into a list during use-package init or config...
 
 (require 'zzz-finalize)
+(setq spydez/warning/current-type '(spydez running))
 ;; fin
 
 ;; TODO: check out old cole-PC.emacs and bootstrap.el.

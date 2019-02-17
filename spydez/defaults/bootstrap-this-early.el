@@ -19,9 +19,9 @@
   (when (and (eq spydez/bootstrap/expected-complete 'default) ; default bootstrap
              (and (boundp 'spydez/bootstrap/system/known-p) spydez/bootstrap/system/known-p) ; know this system
              (file-exists-p spydez/dir/personal/system-this)) ; system-this's folder exists
-    (message "  Update this system's bootstrap-this-early (expecting 'specific return (got %s)): %s"
-             spydez/bootstrap/expected-complete
-             spydez/dir/personal/system-this))
+    (spydez/warning/message nil nil "  Update this system's bootstrap-this-early (expecting 'specific return (got '%s)): %s"
+                            spydez/bootstrap/expected-complete
+                            spydez/dir/personal/system-this))
 
   ;; if default and system/known-p and no this-comp dir...
   ;;   - make this-comp dir
@@ -36,11 +36,11 @@
     ;; Copy this default bootstrap-this-early into the specific dir.
     ;; init will still 'fail' as it is still a default bootstrap-this-early until you go tweak it.
     (let* ((filename spydez/file/bootstrap/local)
-	   (default-path (expand-file-name filename spydez/dir/personal/defaults))
+	         (default-path (expand-file-name filename spydez/dir/personal/defaults))
            (this-path (expand-file-name filename spydez/dir/personal/system-this)))
       ;; TODO: copy an 'empty' or placeholder bootstrap-this-early.el instead of this one that does stuff
       (copy-file default-path this-path)
-      (message "  Copied %s to this system's folder: %s" filename this-path)
+      (spydez/warning/message nil nil "  Copied %s to this system's folder: %s" filename this-path)
       ))
 
 
@@ -50,22 +50,22 @@
   ;; The todos are: Setup up this system.
 
   (unless (and (boundp 'spydez/bootstrap/system/known-p) spydez/bootstrap/system/known-p)
-    ;; Put point at end of (message ...) then:
+    ;; Put point at end of (spydez/warning/message nil nil ...) then:
     ;;   C-x C-e to evaluate these sexprs.
-    (message "Hello there from *default* bootstrap-this-early.")
+    (spydez/warning/message nil nil "Hello there from *default* bootstrap-this-early.")
 
     ;; Make sure these are correct:
-    (message "New computer? Make sure these are correct:")
-    (message "  system/name: %s" spydez/setup/system/name)
-    (message "  system/hash: %s" spydez/setup/system/hash)
+    (spydez/warning/message nil nil "New computer? Make sure these are correct:")
+    (spydez/warning/message nil nil "  system/name: %s" spydez/setup/system/name)
+    (spydez/warning/message nil nil "  system/hash: %s" spydez/setup/system/hash)
 
     ;; Then make sure these folders/files are correct/exist:
-    (message "  dir/domain: %s" spydez/dir/personal/domain-this)
-    (message "  dir/system: %s" spydez/dir/personal/system-this)
-    (message "  expecting 'specific' flag in %s (have '%s' in defaults): %s"
-             "bootstrap-this-early.el"
-             spydez/bootstrap/expected-complete
-             (expand-file-name "bootstrap-this-early.el" spydez/dir/personal/system-this))
+    (spydez/warning/message nil nil "  dir/domain: %s" spydez/dir/personal/domain-this)
+    (spydez/warning/message nil nil "  dir/system: %s" spydez/dir/personal/system-this)
+    (spydez/warning/message nil nil "  expecting 'specific' flag in %s (have '%s' in defaults): %s"
+                            "bootstrap-this-early.el"
+                            spydez/bootstrap/expected-complete
+                            (expand-file-name "bootstrap-this-early.el" spydez/dir/personal/system-this))
 
     ;; TODO: Some messages for ading system-this to hash table/settings in early-init?
     )

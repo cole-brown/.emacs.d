@@ -5,9 +5,9 @@
 ;;------------------------------------------------------------------------------
 
 ;; TODO: skip all or most of this:
-;;    (unless window-system (message "hi"))
+;;    (unless window-system (spydez/debug/message nil "hi"))
 ;; Or maybe do all/most of this:
-;;    (when window-system (message "hi"))
+;;    (when window-system (spydez/debug/message nil "hi"))
 
 
 ;;------------------------------------------------------------------------------

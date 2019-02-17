@@ -30,7 +30,7 @@
             (executable-find ext-tool)))
       t
     nil))
-;; e.g. (when (spydez/tools/os-and-tool-p 'windows-nt "bash") (message "hello there"))
+;; e.g. (when (spydez/tools/os-and-tool-p 'windows-nt "bash") (spydez/debug/message nil "hello there"))
 
 
 ;;---------
@@ -46,7 +46,7 @@
                (exec-path-known-p (if (executable-find tool-name) t nil))
                (env-path (getenv "PATH"))
                (env-path-known-p (if (string-match-p (regexp-quote tool-path) env-path) t nil)))
-          ;; (message "win tool: %s known? %s %s" tool-name exec-path-known-p env-path-known-p)
+          ;; (spydez/debug/message nil "win tool: %s known? %s %s" tool-name exec-path-known-p env-path-known-p)
 
           ;;---
           ;; exec-path
@@ -75,12 +75,12 @@
                                    ";"
                                    tool-path
                                    ))
-            ;; (message "now tool %s in path?: %s %s"
+            ;; (spydez/debug/message nil "now tool %s in path?: %s %s"
             ;;          tool-name
             ;;          (string-match-p (regexp-quote tool-path) (getenv "PATH"))
             ;;          tool-path)
             )))
-    (error (message "Bootstrap: spydez/tools/external not defined.")))
+    (spydez/warning/message nil :error "spydez/tools/external not defined. You are on windows and need it, probably."))
 
 
   ;;---

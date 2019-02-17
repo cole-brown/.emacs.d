@@ -26,7 +26,8 @@
 ;;
 ;; See: https://github.com/search?q=early-init.el&type=Code
 (when (boundp 'early-init-file)
-  (message "Update early-init.el for actual active duty! Emacs %s uses early-init proper." emacs-version))
+  (let ((warn-type '(spydez post))) ;; as in power-on-self-test, not the HTTP thing.
+    (lwarn warn-type :warning "  %s:  Update early-init.el for actual active duty! Emacs %s uses early-init proper." warn-type emacs-version)))
 
 
 
@@ -37,13 +38,67 @@
 
 ;; Need to know something about my boots so I can pull the right straps.
 
+;;---
+;; Warnings
+;;---
+(require 'warnings)
+;; `:warning' should pop up the *Warning* buffer
+(setq warning-minimum-level :warning)
+;; `:debug' should be logged, but not pop up the *Warning* buffer
+(setq warning-minimum-log-level :debug)
+
+;; shouldn't really need adjusting much. maybe to :debug
+(setq spydez/warning/current-level ':warning)
+
+;; First type in list: always 'spydez for my stuff
+;;
+;; Second type in list: current part of init sequence.
+;;   - post (power-on-self-test)
+;;   - early (early-init)
+;;   - interstitial-prose (aka don't have code here plz part of init)
+;;   - bootstrap (first bit of init)
+;;   - config (setup packages, tools, keybinds, etc)
+;;   - finalize (checks and cleanup)
+;;   - running (totally done with init)
+;;
+;; Third and greater type: whatever sub-types you want.
+(setq spydez/warning/current-type '(spydez early))
+
+;; TODO: Move that thing about "failure is not an option in init (for my code)" to here?
+;; TODO: Default levels, types? Is :debug more proper or :warning?
+;; NOTE: Keep the lwarn at the beginning of this file roughly like this.
+(defun spydez/warning/message (type level message &rest args)
+  "type: list with spydez first or nil e.g. nil will become '(spydez bootstrap)
+level: level for lwarn e.g. nil will become :warning
+https://www.gnu.org/software/emacs/manual/html_node/elisp/Warning-Basics.html#Warning-Basics"
+  (let* ((type (or type spydez/warning/current-type))
+         (level (or level spydez/warning/current-level))
+         (injected-message (format "  %s:  %s" type message)))
+    (message "swm: %s %s %s %s" type level message args)
+    (apply 'lwarn type level injected-message args)
+    ;; basically becomes e.g.:
+    ;; (lwarn '(spydez bootstrap) :warning "  %s:  Update 'Master List' for this system (%s) here." '(spydez bootstrap) spydez/setup/system/hash)
+    ))
+;; (spydez/warning/message nil nil "Update foo %s %s" 'bar 'baz)
+
+;; todo: a debug print func? would get these (message ...) funcs that are not
+;; warnings out of the way so I can know that all the warnings are taken care
+;; of.
+;; TODO: move this somewhere? debug-early or something?..
+;; TODO: global enable/disable flag
+;; TODO: lwarn w/ ":debug"?
+(defun spydez/debug/message (type message &rest args)
+  (let* ((type (or type '(spydez debug general)))
+        (injected-message (format "  %s:  %s" type message)))
+    (apply 'message injected-message args)))
+;;(spydez/debug/message nil "hi %s %s" 'bar 'foo)
+
 
 ;;---
 ;; Strings
 ;;---
 (defun spydez/list-join (join prefix &rest args)
   (let ((full-list (cons prefix args)))
-    ;; (message "s/lj: %s" full-list)
     (mapconcat (function (lambda (x) (format "%s" x)))
                full-list
                join)))
@@ -77,7 +132,7 @@
          (slice (or slice spydez/hash/slice))
          (join (or join spydez/hash/join))
          (prefix (or prefix spydez/hash/prefix)))
-    ;; (message "hashed: %s %s %s %s" input prefix hash slice join)
+    ;; (spydez/debug/message "hashed: %s %s %s %s" input prefix hash slice join)
     (spydez/list-join join
                       prefix
                       (substring hash-full 0 slice)
@@ -88,7 +143,7 @@
 ;;---
 ;; Domain & System Setup
 ;;---
-(defconst spydez/file/bootstrap/local "bootstrap-this.el"
+(defconst spydez/file/bootstrap/local "bootstrap-this-early.el"
   "Definitions for how this computer is different from others, for getting bootstrap started.")
 (defconst spydez/setup/domain/name "work"
   "A domain/folder for setups similar to this. E.g. work vs personal.")
@@ -106,7 +161,7 @@
 ;; C-u C-x C-e with point on end of next line to find out your hash:
 ;;   spydez/setup/system/hash
 ;;   e.g.: "computer-898a-27ab"
-;; This is so bootstrap-this.el can live in its proper home, and be found with
+;; This is so bootstrap-this-early.el can live in its proper home, and be found with
 ;; an easy (load ...) or (require ...)
 
 ;; Find this system, setup domain names, reform reduced hash string.
@@ -123,7 +178,7 @@
       ;;        spydez/setup/system/hash (spydez/hash-and-reduce spydez/setup/system/name spydez/setup/domain/subname)))
 
       ;; fallthrough case - nothing specified so defaults will be used
-      (t (message "Update 'Master List' for this system (%s) here." spydez/setup/system/hash)
+      (t (spydez/warning/message nil nil "Update 'Master List' for this system (%s) here." spydez/setup/system/hash)
          (setq spydez/bootstrap/system/exists-p nil)))
 
 
