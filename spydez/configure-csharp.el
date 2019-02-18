@@ -7,6 +7,9 @@
 
 ;; TODO: these might belong in their own file...
 
+;; TODO: check this for any useful things?
+;;   https://www.gnu.org/software/emacs/manual/html_mono/efaq-w32.html#DevStudio
+
 
 ;;------------------------------------------------------------------------------
 ;; C#
