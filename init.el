@@ -382,6 +382,10 @@
   "Yasnippets directory.")
 ;; Could add an override of my own snippets if needed.
 
+(defconst spydez/dir/personal/use-tool
+  (expand-file-name "use-tool" spydez/dir/emacs/personal)
+  "use-tool directory.")
+
 
 ;;---
 ;; Identity / Personal Information
@@ -426,6 +430,7 @@
 ;; Don't use .emacs.d. 
 ;; https://stackoverflow.com/questions/24779041/disable-warning-about-emacs-d-in-load-path
 ;; (add-to-list 'load-path spydez/dir/emacs)
+(add-to-list 'load-path spydez/dir/personal/use-tool)
 (add-to-list 'load-path spydez/dir/personal/lisp) ;; non-init; don't care about and should be overridable.
 (add-to-list 'load-path spydez/dir/personal/defaults) ;; defaults first so everything else overrides.
 (add-to-list 'load-path spydez/dir/emacs/personal)

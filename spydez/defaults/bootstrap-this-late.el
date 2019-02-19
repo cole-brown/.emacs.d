@@ -17,35 +17,47 @@
 ;; Do I want to do the "find git" on windows like this or like in the Windows
 ;; PATH env var?
 
-;; Associative List of tool symbol to... tool path. Empty path means just check
-;; if external tool is known by emacs' current environment.
-(defconst spydez/tools/external
-  '(
-    ;; Defining these in a first-to-last way as I am (currently) appending
-    ;; to the end of exec-path and env PATH.
-
-    ;; magit
-    ("git" . "C:/Program Files/Git/mingw64/bin")
-    ;; Um... or one of these??
-    ;;   C:/Program Files/Git/cmd
-    ;;   C:/Program Files/Git/mingw64/bin
-    ;;   C:/Program Files/Git/usr/bin
-    ;;   C:/Users/cole/AppData/Local/GitHubDesktop/app-1.6.1/resources/app/git/mingw64/bin
-    ;;   C:/Users/cole/AppData/Local/GitHubDesktop/app-1.6.1/resources/app/git/cmd
-
-    ;; EPA
-    ("gpg" . "C:/Program Files/Git/usr/bin")
-
-    ;; shell
-    ("bash" . "C:/Program Files/Git/usr/bin")
-
-    ;; magit for external diff
-    ("diff" . "C:/Program Files/Git/usr/bin")
-    )
-  "An alist for tool name -> exec path. These will be front-to-back appended to list, so if e.g. there's several git binaries and only one will work, put git in front of this alist."
-  ;; If I need more than a pair or triple tuple:
-  ;;   Options for Structured Data in Emacs Lisp: https://nullprogram.com/blog/2018/02/14/
+;; just a list of symbol names to use-tool later
+(defconst spydez/use-tools/sources
+  '('git-for-windows)
+  "May not even need any sources, depending on path setup."
   )
+
+;; just a list of symbol names to use-tool later
+(defconst spydez/use-tools/tools
+  '('git 'gpg 'bash 'diff)
+  "Tools to tell use-tool about. Need these all."
+  )
+
+;; ;; Associative List of tool symbol to... tool path. Empty path means just check
+;; ;; if external tool is known by emacs' current environment.
+;; (defconst spydez/tools/external
+;;   '(
+;;     ;; Defining these in a first-to-last way as I am (currently) appending
+;;     ;; to the end of exec-path and env PATH.
+;; 
+;;     ;; magit
+;;     ("git" . "C:/Program Files/Git/mingw64/bin")
+;;     ;; Um... or one of these??
+;;     ;;   C:/Program Files/Git/cmd
+;;     ;;   C:/Program Files/Git/mingw64/bin
+;;     ;;   C:/Program Files/Git/usr/bin
+;;     ;;   C:/Users/cole/AppData/Local/GitHubDesktop/app-1.6.1/resources/app/git/mingw64/bin
+;;     ;;   C:/Users/cole/AppData/Local/GitHubDesktop/app-1.6.1/resources/app/git/cmd
+;; 
+;;     ;; EPA
+;;     ("gpg" . "C:/Program Files/Git/usr/bin")
+;; 
+;;     ;; shell
+;;     ("bash" . "C:/Program Files/Git/usr/bin")
+;; 
+;;     ;; magit for external diff
+;;     ("diff" . "C:/Program Files/Git/usr/bin")
+;;     )
+;;   "An alist for tool name -> exec path. These will be front-to-back appended to list, so if e.g. there's several git binaries and only one will work, put git in front of this alist."
+;;   ;; If I need more than a pair or triple tuple:
+;;   ;;   Options for Structured Data in Emacs Lisp: https://nullprogram.com/blog/2018/02/14/
+;;   )
 
 
 ;;------------------------------------------------------------------------------

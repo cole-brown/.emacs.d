@@ -11,119 +11,18 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Idea 3 - get the minimum working?
+;; Idea 4 - more than one file
 ;;------------------------------------------------------------------------------
-(require 'cl)
+(require 'cl-lib)
+(require 'dash)
+(require 'use-tool-def-tools)
+(require 'use-tool-definitions)
 
-
-;;---
-;; Tool
-;;---
-
-(cl-defstruct (tool (:constructor tool--create)
-                    (:copier nil))
-  name doc
-  versions used-by
-  ;; not sure. may go away but I think we need more stuff of nebuluous nature?
-  vars
-  ;; think these are for after create, when it's actually found
-  path version system)
-
-(setq hhhh (tool--create :name 'gpg
-  :doc
-  "GnuPG used by e.g. EasyPG in emacs."
-  :versions
-  '("x.y" "z.2")
-  :used-by
-  '('epa)
-  :vars
-  nil
-  :path
-  nil
-  :version
-  "z.3"
-  :system
-  'windows-nt))
-
-;; cl-defstruct accessors:
-;;(tool-name hhhh)
-;;(setf (tool-name hhhh) 'gnupg)
-
-;; https://www.tutorialspoint.com/lisp/lisp_structures.htm
-;; ?? (write hhhh)
-;; ?? (terpri)
-
-;; simple list of tools defined for use-tool?
-(defvar use-tool-defined-tools '()
-  "docstring.")
-
-(defun def-tool (tool)
-  (message "%s" tool)
-
-  ;; make tool? let caller make?
-
-  ;; verify?
-
-  ;; put into tool list
-  (add-to-list 'use-tool-defined-tools tool))
-
-;;---
-;; Source
-;;---
-(cl-defstruct (tool-source (:constructor tool-source--create)
-                           (:copier nil))
-  name doc
-  versions get-version
-  tools systems
-  paths)
-
-(setq ffff (tool-source--create :name 'git-for-windows
-  :doc
-  "Git for Windows is its own little MinGW eco-system."
-  
-  :versions
-  '("20190202.1535" "18000101.0700") ;; but I want git (for windows) version
-  :get-version
-  (magit-version) ;; but I want git (for windows) version
-  
-  :tools
-  '('git 'gpg 'diff 'bash)
-  :systems
-  '('windows-nt)
-  :paths
-   '('('windows-nt "C:/Program Files/Git" "mingw64/bin" "usr/bin")
-     '('windows-nt "C:/Program Files (x86)/Git" "mingw32/bin" "usr/bin"))
-   ))
-
-
-;; simple list of tool sources registered for use-tool?
-(defvar use-tool-defined-tool-sources '()
-  "docstring.")
-
-(defun def-tool-source (tool-source)
-  (message "%s" tool-source)
-
-  ;; make tool-source? let caller make?
-
-  ;; verify?
-
-  ;; put into tool list
-  (add-to-list 'use-tool-defined-tool-sources tool-source)
-  )
-
-(defun def-tool-source (tool-source)
-  (message "%s" tool-source)
-  ;; TODO: make tool-source, put into tool-source list
-  )
-
-;;   (let ((version (magit-git-version)))
-;;     (when (and version
-;;                (version< version magit--minimal-git)
-;;                (not (equal (getenv "TRAVIS") "true")))
-;;       (display-warning 'magit (format "\
-;; Magit requires Git >= %s, you are using %s.
-
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; TODO: grep: TODO:use-tool-done
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;---
 ;; Use Tool
@@ -133,12 +32,44 @@
 (defvar use-tool-selected-tools '()
   "Tools in use or to-be found.")
 
-(defvar use-tool-available-sources '('emacs-environment) ;; should emacs be a 'emacs or a :emacs?
+(defvar use-tool-selected-sources '(emacs-environment) ;; should emacs be a 'emacs or a :emacs?
   "Start off with just emacs itself (and the environment it lives in/knows about).")
 
-(defun use-tool-source (source) ;; or source-name or something if not a full tool-source struct
-  ;; if don't know :name, complain and done.
+;; https://stackoverflow.com/questions/26102889/how-do-i-make-named-arguments-in-elisp
+;; Though packages that use it like, for all their options might be a better look.
 
+;; (setq lista '('afirst))
+;; (setq listb '('bfirst))
+;; (defmacro test (name &rest args)
+;;   (add-to-list 'listb name)
+;;   (message "test: %s %s lista: %s listb: %s" name args lista listb)
+;;   )
+;; (test foo "bar")
+;; (add-to-list 'lista "hi")
+;; (add-to-list 'lista 'symbol)
+
+;; setup tools for Exec-Path and ENV PATH
+;; NOTE: BE MINIMAL AND LAZY
+;; NOTE: GET ANYTHING WORKING
+(defmacro use-tool-source (name &rest args)
+  "todo: docstring"
+  (unless (memq :disabled args)
+    (message "uts: %s %s" name args)
+    ;; if don't know :name, complain and done.
+
+    ;; TODO: get working minimally
+
+    (add-to-list 'use-tool-selected-sources name)
+    (message "use-tool-source `%s' added: %s" name use-tool-selected-sources)
+    ))
+
+(use-tool-source git-for-windows :disabled)
+(use-tool-source git-for-windows)
+
+(defun use-tool-source (source)
+  (plist-get args keyword) default)
+
+  (dolist 
   ;; if :disabled keyword, done.
   :disabled
 
@@ -152,132 +83,7 @@
   ;; if :config, do that thing now
   )
 
-;;(listp use-tool-selected-tools)
-;;(not (null use-tool-selected-tools))
-;; (add-to-list 'use-tool-selected-tools 'gpg)
-;; (use-tool 'gpg)
-;; (use-tool 'git)
-;; (memq 'ngit use-tool-selected-tools)
-(defun use-tool (tool) ;; or tool-name or something if not a full tool struct
-  ;; if :disabled keyword, done.
-  :disabled
 
-  ;; if :preface, do that thing now
-
-  ;; if don't know :source, complain and done.
-  :source
-
-  (if (memq tool use-tool-selected-tools)
-      (message "use-tool: `%s' already registered: %s" tool use-tool-selected-tools)
-    
-    ;; if don't know :package, complain, tell to do manually in :config.
-
-    ;; if :init, do that thing now
-
-    ;; ensure in both or one path?
-    ;; :ensure-path
-    ;; :ensure-env-path
-    ;; :ensure-exec-path
-
-    ;; TODO: lots of stuff?..
-
-    (add-to-list 'use-tool-selected-tools tool)
-    (message "use-tool `%s' added: %s" tool use-tool-selected-tools))
-  ;; if :config, do that thing now
-  )
-
-
-
-;;------------------------------------------------------------------------------
-;; Idea 2 - maybe figure out one way to kinda-object it and start there...
-;;------------------------------------------------------------------------------
-
-;; (require 'cl)
-;; 
-;; 
-;; ;;---
-;; ;; Tool
-;; ;;---
-;; 
-;; (cl-defstruct (tool (:constructor def-tool)
-;;                     (:copier nil))
-;;   name doc
-;;   versions used-by
-;;   vars
-;;   path version system)
-;; 
-;; (setq hhhh (def-tool :name 'gpg
-;;   :doc
-;;   "GnuPG used by e.g. EasyPG in emacs."
-;;   :versions
-;;   '("x.y" "z.2")
-;;   :used-by
-;;   '('epa)
-;;   :vars
-;;   nil
-;;   :path
-;;   nil
-;;   :version
-;;   "z.3"
-;;   :system
-;;   'windows-nt))
-;; 
-;; ;;---
-;; ;; Source
-;; ;;---
-;; (cl-defstruct (tool-source (:constructor def-tool-source)
-;;                            (:copier nil))
-;;   name doc
-;;   versions get-version
-;;   tools systems
-;;   paths)
-;; 
-;; (setq ffff (def-tool-source :name 'git-for-windows
-;;   :doc
-;;   "Git for Windows is its own little MinGW eco-system."
-;;   
-;;   :versions
-;;   '("20190202.1535" "18000101.0700") ;; but I want git (for windows) version
-;;   :get-version
-;;   (magit-version) ;; but I want git (for windows) version
-;;   
-;;   :tools
-;;   '('git 'gpg 'diff 'bash)
-;;   :systems
-;;   '('windows-nt)
-;;   :paths
-;;    '('('windows-nt "C:/Program Files/Git" "mingw64/bin" "usr/bin")
-;;      '('windows-nt "C:/Program Files (x86)/Git" "mingw32/bin" "usr/bin"))
-;;    ))
-;; 
-;; 
-;; ;;---
-;; ;; Use Tool
-;; ;;---
-;; 
-;; ;; simple list of tools registered by use-tool?
-;; (defvar use-tool-selected-tools '()
-;;   "Tools in use or to-be found.")
-;; 
-;; (defvar use-tool-available-sources '('emacs-environment) ;; should emacs be a 'emacs or a :emacs?
-;;   "Start off with just emacs itself (and the environment it lives in/knows about).")
-;; 
-;; (defun use-tool-source (source) ;; or source-name or something if not a full tool-source struct
-;;   ;; if don't know :name, complain and done.
-;; 
-;;   ;; if :disabled keyword, done.
-;;   :disabled
-;; 
-;;   ;; if :preface, do that thing now
-;;   
-;;   ;; if :init, do that thing now
-;;   ;; TODO: lots of stuff?..
-;; 
-;;   (add-to-list 'use-tool-available-sources source)
-;;   (message "use-tool-source `%s' added: %s" source use-tool-available-sources)
-;;   ;; if :config, do that thing now
-;;   )
-;; 
 ;; ;;(listp use-tool-selected-tools)
 ;; ;;(not (null use-tool-selected-tools))
 ;; ;; (add-to-list 'use-tool-selected-tools 'gpg)
@@ -311,73 +117,23 @@
 ;;     (message "use-tool `%s' added: %s" tool use-tool-selected-tools))
 ;;   ;; if :config, do that thing now
 ;;   )
-;; 
+
+;;------------------------------------------------------------------------------
+;; Helpers
+;;------------------------------------------------------------------------------
+(defun use-tool-os-and-tool-p (sys-type tool-name)
+  "t if on system-type and tool exists on system-type, else nil"
+  (if (and
+       ;; on certain OS...
+       (eq system-type sys-type)
+       ;; ...and looking for an expected external tool
+       (executable-find tool-name))
+      t
+    nil))
+;; e.g. (when (use-tool-os-and-tool-p 'windows-nt "bash") (message "hello there"))
 
 
 ;;------------------------------------------------------------------------------
-;; Idea 1 - maybe figure out what I want?
+;; The End.
 ;;------------------------------------------------------------------------------
-
-;; (use-tool gpg
-;;           :disabled
-;;           
-;;           ;; :requires ???
-;; 
-;;           ;; :provider git-for-windows?
-;;           ;; :source? git-for-windows?
-;;           ;;  or do we just keep looking til found?
-;; 
-;;           ;; :provider-path ? or is this part of provider?
-;;           
-;;           ;; :package epa?
-;;           ;;  what needs config'd
-;; 
-;;           ;; ensure in both or one path?
-;;           ;; :ensure-path
-;;           ;; :ensure-env-path
-;;           ;; :ensure-exec-path
-;; 
-;;           ;; :preface ;; before everything
-;;           ;; :init ;; before main thing?
-;;           ;; :config ;; after main thing?
-;;           ;; (setq stuff "hi")
-;;           )
-;; 
-;; ;; TOOD: eieio this or that lisp post or try to be base-lispy with it?
-;; ;; that post: https://nullprogram.com/blog/2018/02/14/
-;; 
-;; (def-tool gpg
-;;   :versions ("hi" "hi2")
-;; 
-;;   :compatible ('epa "version")
-;;   ;; or
-;;   :provides ('epa "version")
-;; 
-;;   ;; from user... anything?
-;;   :vars (???)
-;; 
-;;   ;; things found after init, or what?
-;;   :path "foo"
-;;   :version "bar"
-;;   :system 'windows-nt ;; will win + cygwin cause some to be win and some to be nix?
-;; 
-;;   )
-;; 
-;; (def-tool-group git-for-windows
-;;   ;; gonna need a way to know what version these versions is for
-;;   :versions ("version string" "other version" "third")
-;;   :tools ('git 'gpg 'bash 'diff))
-;;   :systems ('windows-nt)
-;;   :paths ;; possible paths, usual suspects, w/e
-;;    ('windows-nt "C:/Program Files/Git" "mingw64/bin" "usr/bin")
-;; 
-;;   ;; Also need a version or check to help verify user has thing they says
-;;   
-;;   ;; Also need ability for different versions to provide different tools and exist in different places?
-;;   )
-;; ;; So... git-for-windows is a thing that needs to find git... somehow... even
-;; ;; though it's the thing that's supposed to set up/know that. Then ask
-;; ;; git which git it is. Then look in itself in some gnarly table...
-;; ;; Then it can set itself up. Then we can know stuff about diff, epa, etc when
-;; ;; told they're from git-for-windows.
-
+(provide 'use-tool)

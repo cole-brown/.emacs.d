@@ -143,6 +143,8 @@
  '(epg-gpg-program (executable-find "gpg"))         ; windowsy
  '(epg-gpgconf-program (executable-find "gpgconf")) ; windowsy
  )
+;; TODO: you are here today do this now
+;; TODO: get gpg more cross-computery
 
 ;; Don'th think I need this:
 ;;;;(epa-file-enable)

@@ -23,19 +23,20 @@
 ;;   (defalias 'spydez/shell 'spydez/windows/shell)
 ;;   )
 
+;; TODO:use-tool-done
 ;; TODO: move to configure OS?
 ;; Set shell command to use git bash.
-(when (spydez/tools/os-and-tool-p 'windows-nt "bash")
-  (let ((bash-path (executable-find "bash")))
-    (when bash-path
-      (setq explicit-shell-file-name bash-path)
-      (setq shell-file-name "bash")
-      (setq explicit-bash.exe-args '("--login" "-i"))
-      (setenv "SHELL" shell-file-name)
-      ;; todo strip ctrl m?
-      ;; todo fix error and MSYS line cruft
-      ;;   - https://emacs.stackexchange.com/questions/22049/git-bash-in-emacs-on-windows
-      )))
+;; (when (spydez/tools/os-and-tool-p 'windows-nt "bash")
+;;   (let ((bash-path (executable-find "bash")))
+;;     (when bash-path
+;;       (setq explicit-shell-file-name bash-path)
+;;       (setq shell-file-name "bash")
+;;       (setq explicit-bash.exe-args '("--login" "-i"))
+;;       (setenv "SHELL" shell-file-name)
+;;       ;; todo strip ctrl m?
+;;       ;; todo fix error and MSYS line cruft
+;;       ;;   - https://emacs.stackexchange.com/questions/22049/git-bash-in-emacs-on-windows
+;;       )))
 
 
 ;;------------------------------------------------------------------------------
