@@ -24,15 +24,30 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; setup tools for Exec-Path and ENV PATH
+;; NOTE: BE MINIMAL AND LAZY
+;; NOTE: GET ANYTHING WORKING
+;; TODO: do like this:
+;; (use-tool-source git-for-windows :disabled) ; or
+;; (use-tool-source git-for-windows)
+;; ...
+;; then
+;; (use-tool git)
+;; (use-tool gpg)
+;; ...
+;; then... done? or `final go' function?
+
 ;;---
 ;; Use Tool
 ;;---
 
 ;; simple list of tools registered by use-tool?
-(defvar use-tool-selected-tools '()
+(defvar use-tool-selected-tools nil
   "Tools in use or to-be found.")
 
-(defvar use-tool-selected-sources '(emacs-environment) ;; should emacs be a 'emacs or a :emacs?
+;; I had 'emacs-environment in here as an element, but it's a constant thing
+;; whereas these can change.
+(defvar use-tool-selected-sources nil
   "Start off with just emacs itself (and the environment it lives in/knows about).")
 
 ;; https://stackoverflow.com/questions/26102889/how-do-i-make-named-arguments-in-elisp
@@ -48,75 +63,56 @@
 ;; (add-to-list 'lista "hi")
 ;; (add-to-list 'lista 'symbol)
 
-;; setup tools for Exec-Path and ENV PATH
-;; NOTE: BE MINIMAL AND LAZY
-;; NOTE: GET ANYTHING WORKING
 (defmacro use-tool-source (name &rest args)
-  "todo: docstring"
-  (unless (memq :disabled args)
+  "Sparse now... just enable/put into selected sources for tools to check?"
+  ;; TODO: if not registered in use-tool-defined-tool-sources, quit and complain
+  (unless (or (memq :disabled args)
+              (not (memq name use-tool-defined-sources))) ;; TODO: complain if not member
     (message "uts: %s %s" name args)
-    ;; if don't know :name, complain and done.
+    ;; todo: if don't know :name, complain and done.
 
-    ;; TODO: get working minimally
+    ;; get working minimally... I think just putting in list is good...
 
     (add-to-list 'use-tool-selected-sources name)
     (message "use-tool-source `%s' added: %s" name use-tool-selected-sources)
+
+    ;; return what? add-to-list result?
     ))
 
-(use-tool-source git-for-windows :disabled)
-(use-tool-source git-for-windows)
+;; (use-tool-source git-for-windows :disabled)
+;; (use-tool-source git-for-windows)
 
-(defun use-tool-source (source)
-  (plist-get args keyword) default)
+(defmacro use-tool (name &rest args)
+  "Sparse now... just enable/put into selected sources for tools to check?"
+  ;; TODO: if not registered in use-tool-defined-tools, quit and complain
+  (unless (or (memq :disabled args)
+              (not (memq name use-tool-defined-tools))) ;; TODO: complain if not member
+    (message "uts: %s %s" name args)
+    ;; todo: if don't know :name, complain and done.
 
-  (dolist 
-  ;; if :disabled keyword, done.
-  :disabled
+    ;; TODO: get working minimally...
+    ;; if known by emacs, we should check versions some day
+    ;; but today just ok out?
 
-  ;; if :preface, do that thing now
-  
-  ;; if :init, do that thing now
-  ;; TODO: lots of stuff?..
+    ;; TODOTODOTODO: HERE! check if known,
+    ;; TODOTODOTODO: (dolist use-tool-defined-tools ...) if not
+    ;; if unknown, look through selected sources
+    ;; first one found, use that.
+    ;; add to path/exec path (someday check for ensure all vs exec vs env path keywords)
 
-  (add-to-list 'use-tool-available-sources source)
-  (message "use-tool-source `%s' added: %s" source use-tool-available-sources)
-  ;; if :config, do that thing now
-  )
+    ;; if config to do, check again
+    ;; if known now, do config
+    ;;   i.e. get gpg working or whatever
 
+    ;; return known/unknown?
 
-;; ;;(listp use-tool-selected-tools)
-;; ;;(not (null use-tool-selected-tools))
-;; ;; (add-to-list 'use-tool-selected-tools 'gpg)
-;; ;; (use-tool 'gpg)
-;; ;; (use-tool 'git)
-;; ;; (memq 'ngit use-tool-selected-tools)
-;; (defun use-tool (tool) ;; or tool-name or something if not a full tool struct
-;;   ;; if :disabled keyword, done.
-;;   :disabled
-;; 
-;;   ;; if :preface, do that thing now
-;; 
-;;   ;; if don't know :source, complain and done.
-;;   :source
-;; 
-;;   (if (memq tool use-tool-selected-tools)
-;;       (message "use-tool: `%s' already registered: %s" tool use-tool-selected-tools)
-;;     
-;;     ;; if don't know :package, complain, tell to do manually in :config.
-;; 
-;;     ;; if :init, do that thing now
-;; 
-;;     ;; ensure in both or one path?
-;;     ;; :ensure-path
-;;     ;; :ensure-env-path
-;;     ;; :ensure-exec-path
-;; 
-;;     ;; TODO: lots of stuff?..
-;; 
-;;     (add-to-list 'use-tool-selected-tools tool)
-;;     (message "use-tool `%s' added: %s" tool use-tool-selected-tools))
-;;   ;; if :config, do that thing now
-;;   )
+    (add-to-list 'use-tool-selected-tools name)
+    (message "use-tool-source `%s' added: %s" name use-tool-selected-tools)
+    ))
+
+;; (use-tool git :disabled)
+;; (use-tool git)
+
 
 ;;------------------------------------------------------------------------------
 ;; Helpers
@@ -131,6 +127,9 @@
       t
     nil))
 ;; e.g. (when (use-tool-os-and-tool-p 'windows-nt "bash") (message "hello there"))
+
+;; (use-tool-defined-p tool-name)
+;; (use-tool-source-defined-p source-name)
 
 
 ;;------------------------------------------------------------------------------

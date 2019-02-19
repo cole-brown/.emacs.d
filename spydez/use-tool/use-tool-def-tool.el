@@ -48,7 +48,7 @@
   paths)
 
 ;; simple list of tool sources registered for use-tool?
-(defvar use-tool-defined-tool-sources '()
+(defvar use-tool-defined-sources '()
   "docstring.")
 
 (defun def-tool-source (tool-source)
@@ -59,7 +59,7 @@
   ;; verify?
 
   ;; put into tool list
-  (add-to-list 'use-tool-defined-tool-sources tool-source)
+  (add-to-list 'use-tool-defined-sources tool-source)
   )
 
 
