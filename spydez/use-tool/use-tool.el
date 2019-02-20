@@ -14,11 +14,6 @@
 (require 'use-tool-definitions)
 (require 'use-tool-core)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; TODO: grep: TODO:use-tool-done
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;------------------------------------------------------------------------------
 ;; Use-Tool macros
@@ -114,6 +109,9 @@
 ;;------------------------------------------------------------------------------
 ;; Helpers
 ;;------------------------------------------------------------------------------
+
+;; TODO: figure out how to integrate this into use-tool?
+;; for, like, setting up bash to be shell on windows, gpg, etc.
 (defun use-tool-os-and-tool-p (sys-type tool-name)
   "t if on system-type and tool exists on system-type, else nil"
   ;; todo: can probably just return (and ...) sexpr, but I'm not lispy enough to know yet?

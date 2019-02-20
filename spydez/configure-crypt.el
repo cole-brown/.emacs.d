@@ -137,6 +137,7 @@
 
 ;; So this one finally works. I can see my key; I can decrypt/encrypt my test file.
 ;; TODO: use vars and set 'em in an overridable manner.
+;; TODO: figure out how to integrate this into use-tool
 (require 'epa-file)
 (custom-set-variables
  '(epg-gpg-home-directory "/c/home/cole/.gnupg/")   ; unixy path instead of windowsy
