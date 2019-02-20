@@ -10,8 +10,6 @@
 ;; GNU Emacs FAQ for Windows
 ;;   https://www.gnu.org/software/emacs/manual/html_mono/efaq-w32.html
 
-;; TODO:use-tool-done: get debug func, move all messages into that
-
 (require 'use-tool-def-tool)
 (require 'use-tool-definitions)
 (require 'use-tool-core)
@@ -34,18 +32,14 @@
   (use-tool-debug-message "use-tool-source: %s %s" name args)
   (unless (memq :disabled args)
     (let* ((source (use-tool-find-source name)))
-      (if (null source) ;; TODO: complain if not defined
-          ;; todo: if don't know name, complain and done.
-          
+      (if (null source) ;; TODO: complain if not defined?
           ;; failure case - return nil
           (progn
-            ;; TODO: better debugging maybe. Complain about which failed how?
             (use-tool-debug-message "use-tool-source `%s' not found. source: %s" name source)
             ;; return nil
             nil)
         
         ;; success - have source
-        ;; TODO: if not registered in use-tool-defined-tool-sources, quit and complain
         (use-tool-debug-message "use-tool-source ok: %s %s" name args)
 
         ;; get working minimally... I think just putting in list is good...
@@ -64,7 +58,6 @@
   (use-tool-debug-message "use-tool: %s %s" name args)
   (unless (memq :disabled args)
     ;; TODO: need to allow something through for "no source, maybe no tool, but emacs knows about it"?
-    ;; TODO: if don't know name, complain and done? Think this is already covered
     (let* ((source (use-tool-find-source-by-tool name))
            (tool (use-tool-find-tool name))
            (tool-str (use-tool-struct-tool-exec-name tool)))
@@ -74,7 +67,7 @@
               (memq name use-tool-selected-tools)) ;; TODO: complain or not on second use-tool for this?
           ;; failure case - return nil
           (progn
-            ;; TODO: better debugging maybe. Complain about which failed how?
+            ;; TODO: better debugging. Complain about which failed how?
             (use-tool-debug-message "use-tool `%s' not found. use-source?: %s source: %s tool: %s"
                                     name
                                     (memq (use-tool-struct-source-name source) use-tool-selected-sources)
@@ -88,7 +81,6 @@
                                 (use-tool-struct-source-name source)
                                 (use-tool-struct-tool-name tool))
 
-        ;; TODO: get working minimally...
         (if (executable-find tool-str)
             ;; if known by emacs, we should check versions some day
             ;; but today just ok out?
@@ -103,7 +95,6 @@
           (use-tool-enable-tool source tool)
           
           ;; ok, emacs should know about it now, if we've done correctly.
-          ;; TODO: check that to make sure?
           
           ;; TODOTODOTODO: if config to do, check again
           ;; if known now, do config

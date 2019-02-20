@@ -14,6 +14,7 @@
 ;;------------------------------------------------------------------------------
 ;; External Tools
 ;;------------------------------------------------------------------------------
+;; TODO: delete this tools section when I'm sure use-tool is good enough?
 ;; Do I want to do the "find git" on windows like this or like in the Windows
 ;; PATH env var?
 
