@@ -6,6 +6,24 @@
 (require 'cl-lib)
 
 ;;------------------------------------------------------------------------------
+;; Debug
+;;------------------------------------------------------------------------------
+(setq use-tool-debug-enabled t)
+(defun use-tool-debug-message (message &rest args)
+  "a debug helper"
+  (unless (or (null use-tool-debug-enabled)
+              (memq :disabled args))
+    (let* ((type '(use-tool debug))
+           (level :debug)
+           (injected-message (format "  %s:  %s" type message)))
+      (apply 'lwarn type level injected-message args)
+      ;; basically becomes e.g.:
+      ;; (lwarn '(use-tool debug) :debug "  %s:  Debug message (args %s) here." '(use-tool debug) args)
+      )))
+;; (use-tool-debug-message "Update foo %s %s" 'bar 'baz)
+
+
+;;------------------------------------------------------------------------------
 ;; Tools
 ;;------------------------------------------------------------------------------
 
@@ -14,7 +32,7 @@
 ;;---
 (cl-defstruct (use-tool-struct-tool (:constructor use-tool-struct-tool--create)
                                     (:copier nil))
-  name doc
+  name doc exec-name
   versions used-by
   ;; not sure. may go away but I think we need more stuff of nebuluous nature?
   vars
@@ -27,10 +45,9 @@
   "docstring.")
 
 (defun use-tool-def-tool (tool)
-  (message "%s" tool)
+  (use-tool-debug-message "%s" tool :disabled)
 
   ;; make tool? let caller make?
-
   ;; verify?
 
   ;; put into tool list
@@ -52,22 +69,14 @@
   "docstring.")
 
 (defun use-tool-def-source (source)
-  (message "%s" source)
+  (use-tool-debug-message "%s" source :disabled)
 
   ;; make source? let caller make?
-
   ;; verify?
 
   ;; put into tool list
   (add-to-list 'use-tool-defined-sources source)
   )
-
-;;   (let ((version (magit-git-version)))
-;;     (when (and version
-;;                (version< version magit--minimal-git)
-;;                (not (equal (getenv "TRAVIS") "true")))
-;;       (display-warning 'magit (format "\
-;; Magit requires Git >= %s, you are using %s.
 
 
 ;;------------------------------------------------------------------------------

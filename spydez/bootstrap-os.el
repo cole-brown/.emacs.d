@@ -20,11 +20,21 @@
 ;; Setup Tools
 ;;------------------------------------------------------------------------------
 
-;; require use-tool
+;;---
+;; Use-Tool
+;;---
+(when (eq system-type 'windows-nt)
+  (require 'use-tool)
 
-;; call into use-tool for sources
+  ;; source: Git for Windows
+  (use-tool-source git-for-windows)
 
-;; call into use-tool for tools
+  ;; tools:
+  (use-tool git)
+  (use-tool gpg)
+  (use-tool bash)
+  (use-tool diff)
+  )
 
 ;; NOTE: BE MINIMAL AND LAZY
 ;; NOTE: GET ANYTHING WORKING
@@ -34,53 +44,7 @@
 ;; Windows
 ;;---------
 
-(when (eq system-type 'windows-nt)
-;; TODO:use-tool-done
-;;   ;; set up paths so external tools can be found by emacs, magit, eshell, etc.
-;;   (if (boundp 'spydez/tools/external)
-;;       (dolist (tool-pair spydez/tools/external)
-;;         (let* ((tool-name (car tool-pair))
-;;                (tool-path (cdr tool-pair))
-;;                (exec-path-known-p (if (executable-find tool-name) t nil))
-;;                (env-path (getenv "PATH"))
-;;                (env-path-known-p (if (string-match-p (regexp-quote tool-path) env-path) t nil)))
-;;           ;; (spydez/debug/message nil "win tool: %s known? %s %s" tool-name exec-path-known-p env-path-known-p)
-;; 
-;;           ;;---
-;;           ;; exec-path
-;;           ;;---
-;;           ;; add to exec-path unless it's already a known executable
-;;           (unless exec-path-known-p
-;;             (add-to-list 'exec-path tool-path t)) ;; append to end
-;;           
-;;           ;;---
-;;           ;; PATH
-;;           ;;---
-;;           ;; TODO: Should there be some other step for adding a many tools dir? Like Cygwin or Msys's bin dir?
-;;           ;; I think may I rely on env-path-known-p and simplicity.
-;; 
-;;           ;; Add each external tool to env PATH?
-;;           ;; NOTE: This has a few holes. There are 'C:\foo\bar' and 'C;/baz/qux'.
-;;           ;;   But I'll try the stupid approach first.
-;; 
-;;           ;; skip if known, or if empty/nil string for path
-;;           (unless (or env-path-known-p
-;;                       (or (string= tool-path "")
-;;                           (string= tool-path nil)))
-;;             ;; this one we didn't skip, append to end of PATH var, which is just
-;;             ;; a string (paths separated by OS-appropriate separator)
-;;             (setenv "PATH" (concat env-path
-;;                                    ";"
-;;                                    tool-path
-;;                                    ))
-;;             ;; (spydez/debug/message nil "now tool %s in path?: %s %s"
-;;             ;;          tool-name
-;;             ;;          (string-match-p (regexp-quote tool-path) (getenv "PATH"))
-;;             ;;          tool-path)
-;;             )))
-;;     (spydez/warning/message nil :error "spydez/tools/external not defined. You are on windows and need it, probably."))
-;; 
-;; 
+;; (when (eq system-type 'windows-nt)
 ;;   ;;---
 ;;   ;; Cygwin? (TODO: I would rather Msys probably..?)
 ;;   ;;---
@@ -103,7 +67,7 @@
 ;;   ;; TODO: get this working if I need TRAMP?
 ;;   ;; http://pages.sachachua.com/.emacs.d/Sacha.html#orgd9057e7
 ;;   
-  ) ;; (when (eq system-type 'windows-nt) ...)
+;;   ) ;; (when (eq system-type 'windows-nt) ...)
 
 
 ;;---------

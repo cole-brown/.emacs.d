@@ -17,17 +17,17 @@
 ;; Do I want to do the "find git" on windows like this or like in the Windows
 ;; PATH env var?
 
-;; just a list of symbol names to use-tool later
-(defconst spydez/use-tools/sources
-  '('git-for-windows)
-  "May not even need any sources, depending on path setup."
-  )
-
-;; just a list of symbol names to use-tool later
-(defconst spydez/use-tools/tools
-  '('git 'gpg 'bash 'diff)
-  "Tools to tell use-tool about. Need these all."
-  )
+;; ;; just a list of symbol names to use-tool later
+;; (defconst spydez/use-tool/sources
+;;   '(git-for-windows)
+;;   "May not even need any sources, depending on path setup."
+;;   )
+;; 
+;; ;; just a list of symbol names to use-tool later
+;; (defconst spydez/use-tool/tools
+;;   '(git gpg bash diff)
+;;   "Tools to tell use-tool about. Need these all."
+;;   )
 
 ;; ;; Associative List of tool symbol to... tool path. Empty path means just check
 ;; ;; if external tool is known by emacs' current environment.

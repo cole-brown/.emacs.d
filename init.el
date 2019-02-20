@@ -80,6 +80,8 @@
 ;; TODOs and Misc.
 ;;---
 
+;; TODO: remove all "foo" so I can bookmark again
+
 ;; TODO: open small-ish log (~400k?). Try to search. Laggy. :( move lines, laggy... :( Something is laggy.
 ;; paren matching maybe? idk
 
