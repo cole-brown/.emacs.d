@@ -12,21 +12,21 @@
 ;;---
 ;; Tool struct
 ;;---
-(cl-defstruct (tool (:constructor tool--create)
-                    (:copier nil))
+(cl-defstruct (use-tool-struct-tool (:constructor use-tool-struct-tool--create)
+                                    (:copier nil))
   name doc
   versions used-by
   ;; not sure. may go away but I think we need more stuff of nebuluous nature?
   vars
   ;; think these are for after create, when it's actually found
-  path version system)
+  path version source)
 
 
 ;; simple list of tools defined for use-tool?
 (defvar use-tool-defined-tools '()
   "docstring.")
 
-(defun def-tool (tool)
+(defun use-tool-def-tool (tool)
   (message "%s" tool)
 
   ;; make tool? let caller make?
@@ -40,8 +40,8 @@
 ;;---
 ;; Source struct
 ;;---
-(cl-defstruct (tool-source (:constructor tool-source--create)
-                           (:copier nil))
+(cl-defstruct (use-tool-struct-source (:constructor use-tool-struct-source--create)
+                                      (:copier nil))
   name doc
   versions get-version
   tools systems
@@ -51,17 +51,16 @@
 (defvar use-tool-defined-sources '()
   "docstring.")
 
-(defun def-tool-source (tool-source)
-  (message "%s" tool-source)
+(defun use-tool-def-source (source)
+  (message "%s" source)
 
-  ;; make tool-source? let caller make?
+  ;; make source? let caller make?
 
   ;; verify?
 
   ;; put into tool list
-  (add-to-list 'use-tool-defined-sources tool-source)
+  (add-to-list 'use-tool-defined-sources source)
   )
-
 
 ;;   (let ((version (magit-git-version)))
 ;;     (when (and version
@@ -69,6 +68,7 @@
 ;;                (not (equal (getenv "TRAVIS") "true")))
 ;;       (display-warning 'magit (format "\
 ;; Magit requires Git >= %s, you are using %s.
+
 
 ;;------------------------------------------------------------------------------
 ;; The End.

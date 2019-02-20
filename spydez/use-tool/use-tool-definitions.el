@@ -22,7 +22,7 @@
 ;; Tools
 ;;------------------------------------------------------------------------------
 
-(def-tool (tool--create :name 'gpg
+(use-tool-def-tool (use-tool-struct-tool--create :name 'gpg
   :doc
   "GnuPG used by e.g. EasyPG in emacs."
   
@@ -42,11 +42,11 @@
   ;; :version
   ;; "z.3"
   ;; 
-  ;; :system
-  ;; 'windows-nt
+  ;; :source
+  ;; 'git-for-windows
   ))
 
-(def-tool (tool--create :name 'git
+(use-tool-def-tool (use-tool-struct-tool--create :name 'git
   :doc
   "git. For Version Control."
   
@@ -57,7 +57,7 @@
   '('magit)
   ))
 
-(def-tool (tool--create :name 'diff
+(use-tool-def-tool (use-tool-struct-tool--create :name 'diff
   :doc
   "For external diff."
   
@@ -68,7 +68,7 @@
   '('magit)
   ))
 
-(def-tool (tool--create :name 'bash
+(use-tool-def-tool (use-tool-struct-tool--create :name 'bash
   :doc
   "Bourne Again Shell."
   
@@ -84,7 +84,7 @@
 ;;------------------------------------------------------------------------------
 
 ;; This one source - Git for Windows - is all I currently need.
-(def-tool-source (tool-source--create :name 'git-for-windows
+(use-tool-def-source (use-tool-struct-source--create :name 'git-for-windows
   :doc
   "Git for Windows is its own little MinGW eco-system."
   
@@ -95,13 +95,13 @@
   ;; (...)
   
   :tools
-  '('git 'gpg 'diff 'bash)
+  '(git gpg diff bash)
   
   :systems
-  '('windows-nt)
+  '(windows-nt)
   
   :paths
-   '('('windows-nt "C:/Program Files/Git" "mingw64/bin" "usr/bin"))
+   '((windows-nt "C:/Program Files/Git" "mingw64/bin" "usr/bin"))
    ))
 
 ;; (message "%s" use-tool-defined-tool-sources)

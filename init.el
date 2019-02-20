@@ -80,6 +80,9 @@
 ;; TODOs and Misc.
 ;;---
 
+;; TODO: open small-ish log (~400k?). Try to search. Laggy. :( move lines, laggy... :( Something is laggy.
+;; paren matching maybe? idk
+
 ;; TODO: change sanity checks and others over from (and (boundp var) var) to (bound-and-true-p var)
 
 ;; TODO: go through saved-off files of old.emacs in spydez/references/my-old-emacs
@@ -727,6 +730,8 @@
 ;; todo: yasnippet?
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org656616c
 ;; TODO: you were here... where did you go?
+;; TODO: take snippets out of M-/ completion maybe?
+;;   Getting annoying when writing elisp and I don't really use them right now...
 (require 'configure-templates)
 
 ;; Programming Modes
