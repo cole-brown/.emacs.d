@@ -8,7 +8,7 @@
 ;;------------------------------------------------------------------------------
 ;; Debug
 ;;------------------------------------------------------------------------------
-(setq use-tool-debug-enabled t)
+(setq use-tool-debug-enabled nil)
 (defun use-tool-debug-message (message &rest args)
   "a debug helper"
   (unless (or (null use-tool-debug-enabled)
