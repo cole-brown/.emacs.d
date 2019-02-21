@@ -151,22 +151,51 @@
 ;;;;(epa-file-enable)
 ;; Possibly don't need (require 'epa-file) either.
 
+;; TODO: move rant into use-tool, hopefully, when vars are moved/integrated there too.
 
-;; leaving off here:
-;;   https://www.google.com/search?q=emacs%20encrypt%20decrypt
-;;     https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
-;;     https://github.com/syohex/forecast.el
-;;       https://darksky.net/forecast/40.7127,-74.0059/us12/en
-;;     http://pages.sachachua.com/.emacs.d/Sacha.html
-;;     https://www.reddit.com/r/emacs/comments/aqss7l/anyone_store_password_in_emacs/
-;;     https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/
 
 
 ;;------------------------------------------------------------------------------
 ;; Secrets.
 ;;------------------------------------------------------------------------------
-;; Next Up: An emacs.secrets file/folder/repo.
+;; https://www.masteringemacs.org/article/keeping-secrets-in-emacs-gnupg-auth-sources
 
+;; To make encrypted file:
+;; Add to top of file: ;; -*- epa-file-encrypt-to: ("gpg2019@spydez.com") -*-
+;;
+;; Add your actual stuff.
+;;
+;; Explicitly encrypt with M-x epa-encrypt-file.
+
+;; TODO: a way to defer the getting of secrets so we don't just hang loading?
+(defconst spydez/dir/emacs/personal (spydez/dir-name "spydez" spydez/dir/emacs)
+  "All of my own personal/custom setup code/vars/definitions...")
+
+;; TODO: move home to where other dirs are...?
+(defconst spydez/dir/home (getenv "HOME")
+  "Home on this computer.")
+(defconst spydez/dir/secrets (spydez/dir-name ".secrets.d" spydez/dir/home)
+  "Location of secrets dir on this computer.")
+(defconst spydez/file/secrets (expand-file-name "emacs.secrets.el.gpg" spydez/dir/secrets)
+  "Location of emacs' elisp secrets.")
+
+
+;;------------------------------------------------------------------------------
+;; Auth-Source
+;;------------------------------------------------------------------------------
+
+;; https://www.gnu.org/software/emacs/manual/html_mono/auth.html
+
+;; if we need to debug auth-source package issues, set to t:
+(setq auth-source-debug nil)
+;; Another useful function to call is M-x auth-source-forget-all-cached. Auth
+;; source will cache your credentials in Emacs; use this command to forget all
+;; the cached details.
+
+;; TODO secrets in subfolder of .emacs.d, a single dot file outside, or what?
+;; (setq auth-sources
+;;       '((:source "~/.emacs.d/secrets/.authinfo.gpg")))
 
 ;;------------------------------------------------------------------------------
 ;; TODOs
