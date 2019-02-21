@@ -24,6 +24,12 @@
 ;; TODO: can 'literate programming' do multiple files?
 ;; http://www.howardism.org/Technical/Emacs/literate-programming-tutorial.html
 ;; https://en.wikipedia.org/wiki/Literate_programming
+;; Can also check out this for general layout:
+;;   https://www.emacswiki.org/emacs/DotEmacsStructuring
+
+;; TODO: stick this link in the right place(es?)
+;;   https://sites.google.com/site/steveyegge2/effective-emacs
+;;   C-x C-m, backwards-kill-word, 
 
 
 ;;---
