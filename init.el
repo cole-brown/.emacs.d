@@ -31,6 +31,8 @@
 ;;   https://sites.google.com/site/steveyegge2/effective-emacs
 ;;   C-x C-m, backwards-kill-word, 
 
+;; TODO: make sure up-to-datest packages in home and work comps and still
+;;   working emacs config.
 
 ;;---
 ;; Help I Often Forget.
@@ -88,8 +90,22 @@
 
 ;; TODO: remove all "foo" so I can bookmark again
 
+;;---
+;;------
+;;------------------------------------------------------------------------------
 ;; TODO: open small-ish log (~400k?). Try to search. Laggy. :( move lines, laggy... :( Something is laggy.
 ;; paren matching maybe? idk
+;; keywords: slow, lag, laggy
+;; https://www.google.com/search?q=what%20is%20slowing%20down%20emacs
+;;   https://emacs.stackexchange.com/questions/5359/how-can-i-troubleshoot-a-very-slow-emacs
+;;     C-h m will show major, minor modes. Disable (minors?) one by one to see what's slow.
+;;       - may have to figure out/disable helm, hydra, etc. Or are they modes too?
+;;   https://www.reddit.com/r/emacs/comments/8v4v7o/why_is_emacs_so_slow_on_windows/
+;;   https://www.spacjer.com/blog/2018/03/02/why-is-my-emacs-slow/
+;;     -- PROFILER info! Yay!
+;;------------------------------------------------------------------------------
+;;------
+;;---
 
 ;; TODO: change sanity checks and others over from (and (boundp var) var) to (bound-and-true-p var)
 
@@ -172,6 +188,11 @@
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#orgfb9b12e
 ;; Add advice to funcs? https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html
 
+;; Packages to consider trying out:
+;;   - Treemacs: tree layout file explorer
+;;     https://github.com/Alexander-Miller/treemacs
+;;   - No Littering: Organize .emacs.d extra files into var/ (data) and etc/ (config).
+;;     https://github.com/emacscollective/no-littering
 
 ;;---
 ;; License, Licensing, and Limericks

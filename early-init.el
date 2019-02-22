@@ -224,6 +224,40 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
 ;;   TODO: May need a place in the shoe closet for system/hash -> domain/name? IDK
 
 
+;; TODO: defaults, domains, computers... change folders to be together in browser/dir list?
+;;   - e.g. _defaults, _domains, _computers?
+;;   - notes dir? "notes", "zzz_notes" Or keep notes in with code?
+;;     - works sometimes, but e.g. gpg debug/notes/rant got real long and doesn't apply much to final code?
+;;Right now:
+;; .emacs.d/
+;;   spydez/
+;;     computers/
+;;     defaults/
+;;     domains/
+;;     lisp/
+;;     references/
+;;     snippets/
+;;     use-tool/
+;;     (init files loose in spydez/)
+;; These are:
+;;   - init stuff
+;;   - notes/refs
+;;   - my lisp funcs/baby proto-packages
+;;   - my emacs stuff for other emacs packages (snippets)
+;; Adjust folder tree?
+;; .emacs.d/
+;;   spydez/
+;;     init/{computers, defaults, domains... loose files?}
+;;     var/etc/whatever? with rest of stuff? idk
+;; OR...
+;; .emacs.d/
+;;   init/{computers, defaults, domains... loose files?}
+;;   personal/{my (non-init) stuff?}
+;;   var?/a place for other stuff?
+;; also there's this package (no-littering):
+;;   https://github.com/emacscollective/no-littering
+;;   but seems a bit manual right now?
+
 (defconst spydez/dir/personal/defaults (spydez/dir-name "defaults" spydez/dir/emacs/personal)
   "All of my optional/default setup elisp files...") ; TODO: rename to "overrides" or something? Add another one for overrides?
 

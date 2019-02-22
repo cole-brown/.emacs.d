@@ -11,8 +11,11 @@
 ;; reddit
 ;;------------------------------------------------------------------------------
 
-;; TODO: move that reddit thing to here?
+;; TODO: move that reddit thing to here? (my various reddit rss/json thing)
 ;; TODO: find/make a function for getting my subscribed reddits (and formatting to org-mode list?)
+
+;; https://www.reddit.com/r/emacs/comments/6w5xav/is_there_a_reddit_viewer_for_emacs_ala_orgmode/
+;;  - actual general reddit browsing emacs packages
 
 
 ;;------------------------------------------------------------------------------

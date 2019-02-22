@@ -7,6 +7,15 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Notes
+;;------------------------------------------------------------------------------
+
+;; Way too much info about org-mode.
+;;   - Possibly very outdated...
+;;   - http://doc.norang.ca/org-mode.html
+
+
+;;------------------------------------------------------------------------------
 ;; General Settings
 ;;------------------------------------------------------------------------------
 (setq org-log-done t) ; auto-timestamp when TODOs are turned to DONE state
@@ -141,6 +150,7 @@
 ;; (use-package org-gcal
 ;;   :load-path "~/elisp/org-gcal.el"
 ;;   :init (fset 'org-gcal-notify 'my/org-gcal-notify))
+
 
 ;;------------------------------------------------------------------------------
 ;; Publishing
