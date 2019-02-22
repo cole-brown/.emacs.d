@@ -31,6 +31,9 @@
 
 
 
+;; TODO: early stuff others do like disable some GUI before it gets going? (might wait for emacs 27)
+;; TODO: early stuff others do like much more lax garbage collection during init so it doesn't
+;;   GC 40 or 50 times.
 
 ;;------------------------------------------------------------------------------
 ;; Necessary stuff.

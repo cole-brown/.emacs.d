@@ -103,6 +103,8 @@
 ;;   https://www.reddit.com/r/emacs/comments/8v4v7o/why_is_emacs_so_slow_on_windows/
 ;;   https://www.spacjer.com/blog/2018/03/02/why-is-my-emacs-slow/
 ;;     -- PROFILER info! Yay!
+;;        - profiler doesn't say anything useful other than:
+;;          "the two commands you used a lot took a lot of time"
 ;;------------------------------------------------------------------------------
 ;;------
 ;;---
