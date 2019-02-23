@@ -1,0 +1,8 @@
+tabs:
+
+https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=emacs%20really%20long%20lines&=&=&oq=&gs_l=&pbx=1
+  https://emacs.stackexchange.com/questions/598/how-do-i-prevent-extremely-long-lines-making-emacs-slow
+  https://www.reddit.com/r/emacs/comments/4iwvs4/is_it_really_impossible_to_not_slow_to_a_crawl/
+    https://www.emacswiki.org/emacs/SoLong
+  https://www.spacjer.com/blog/2018/03/02/why-is-my-emacs-slow/
+  https://emacs.stackexchange.com/questions/42239/how-to-disable-all-the-minor-modes-when-a-specific-major-mode-is-enabled-with

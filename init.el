@@ -105,6 +105,20 @@
 ;;     -- PROFILER info! Yay!
 ;;        - profiler doesn't say anything useful other than:
 ;;          "the two commands you used a lot took a lot of time"
+;; Turned off all my init. emacs is mostly(ish) better. But when crazy long
+;; line(s) is(are) on screen, get some stutters. When on crazy long lines,
+;; get lag. Crazy long is 36769 characters long.
+;; Minor modes still enabled:
+;;   Auto-Composition Auto-Compression Auto-Encryption
+;;   Blink-Cursor Column-Number Diff-Auto-Refine Electric-Indent
+;;   File-Name-Shadow Font-Lock Global-Eldoc Global-Font-Lock Line-Number
+;;   Menu-Bar Mouse-Wheel Tool-Bar Tooltip Transient-Mark
+;;
+;; https://emacs.stackexchange.com/questions/598/how-do-i-prevent-extremely-long-lines-making-emacs-slow
+;; https://www.reddit.com/r/emacs/comments/4iwvs4/is_it_really_impossible_to_not_slow_to_a_crawl/
+;;
+;; This might help: https://www.emacswiki.org/emacs/SoLong
+;; At least try before nuking major and minor modes myself.
 ;;------------------------------------------------------------------------------
 ;;------
 ;;---
