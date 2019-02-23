@@ -60,8 +60,9 @@
 ;;------------------------------------------------------------------------------
 ;; Update/Upgrade Packages Process
 ;;------------------------------------------------------------------------------
+;; TODO: make this into a help command I can call that'll do the pop open
+;;   thing a help function does?
 ;; There are automated ways to upgrade, but I'm thinking manual for now...
-;; TODO: an interactive function for this?
 ;;   M-x list-packages
 ;;   'U' to mark upgrades
 ;;   'x' to upgrade?

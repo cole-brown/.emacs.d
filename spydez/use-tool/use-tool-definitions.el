@@ -97,6 +97,11 @@
   
   :tools
   '(git gpg diff bash)
+
+  ;; TODO: a lil' section for, like, config code of GPG, bash, etc to live for git-for-windows or whatever the source is...
+  ;; belongs in the source a wee bit more than in the tool, I think?
+  ;; but also the tool needs to know what source it's in. Right now the first one registers with it and then
+  ;; the next think emacs just knew. Use exec path or something?
   
   :systems
   '(windows-nt)
