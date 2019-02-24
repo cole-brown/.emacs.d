@@ -489,10 +489,11 @@ For the transition, maybe a func for checking..."
 ;; (add-to-list 'load-path spydez/dir/emacs)
 (add-to-list 'load-path spydez/dir/personal/use-tool)
 (add-to-list 'load-path spydez/dir/personal/lisp) ;; non-init; don't care about and should be overridable.
-(add-to-list 'load-path spydez/dir/personal/defaults) ;; defaults first so everything else overrides.
+(add-to-list 'load-path spydez/dir/dev/defaults) ;; defaults first so everything else overrides.
 (add-to-list 'load-path spydez/dir/emacs/personal)
-(add-to-list 'load-path spydez/dir/personal/domain-this)
-(add-to-list 'load-path spydez/dir/personal/system-this) ;; most specific to this computer last
+(add-to-list 'load-path spydez/dir/dev/domain-this)
+(add-to-list 'load-path spydez/dir/dev/system-this) ;; most specific to this computer last
+;; TODO-reorg-done: more in the load path? new dirs (dev, init...)?
 
 
 ;;---

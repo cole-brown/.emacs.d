@@ -258,6 +258,11 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
 (defconst spydez/dir/emacs/personal (spydez/dir-name "personal" spydez/dir/emacs)
   "All of my own personal/custom setup code/vars/definitions...")
 
+(defconst spydez/dir/personal/dev (spydez/dir-name "dev" spydez/dir/emacs/personal)
+  "Device/system-specific init/config files and settings
+(including their defaults) should reside under here.")
+
+;; TODO-reorg-done
 ;; TODO: personal to "personal", or maybe a list of guesses at where the "defaults" would be...
 ;; Then the min necessary for loading/getting file from defaults that contains these
 ;; consts and funcs necessary for 1st step of bootstrap?
@@ -266,17 +271,17 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
 ;;     to pull yourself up by your bootstraps, right? RIGHT?!
 
 
-(defconst spydez/dir/personal/defaults (spydez/dir-name "defaults" spydez/dir/emacs/personal)
-  "All of my optional/default setup elisp files...") ; TODO: rename to "overrides" or something? Add another one for overrides?
+(defconst spydez/dir/dev/defaults (spydez/dir-name "defaults" spydez/dir/personal/dev)
+  "All of my optional/default setup elisp files...")
 
-(defconst spydez/dir/personal/domain-all (spydez/dir-name "domains" spydez/dir/emacs/personal)
+(defconst spydez/dir/dev/domain-all (spydez/dir-name "domains" spydez/dir/personal/dev)
   "Domains folder. For subdirs of work, home, etc.")
-(defconst spydez/dir/personal/domain-this (spydez/dir-name spydez/setup/domain/name spydez/dir/personal/domain-all)
+(defconst spydez/dir/dev/domain-this (spydez/dir-name spydez/setup/domain/name spydez/dir/dev/domain-all)
   "Anything that has to be domain specific. Tab widths or whatnot.")
 
-(defconst spydez/dir/personal/system-all (spydez/dir-name "computers" spydez/dir/emacs/personal)
+(defconst spydez/dir/dev/system-all (spydez/dir-name "computers" spydez/dir/personal/dev)
   "Computers folder. For subdirs of different computers.")
-(defconst spydez/dir/personal/system-this (spydez/dir-name spydez/setup/system/hash spydez/dir/personal/system-all)
+(defconst spydez/dir/dev/system-this (spydez/dir-name spydez/setup/system/hash spydez/dir/dev/system-all)
   "Anything that has to be computer specific. Overriding tab widths or whatnot.")
 
 (defconst spydez/dir/personal/lisp (spydez/dir-name "lisp" spydez/dir/emacs/personal)
@@ -291,9 +296,9 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
 (defconst spydez/dir/load-path/orig load-path)
 
 ;; Load-Path dirs for finding bootstrapping files:
-(add-to-list 'load-path spydez/dir/personal/defaults) ;; defaults first so everything else overrides.
+(add-to-list 'load-path spydez/dir/dev/defaults) ;; defaults first so everything else overrides.
 ;; Could add a domain level if needed?
-(add-to-list 'load-path spydez/dir/personal/system-this) ;; most specific to this computer last
+(add-to-list 'load-path spydez/dir/dev/system-this) ;; most specific to this computer last
 
 
 ;;------------------------------------------------------------------------------
