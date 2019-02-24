@@ -47,6 +47,19 @@
 ;; TODO: I had a todo somewhere for trying out always loading many/most/all packages.
 ;; The secret keyword for use-package is ":demand".
 
+;;---
+;; TODO: Other weather option (and it has precip amount!)
+;;---
+;; https://www.reddit.com/r/emacs/comments/also27/second_trial_for_a_weekly_tipstricksetc_thread/efid3tn
+;; https://github.com/bcbcarl/emacs-wttrin
+;;   http://wttr.in/
+
+
+;;------------------------------------------------------------------------------
+;; TODO: Dictionary and/or Thresaurus
+;;------------------------------------------------------------------------------
+;; https://cestlaz.github.io/post/using-emacs-56-dictionaries/
+
 
 ;;------------------------------------------------------------------------------
 ;; Provide this.

@@ -22,7 +22,21 @@
 ;; ...and I'm always lost in the forest running headfirst into trees when doing
 ;; elisp. Layering a defmacro on top ain't fun...
 
-
+;; TODO: body. Maybe find a way to check for :config keyword then rest is body...
+;; https://github.com/kaushalmodi/.emacs.d/blob/master/general.el
+;; ;;; Emacs version check
+;; (defmacro >=e (version &rest body)
+;;   "Emacs VERSION check wrapper around BODY.
+;; BODY can contain both `if' block (for stuff to execute if emacs
+;; is equal or newer than VERSION) and `else' block (for stuff to
+;; execute if emacs is older than VERSION).
+;; Example:
+;;   (>=e \"25.0\"
+;;       (defun-compatible-with-25.0)
+;;     (defun-not-compatible-in-older-version))"
+;;   (declare (indent 2))          ;`if'-style indentation where this macro is used
+;;   `(if (version<= ,version emacs-version)
+;;        ,@body))
 
 ;;------------------------------------------------------------------------------
 ;; Use-Tool macros

@@ -24,6 +24,10 @@
 ;; (delete 'lines whitespace-style)
 ;; whitespace-space face may could use minor adjusting (regular bg color?)
 ;; probably don't want on global. Just for programming modes maybe.
+;;
+;; TODO: Possibly try this for whitspace fill-column indicator?
+;;   https://www.reddit.com/r/emacs/comments/also27/second_trial_for_a_weekly_tipstricksetc_thread/efzl7ft
+;;   (that comment and also child comment with code snippet to try)
 
 ;; ;; Whitespace
 ;; ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Useless-Whitespace.html
