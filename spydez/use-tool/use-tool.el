@@ -15,6 +15,15 @@
 (require 'use-tool-core)
 
 
+
+;; TODO: no macro?
+;; https://emacs.stackexchange.com/questions/21015/when-to-use-macro-or-not-to-use
+;; That advises to avoid...
+;; ...and I'm always lost in the forest running headfirst into trees when doing
+;; elisp. Layering a defmacro on top ain't fun...
+
+
+
 ;;------------------------------------------------------------------------------
 ;; Use-Tool macros
 ;;------------------------------------------------------------------------------

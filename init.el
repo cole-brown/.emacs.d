@@ -207,8 +207,6 @@
 ;; Packages to consider trying out:
 ;;   - Treemacs: tree layout file explorer
 ;;     https://github.com/Alexander-Miller/treemacs
-;;   - No Littering: Organize .emacs.d extra files into var/ (data) and etc/ (config).
-;;     https://github.com/emacscollective/no-littering
 
 ;;---
 ;; License, Licensing, and Limericks
@@ -414,9 +412,19 @@
 ;; Directories for Emacs or Packages
 ;;---
 
+(defun spydez/dir/self-policing-p ()
+  "Keep .emacs.d tidy (ish)!
+Trying to let no-littering take care of most/all this.
+For the transition, maybe a func for checking..."
+  (null (featurep 'no-littering)) ;; self-police if we don't have no-littering.
+  ;; TODO: also t if in spydez/dir/personal?
+  )
+
 ;; folders for auto-save files and backup-files (#*# and *~)
+;; TODO: remove if I like no-littering?
 (defconst spydez/dir/backup-files
-  (spydez/dir-name "backups" spydez/dir/emacs))
+  (spydez/dir-name "backups" spydez/dir/emacs)
+  "Full path before no-littering package.")
 
 (defconst spydez/dir/auto-save-files
   (spydez/dir-name "auto-save-list" spydez/dir/emacs))
@@ -427,7 +435,7 @@
 
 (defconst spydez/dir/yasnippets
   (expand-file-name "snippets" spydez/dir/emacs/personal)
-  "Yasnippets directory.")
+  "My Yasnippets directory.")
 ;; Could add an override of my own snippets if needed.
 
 (defconst spydez/dir/personal/use-tool
@@ -498,11 +506,15 @@
 ;;---
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Saving-Customizations.html
 
+;; no-littering note:
+;; They have a suggestion for storing in a no-littering dir, but I want to keep
+;; custom.el notably under my control so it goes into my personal always.
+;;
 ;; Some packages want to write to our custom file, so set that up first.
-;; An unadorned filename (just "custom.el") wasn't getting picked up as the custom file, so for now:
+;; An unadorned filename (just "custom.el") wasn't getting picked up as the custom file, so expanded:
 (setq custom-file (expand-file-name "custom.el" spydez/dir/emacs/personal))
 ;; May need a better setter if custom-file needs adjusted per computer...
-;; todo: Helper func to look for file to define place or maybe try provide/require?
+;;
 ;; Possibly move custom-file setting up, and loading down below loading of bootstrap-this-late overrides.
 (load custom-file t)
 

@@ -1,0 +1,88 @@
+
+
+* Linux / directory structure
+  /bin
+    - (essential) binaries
+    - less essential binaries stored in e.g. /usr/bin
+    - /sbin is system admin binaries
+  /boot
+    - just bootloader and other boot stuff
+  /dev
+    - devices
+      - /dev/sda for serial drive a
+      - /dev/random for RNG, etc
+  /etc
+    - config files
+      - Cuz nothing says "config" like "etc"... /s
+  /home
+    - user home folders
+  /lib
+    - (essential) (shared) libraries
+  /lost+found
+    - file system crash stuff
+  /media
+    - removable media
+      - CDs, USBs etc.
+  /mnt
+    - (temp) mount points
+  /opt
+    - ...optional packages?
+    - proprietary stuff that doesn't want to use the linux dir hirearchy
+  /proc
+    - special files for system/process info
+  /root
+    - user dir of root user
+  /run
+    - temp/transient app state files
+  /sbin
+    - sys admin binaries, see /bin
+  /selinux
+    - SELinux special files
+  /srv
+    - "data for service s provided by the system"
+  /tmp
+    - ...more temp files for apps?
+  /usr
+    - user binaries and read-only data
+      - for apps run by the users, as opposed to run by the system
+    - /usr/bin, /usr/sbin, /usr/lib, /usr/local, ....
+  /var
+    - variable data files
+    - "writable counterpart to the /usr dir"
+
+* My emacs personal directory
+
+TODO: defaults, domains, computers... change folders to be together in browser/dir list?
+  - e.g. _defaults, _domains, _computers?
+  - notes dir? "notes", "zzz_notes" Or keep notes in with code?
+    - works sometimes, but e.g. gpg debug/notes/rant got real long and doesn't apply much to final code?
+
+Right now:
+ .emacs.d/
+   spydez/
+     computers/
+     defaults/
+     domains/
+     lisp/
+     references/
+     snippets/
+     use-tool/
+     (init files loose in spydez/)
+
+These are:
+  - init stuff
+  - notes/refs
+  - my lisp funcs/baby proto-packages
+  - my emacs stuff for other emacs packages (snippets)
+
+Adjust folder tree?
+ .emacs.d/
+   spydez/
+     init/{computers, defaults, domains... loose files?}
+     var/etc/whatever? with rest of stuff? idk
+
+ OR...
+ .emacs.d/
+   init/{computers, defaults, domains... loose files?}
+   personal/{my (non-init) stuff?}
+   var?/a place for other stuff?

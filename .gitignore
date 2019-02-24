@@ -11,6 +11,19 @@
 *.elc
 .\#*
 
+
+##---
+## no-littering
+##---
+
+/var
+/etc
+
+# place for dumping old files/folders in case we need.
+# no-littering package should put things into /etc or /var now.
+/pre-no-littering
+
+
 ##---
 ## Auto-gen, packages, etc.
 ##---

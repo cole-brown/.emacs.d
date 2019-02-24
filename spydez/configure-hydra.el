@@ -273,6 +273,14 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; TODO: major-mode-hydra?
 ;; TODO: pretty-hydra?
 
+;; TODO: a hydra for opening files in various spots? like
+;; open-file hydra shortcut:
+;;   h $HOME (home env for linuxy things on windows)
+;;   u C/D:/Users/<me>/
+;;   d <dropbox location>
+;;   t or w <temp/workspace>
+;;   etc..?
+
 
 ;;------------------------------------------------------------------------------
 ;; Provide this.

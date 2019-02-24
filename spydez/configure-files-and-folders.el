@@ -52,6 +52,11 @@
 (add-to-list 'recentf-keep 'file-remote-p)
 (recentf-mode)
 
+;; may want to exclude more? idk.
+(unless (spydez/dir/self-policing-p)
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory))
+
 ;; More config:
 ;;   periodically save list of files: https://www.emacswiki.org/emacs/RecentFiles#toc1
 ;;

@@ -12,7 +12,8 @@
 ;; By default, Emacs saves backup files in the current directory. These are the files ending
 ;; in ~ that are cluttering up your directory lists.
 ;; Move where they get stored.
-(setq backup-directory-alist `(("." . ,spydez/dir/backup-files)))
+(when (spydez/dir/self-policing-p)
+  (setq backup-directory-alist `(("." . ,spydez/dir/backup-files))))
 
 ;; Seems to be the safest. No symlink issues?
 (setq backup-by-copying t)
@@ -29,7 +30,10 @@
 (setq vc-make-backup-files t)
 
 ;; Also pull auto-saves out to their own folder.
-(setq auto-save-file-name-transforms `((".*" ,spydez/dir/auto-save-files t)))
+(setq auto-save-file-name-transforms
+      (if (spydez/dir/self-policing-p)
+          `((".*" ,spydez/dir/auto-save-files t)) ;; self-police? my auto-save location
+        `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))) ;; else no-littering's
 
 ;; Ask tramp to behave as well.
 (setq tramp-backup-directory-alist `((".*" ,spydez/dir/auto-save-files t)))
@@ -40,7 +44,8 @@
 ;;  you get back to work, you can just re-run stuff as you need it."
 ;;  - http://pages.sachachua.com/.emacs.d/Sacha.html#orgdfcb533
 ;; https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
-(setq savehist-file spydez/file/save-history)
+(when (spydez/dir/self-policing-p)
+  (setq savehist-file spydez/file/save-history))
 (savehist-mode 1)
 (setq history-length t)
 (setq history-delete-duplicates t)
