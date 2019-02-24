@@ -255,7 +255,7 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Warning-Basics.html#Wa
   "This should be a platform-agnostic way to find .emacs.d. Especially when I
 can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
 
-(defconst spydez/dir/emacs/personal (spydez/dir-name "spydez" spydez/dir/emacs)
+(defconst spydez/dir/emacs/personal (spydez/dir-name "personal" spydez/dir/emacs)
   "All of my own personal/custom setup code/vars/definitions...")
 
 ;; TODO: personal to "personal", or maybe a list of guesses at where the "defaults" would be...

@@ -39,7 +39,7 @@
   /selinux
     - SELinux special files
   /srv
-    - "data for service s provided by the system"
+    - "data for services provided by the system"
   /tmp
     - ...more temp files for apps?
   /usr
@@ -86,3 +86,42 @@ Adjust folder tree?
    init/{computers, defaults, domains... loose files?}
    personal/{my (non-init) stuff?}
    var?/a place for other stuff?
+
+.emacs.d/
+  var/     no-littering puts stuff here
+  etc/     no-littering puts stuff here
+  {spydez|personal}/
+    {dev|setup|config}/
+      computers,defaults,domains/?
+    {docs}/
+      notes,references/?
+    lisp/
+    use-tool/
+    init/?
+      boot/?
+        bootstrap-*
+      config/?
+        config-*
+      finalize/?
+        finalize-*
+
+
+.emacs.d/
+  var/     no-littering puts stuff here
+  etc/     no-littering puts stuff here
+  {spydez|personal}/
+    {dev|setup|config}/
+      computers,defaults,domains/?
+    {docs}/
+      notes,references/?
+    lisp/
+    use-tool/
+    init/?
+      0_zero/?
+        early-init stuff?
+      boot/?
+        bootstrap-*
+      config/?
+        config-*
+      finalize/?
+        finalize-*
