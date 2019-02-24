@@ -125,3 +125,29 @@ Adjust folder tree?
         config-*
       finalize/?
         finalize-*
+
+* Reorg in progress
+
+  - .emacs.d/ [5/14]
+    - var/     no-littering puts stuff here
+    - etc/     no-littering puts stuff here
+    - [X] {spydez|personal}/?
+      - personal.
+    - personal/lisp/
+    - personal/use-tool/
+    - [X]   {docs}/
+    - [X]     notes,references/?
+      - Yep.
+    - [X]   {dev|setup|config}/
+      - dev.
+    - [X]     computers,defaults,domains/?
+      - yep.
+    - [ ]   init/?
+    - [ ]     0_zero/?
+    - [ ]       early-init stuff?
+    - [ ]     boot/?
+    - [ ]       bootstrap-*
+    - [ ]     config/?
+    - [ ]       config-*
+    - [ ]     finalize/?
+    - [ ]       finalize-*
