@@ -126,6 +126,13 @@
 ;;   GPG error: "no usable configuration", OpenPGP
 ;; Nope. Gotta be NC-17 full frontal abomination.
 
+;; Second computer:
+;;   Was silently failing...
+;;   Had to get epg-gpg-home-directory happy with its unixy-on-windows
+;;   abomination of a path. M-x epa-list-keys and M-x epa-list-secret-keys both
+;;   were just empty buffer until I uglied enough hacks together to get that
+;;   variable kludged into shape.
+
 
 ;;------------------------------------------------------------------------------
 ;;                         General Middle Fingers to:
@@ -139,13 +146,17 @@
 ;; TODO: use vars and set 'em in an overridable manner.
 ;; TODO: figure out how to integrate this into use-tool
 (require 'epa-file)
-(custom-set-variables
- '(epg-gpg-home-directory "/c/home/cole/.gnupg/")   ; unixy path instead of windowsy
- '(epg-gpg-program (executable-find "gpg"))         ; windowsy
- '(epg-gpgconf-program (executable-find "gpgconf")) ; windowsy
- )
-;; TODO: you are here today do this now
-;; TODO: get gpg more cross-computery
+
+;; Can't use expand-file-name with hacky unixy paths...
+;; So just muck it on our own and we're like a hacky onion. In muck.
+(let ((spydez/hack/ugly-hacky-gpg-dir
+       (concat (spydez/dir/windows-to-mingw spydez/dir/home) ".gnupg/")))
+  (custom-set-variables
+   '(epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
+   '(epg-gpg-program (executable-find "gpg"))               ; windowsy
+   '(epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy
+   ))
+;; TODO: get gpg more cross-computery via use-tool
 
 ;; Don'th think I need this:
 ;;;;(epa-file-enable)
@@ -169,12 +180,7 @@
 ;; Explicitly encrypt with M-x epa-encrypt-file.
 
 ;; TODO: a way to defer the getting of secrets so we don't just hang loading?
-(defconst spydez/dir/emacs/personal (spydez/dir-name "spydez" spydez/dir/emacs)
-  "All of my own personal/custom setup code/vars/definitions...")
-
-;; TODO: move home to where other dirs are...?
-(defconst spydez/dir/home (getenv "HOME")
-  "Home on this computer.")
+;;   - doesn't seem to be hanging so probably ok. Leaving until home and work comps both... work.
 (defconst spydez/dir/secrets (spydez/dir-name ".secrets.d" spydez/dir/home)
   "Location of secrets dir on this computer.")
 (defconst spydez/file/secrets (expand-file-name "emacs.secrets.el.gpg" spydez/dir/secrets)

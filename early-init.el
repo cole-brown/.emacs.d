@@ -33,7 +33,7 @@
 
 ;; TODO: early stuff others do like disable some GUI before it gets going? (might wait for emacs 27)
 ;; TODO: early stuff others do like much more lax garbage collection during init so it doesn't
-;;   GC 40 or 50 times.
+;;   GC 40 or 50 times. //next
 
 ;;------------------------------------------------------------------------------
 ;; Necessary stuff.
@@ -208,7 +208,18 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Warning-Basics.html#Wa
   "Expand name as child dir of parent in platform-agnostic manner."
   (file-name-as-directory (expand-file-name name parent)))
 
+;; There are some existing packages for dealing with windows->unix or unix->windows paths...
+;;   Windows emacs, Cygwin paths: https://www.emacswiki.org/emacs/cygwin-mount.el
+;;   Cygwin/WSL emacs, win paths: https://github.com/victorhge/windows-path
+;; but..: aren't on melpa, haven't been updated in years, etc.
+(defun spydez/dir/windows-to-mingw (dir)
+  "Bad hack. Absolute minimum to change from `c:/path/to/dir' to `/c/path/to/dir'"
+  (concat "/" (replace-regexp-in-string ":" "" dir) "/"))
+
 ;; TODO: spydez/dir/setup-blah, spydez/dir/setup/blah, spydez/setup/dir/blah, spydez/dir/blah....?
+
+(defconst spydez/dir/home (expand-file-name "~")
+  "User's $HOME directory. In native format (unix vs windows paths).")
 
 (defconst spydez/dir/emacs (expand-file-name user-emacs-directory)
   ;; user-init-file and user-emacs-directory can be helpful here
