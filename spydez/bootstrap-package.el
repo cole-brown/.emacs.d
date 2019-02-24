@@ -57,10 +57,13 @@
 ;; no-littering to clean up .emacs.d a bit
 (use-package no-littering
   :demand t
-  :config
+  ;;:config
   ;;   Leave `no-littering-etc-directory' and `no-littering-var-directory'
   ;;   at default: .emacs.d/etc and .emacs.d/var
   )
+;; TODO: Make it so `M-X package-autoremove' doesn't try to remove this...
+;; Seems it's complicated: https://github.com/purcell/emacs.d/issues/415
+;; But hand editting it into custom.el:package-selected-packages does it.
 
 ;;------------------------------------------------------------------------------
 ;; Update/Upgrade Packages Process

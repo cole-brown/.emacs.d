@@ -28,6 +28,7 @@
 (defun spydez/hook/gc-minibuffer/exit ()
   (setq gc-cons-threshold spydez/gc-cons-threshold/normal))
 
+;; TODO: profile this - does it add/save time, does it feel better/laggier?
 (add-hook 'minibuffer-setup-hook #'spydez/hook/gc-minibuffer/enter)
 (add-hook 'minibuffer-exit-hook #'spydez/hook/gc-minibuffer/exit)
 
