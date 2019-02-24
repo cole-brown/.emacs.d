@@ -658,6 +658,10 @@ For the transition, maybe a func for checking..."
 ;;   - use e.g. range for e.g. tabstops
 (require 'misc-functions)
 
+;; Stuff that affects emacs itself, like garbage collection.
+;; Anything earlier than this might be in early-init.
+(require 'configure-emacs)
+
 ;; OS: May need to add a bootstrap-os if need anything earlier than this...
 ;; Any windows vs Linux vs etc stuff.
 ;; Also a decent place for XEmacs vs Emacs if we need any of that.
