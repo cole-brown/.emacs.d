@@ -27,7 +27,7 @@
   ;;   http://steve.yegge.googlepages.com/effective-emacs
   ("C-w" . backward-kill-word)
   ("C-x C-k" . kill-region)
-  ;; (global-set-key "C-c C-k" 'kill-region) ;; don't really use the C-c varient.
+  ("C-c C-k" . kill-region) ;; Turns out I do use C-c version. Probably more than C-x...
   )
 
 ;;------------------------------------------------------------------------------
