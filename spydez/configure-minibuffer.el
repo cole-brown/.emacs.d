@@ -26,6 +26,7 @@
 ;; (setq resize-mini-windows t)
 ;; (setq max-mini-window-height 0.33)
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Minibuffer-Edit.html
+;; TODO: try this resize out
 
 ;;---
 ;; Misc

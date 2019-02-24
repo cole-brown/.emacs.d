@@ -19,6 +19,7 @@
 ;; search...                                             (knights who say...)
 ;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni "provide"
 ;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni "
+;; find . -path "./elpa" -prune -o -path "./etc" -prune -o -path "./var" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni ""
 
 
 ;; TODO: can 'literate programming' do multiple files?
@@ -657,6 +658,10 @@ For the transition, maybe a func for checking..."
 ;;   - set keybinds to some
 ;;   - use e.g. range for e.g. tabstops
 (require 'misc-functions)
+
+;; Stuff that affects emacs itself, like garbage collection.
+;; Anything earlier than this might be in early-init.
+(require 'configure-emacs)
 
 ;; OS: May need to add a bootstrap-os if need anything earlier than this...
 ;; Any windows vs Linux vs etc stuff.
