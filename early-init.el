@@ -1,11 +1,5 @@
 ;; -*- lexical-binding: t -*-
 
-;; TODO: notes, pretty this, etc
-
-;; TODO: a prefix for messages during init or that spit-things-out-to-a-special-buffer-then-show-that thing?
-;; Or both. My own func that does both and can be easily called from the rest of init.
-;; TODO: first debug step happens in here and has that func?
-
 
 ;;----------------------------------------------------------------------------;;
 ;;                                 Bootstrap.                                 ;;
@@ -107,7 +101,6 @@
 (setq spydez/warning/current-type '(spydez early))
 
 ;; TODO: Move that thing about "failure is not an option in init (for my code)" to here?
-;; TODO: Default levels, types? Is :debug more proper or :warning?
 ;; NOTE: Keep the lwarn at the beginning of this file roughly like this.
 (defun spydez/warning/message (type level message &rest args)
   "type: list with spydez first or nil e.g. nil will become '(spydez bootstrap)
@@ -122,9 +115,6 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Warning-Basics.html#Wa
     ))
 ;; (spydez/warning/message nil nil "Update foo %s %s" 'bar 'baz)
 
-;; todo: a debug print func? would get these (message ...) funcs that are not
-;; warnings out of the way so I can know that all the warnings are taken care
-;; of.
 ;; TODO: move this somewhere? debug-early or something?..
 ;; TODO: global enable/disable flag
 ;; TODO: lwarn w/ ":debug"?
@@ -274,7 +264,6 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
 ;; derived-TODO: move personal to "personal"? OR guess "personal", then "spydez"... etc?
 ;;   TODO-TOO: name the looking for stuff to start bootstrap: "finding shoe", cuz you need a shoe
 ;;     to pull yourself up by your bootstraps, right? RIGHT?!
-;;   TODO: May need a place in the shoe closet for system/hash -> domain/name? IDK
 
 
 (defconst spydez/dir/personal/defaults (spydez/dir-name "defaults" spydez/dir/emacs/personal)
