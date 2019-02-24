@@ -25,6 +25,21 @@
     (lwarn warn-type :warning "  %s:  Update early-init.el for actual active duty! Emacs %s uses early-init proper." warn-type emacs-version)))
 
 
+;;-----------------------------------zeroth-----------------------------------;;
+;;                              0th Order Stuff                               ;;
+;;----------------------------------------------------------------------------;;
+;;              For when the first thing is too soon of a thing.
+
+;; TODO-after-reorg-done: put some of this stuff into the personal/init/zeroth
+;; folder and load/call it here.
+
+;;---
+;; Load Path
+;;---
+
+;; Save off orginal. We're going to have a reduced set for bootstrapping, then reset and add the full monty.
+(defconst spydez/dir/load-path/orig load-path)
+
 
 ;;------------------------------------------------------------------------------
 ;; ...But first...
@@ -287,15 +302,21 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
 (defconst spydez/dir/personal/lisp (spydez/dir-name "lisp" spydez/dir/emacs/personal)
   "Extra, non-init files for lisp code I've made or scrounged...")
 
+(defconst spydez/dir/personal/init (spydez/dir-name "init" spydez/dir/emacs/personal)
+  "Base dir for my personal init files.")
+(defconst spydez/dir/init/boot (spydez/dir-name "boot" spydez/dir/personal/init)
+  "Dir for my personal init files related to early-init, bootstrapping.")
+(defconst spydez/dir/init/config (spydez/dir-name "config" spydez/dir/personal/init)
+  "Dir for my personal init files related to normal init, configuration, use-package, etc.")
+(defconst spydez/dir/init/finalize (spydez/dir-name "finalize" spydez/dir/personal/init)
+  "Dir for my personal init files related to sanity, double checking, final steps.")
+
 
 ;;---
 ;; Load Path
 ;;---
 
-;; Save off orginal. We're going to have a reduced set for bootstrapping, then reset and add the full monty.
-(defconst spydez/dir/load-path/orig load-path)
-
-;; Load-Path dirs for finding bootstrapping files:
+;; Bare minimum in the Load-Path for finding bootstrapping files:
 (add-to-list 'load-path spydez/dir/dev/defaults) ;; defaults first so everything else overrides.
 ;; Could add a domain level if needed?
 (add-to-list 'load-path spydez/dir/dev/system-this) ;; most specific to this computer last

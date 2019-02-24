@@ -128,7 +128,7 @@ Adjust folder tree?
 
 * Reorg in progress
 
-  - .emacs.d/ [5/14]
+  - .emacs.d/ [12/14]
     - var/     no-littering puts stuff here
     - etc/     no-littering puts stuff here
     - [X] {spydez|personal}/?
@@ -142,15 +142,15 @@ Adjust folder tree?
       - dev.
     - [X]     computers,defaults,domains/?
       - yep.
-    - [ ]   init/?
-    - [ ]     0_zero/?
+    - [X]   init/?
+    - [ ]     0_zero/? zeroth/?
     - [ ]       early-init stuff?
-    - [ ]     boot/?
-    - [ ]       bootstrap-*
-    - [ ]     config/?
-    - [ ]       config-*
-    - [ ]     finalize/?
-    - [ ]       finalize-*
+    - [X]     boot/?
+    - [X]       bootstrap-*
+    - [X]     config/?
+    - [X]       config-*
+    - [X]     finalize/?
+    - [X]       finalize-*
 
 * TODOs
 

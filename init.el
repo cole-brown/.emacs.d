@@ -474,11 +474,12 @@ For the transition, maybe a func for checking..."
 ;; TODO: sanity check? boundp and set to anything...
 (setq load-path spydez/dir/load-path/orig)
 
+;; TODO-reorg-done: updated this comment?
 ;; Load-Path dirs, and places for overrides to exist (in ascending order):
-;;   ./spydez/defaults/
-;;   ./spydez/
-;;   ./spydez/domains/[work, home, whatever]
-;;   ./spydez/computers/[pfo-dead-beef, home-1234-abcd, whatever]
+;;   ./personal/dev/defaults/
+;;   ./personal/
+;;   ./personal/dev/domains/[work, home, whatever]
+;;   ./personal/dev/computers/[pfo-dead-beef, home-1234-abcd, whatever]
 ;; (Assuming default dir names for personal, etc.)
 
 ;; This is setting priorities for overrides towards the front/head/car of
@@ -491,6 +492,12 @@ For the transition, maybe a func for checking..."
 (add-to-list 'load-path spydez/dir/personal/lisp) ;; non-init; don't care about and should be overridable.
 (add-to-list 'load-path spydez/dir/dev/defaults) ;; defaults first so everything else overrides.
 (add-to-list 'load-path spydez/dir/emacs/personal)
+(add-to-list 'load-path spydez/dir/personal/init)
+(add-to-list 'load-path spydez/dir/init/boot)
+(add-to-list 'load-path spydez/dir/init/config)
+(add-to-list 'load-path spydez/dir/init/finalize)
+(add-to-list 'load-path spydez/dir/dev/domain-all)
+(add-to-list 'load-path spydez/dir/dev/system-all)
 (add-to-list 'load-path spydez/dir/dev/domain-this)
 (add-to-list 'load-path spydez/dir/dev/system-this) ;; most specific to this computer last
 ;; TODO-reorg-done: more in the load path? new dirs (dev, init...)?
