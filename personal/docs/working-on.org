@@ -1,0 +1,6 @@
+1) SoLong
+2) Profile long lines log file example.
+
+3) other note files...
+
+4) look into: https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
