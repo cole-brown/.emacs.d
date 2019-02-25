@@ -7,7 +7,6 @@
 
 (setq spydez/warning/current-type '(spydez interstitial-prose))
 
-
 ;; TODO: use-tool package, like use-package, but for external tools like git, gpg
 ;; say what versions you want, what os you expect, have ways for packages
 ;; to hook in so like gpg can be connected to EPA even if half windows, half MinGW environment.
@@ -91,6 +90,10 @@
 
 ;; TODO: remove all "foo" so I can bookmark again
 
+;; TODO: icons maybe? Do I need icons?
+;;   https://github.com/domtronn/all-the-icons.el
+;; TODO: other stuff from here?: https://huytd.github.io/emacs/emacs-from-scratch.html
+
 ;;---
 ;;------
 ;;------------------------------------------------------------------------------
@@ -120,6 +123,7 @@
 ;;
 ;; This might help: https://www.emacswiki.org/emacs/SoLong
 ;; At least try before nuking major and minor modes myself.
+;; http://git.savannah.nongnu.org/cgit/so-long.git/tree/so-long.el?h=wip
 ;;------------------------------------------------------------------------------
 ;;------
 ;;---

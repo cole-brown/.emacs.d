@@ -104,6 +104,18 @@
 ;; TODO: bells?
 ;;------------------------------------------------------------------------------
 
+;; maybe this with ring bell sound too?
+;;
+;; (setq visible-bell nil
+;;       ring-bell-function 'flash-mode-line)
+;; (defun flash-mode-line ()
+;;   (invert-face 'mode-line)
+;;   (run-with-timer 0.1 nil #'invert-face 'mode-line))
+;; https://www.emacswiki.org/emacs/AlarmBell
+;; http://pragmaticemacs.com/emacs/using-a-visible-bell-in-emacs/
+;; https://www.google.com/search?q=emacs+better+visual+bell&hl=en
+
+
 ;; bell? (this doesn't work...)
 ;; (setq ring-bell-function 'ignore)
 ;; (setq visible-bell t)
