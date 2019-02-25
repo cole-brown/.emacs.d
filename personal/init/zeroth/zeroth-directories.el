@@ -68,14 +68,6 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
 
 
 ;;---
-;; Other Dirs
-;;---
-
-(defconst spydez/dir/personal/lisp (spydez/dir-name "lisp" spydez/dir/emacs/personal)
-  "Extra, non-init files for lisp code I've made or scrounged...")
-
-
-;;---
 ;; Init Dirs
 ;;---
 
@@ -89,6 +81,24 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
   "Dir for my personal init files related to normal init, configuration, use-package, etc.")
 (defconst spydez/dir/init/finalize (spydez/dir-name "finalize" spydez/dir/personal/init)
   "Dir for my personal init files related to sanity, double checking, final steps.")
+
+
+;;---
+;; Other Dirs
+;;---
+
+(defconst spydez/dir/personal/lisp (spydez/dir-name "lisp" spydez/dir/emacs/personal)
+  "Extra, non-init files for lisp code I've made or scrounged...")
+
+;; not used in code (right now? [2019-02-25]) but trying out using
+;; a const in org notes...
+(defconst spydez/dir/personal/docs (spydez/dir-name "docs" spydez/dir/emacs/personal)
+  "Here there be +monsters+ documentation. Or documents... or a few doctors...")
+(defconst spydez/dir/docs/notes (spydez/dir-name "notes" spydez/dir/personal/docs)
+  "Here there be +monsters+ documentation.")
+
+(defconst spydez/dir/emacs/manual-packages (spydez/dir-name "manual-package-archive" spydez/dir/emacs)
+  "Packages that are stuck back before package.el, {ELPA,MELPA,...}, use-package...")
 
 
 ;;------------------------------------------------------------------------------

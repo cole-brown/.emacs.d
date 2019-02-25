@@ -35,9 +35,11 @@
      (expand-file-name "work.org" spydez/dir/common-doc-save)
 
      ;; Working on .emacs.d a lot right now so add these in.
-     (expand-file-name "configure-completion.el" spydez/dir/emacs/personal)
+     (expand-file-name "working-on.org" spydez/dir/personal/docs)
+     (expand-file-name "performance.long-lines.org" spydez/dir/docs/notes)
      (expand-file-name "init.el" spydez/dir/emacs)
      ))
+  ;; TODO: check that these exist before opening. Complain (:warning level?) if not.
 
 
   ;;------------------------------------------------------------------------------

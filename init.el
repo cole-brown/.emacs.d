@@ -18,7 +18,13 @@
 ;; search...                                             (knights who say...)
 ;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni "provide"
 ;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni "
+
+;; (w/ no-littering):
+;; just org:
 ;; find . -path "./elpa" -prune -o -path "./etc" -prune -o -path "./var" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni ""
+;;
+;; org and el:
+;; find . -path "./elpa" -prune -o -path "./etc" -prune -o -path "./var" -prune -o -iname "*.el" -o -iname "*.org" -print0 | xargs -0 grep -ni ""
 
 
 ;; TODO: can 'literate programming' do multiple files?

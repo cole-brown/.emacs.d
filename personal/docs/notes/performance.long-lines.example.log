@@ -27,7 +27,7 @@ SERVER: cluster-name12
 SERVER: cluster-name13
 
 SERVER: cluster-name14
-
+(message "%s" minor-mode-list)
 SERVER: cluster-name15
 ./logs_DATESTR08/SERVER-ID.log:{"@timestamp":"2019-02-08T09:32:30.017081Z","host":"cluster-name15","process":"SERVER-STR","processid":1234,"routeid":5678,"tags":["GOOD", "TAGS"],"severity":5,"message":"LOG-TYPE-MESSAGE1 PLAYER-ID 0 False False 1","player":"PLAYER-NAME","playerid":PLAYER-ID}
 ./logs_DATESTR08/SERVER-ID.log:{"@timestamp":"2019-02-08T09:33:00.108475Z","host":"cluster-name15","process":"SERVER-STR","processid":1234,"routeid":5678,"tags":["GOOD", "TAGS"],"severity":6,"message":"LOG-TYPE-MESSAGE5","player":"PLAYER-NAME","playerid":PLAYER-ID,"POS-STUFF":"yes"}

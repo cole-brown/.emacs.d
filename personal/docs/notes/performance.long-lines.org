@@ -1,0 +1,122 @@
+
+Solution:
+  Too-Long-Lines-Mode
+
+* tabs:
+
+https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=emacs%20really%20long%20lines&=&=&oq=&gs_l=&pbx=1
+  https://emacs.stackexchange.com/questions/598/how-do-i-prevent-extremely-long-lines-making-emacs-slow
+  https://www.reddit.com/r/emacs/comments/4iwvs4/is_it_really_impossible_to_not_slow_to_a_crawl/
+    https://www.emacswiki.org/emacs/SoLong
+  https://www.spacjer.com/blog/2018/03/02/why-is-my-emacs-slow/
+  https://emacs.stackexchange.com/questions/42239/how-to-disable-all-the-minor-modes-when-a-specific-major-mode-is-enabled-with
+
+* Troubleshooting (w/ SoLong)
+  from: https://www.emacswiki.org/emacs/SoLong
+
+"Any elisp library has the potential to cause performance problems, and while so-long addresses some important common cases, it’s entirely possible that your own config contains problem cases that are unknown to this library.
+
+"If a file is still taking a very long time to load with so-long enabled, you should test the following command:
+
+ emacs -Q -l /path/to/so-long.el -f so-long-enable <file>
+
+"If the file loads quickly when that command is used, you’ll know that there is something in your personal configuration which is causing problems. If this turns out to be a buffer-local minor mode, or a user option, you can hopefully alleviate the issue by customizing ‘so-long-minor-modes’ or ‘so-long-variable-overrides’ accordingly."
+
+*** installed... doesn't feel any different?
+
+Is so-long mode enabled? Are others disabled? Idk.
+
+cache-long-scans
+(setq bidi-display-reordering nil)
+
+*** try tweaking these:
+
+so-long-max-lines needs updated cuz log lines are very variable
+so-long-threshold is what?
+so-long-target-modes would need to have... fundamental-mode in it?
+  - can I make a special one just for so-long to target, then put logs into that mode?
+
+Yeah, so long does nothing... other than maybe making the buffer read-only.
+
+(message "%s" minor-mode-list) without so-long:
+    (rectangle-mark-mode auto-image-file-mode shell-dirtrack-mode edebug-mode switch-window-mouse-mode ido-everywhere diff-minor-mode diff-auto-refine-mode gnus-dead-summary-mode gnus-undo-mode mml-mode mail-abbrevs-mode doc-view-minor-mode image-minor-mode xref-etags-mode org-d20-mode orgtbl-mode org-table-follow-field-mode org-cdlatex-mode orgstruct-mode outline-minor-mode org-src-mode electric-pair-mode yas-global-mode yas-minor-mode projectile-mode compilation-minor-mode compilation-shell-minor-mode ibuffer-auto-mode show-paren-mode global-smartscan-mode smartscan-mode global-display-line-numbers-mode display-line-numbers-mode recentf-mode peep-dired dired-hide-details-mode engine-mode guide-key-mode popwin-mode delete-selection-mode winner-mode display-time-mode rich-minority-mode company-search-mode global-company-mode company-mode helm-mode helm-ff--delete-async-modeline-mode helm-popup-tip-mode helm-autoresize-mode helm--remap-mouse-mode helm--minor-mode helm-migemo-mode async-bytecomp-package-mode server-mode savehist-mode auto-compile-on-load-mode auto-compile-on-save-mode auto-compile-mode override-global-mode url-handler-mode cl-old-struct-compat-mode tooltip-mode global-eldoc-mode eldoc-mode electric-quote-mode electric-layout-mode electric-indent-mode mouse-wheel-mode tool-bar-mode paragraph-indent-minor-mode global-prettify-symbols-mode prettify-symbols-mode use-hard-newlines menu-bar-mode file-name-shadow-mode horizontal-scroll-bar-mode jit-lock-debug-mode global-font-lock-mode font-lock-mode blink-cursor-mode window-divider-mode auto-composition-mode unify-8859-on-decoding-mode unify-8859-on-encoding-mode auto-encryption-mode auto-compression-mode temp-buffer-resize-mode visible-mode buffer-read-only size-indication-mode column-number-mode line-number-mode auto-fill-function global-visual-line-mode visual-line-mode transient-mark-mode next-error-follow-minor-mode completion-in-region-mode auto-save-visited-mode auto-save-mode auto-fill-mode abbrev-mode overwrite-mode view-mode hs-minor-mode)
+
+(message "%s" minor-mode-list) with so-long:
+        (rectangle-mark-mode auto-image-file-mode shell-dirtrack-mode edebug-mode switch-window-mouse-mode ido-everywhere diff-minor-mode diff-auto-refine-mode gnus-dead-summary-mode gnus-undo-mode mml-mode mail-abbrevs-mode doc-view-minor-mode image-minor-mode xref-etags-mode org-d20-mode orgtbl-mode org-table-follow-field-mode org-cdlatex-mode orgstruct-mode outline-minor-mode org-src-mode electric-pair-mode yas-global-mode yas-minor-mode projectile-mode compilation-minor-mode compilation-shell-minor-mode ibuffer-auto-mode show-paren-mode global-smartscan-mode smartscan-mode global-display-line-numbers-mode display-line-numbers-mode recentf-mode peep-dired dired-hide-details-mode engine-mode guide-key-mode popwin-mode delete-selection-mode winner-mode display-time-mode rich-minority-mode company-search-mode global-company-mode company-mode helm-mode helm-ff--delete-async-modeline-mode helm-popup-tip-mode helm-autoresize-mode helm--remap-mouse-mode helm--minor-mode helm-migemo-mode async-bytecomp-package-mode server-mode savehist-mode auto-compile-on-load-mode auto-compile-on-save-mode auto-compile-mode override-global-mode url-handler-mode cl-old-struct-compat-mode tooltip-mode global-eldoc-mode eldoc-mode electric-quote-mode electric-layout-mode electric-indent-mode mouse-wheel-mode tool-bar-mode paragraph-indent-minor-mode global-prettify-symbols-mode prettify-symbols-mode use-hard-newlines menu-bar-mode file-name-shadow-mode horizontal-scroll-bar-mode jit-lock-debug-mode global-font-lock-mode font-lock-mode blink-cursor-mode window-divider-mode auto-composition-mode unify-8859-on-decoding-mode unify-8859-on-encoding-mode auto-encryption-mode auto-compression-mode temp-buffer-resize-mode visible-mode buffer-read-only size-indication-mode column-number-mode line-number-mode auto-fill-function global-visual-line-mode visual-line-mode transient-mark-mode next-error-follow-minor-mode completion-in-region-mode auto-save-visited-mode auto-save-mode auto-fill-mode abbrev-mode overwrite-mode view-mode hs-minor-mode)
+
+*** So-Long competitor:
+
+Could try this if so-long isn't good enough: https://emacs.stackexchange.com/a/41406
+
+*** removed from configure-emacs.el:
+
+;;---
+;; So Long Mode
+;;---
+
+;; So... not in GitHub or MELPA yet. Have to get from EmacsWiki.
+;; https://www.emacswiki.org/emacs/SoLong
+(use-package so-long
+ 
+  :disabled
+  ;; doesn't do anything for my use-case.
+  
+
+  ;; have it specify that it's in the manual package archive dir
+  :load-path spydez/dir/emacs/manual-packages
+  ;; May want a "version" on the file?
+  ;; For now... I downloaded that on [2019-02-25 Mon].
+  :demand t
+  :config
+  (setq so-long-max-lines 5000
+        so-long-threshold 500)
+  ;; (add-to-list 'so-long-target-modes 
+  (so-long-enable))
+
+;; See the commentary in the code for details of controlling the situations in
+;; which so-long-mode will be triggered, and the actions that it takes.
+;; 
+;; M-x customize-group RET so-long RET to configure the library.
+
+* Troubleshooting (disable all minor modes)
+  from: https://emacs.stackexchange.com/questions/42239/how-to-disable-all-the-minor-modes-when-a-specific-major-mode-is-enabled-with
+
+You can use a function like this:
+
+(defun disable-all-minor-modes ()
+  (interactive)
+  (mapc
+   (lambda (mode-symbol)
+     (when (functionp mode-symbol)
+       ;; some symbols are functions which aren't normal mode functions
+       (ignore-errors 
+         (funcall mode-symbol -1))))
+   minor-mode-list))
+
+Note that this will probably disable more functionality than you think.
+
+If you want to disable minor modes when you in a specific mode, you can just hook this function like this:
+
+(add-hook 'lisp-mode-hook #'disable-all-minor-modes)
+
+Simply replace lisp-mode with the major mode you want to use, and keep in mind that this will run in derived major modes as well.
+
+After disabling: 
+  (edebug-mode auto-image-file-mode shell-dirtrack-mode ido-everywhere diff-minor-mode diff-auto-refine-mode gnus-dead-summary-mode gnus-undo-mode mml-mode mail-abbrevs-mode doc-view-minor-mode image-minor-mode xref-etags-mode org-d20-mode orgtbl-mode org-table-follow-field-mode org-cdlatex-mode orgstruct-mode outline-minor-mode org-src-mode electric-pair-mode yas-global-mode yas-minor-mode projectile-mode compilation-minor-mode compilation-shell-minor-mode ibuffer-auto-mode show-paren-mode global-smartscan-mode smartscan-mode global-display-line-numbers-mode display-line-numbers-mode recentf-mode peep-dired dired-hide-details-mode engine-mode guide-key-mode popwin-mode delete-selection-mode winner-mode display-time-mode rich-minority-mode company-search-mode global-company-mode company-mode helm-mode helm-ff--delete-async-modeline-mode helm-popup-tip-mode helm-autoresize-mode helm--remap-mouse-mode helm--minor-mode helm-migemo-mode async-bytecomp-package-mode server-mode savehist-mode auto-compile-on-load-mode auto-compile-on-save-mode auto-compile-mode override-global-mode url-handler-mode cl-old-struct-compat-mode tooltip-mode global-eldoc-mode eldoc-mode electric-quote-mode electric-layout-mode electric-indent-mode mouse-wheel-mode tool-bar-mode paragraph-indent-minor-mode global-prettify-symbols-mode prettify-symbols-mode use-hard-newlines menu-bar-mode file-name-shadow-mode horizontal-scroll-bar-mode jit-lock-debug-mode global-font-lock-mode font-lock-mode blink-cursor-mode window-divider-mode auto-composition-mode unify-8859-on-decoding-mode unify-8859-on-encoding-mode auto-encryption-mode auto-compression-mode temp-buffer-resize-mode visible-mode buffer-read-only size-indication-mode column-number-mode line-number-mode auto-fill-function global-visual-line-mode visual-line-mode transient-mark-mode next-error-follow-minor-mode completion-in-region-mode auto-save-visited-mode auto-save-mode auto-fill-mode abbrev-mode overwrite-mode view-mode hs-minor-mode)
+
+*** removed from configure-emacs.el:
+
+;;---
+;; Minor Mode Hater?
+;;---
+;; (defun disable-all-minor-modes ()
+;;   (interactive)
+;;   (message "Pre: %s" minor-mode-list)
+;;   (mapc
+;;    (lambda (mode-symbol)
+;;      (when (functionp mode-symbol)
+;;        ;; some symbols are functions which aren't normal mode functions
+;;        (ignore-errors 
+;;          (funcall mode-symbol -1))))
+;;    minor-mode-list)
+;;   (message "Post: %s" minor-mode-list))
