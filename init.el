@@ -321,7 +321,7 @@
 ;;----------------------------------------------------------------------------;;
 ;;                                 Bootstrap.                                 ;;
 ;;---To pull oneself up by the bootstraps, one must first find one's boots.---;;
-;;                           ...Where are my boots?
+;;                           ...Where are my boots?                           ;;
 
 
 ;;---
