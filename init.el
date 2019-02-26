@@ -15,7 +15,9 @@
 ;; Notes, TODOs, Links
 ;;------------------------------------------------------------------------------
 
-;; search...                                             (knights who say...)
+;;---
+;; Search...                                             (knights who say...)
+;;---
 ;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni "provide"
 ;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni "
 
@@ -26,6 +28,13 @@
 ;; org and el:
 ;; find . -path "./elpa" -prune -o -path "./etc" -prune -o -path "./var" -prune -o -iname "*.el" -o -iname "*.org" -print0 | xargs -0 grep -ni ""
 
+;; Those are getting complicted and not working right...
+;; find . -iname "*.el" -o -iname "*.org" | grep -v "/var/" | grep -v "/pre-no-littering/" | grep -v "/manual-package-archive/" | grep -v "/elpa/" | xargs grep "yegge"
+
+
+;;---
+;; Misc
+;;---
 
 ;; TODO: can 'literate programming' do multiple files?
 ;; http://www.howardism.org/Technical/Emacs/literate-programming-tutorial.html
@@ -33,12 +42,6 @@
 ;; Can also check out this for general layout:
 ;;   https://www.emacswiki.org/emacs/DotEmacsStructuring
 
-;; TODO: stick this link in the right place(es?)
-;;   https://sites.google.com/site/steveyegge2/effective-emacs
-;;   C-x C-m, backwards-kill-word, 
-
-;; TODO: make sure up-to-datest packages in home and work comps and still
-;;   working emacs config.
 
 ;;---
 ;; Help I Often Forget.
