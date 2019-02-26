@@ -151,6 +151,21 @@
 ;; So just muck it on our own and we're like a hacky onion. In muck.
 (let ((spydez/hack/ugly-hacky-gpg-dir
        (concat (spydez/dir/windows-to-mingw spydez/dir/home) ".gnupg/")))
+  ;; (setq epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
+  ;; (setq epg-gpg-program (executable-find "gpg"))               ; windowsy
+  ;; (setq epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy
+
+  ;; Well... I can set them here, but they'll keep wanting to be in custom.el
+  ;; If I do. And I don't really want them in custom.el... I was hoping for that
+  ;; to be a global file. But setq doesn't work for these for some reason.
+  ;; So this is a fun pickle.
+
+  ;; This also fucks up my intentions for use-tool quite badly... :/
+  ;; Can't move configuration like this into use-tool if its forced
+  ;; to exist in the custom file.
+
+  ;; TODO: what the fuck to do with these...
+  ;; TODO: try this csetq macro for setting? https://oremacs.com/2015/01/17/setting-up-ediff/
   (custom-set-variables
    '(epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
    '(epg-gpg-program (executable-find "gpg"))               ; windowsy

@@ -4,6 +4,11 @@
 ;; Trailing whitespace.
 ;;------------------------------------------------------------------------------
 
+;; different way to ban whitespace at end of lines?
+;; ;; Delete trailing whitespace before save
+;; (add-hook 'before-save-hook 'delete-trailing-whitespace)
+;; Caveat: Same downside as below. Ducks up the blame.
+
 ;; Ban whitespace at end of lines, globally.
 ;; (add-hook 'write-file-hooks
 ;;           '(lambda ()

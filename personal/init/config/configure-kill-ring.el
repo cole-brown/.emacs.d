@@ -9,6 +9,40 @@
 ;; aka: turn on pending delete (when a region is selected, typing replaces it)
 (delete-selection-mode 1)
 
+;; taken from http://emacs-bootstrap.com/
+;;
+;;   "When an Emacs kill command puts text in the clipboard, the existing
+;; clipboard contents are normally lost. Optionally, you can change
+;; save-interprogram-paste-before-kill to t. Then Emacs will first save the
+;; clipboard to its kill ring, preventing you from losing the old clipboard
+;; data—at the risk of high memory consumption if that data turns out to be
+;; large."
+;;   - https://www.gnu.org/software/emacs/manual/html_node/emacs/Clipboard.html
+;; Trial [2019-02-26]
+(setq save-interprogram-paste-before-kill t)
+
+
+;;------------------------------------------------------------------------------
+;; Mouse Settings
+;;------------------------------------------------------------------------------
+
+;; Mouse button functionality:
+;;   Mouse 1: click: Move point to mouse click location.
+;;   Mouse 1: drag:  Select region.
+;;   Mouse 2: click: Yank from kill ring.
+;;   Mouse 3: click: Change/select region based on point and click location.
+
+;; taken from http://emacs-bootstrap.com/
+;;
+;;   "If you change the variable mouse-yank-at-point to a non-nil value, mouse-2
+;; does not move point; it inserts the text at point, regardless of where you
+;; clicked or even which of the frame's windows you clicked on. This variable
+;; affects both mouse-yank-primary and mouse-yank-at-click."
+;;   - https://www.gnu.org/software/emacs/manual/html_node/emacs/Mouse-Commands.html
+;; Trial [2019-02-26]
+;;   -- I don't use mouse 2, 3 much but it looks potentially useful.
+(setq mouse-yank-at-point t)
+
 
 ;;------------------------------------------------------------------------------
 ;; Keybinds

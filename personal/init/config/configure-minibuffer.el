@@ -6,6 +6,17 @@
 ;;------------------------------------------------------------------------------
 
 ;;---
+;; Properties
+;;---
+
+;; Added property to prevent point from entering prompt/read-only
+;; text in minibuffer.
+(setq minibuffer-prompt-properties '(read-only t
+                                     cursor-intangible t
+                                     face minibuffer-prompt))
+
+
+;;---
 ;; Minibuffer editting
 ;;---
 

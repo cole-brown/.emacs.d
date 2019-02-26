@@ -2,10 +2,75 @@ hi
 
 * A list of things to consider working on
 
-  1) other note files...
+  1) Projectile, use this .emacs.d project as test/tutorial?
 
-  2) look into: https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
+  2) Try out csetq macro: file:../init/config/configure-crypt.el::167
 
-  3) hi
+  3) fuzzy stuff
 
-* Heading 2
+  4) 
+
+  5) other note files...
+
+  6) look into: https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
+
+  7) hi
+
+* look at these:
+
+https://www.reddit.com/r/emacs/comments/3kqt6e/2_easy_little_known_steps_to_speed_up_emacs_start/
+
+https://www.emacswiki.org/emacs/OptimizingEmacsStartup
+https://www.emacswiki.org/emacs/ProfileDotEmacs
+
+* packages to consider
+
+*** Dashboard
+
+(use-package dashboard
+  :config
+  (dashboard-setup-startup-hook))
+
+https://www.reddit.com/r/emacs/comments/8jaflq/tip_how_to_use_your_dashboard_properly/
+
+*** Ace Jump Mode
+
+Looks like it's Avy vs Ace Jump. Not sure if I want either. Avy seems newer?
+
+https://www.emacswiki.org/emacs/AceJump
+(use-package ace-jump-mode
+  :bind
+  ("C-c SPC" . ace-jump-mode))
+
+$ find . -iname "*.el" -o -iname "*.org" | grep -v "/var/" | grep -v "/pre-no-littering/" | grep -v "/manual-package-archive/" | grep -v "/elpa/" | xargs grep "ace-jump"
+./personal/docs/references/nhoffman.init.org:replacement for ace-jump-mode.
+./personal/init/config/configure-hydra.el:    ;; Not using avy right now. Similar to ace-jump or easymotion.
+
+*** ediff
+
+Do I need this with magit? Or at all?
+
+(use-package ediff
+  :config
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+  (setq-default ediff-highlight-all-diffs 'nil)
+  (setq ediff-diff-options "-w"))
+
+https://www.gnu.org/software/emacs/manual/html_node/ediff/
+https://www.emacswiki.org/emacs/EdiffMode
+https://oremacs.com/2015/01/17/setting-up-ediff/
+  - has reasons to use with magit
+
+*** helm search things
+
+(use-package wgrep)
+
+(use-package helm-ag)
+
+(use-package helm-git-grep)
+
+*** page break line
+
+https://github.com/purcell/page-break-lines
+
+Don't think I see page breaks all that often/at all.

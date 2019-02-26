@@ -11,6 +11,15 @@
 ;;   (interactive)
 ;;   (message "Undefined for OS: %s" system-type))
 
+;; TODO: This seems useful maybe
+;; (use-package exec-path-from-shell
+;;   :config
+;;   ;; Add GOPATH to shell
+;;   (when (memq window-system '(mac ns))
+;;     (exec-path-from-shell-copy-env "GOPATH")
+;;     (exec-path-from-shell-copy-env "PYTHONPATH")
+;;     (exec-path-from-shell-initialize)))
+
 
 ;;------------------------------------------------------------------------------
 ;; Git Bash for Windows?
