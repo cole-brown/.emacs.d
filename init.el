@@ -97,45 +97,9 @@
 ;; TODOs and Misc.
 ;;---
 
-;; TODO: remove all "foo" so I can bookmark again
-
 ;; TODO: icons maybe? Do I need icons?
 ;;   https://github.com/domtronn/all-the-icons.el
 ;; TODO: other stuff from here?: https://huytd.github.io/emacs/emacs-from-scratch.html
-
-;;---
-;;------
-;;------------------------------------------------------------------------------
-;; TODO: open small-ish log (~400k?). Try to search. Laggy. :( move lines, laggy... :( Something is laggy.
-;; paren matching maybe? idk
-;; keywords: slow, lag, laggy
-;; https://www.google.com/search?q=what%20is%20slowing%20down%20emacs
-;;   https://emacs.stackexchange.com/questions/5359/how-can-i-troubleshoot-a-very-slow-emacs
-;;     C-h m will show major, minor modes. Disable (minors?) one by one to see what's slow.
-;;       - may have to figure out/disable helm, hydra, etc. Or are they modes too?
-;;   https://www.reddit.com/r/emacs/comments/8v4v7o/why_is_emacs_so_slow_on_windows/
-;;   https://www.spacjer.com/blog/2018/03/02/why-is-my-emacs-slow/
-;;     -- PROFILER info! Yay!
-;;        - profiler doesn't say anything useful other than:
-;;          "the two commands you used a lot took a lot of time"
-;; Turned off all my init. emacs is mostly(ish) better. But when crazy long
-;; line(s) is(are) on screen, get some stutters. When on crazy long lines,
-;; get lag. Crazy long is 36769 characters long.
-;; Minor modes still enabled:
-;;   Auto-Composition Auto-Compression Auto-Encryption
-;;   Blink-Cursor Column-Number Diff-Auto-Refine Electric-Indent
-;;   File-Name-Shadow Font-Lock Global-Eldoc Global-Font-Lock Line-Number
-;;   Menu-Bar Mouse-Wheel Tool-Bar Tooltip Transient-Mark
-;;
-;; https://emacs.stackexchange.com/questions/598/how-do-i-prevent-extremely-long-lines-making-emacs-slow
-;; https://www.reddit.com/r/emacs/comments/4iwvs4/is_it_really_impossible_to_not_slow_to_a_crawl/
-;;
-;; This might help: https://www.emacswiki.org/emacs/SoLong
-;; At least try before nuking major and minor modes myself.
-;; http://git.savannah.nongnu.org/cgit/so-long.git/tree/so-long.el?h=wip
-;;------------------------------------------------------------------------------
-;;------
-;;---
 
 ;; TODO: change sanity checks and others over from (and (boundp var) var) to (bound-and-true-p var)
 
@@ -146,12 +110,10 @@
 
 ;; TODO: read this maybe https://sanctum.geek.nz/arabesque/series/unix-as-ide/
 
-;; TODO: Ctrl-del shouldn't push to kill ring
-
 ;; TODO: change functions I've acquired (e.g. "xah-") over to "spydez/" prefix so there's one search for them.
 ;;   Note the old name in comment or docstring.
 
-;; TODO: resume in emaics/org-mode/latex?
+;; TODO: resume (CV, not un-pause) in emacs/org-mode/latex?
 ;; https://www.reddit.com/r/emacs/comments/6pp9z3/noob_using_emacs_to_write_a_resume/
 ;; https://github.com/xiaohanyu/resume
 ;; https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=org%20mode%20resume&=&=&oq=&gs_l=&pbx=1
@@ -162,19 +124,9 @@
 
 ;; TODO: my current configure-<functionality> versus what most others seem to do: configure-<package>
 
-;; TODO: overwrite selection with paste
-
 ;; TODO: defer load absolutely nothing? Seems to make for just random pauses for a while when you do something
 ;; after loading emacs. An extra second or two at start might be less annoying?
 ;; A global setting would be cool... (if/when (spydez/defer-load-p) ...)
-
-;; TODO: try a let or something for vars that should be different during my init
-;; e.g. gc threshold.
-;; like...
-;; (let ((gc-cons-threshold most-positive-fixnum))
-;;  # existing init code
-;;  )
-;; But a nicer way to do that? (let ((vars...)) (load "actual-init")) maybe?
 
 ;; TODO: check if missed any of old .emacs files
 

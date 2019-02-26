@@ -43,7 +43,7 @@
 ;;------------------------------------------------------------------------------
 ;; Don't need to use-package it or anything...
 
-;; TODO: set these to spydez/foobar consts if defined
+;; TODO: set these to spydez/{dir,file}/org/something consts if defined
 ;; (setq org-directory "~/personal")
 ;; (setq org-default-notes-file "~/personal/organizer.org") ;; work.org file?
 

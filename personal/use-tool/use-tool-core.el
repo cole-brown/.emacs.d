@@ -118,7 +118,7 @@
       ;;---
       ;; PATH
       ;;---
-      ;; NOTE: This has a few holes. There are 'C:\foo\bar' and 'C;/baz/qux'.
+      ;; NOTE: This has a few holes. There are both 'C:\path\to' and 'C:/path/to', for example.
       ;;   But I'll try the stupid approach first.
       ;; skip if known, or if empty/nil string for path
       (unless (or (string-match-p (regexp-quote cur-path) env-paths) ;; bad way to check if known

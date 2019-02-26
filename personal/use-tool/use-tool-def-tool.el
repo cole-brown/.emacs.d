@@ -20,7 +20,7 @@
       ;; basically becomes e.g.:
       ;; (lwarn '(use-tool debug) :debug "  %s:  Debug message (args %s) here." '(use-tool debug) args)
       )))
-;; (use-tool-debug-message "Update foo %s %s" 'bar 'baz)
+;; (use-tool-debug-message "use-tool-debug message test: %s %s" '(testing list) 'test-symbol)
 
 
 ;;------------------------------------------------------------------------------

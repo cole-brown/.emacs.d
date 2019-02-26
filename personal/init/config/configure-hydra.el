@@ -213,8 +213,8 @@ Repeated invocations toggle between the two most recently open buffers."
     ;; gmail - which google user will this use? 
     (defengine mail "https://mail.google.com/mail/u/0/#search/%s" :keybinding "m")
 
-    ;; google w/ "site:foo.bar"
-    ;; (defengine emacswiki "http://google.com/search?q=site:emacswiki.org+%s" :keybinding "e")
+    ;; google w/ hardcoded "site:example.comp"
+    ;; (defengine emacswiki "http://google.com/search?q=site:example.com+%s" :keybinding "e")
 
     ;; more here: https://github.com/hrs/engine-mode#engine-examples
     (defengine amazon "http://www.amazon.com/s/ref=nb_sb_noss?field-keywords=%s")

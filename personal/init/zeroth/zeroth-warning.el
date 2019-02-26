@@ -44,7 +44,7 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Warning-Basics.html#Wa
     ;; basically becomes e.g.:
     ;; (lwarn '(spydez bootstrap) :warning "  %s:  Update 'Master List' for this system (%s) here." '(spydez bootstrap) spydez/setup/system/hash)
     ))
-;; (spydez/warning/message nil nil "Update foo %s %s" 'bar 'baz)
+;; (spydez/warning/message nil nil "My spydez/warning/message test: %s %s" '(testing list) 'test-symbol)
 
 
 ;;---
@@ -58,7 +58,7 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Warning-Basics.html#Wa
   (let* ((type (or type '(spydez debug general)))
         (injected-message (format "  %s:  %s" type message)))
     (apply 'message injected-message args)))
-;;(spydez/debug/message nil "hi %s %s" 'bar 'foo)
+;;(spydez/debug/message nil "My spydez/debug/message test: %s %s" '(testing list) 'test-symbol)
 
 
 ;;------------------------------------------------------------------------------
