@@ -55,6 +55,19 @@
         search-ring
         regexp-search-ring))
 
+;; TODO: consider this `real-auto-save' mode if needed. Don't think it's needed
+;; at this time though.
+;;   https://github.com/ChillarAnand/real-auto-save
+;; Found in: https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html#sec-10-2-3
+
+;;---
+;; Desktop
+;;---
+;; Seems pretty popular but I dunno.
+;; Found in: https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html#sec-10-2-3
+;; (desktop-save-mode 1)
+;; (setq desktop-restore-eager 10)
+
 
 ;;------------------------------------------------------------------------------
 ;; Provide this.

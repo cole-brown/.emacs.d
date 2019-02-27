@@ -12,6 +12,20 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Scrolling
+;;------------------------------------------------------------------------------
+
+;; TODO: this might belong in configure-text or something.
+
+;; Sets mouse scroll to one line regardless.
+;; Default is 5 lines if normal, 1 line if S-scroll, and 1 page if C-scroll.
+;; (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+
+;; Disables mouse scroll acceleration, basically?
+;; (setq mouse-wheel-progressive-speed nil)
+
+
+;;------------------------------------------------------------------------------
 ;; Title
 ;;------------------------------------------------------------------------------
 
@@ -119,6 +133,10 @@
 
   :demand t
 
+  ;; TODO: do I really want to diminish this? Maybe a nice noticable icon
+  ;; if I get the all-the-icons package... It's "tll" by default.
+  :diminish
+
   :config
   (too-long-lines-mode t))
 
@@ -132,6 +150,22 @@
 
 ;; bi-directional display not needed for my english-only stuff...
 (setq bidi-display-reordering nil)
+
+
+;;------------------------------------------------------------------------------
+;; Network
+;;------------------------------------------------------------------------------
+
+;; Have TRAMP use SCP... if I get around to setting up TRAMP.
+;; TODO: get around to setting up TRAMP?
+
+;; tramp-default-method...
+;; (setq tramp-default-user "root")
+;; Uh... this looks wrong? Like it won't set tramp-default-method...
+;; (condition-case nil
+;;     (require 'tramp)
+;;   (setq tramp-default-method "scp")
+;;   (error (message "** could not load tramp")))
 
 
 ;;------------------------------------------------------------------------------

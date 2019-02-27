@@ -13,6 +13,8 @@
 ;;------------------------------------------------------------------------------
 ;; Notes, TODOs, Links
 ;;------------------------------------------------------------------------------
+;; TODO: rename all these "TODOs" in my section headers so I can search for
+;; 'TODO' without dozens of false alarms...
 
 ;;---
 ;; Search...                                             (knights who say...)
@@ -29,6 +31,9 @@
 
 ;; Those are getting complicted and not working right...
 ;; find . -iname "*.el" -o -iname "*.org" | grep -v "/var/" | grep -v "/pre-no-littering/" | grep -v "/manual-package-archive/" | grep -v "/elpa/" | xargs grep "yegge"
+
+;; TODO: a search in my .emacs.d project that is, like... emacs.
+;; Seems silly to be upgrading emacs so much and still use bash for that...
 
 
 ;;---
