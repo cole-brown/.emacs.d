@@ -77,6 +77,9 @@
 ;;------------------------------------------------------------------------------
 ;; It's all the rage.
 
+;;---
+;; Git Messenger
+;;---
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#orgfb77d93
 ;; Trial: [2019-01-25]
 (use-package git-messenger
@@ -97,10 +100,25 @@
 ;; (setq vc-git-diff-switches nil)
 ;; TODO: why set vc-diff-switches instead of vc-git-diff-switches?
 
-;; TODO: what is git-gutter and do I want it?
 
-;; I guess mostly we're just using magit...
-;; So..... Next section!:
+;;---
+;; Git Gutter (Fringe (+?))
+;;---
+
+(when (display-graphic-p)
+   (use-package git-gutter-fringe
+     :ensure t
+
+     :delight (git-gutter-mode " g" git-gutter-fringe)
+
+     :config
+     (global-git-gutter-mode)))
+
+;; TODO: try out diff-hl? Would be nice to have for SVN, but git won the war so
+;; SVN is probably on the way to extinct...
+;; If that doesn't work, use the 'fringe' version of gutter or gutter+ that's
+;; more popular? (non-+ have been updated more recently)
+
 
 
 ;;------------------------------------------------------------------------------

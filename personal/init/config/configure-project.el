@@ -64,19 +64,21 @@
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org2bcc47a
 ;; the package itself
 (use-package projectile
-  ;;:diminish projectile-mode
-
-  ;; TODO: this good or bad?
-  ;; remove mode name, but replace with project name
-  :delight '(:eval (concat " " (projectile-project-name)))
+  ;; :delight '(:eval (concat " " (projectile-project-name)))
+  ;; ...That doesn't work. Ok then. I guess set it in config.
 
   :bind-keymap
   ("C-c p" . projectile-command-map)
 
   :config
   (progn
-    ;; why is this a setq instead of a bind/bind-key?
-    ;; (setq projectile-keymap-prefix (kbd "C-c p"))
+    ;; mode line: trying this for now:
+    ;;   orig: " Projectile[<proj>:<type>]"
+    ;;   curr: " P[<proj>:<type>]"
+    ;; May want to get rid of type if it's not useful. (.emacs.d is `generic', really?!)
+    (setq ;; projectile-dynamic-mode-line '(:eval (format "[%s]" (projectile-project-name)))
+          projectile-mode-line-prefix " P")
+          ;;(projectile-project-type))
 
     ;; Completion system used by Projectile. (default is `ido' but we changed to... `default'?
     (setq projectile-completion-system 'default)
@@ -87,6 +89,8 @@
     ;; external indexing, add this setting. The alien indexing method uses
     ;; external tools (e.g. git, find, etc) to speed up the indexing process.
     (setq projectile-indexing-method 'alien)
+    ;; Not sure if this works better than `native' or not...
+    ;; `native' is default in widows, `alien' is native on other `system-type'.
 
     ;; I don't have any ignored yet... Maybe `third-party' if dirs can be ignored...
     ;; (add-to-list 'projectile-globally-ignored-files "node-modules")

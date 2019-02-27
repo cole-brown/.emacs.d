@@ -603,6 +603,7 @@ For the transition, maybe a func for checking..."
 
 ;; Packages used by other packages.
 (use-package diminish)
+(use-package delight)
 ;; TODO: diminish vs delight? Do I care enough to try delight?
 
 ;; library used for some list functions (by me and by some packages)
