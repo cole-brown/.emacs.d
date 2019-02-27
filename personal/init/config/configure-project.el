@@ -27,15 +27,24 @@
 ;;---
 ;; C-c p f: Find file in current project
 ;; C-c p p: Switch project
-;; C-c p g: Grep in project
+;; C-c p s g: Grep in project
 ;; C-c p r: Replace in project
 ;; C-c p m: Invoke a command via the Projectile Commander
+;; C-c p m ?: Projectile Commander: get help for Projectile Commander
+;;
 ;; many many more: https://projectile.readthedocs.io/en/latest/usage/
 
 
 ;;------------------------------------------------------------------------------
 ;; TODO: General Settings?
 ;;------------------------------------------------------------------------------
+
+;; TODO: get grep working? C-c p s g
+;; Or ag? C-c p s s
+;; is ag any good? Better than grep? Better than grep that doesn't work?
+;; Well it's also an external tool so... *shrug*
+;;   https://github.com/ggreer/the_silver_searcher
+;;   Needs an emacs package too. Not sure which one Projectile wants.
 
 
 ;;------------------------------------------------------------------------------
@@ -55,11 +64,23 @@
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org2bcc47a
 ;; the package itself
 (use-package projectile
-  :diminish projectile-mode
+  ;;:diminish projectile-mode
+
+  ;; TODO: this good or bad?
+  ;; remove mode name, but replace with project name
+  :delight '(:eval (concat " " (projectile-project-name)))
+
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+
   :config
   (progn
-    (setq projectile-keymap-prefix (kbd "C-c p"))
+    ;; why is this a setq instead of a bind/bind-key?
+    ;; (setq projectile-keymap-prefix (kbd "C-c p"))
+
+    ;; Completion system used by Projectile. (default is `ido' but we changed to... `default'?
     (setq projectile-completion-system 'default)
+    ;; cache is good, right?
     (setq projectile-enable-caching t)
     
     ;; Using Emacs Lisp for indexing files is really slow on Windows. To enable
@@ -71,7 +92,6 @@
     ;; (add-to-list 'projectile-globally-ignored-files "node-modules")
     )
 
-  :config
   (projectile-global-mode))
 
 ;; integrate with Helm
