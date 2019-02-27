@@ -11,6 +11,21 @@
 ;; TODO: add a shortcut for `find-dired'?
 ;; `C-x C-d' maybe?
 
+;; add human-readable flag
+(setq dired-listing-switches "-lah")
+
+;; Was `top'. Any non (top always) value means always ask.
+(setq dired-recursive-deletes  +1)
+
+;; from: https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html#sec-10-3-2
+;; But not in melpa so not sure I want. Probably superceded by a file explorer like treemacs.
+;; ;;---
+;; ;; Dired Details+
+;; ;;---
+;; ;;...not on melpa either.
+;; (require 'dired-details+)
+;; (setq-default dired-details-hidden-string "")
+
 ;; TODO: windows doesn't seem to like this `find-dired'?
 ;; "By default Emacs will pass -exec to find and that makes it very slow. It is
 ;; better to collate the matches and then use xargs to run the command. To do

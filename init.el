@@ -63,15 +63,15 @@
 ;; References.
 ;;---
 
-;; Check this for ideas todo: ~/zzz_generated-emacs/emacs.d
-;; Check this out for more stuff todo: ~/new-emacs.org
-
 ;; Special extra useful links:
-;;   1) Sacha's init.org: http://pages.sachachua.com/.emacs.d/Sacha.html
+;;   1) Sacha Chua's init.org: http://pages.sachachua.com/.emacs.d/Sacha.html
 ;;      - Firmly in number 1. Followed her init pretty exclusively until done
 ;;        with it, then branched off to other's stuff (like my own old .emacs).
-;;   2) nhoffman's init.org: https://github.com/nhoffman/.emacs.d/blob/master/init.org
+;;   2) Noah Hoffman's init.org: https://github.com/nhoffman/.emacs.d/blob/master/init.org
 ;;      - Well set up init.org. Second in line (well, third after my old .emacs).
+;;   3) Grant Rettke's (C3F) init.org: https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
+;;      - Interesting layout for literate programming. Sections come up in
+;;        whatever order and then when tangled, get put into a specific order.
 
 ;; Todo: Do we want ./spydez/references/ ignored or saved in git?
 ;;   - Don't really want to save if public in repo...

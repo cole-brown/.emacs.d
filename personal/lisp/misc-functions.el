@@ -80,8 +80,15 @@
 ;; Dates & Times
 ;;------------------------------------------------------------------------------
 
+;; best format
 (setq spydez/yyyy-mm-dd "%Y-%m-%d")
+;; pretty much worst format
 (setq spydez/dd-mon-yy "%d %b %y")
+;; And... the terrible USA format.
+(setq spydez/mm-dd-yyyy "%%m-%d-%Y")
+(setq spydez/mm-dd-yy "%%m-%d-%y")
+
+;; Was used in an old weekly-status template
 (defun spydez/next-friday (format)
   (let ((today (nth 6 (decode-time (current-time)))))
     (format-time-string 
@@ -92,6 +99,15 @@
        (if (eq 5 today) ; saturday is only day bigger than friday
            6
          (- 5 today)))))))
+
+;; Insert ISO 8601 timestamp.
+(defun spydez/timestamp-ISO ()
+  "Produces and inserts a full ISO 8601 format timestamp of NOW."
+  (interactive)
+  (insert (format-time-string "%Y-%m-%dT%T%z")))
+
+(defalias 'spydez/timestamp-ORG 'org-time-stamp-inactive
+  "Produces and inserts an abbreviated timestamp using org-time-stamp-inactive.")
 
 
 ;;------------------------------------------------------------------------------

@@ -5,6 +5,12 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Hex Editor
+;;------------------------------------------------------------------------------
+;; Hex mode is: hexl
+
+
+;;------------------------------------------------------------------------------
 ;; dabbrev - Dynamic Abbreviation Expand
 ;;------------------------------------------------------------------------------
 ;; Exclude very large buffers from dabbrev
@@ -160,6 +166,32 @@
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org36b0308
 ;; (use-package rainbow-delimiters
 ;;   :disabled t)
+
+
+;;------------------------------------------------------------------------------
+;; Code Folding
+;;------------------------------------------------------------------------------
+;; TODO: do I want/need this?
+;; from https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html#sec-10-3-2
+;; org-mode folding trees is nice, but I dunno if I do/don't want for code.
+;; TODO: add in, try out?
+;; (setq hs-hide-comments-when-hiding-all +1)
+;; (setq hs-isearch-open t)
+;; (require 'hideshow-org)
+;; ; Displaying overlay content in echo area or tooltip
+;; (defun display-code-line-counts (ov)
+;;       (when (eq 'code (overlay-get ov 'hs))
+;;         (overlay-put ov 'help-echo
+;;                      (buffer-substring (overlay-start ov)
+;;                                       (overlay-end ov)))))
+;;
+;;     (setq hs-set-up-overlay 'display-code-line-counts)
+;; ; How do I get it to expand upon a goto-line?
+;; (defadvice goto-line (after expand-after-goto-line
+;;                                 activate compile)
+;;         "hideshow-expand affected block when using goto-line in a collapsed buffer"
+;;         (save-excursion
+;;            (hs-show-block)))
 
 
 ;;------------------------------------------------------------------------------

@@ -12,6 +12,35 @@
 
 
 ;;------------------------------------------------------------------------------
+;; General Keybinds?
+;;------------------------------------------------------------------------------
+;; TODO: a custom, more useful layout for the function keys? I use F3 and
+;; F4 currently for doing macros, but none of the rest. 
+;; e.g.:
+;; (global-set-key (kbd "<f1>") 'kmacro-start-macro)
+;; (global-set-key (kbd "<f2>") 'kmacro-end-macro)
+;; (global-set-key (kbd "<f3>") 'kmacro-end-and-call-macro)
+;;                                         ; F4 is free
+;;                                         ; Keep F5 free per mode
+;;                                         ; Keep F6 free per mode
+;;                                         ; Keep F7 free per mode
+;;                                         ; F8 is free
+;;                                         ; F9 is free
+;;                                         ; F10 is free
+;; (global-set-key (kbd "<f11>") 'gcr/insert-timestamp)
+;; (global-set-key (kbd "<f12>") 'gcr/comment-or-uncomment)
+;; from: https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html#sec-10-4
+;;
+;; But use bind-keys:
+;;
+;; (bind-keys*
+;;   ([(control backspace)] . spydez/backward-delete-word)
+;;   ("C-w" . backward-kill-word)
+;;   ("C-c C-k" . kill-region)
+;;   )
+
+
+;;------------------------------------------------------------------------------
 ;; Scrolling
 ;;------------------------------------------------------------------------------
 
