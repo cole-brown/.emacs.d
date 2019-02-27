@@ -1,11 +1,10 @@
 ;; -*- emacs-lisp -*-
 ;; TODO: those code headers I see in emacs packages?
 
+(setq spydez/warning/current-type '(spydez interstitial-prose))
+
 
 ;; TODO: a pretty centered header or something here for to be pretty
-
-
-(setq spydez/warning/current-type '(spydez interstitial-prose))
 
 ;; TODO: use-tool package, like use-package, but for external tools like git, gpg
 ;; say what versions you want, what os you expect, have ways for packages
