@@ -15,6 +15,10 @@
 (require 'use-tool-core)
 
 
+;; TODO: See about system-packages. Looks like it's useless on windows, but
+;; maybe has something interesting?
+;; https://github.com/jwiegley/use-package#use-package-ensure-system-package
+;;   https://gitlab.com/jabranham/system-packages
 
 ;; TODO: no macro?
 ;; https://emacs.stackexchange.com/questions/21015/when-to-use-macro-or-not-to-use
