@@ -164,8 +164,10 @@
   ;; Can't move configuration like this into use-tool if its forced
   ;; to exist in the custom file.
 
-  ;; TODO: what the fuck to do with these...
-  ;; TODO: try this csetq macro for setting? https://oremacs.com/2015/01/17/setting-up-ediff/
+  ;; TODO: what the fuck to do with these... I don't really want these in
+  ;; custom file...
+  ;; Try this csetq macro for setting? https://oremacs.com/2015/01/17/setting-up-ediff/
+  ;; Same result in this case. Settings wander into custom file if it is saved by something else.
   (custom-set-variables
    '(epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
    '(epg-gpg-program (executable-find "gpg"))               ; windowsy

@@ -3,21 +3,23 @@ hi
 * A list of things to consider working on
 
   1) some sort of search for this .emacs.d project
-     1) [ ] Right now grep in projectile project doesn't like find command it generates.
+     - [ ] Right now grep in projectile project doesn't like find command it generates.
+       - Command works when pasted into (git for windows) bash, and emacs knows about bash...?
+       - Command works in M-x shell.
+       - Hm... Not sure right now.
 
   2) Projectile, use this .emacs.d project as test/tutorial?
+     - working on it
 
-  3) Try out csetq macro: file:../init/config/configure-crypt.el::167
+  3) fuzzy stuff
 
-  4) fuzzy stuff
+  4) ...
 
-  5) ...
+  5) other note files...
 
-  6) other note files...
+  6) look into: https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
 
-  7) look into: https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
-
-  8) hi
+  7) hi
 
 * look at these:
 
