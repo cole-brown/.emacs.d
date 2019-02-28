@@ -40,6 +40,7 @@
      (expand-file-name "init.el" spydez/dir/emacs)
      ))
   ;; TODO: check that these exist before opening. Complain (:warning level?) if not.
+  ;; TODO: potentially add to this from secrets file (maybe one with a cheaper password?)
 
 
   ;;------------------------------------------------------------------------------

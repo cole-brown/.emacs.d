@@ -39,10 +39,15 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-;; todo: require vs eval-when-compile require?
-;;(eval-when-compile
-;;  (require 'use-package))
-(require 'use-package)
+;; old: just require
+;; (require 'use-package)
+;;
+;; new: use-package.el is no longer needed at runtime
+;; This means you should put the following at the top of your Emacs, to further
+;; reduce load time:
+;; https://github.com/jwiegley/use-package
+(eval-when-compile
+  (require 'use-package))
 
 ;; use-package is now bootstrapped.
 

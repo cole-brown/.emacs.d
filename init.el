@@ -602,6 +602,7 @@ For the transition, maybe a func for checking..."
 ;; or hooks... http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
 
 ;; Packages used by other packages.
+(use-package bind-key)
 (use-package diminish)
 (use-package delight)
 ;; diminish vs delight... Having no sound knowledge on this subject, no real
