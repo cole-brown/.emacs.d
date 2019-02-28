@@ -23,7 +23,7 @@
 ;; https://github.com/emacs-helm/helm/wiki
 ;; Trial: [2019-01-18]
 (use-package helm
-  :diminish helm-mode
+  :delight helm-mode
   :init
   (progn
     (require 'helm-config)
@@ -197,6 +197,7 @@
 ;; http://company-mode.github.io/
 ;; Trial [2019-02-06]
 (use-package company
+  :delight
   :config
   ;; Enable Company-Mode in any programming mode.
   (add-hook 'prog-mode-hook 'company-mode))

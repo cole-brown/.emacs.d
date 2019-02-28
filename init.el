@@ -604,7 +604,11 @@ For the transition, maybe a func for checking..."
 ;; Packages used by other packages.
 (use-package diminish)
 (use-package delight)
-;; TODO: diminish vs delight? Do I care enough to try delight?
+;; diminish vs delight... Having no sound knowledge on this subject, no real
+;; interest in it, and after weakly trying to get Projectile to use delight but
+;; failing and having to resort to asking Projectile nicely... I am fully
+;; qualified to s-
+;; I dunno... Delight maybe?
 
 ;; library used for some list functions (by me and by some packages)
 ;; making it explicit now that I use it too
@@ -851,10 +855,10 @@ For the transition, maybe a func for checking..."
 ;; (ac-config-default)
 ;; (setq ac-auto-start nil)
 ;; (ac-set-trigger-key "TAB")
-;; (eval-after-load "diminish"
+;; (eval-after-load "delight"
 ;;   '(progn
 ;;      (eval-after-load "auto-complete"
-;;        '(diminish 'auto-complete-mode "↝"))))
+;;        '(delight 'auto-complete-mode "↝"))))
 ;; TODO: see what I was using first. Some of this is dead links.
 ;; https://webcache.googleusercontent.com/search?q=cache:nvHM1b9JhGcJ:https://github.com/suzp1984/auto-complete+&cd=1&hl=en&ct=clnk&gl=us
 ;; https://webcache.googleusercontent.com/search?q=cache:pccrs3LhmCoJ:https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html+&cd=1&hl=en&ct=clnk&gl=us&client=firefox-b-1
@@ -865,10 +869,10 @@ For the transition, maybe a func for checking..."
 ;; (require 'yasnippet)
 ;; (yas-load-directory (concat (cask-elpa-dir)
 ;;                             "/yasnippet-20140306.5/snippets"))
-;; (eval-after-load "diminish"
+;; (eval-after-load "delight"
 ;;   '(progn
 ;;      (eval-after-load "yasnippet"
-;;        '(diminish 'yas-minor-mode "✂"))))
+;;        '(delight 'yas-minor-mode "✂"))))
 ;; (yas-global-mode 1)
 
 ;; Config TRAMP for getting at server text files?

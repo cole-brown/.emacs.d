@@ -7,9 +7,10 @@
 
 
 ;;------------------------------------------------------------------------------
-;; General Settings?
+;; General Settings
 ;;------------------------------------------------------------------------------
-(when (featurep 'delight)
+(require 'delight nil 'noerror) ;; ask nicely for delight...
+(when (featurep 'delight) ;; and shorten "Emacs-Lisp" mode text a bit if we can:
   (delight 'emacs-lisp-mode "Elisp" :major))
 
 ;;------------------------------------------------------------------------------
@@ -163,9 +164,9 @@
 
   :demand t
 
-  ;; TODO: do I really want to diminish this? Maybe a nice noticable icon
+  ;; TODO: do I really want to delight this? Maybe a nice noticable icon
   ;; if I get the all-the-icons package... It's "tll" by default.
-  :diminish
+  :delight
 
   :config
   (too-long-lines-mode t))

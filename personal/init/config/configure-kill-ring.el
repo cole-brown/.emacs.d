@@ -90,8 +90,8 @@
   ;; Disabling this atrocity for now.
   ;; TODO: Fix this if/when I want to try out undo-tree again. It is annoying and bad functionality.
 
-  :diminish undo-tree-mode " ↺" ;; fancy UTF-8
-  ;; :diminish undo-tree-mode ;; just squelched entirely
+  :delight undo-tree-mode " ↺" ;; fancy UTF-8
+  ;; :delight undo-tree-mode ;; just squelched entirely
 
   :config
   (progn

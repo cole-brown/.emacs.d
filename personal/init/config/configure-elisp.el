@@ -32,7 +32,12 @@
 ;;------------------------------------------------------------------------------
 ;; ElDoc
 ;;------------------------------------------------------------------------------
-;; TODO: Move diminish here?
+;; Emacs 26 has it by default. Should I use use-package in that case?
+;; Let's try and see how it goes.
+(use-package eldoc
+  :ensure nil
+  :defer t
+  :delight)
 
 
 ;;------------------------------------------------------------------------------

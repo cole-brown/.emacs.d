@@ -40,12 +40,12 @@
 ;; ;; (setq whitespace-style '(trailing lines tab-mark))
 ;; ;; (setq whitespace-line-column 80)
 ;; ;; (global-whitespace-mode 1)
-;; ;; (eval-after-load "diminish"
+;; ;; (eval-after-load "delight"
 ;; ;;   '(progn
 ;; ;;      (eval-after-load "whitespace"
-;; ;;        '(diminish 'global-whitespace-mode "ᗣ"))
+;; ;;        '(delight 'global-whitespace-mode "ᗣ"))
 ;; ;;      (eval-after-load "whitespace"
-;; ;;        '(diminish 'whitespace-mode ""))))
+;; ;;        '(delight 'whitespace-mode ""))))
 ;; ;; meh. No work?
 ;; 
 ;; ;; TODO: have yet to find a good config. This is closest. I think everyone else maybe wants

@@ -3,25 +3,21 @@ hi
 * A list of things to consider working on
 
   1) some sort of search for this .emacs.d project
+     1) [ ] Right now grep in projectile project doesn't like find command it generates.
 
-  2) delight vs diminish
-     1) get ARev out of modeline (auto-revert)
-     2) get company out of modeline?
-     3) get projectile smaller more. Is " Projetile[.emacs.d:generic]" right now.
+  2) Projectile, use this .emacs.d project as test/tutorial?
 
-  3) Projectile, use this .emacs.d project as test/tutorial?
+  3) Try out csetq macro: file:../init/config/configure-crypt.el::167
 
-  4) Try out csetq macro: file:../init/config/configure-crypt.el::167
+  4) fuzzy stuff
 
-  5) fuzzy stuff
+  5) ...
 
-  6) ...
+  6) other note files...
 
-  7) other note files...
+  7) look into: https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
 
-  8) look into: https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
-
-  9) hi
+  8) hi
 
 * look at these:
 

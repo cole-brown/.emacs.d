@@ -18,7 +18,7 @@
 ;; https://www.emacswiki.org/emacs/Yasnippet
 ;; https://joaotavora.github.io/yasnippet/snippet-expansion.html
 (use-package yasnippet
-  :diminish yas-minor-mode
+  :delight yas-minor-mode
   
   :init
   ;; why are there /three/ calls to yas-global-mode though..?

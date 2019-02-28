@@ -53,10 +53,9 @@
 
 ;; TODO: Consider magit-auto-revert-mode?
 
-;; If we want to lose the "ARev"...
-(require 'diminish)
-(eval-after-load 'auto-revert-mode
-  '(diminish 'auto-revert-mode))
+;; auto-revert-mode is hiding in autorevert feature/file
+(use-package autorevert
+  :delight auto-revert-mode)
 
 
 ;;------------------------------------------------------------------------------
