@@ -26,12 +26,15 @@
   )
 
 ;; python-mode itself comes with emacs now.
+;; (setq python-fill-docstring-style 'django)
 
 
 ;;------------------------------------------------------------------------------
 ;; Compilation
 ;;------------------------------------------------------------------------------
 ;; TODO: Is this key the usual for compiling? Do I need to compile?
+;; Is there a better key? `C-c C-c' is/was comment-region in cpp-mode and
+;; I like that command...
 (eval-after-load 'python-mode
   '(bind-key "C-c C-c" 'compile python-mode-map))
 
@@ -40,6 +43,8 @@
 ;; TODOs
 ;;------------------------------------------------------------------------------
 ;; TODO: check out python in emacs repl?
+
+;; TODO: django mode?
 
 
 ;;------------------------------------------------------------------------------

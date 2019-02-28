@@ -165,6 +165,11 @@
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org36b0308
 ;; (use-package rainbow-delimiters
 ;;   :disabled t)
+;; https://github.com/itsjeyd/.emacs.d/blob/emacs24/init.el
+;; (use-package rainbow-delimiters
+;;   :config
+;;   (add-hook 'org-mode-hook #'rainbow-delimiters-mode)
+;;   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 
 ;;------------------------------------------------------------------------------

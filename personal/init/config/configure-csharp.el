@@ -10,6 +10,9 @@
 ;; TODO: check this for any useful things?
 ;;   https://www.gnu.org/software/emacs/manual/html_mono/efaq-w32.html#DevStudio
 
+;; TODO: flycheck? Here? configure-cpp? configure-prog (prog-mode)?
+;;   https://github.com/itsjeyd/.emacs.d/blob/emacs24/init.el
+
 
 ;;------------------------------------------------------------------------------
 ;; C#

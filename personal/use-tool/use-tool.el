@@ -15,6 +15,10 @@
 (require 'use-tool-core)
 
 
+;; TODO: `use-package-' prefix to `use-package/' cuz its really bugging me?
+;; TODO: package setup stuff like defgroup and stuff?
+
+
 ;; TODO: See about system-packages. Looks like it's useless on windows, but
 ;; maybe has something interesting?
 ;; https://github.com/jwiegley/use-package#use-package-ensure-system-package

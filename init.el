@@ -646,6 +646,15 @@ For the transition, maybe a func for checking..."
 ;; Anything earlier than this might be in early-init.
 (require 'configure-emacs)
 
+;; TODO: A keymap prefix of my own? Or a hydra...
+;;   M-s is used by: https://github.com/itsjeyd/.emacs.d/blob/emacs24/init.el
+;;     - search: custom-keys-mode-prefix-map
+;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Key-Binding-Conventions.html
+;;   C-c letter: reserved for user (only letters, not numbers or control characters or punctuation)
+;;   F5 thru F9: reserved for user
+;; https://stackoverflow.com/questions/1144424/are-there-any-emacs-key-combinations-reserved-for-custom-commands
+;;   M-x describe-unbound-keys supplied by `unbound' package.
+
 ;; OS: May need to add a bootstrap-os if need anything earlier than this...
 ;; Any windows vs Linux vs etc stuff.
 ;; Also a decent place for XEmacs vs Emacs if we need any of that.

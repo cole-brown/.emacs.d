@@ -45,6 +45,8 @@
 ;; Well it's also an external tool so... *shrug*
 ;;   https://github.com/ggreer/the_silver_searcher
 ;;   Needs an emacs package too. Not sure which one Projectile wants.
+;;
+;; TODO: hm... M-x lgrep works. M-x grep not so much. M-x rgrep no.
 
 
 ;;------------------------------------------------------------------------------

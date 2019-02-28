@@ -24,6 +24,21 @@
 ;; Whitespace in General.
 ;;------------------------------------------------------------------------------
 
+;; haven't tried:
+;;   https://github.com/itsjeyd/.emacs.d/blob/emacs24/init.el
+;; (use-package whitespace
+;;   :commands whitespace-mode
+;;   :config
+;;   (modeline-remove-lighter 'whitespace-mode)
+;;
+;;   ;; Hooks
+;;   (add-hook 'prog-mode-hook #'whitespace-mode)
+;;
+;;   ;; Variables
+;;   (setq whitespace-line-column nil)
+;;   (setq whitespace-style '(face lines-tail)))
+
+
 ;; This is pretty close:
 ;; https://www.emacswiki.org/emacs/WhiteSpace
 ;; (delete 'lines whitespace-style)

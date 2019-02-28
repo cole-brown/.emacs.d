@@ -11,8 +11,9 @@
 ;; TODO: add a shortcut for `find-dired'?
 ;; `C-x C-d' maybe?
 
+;; https://github.com/itsjeyd/.emacs.d/blob/emacs24/init.el
 ;; add human-readable flag
-(setq dired-listing-switches "-lah")
+(setq dired-listing-switches "-lah --time-style=long-iso")
 
 ;; Was `top'. Any non (top always) value means always ask.
 (setq dired-recursive-deletes  +1)
@@ -35,23 +36,52 @@
 (require 'find-dired)
 (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
 
+
 ;;---
 ;; peep-dired
 ;;---
-;; For quick look into files at point in dired buffer.
+;; For quick look into files/folders at point in dired buffer. Shows in
+;; `other-window'. Scroll peeped file in `other-window' down/up with
+;; <space>, <backspace>.
 ;; https://github.com/asok/peep-dired
 ;; Trial [2019-01-29]
+;; Note [2019-02-28]: This doesn't do anything by default - you have to turn it
+;; on in the buffer. Or change settings that make it do things on its own.
 (use-package peep-dired
-  ;; TODO: some config settings maybe?
-  ;;   - peep-dired-cleanup-eagerly seems good...
-  ;;   - also this (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4"))
+  :delight ;; todo: set modeline to eyeball emoji
 
-  ;; TODO: do we want these shortcuts or not?
+  ;; Do we want these shortcuts or not?
+  ;;   - Um... they already exist? Maybe this is to nuke them out of other
+  ;;     settings?
   ;; :bind (:map peep-dired-mode-map 
   ;;        ("SPC" . nil)            ;; scroll peeped file down
   ;;        ("<backspace>" . nil))   ;; scroll peeped file up
+
+  ;;---
+  ;; Config
+  ;;---
+  :config
+  (setq peep-dired-cleanup-eagerly t ; cleanup ASAP (just after moving to next entry
+        peep-dired-cleanup-on-disable t ; cleanup when minor mode disabled 
+        peep-dired-enable-on-directories t) ; peep is enabled in peeped dirs.
+
+  ;; Ignore all these extensions. Probably need more but here's my start.
+  (setq peep-dired-ignored-extensions '("iso" "deb"  ; disk images and packages
+                                        "exe" "dll"  ; binaries
+                                        "mp3" "mp4" "mkv")) ; music/video
+
+  ;; If OS is opening files too often with peep, do this:
+  ;;   - https://github.com/itsjeyd/.emacs.d/blob/emacs24/init.el
+  ;; ;; Functions
+  ;; (defun turn-off-openwith-mode ()
+  ;;   (make-local-variable 'openwith-mode)
+  ;;   (if (not peep-dired)
+  ;;       (openwith-mode 1)
+  ;;     (openwith-mode -1)))
+  ;;
+  ;; ;; Hooks
+  ;; (add-hook 'peep-dired-hook #'turn-off-openwith-mode)
   )
-;; TODO: [2019-01-29] This... doesn't seem to be working?
 
 
 ;;------------------------------------------------------------------------------
@@ -141,6 +171,10 @@ Version 2017-09-01"
 ;; This doesn't have a use for me right now, but I might want it eventually.
 ;; Would have to figure out the windows case of it:
 ;; https://emacsredux.com/blog/2013/03/27/open-file-in-external-program/
+
+;; There's also package `openwith'.
+;; https://github.com/itsjeyd/.emacs.d/blob/emacs24/init.el
+;; https://github.com/emacsmirror/openwith
 
 
 ;;------------------------------------------------------------------------------

@@ -4,6 +4,8 @@
 ;; TODOs
 ;;------------------------------------------------------------------------------
 
+;; TODO: does some or all of this belong in configure-emacs? vice versa?
+
 ;; TODO: skip all or most of this:
 ;;    (unless window-system (spydez/debug/message nil "hi"))
 ;; Or maybe do all/most of this:
@@ -16,6 +18,14 @@
 
 ;; Don't show the GNU splash.
 (setq inhibit-startup-screen t)
+
+;; smaller inital message in *scratch* buffer
+(setq initial-scratch-message ";; Hello there.\n\n")
+
+;; This doesn't seem to be an issue on Windows right now, but I think it was in
+;; the past and this would have been nice to know for fixing how it would refuse
+;; to be sane on a maximize.
+;;(setq frame-resize-pixelwise t)
 
 ;; I like the menu bar right now... (File, Edit, etc)
 (when (fboundp 'menu-bar-mode) (menu-bar-mode 1))

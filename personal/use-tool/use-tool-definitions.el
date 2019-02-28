@@ -14,6 +14,9 @@
 ;; Tools
 ;;------------------------------------------------------------------------------
 
+;; TODO: pdf-tools? https://github.com/politza/pdf-tools
+;;   https://github.com/itsjeyd/.emacs.d/blob/emacs24/init.el
+
 (use-tool-def-tool (use-tool-struct-tool--create :name 'gpg
   :doc
   "GnuPG used by e.g. EasyPG in emacs."
