@@ -1,0 +1,92 @@
+
+https://www.reddit.com/r/programming/comments/aul273/famous_laws_of_software_development/
+https://www.timsommer.be/famous-laws-of-software-development/
+
+
+* Murphy's Law
+
+    "If something can go wrong, it will."
+
+  First derivation: If it works, you probably didn't write it.
+  Second derivation: Cursing is the only language all programmers speak fluently.
+  Conclusion: A computer will do what you write, not what you want.
+
+* Brook's Law
+
+    "Adding manpower to a late software project makes it later."
+
+* Hofstadter's Law
+
+    "It always takes longer than you expect, even when you take into account Hofstadter's Law."
+      - Douglas Hofstadter
+
+* Conway's Law
+
+    "Any piece of software reflects the organizational structure that produced it."
+
+Or even more clearly:
+
+    "Organizations which design systems are constrained to produce designs which are copies of the communication structures of these organizations."
+
+* Postel's Law aka Robustness principle
+
+    "Be conservative in what you send, be liberal in what you accept"
+
+Jon Postel originally articulated this as a principle for making TCP implementations robust. This principle is also embodied by HTML which many attribute as a cause of its success and failure, depending on who you ask.
+
+* Pareto Principle aka The 80-20 rule
+
+    "For many phenomena, 80% of consequences stem from 20% of the causes."
+
+This is the principle behind the painful truth that 80% of the bugs in the code arise from 20% of the code.
+Otherwise stated, 80% of the work done in a company is performed by 20% of the staff. The problem is you don't always have a clear idea of which 20%.
+
+* The Peter Principle
+
+    "In a hierarchy, every employee tends to rise to his level of incompetence."
+
+* Kerchkhoff's Principle
+
+    "In cryptography, a system should be secure even if everything about the system, except for a small piece of information - the key - is public knowledge."
+
+* Linus's Law
+
+    "Given enough eyeballs, all bugs are shallow."
+      - Linus Torvalds
+
+This law was described using the famous The Cathedral and the Bazaar essay, explaining the contrast between two different free software development models:
+
+    The Cathedral model, in which source code is available with each software release, but code developed between releases is restricted to an exclusive group of software developers.
+    The Bazaar model, in which the code is developed over the Internet in view of the public.
+
+* Moore's Law
+
+    "The power of computers per unit cost doubles every 24 month."
+
+The most popular version states:
+
+    "The number of transistors on an integrated circuit will double in about 18 months."
+
+Or
+
+    "The processing speed of computers will double every two years!"
+
+But it's kind of dead now?
+
+* Wirth's Law
+
+    "Software gets slower faster than hardware gets faster."
+
+* Ninety-Ninety Rule
+
+    "The first 90% of the code takes 10% of the time. The remaining 10% takes the other 90% of the time."
+
+* Knuth's Optimization Principle
+
+    Premature optimization is the root of all evil.
+
+First you write code, then you identify bottlenecks, then you fix!
+
+* Norvig's Law
+
+    "Any technology that surpasses 50% penetration will never double again (in any number of months)."

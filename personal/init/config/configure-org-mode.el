@@ -14,6 +14,9 @@
 ;;   - Possibly very outdated...
 ;;   - http://doc.norang.ca/org-mode.html
 
+;; Org-Mode reference card pdf
+;; https://orgmode.org/orgcard.pdf
+
 
 ;;------------------------------------------------------------------------------
 ;; General Settings

@@ -1,6 +1,10 @@
 ;; -*- emacs-lisp -*-
 
 
+;; Just try helm-projectile:
+;; C-c p h
+
+
 ;;---
 ;; Helm Projectile Commands:
 ;;---
@@ -102,7 +106,10 @@
 
 ;; integrate with Helm
 ;; demos and such: https://tuhdo.github.io/helm-projectile.html
-(use-package helm-projectile)
+(use-package helm-projectile
+  :after (helm projectile)
+  ;; Adds itself to projectile-command-map? It's at: C-c p h
+  )
 
 
 ;;------------------------------------------------------------------------------

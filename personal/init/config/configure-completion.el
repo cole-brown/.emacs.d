@@ -1,5 +1,19 @@
 ;; -*- emacs-lisp -*-
 
+;; helm-mini: C-c h
+;;   - open buffers, recentf files, make new buffer
+;;   - No `open file plz' though.
+;; Wildcards and stuff available.
+;;   https://tuhdo.github.io/helm-intro.html#orgheadline7
+;;   *<major mode>  - filter to files in <major mode>
+;;   *!<major mode> - the opposite
+;;   /<directory>   - filter to a dir
+;;   !/<directory>  - the opposite
+;;   @<regexp>      - here there be dragons. er, regexs.
+;; and combine too cuz why not: *lisp ^helm @moc
+;;   1) lisp mode, 2) buffer name starts with "helm", 3) has "moc" in buffer
+
+
 ;; TODO:
 ;;   I was using ido in previous .emacs setup.
 ;;   Fuzzy file completion is a must for whatever I'll be using now?
@@ -129,12 +143,21 @@
   :defer t ;; no need for ":after" with this. https://github.com/jwiegley/use-package/issues/575
   :bind (("C-h b" . helm-descbinds)
          ("C-h w" . helm-descbinds)))
+;; TODO: Any way to make this use the other-window instead of steal-the-whole-frame?
 
 ;; Bound these in Helm right now. Put these in (use-package ido...) :bind section if needed again?
 ;; Invoke M-x w/o the Alt key.
 ;; from: http://steve.yegge.googlepages.com/effective-emacs
 ;; (global-set-key "\C-x\C-m" 'execute-extended-command)
 ;; (global-set-key "\C-c\C-m" 'execute-extended-command) ; todo: I never use this one... lose it?
+
+;; https://tuhdo.github.io/helm-intro.html#orgheadline27
+;; TODO: try helm-color? may not need...
+;; color picked, show color in emacs somewhere, customize faces nicely?
+
+;; https://tuhdo.github.io/helm-intro.html#orgheadline4
+;; TODO: try helm-autoresize-mode if helm buffer is annoying? Should be ok with
+;; my side-by-side buffers.
 
 
 ;;------------------------------------------------------------------------------
