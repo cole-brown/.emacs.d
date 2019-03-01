@@ -1,4 +1,28 @@
-;; -*- emacs-lisp; lexical-binding: t -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
+
+
+;;------------------------------------------------------------------------------
+;; Greedy File Opening
+;;------------------------------------------------------------------------------
+
+;; small speed-up by nuking all the regexs in file-name-handler-alist
+(defvar spydez/file-name-handler-alist/orig file-name-handler-alist)
+(setq file-name-handler-alist nil)
+
+;; but also set them back when emacs is done with startup
+;; TODO: Complain if not nil when setting back? Or add orig to end of list?
+;;   - Probably complain first - a package is probably adding something.
+;;     Probably to the front, maybe to the back - who knows?
+;; Testing startup aka (emacs-init-time)
+;;   without this:   ~5.5 sec
+;;   with:         -> 4.6 sec
+(defun spydez/file-name-handler-alist/revert ()
+  (unless (null file-name-handler-alist)
+    (spydez/warning/message nil nil
+                            "Resetting file-name-handler-alist to default but it is no longer null: %s"
+                             file-name-handler-alist))
+  (setq file-name-handler-alist spydez/file-name-handler-alist/orig))
+(add-hook 'emacs-startup-hook 'spydez/file-name-handler-alist/revert)
 
 
 ;;------------------------------------------------------------------------------

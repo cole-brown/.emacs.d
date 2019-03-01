@@ -248,7 +248,6 @@
 ;;------------------------------------------------------------------------------
 ;; Concerning Consts, Vars, and Funcs.
 ;;------------------------------------------------------------------------------
-(setq spydez/warning/current-type '(spydez bootstrap))
 ;; TODO: figure out naming scheme and put info here maybe
 ;; TODO: do I want to follow:
 ;;   - Emacs/Elisp conventions (e.g. spydez--)?
@@ -294,6 +293,7 @@
 ;;                                 Bootstrap.                                 ;;
 ;;---To pull oneself up by the bootstraps, one must first find one's boots.---;;
 ;;                           ...Where are my boots?                           ;;
+(setq spydez/warning/current-type '(spydez bootstrap))
 
 
 ;;---
