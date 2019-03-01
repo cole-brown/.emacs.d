@@ -161,6 +161,9 @@
 ;; TODO: does a gen'd http://emacs-bootstrap.com/ have anything neat in it?
 ;;   downloaded and unzipped to C:\home\cole\zzz_new-emacs\emacs.d
 
+;; TODO: any way to have emacs run a command (async) to get output from a remote server?
+;; Right now: emacs and ssh don't talk to each other well.
+
 
 ;;---
 ;; Trials and Try-outs.
