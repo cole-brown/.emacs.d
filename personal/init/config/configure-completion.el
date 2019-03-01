@@ -50,10 +50,10 @@
           helm-M-x-requires-pattern nil
           helm-ff-skip-boring-files t)
     (helm-mode))
-  :bind (("C-c h" . helm-mini)
+  :bind (("C-x b" . helm-mini) ;; TODO-TRIAL [2019-03-01]: swapped helm-buffers-list with this. Is that ok?
          ("C-h a" . helm-apropos)
          ("C-x C-b" . helm-buffers-list)
-         ("C-x b" . helm-buffers-list)
+         ("C-c h" . helm-buffers-list)
          ("M-y" . helm-show-kill-ring)
          ("M-x" . helm-M-x)
 
@@ -107,29 +107,62 @@
 
 ;; "As for the fuzzy matching, look into the "helm-flx" package. It gives you real fuzzy matching, much better than the default helm matching."
 ;;   - https://news.ycombinator.com/item?id=11100341
+;; https://github.com/PythonNut/helm-flx
+;; Trial [2019-03-01]
+(use-package helm-flx
+  :after helm
+  
+  :config
+  ;; helm-flx
+  (setq helm-flx-for-helm-find-files t
+        helm-flx-for-helm-locate     t)
 
-;; or all this for default helm fuzzy matching?
-;;  - https://tuhdo.github.io/helm-intro.html
-;;
-;; Starting from 1.6.5, helm-M-x can fuzzy match candidates, but this is not
-;; enabled by default. To enable fuzzy matching, add the following setting:
-;; (setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
-;;
-;; (setq helm-buffers-fuzzy-matching t
-;;      helm-recentf-fuzzy-match    t)
-;;
-;; To enable fuzzy matching for both Semantic and Imenu listing, add the following setting:
-;; (setq helm-semantic-fuzzy-match t
-;;       helm-imenu-fuzzy-match    t)
-;;
-;; To enable fuzzy matching in helm-locate, add this setting:
-;; (setq helm-locate-fuzzy-match t)
-;;
-;; To enable fuzzy matching, add this setting:
-;; (setq helm-apropos-fuzzy-match t)
-;;
-;; there's... so many...
-;; (setq helm-lisp-fuzzy-completion t)
+  ;; helm itself...
+  ;; Do I... do I use these with helm-flx?
+  ;;  Or only when not using helm-flx?
+  ;;    Or what?
+  ;; https://tuhdo.github.io/helm-intro.html
+  (setq helm-M-x-fuzzy-match                  t
+        helm-buffers-fuzzy-matching           t
+        helm-completion-in-region-fuzzy-match t
+        helm-file-cache-fuzzy-match           t
+        helm-imenu-fuzzy-match                t
+        helm-mode-fuzzy-match                 t
+        helm-locate-fuzzy-match               t
+        helm-recentf-fuzzy-match              t
+        helm-semantic-fuzzy-match             t)
+
+  ;; and enable
+  (helm-flx-mode +1))
+
+;; helm-fuzzier will only enhance matching for sources that have fuzzy-matching
+;; enabled, so be sure to enable fuzzy-matching for the sources you're
+;; interested in by setting the appropriate variable.
+;;   https://github.com/EphramPerdition/helm-fuzzier
+;; Use in conjunction with helm-flx.
+;; Trial [2019-03-01]
+;;   - Yeah this is better.
+;;     - Without flx or fuzzier: M-x helm-projectile RET concom finds nothing.
+;;     - With flx, no fuzzier:   M-x helm-projectile RET concom has *con*fig/*c*onfigure-*o*rg-*m*ode as best.
+;;     - With flx, and fuzzier:  M-x helm-projectile RET concom has config/*con*figure-*com*pletion as best.
+(use-package helm-fuzzier
+  :after helm
+
+  :config
+  ;; These are also set in my helm-flx config...
+  ;; I don't know if they're needed there, but they are
+  ;; wanted here by helm-fuzzier.
+  (setq helm-M-x-fuzzy-match                  t
+        helm-buffers-fuzzy-matching           t
+        helm-completion-in-region-fuzzy-match t
+        helm-file-cache-fuzzy-match           t
+        helm-imenu-fuzzy-match                t
+        helm-mode-fuzzy-match                 t
+        helm-locate-fuzzy-match               t
+        helm-recentf-fuzzy-match              t
+        helm-semantic-fuzzy-match             t)
+
+  (helm-fuzzier-mode 1))
 
 
 ;;---
