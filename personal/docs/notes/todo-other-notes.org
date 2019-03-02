@@ -1,0 +1,21 @@
+.emacs.d/init.org at master · nhoffman/.emacs.d and more (2019.03.01)
+https://github.com/nhoffman/.emacs.d/blob/master/init.org
+  https://melpa.org/#/?q=pomod&sort=downloads&asc=false
+  https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
+    https://www.reddit.com/r/emacs/comments/ahzrg0/announcement_lspmode_60_released/
+    https://github.com/Alexander-Miller/treemacs
+  https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=emacs%20cedet&=&=&oq=&gs_l=&pbx=1
+    http://cedet.sourceforge.net/
+    http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+    https://www.emacswiki.org/emacs/CEDET_Quickstart
+    https://www.logilab.org/blogentry/173886
+  https://github.com/zzamboni/dot-emacs/blob/master/init.org#completion-ido-or-helm
+    https://github.com/zzamboni/dot-emacs/blob/master/init.el
+    https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+  https://github.com/purcell/emacs.d/blob/master/init.el
+    http://www.flycheck.org/en/latest/
+  https://github.com/dholm/dotemacs/blob/master/.emacs.d/lisp/modes/csharp.el
+  https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=emacs%20build%20%7C%20compile%20visual.studio&=&=&oq=&gs_l=&pbx=1
+    https://gist.github.com/lionicsheriff/5971015
+    http://derekslager.com/blog/posts/2007/01/emacs-hack-3-compile-emacs-from-cvs-on-windows.ashx
+    https://stackoverflow.com/questions/4556368/compiling-c-with-emacs-on-windows-system
