@@ -73,6 +73,8 @@
 ;; https://github.com/kaushalmodi/.emacs.d/blob/master/setup-files/setup-beacon.el
 ;; https://github.com/Malabarba/beacon
 (use-package beacon
+  :delight
+
   :config
   (setq beacon-blink-when-point-moves-vertically nil) ; default nil
   (setq beacon-blink-when-point-moves-horizontally nil) ; default nil
