@@ -31,6 +31,9 @@
 ;;   - if so, it's not auto-updating changes I do when magit-status
 ;;     is up and it should be fixed...
 
+;; TODO: a spinner/throbber for pushing to remote? like this package has nice ones:
+;;   https://github.com/Malabarba/spinner.el
+
 ;;------------------------------------------------------------------------------
 ;; General version control settings
 ;;------------------------------------------------------------------------------

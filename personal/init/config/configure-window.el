@@ -68,6 +68,35 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Cursor: Beacon
+;;------------------------------------------------------------------------------
+;; https://github.com/kaushalmodi/.emacs.d/blob/master/setup-files/setup-beacon.el
+;; https://github.com/Malabarba/beacon
+(use-package beacon
+  :config
+  (setq beacon-blink-when-point-moves-vertically nil) ; default nil
+  (setq beacon-blink-when-point-moves-horizontally nil) ; default nil
+  (setq beacon-blink-when-buffer-changes t) ; default t
+  (setq beacon-blink-when-window-scrolls t) ; default t
+  (setq beacon-blink-when-window-changes t) ; default t
+  (setq beacon-blink-when-focused t) ; default nil
+
+  (setq beacon-blink-duration 0.3) ; default 0.3
+  (setq beacon-blink-delay 0.3) ; default 0.3
+  (setq beacon-size 20) ; default 40
+  ;; (setq beacon-color "yellow") ; default 0.5
+  ;; (setq beacon-color 0.5) ; default 0.5
+
+  ;; Not sure exactly why term-mode is no blink...
+  ;; Do we want to also add shell, eshell?
+  (add-to-list 'beacon-dont-blink-major-modes 'term-mode)
+  ;; (add-to-list 'beacon-dont-blink-major-modes 'shell-mode)
+  ;; (add-to-list 'beacon-dont-blink-major-modes 'eshell-mode)
+
+  (beacon-mode 1))
+
+
+;;------------------------------------------------------------------------------
 ;; Mode line: Time
 ;;------------------------------------------------------------------------------
 ;; Puts a clock down in the mode line.
