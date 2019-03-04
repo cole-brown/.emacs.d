@@ -184,6 +184,21 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Performance: (Very) Large Files
+;;------------------------------------------------------------------------------
+;;   "Enter vlf, vlf is short for "View Large Files" and is a very nice way to
+;; handle viewing extremely large files in Emacs, not just log files. I've used
+;; it successfully for reading log files over 10 gigabytes. I'll leave it to you
+;; to read the page about the features it provides, but suffice it to say that
+;; it breaks up large files into manageable chunks, and then provides tools to
+;; operate on either a small chunk, or across all the chunks of a very large
+;; file."
+;;   - https://writequit.org/articles/working-with-logs-in-emacs.html
+;; TODO: get vlf.
+;; TODO: look at the blog post for other things. hiding stuff, searching, helm...
+
+
+;;------------------------------------------------------------------------------
 ;; Network
 ;;------------------------------------------------------------------------------
 
