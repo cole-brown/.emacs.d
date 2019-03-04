@@ -1,0 +1,14 @@
+
+* Sys Admin
+
+
+Giant list of open-source sysadmin software/resources.
+https://github.com/kahun/awesome-sysadmin
+
+*** [[https://en.wikipedia.org/wiki/System_administrator][wikipedia]]
+
+Mainly for some nice search target keywords...
+
+A system administrator, or sysadmin, is a person who is responsible for the upkeep, configuration, and reliable operation of computer systems; especially multi-user computers, such as servers. The system administrator seeks to ensure that the uptime, performance, resources, and security of the computers they manage meet the needs of the users, without exceeding a set budget when doing so.
+
+To meet these needs, a system administrator may acquire, install, or upgrade computer components and software; provide routine automation; maintain security policies; troubleshoot; train or supervise staff; or offer technical support for projects.
