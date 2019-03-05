@@ -1,0 +1,33 @@
+-*- coding: utf-8; mode: xub -*-
+Matching Pairs «»‹›“”‘’〖〗【】「」『』〈〉《》〔〕
+Greek ΓΔ Θ Λ ΞΠ Σ ΦΨΩ αβγδ εζηθ κλμ ξπ ρςτυ φχψω
+currency ₿ ¤ $ ¢ € ₠ £ ¥
+common © ® ™ ² ³ § ¶ † ‡ ※
+Bullet-like •◦ ‣ ✓ ●■◆ ○□◇ ★☆ ♠♣♥♦ ♤♧♡♢
+phonetic ᴁ ᴂ ᴈ
+Music ♩♪♫♬♭♮♯
+punctuation “” ‘’ ¿¡ ¶§ª - ‐ ‑ ‒ – — ― …
+àáâãäåæç èéêë ìíîï ðñòóôõö øùúûüýþÿ ÀÁÂÃÄÅ Ç ÈÉÊË ÌÍÎÏ ÐÑ ÒÓÔÕÖ ØÙÚÛÜÝÞß
+math ° ⌈⌉ ⌊⌋ ∏ ∑ ∫ ×÷ ⊕ ⊖ ⊗ ⊘ ⊙ ⊚ ⊛ ∙ ∘ ′ ″ ‴ ∼ ∂ √ ≔ × ⁱ ⁰ ¹ ² ³ ₀ ₁ ₂
+π ∞ ± ∎
+Logic ∵ ∴ ∀ ¬ ∧ ∨ ∃ ⊦ ∅ ∈ ∉ ⊂ ⊃ ⊆ ⊇ ⊄ ⋂ ⋃
+Relations ≠ ≤ ≥ ≮ ≯ ≈ ≡
+Sets ℕ ℤ ℚ ℝ ℂ
+Arrows ←→↑↓ ↔ ↖↗↙↘  ⇐⇒⇑⇓ ⇔⇗  ⇦⇨⇧⇩ ↞↠↟↡ ↺↻  ☞☜☝☟
+Computing ⌘ ⌥ ‸ ⇧ ⌤ ↑ ↓ → ← ⇞ ⇟ ↖ ↘ ⌫ ⌦ ⎋⏏ ↶↷ ◀▶▲▼ ◁▷△▽ ⇄ ⇤⇥ ↹ ↵↩⏎ ⌧ ⌨ ␣ ⌶ ⎗⎘⎙⎚ ⌚⌛ ✂✄ ✉✍
+digits ➀➁➂➃➄➅➆➇➈➉
+Cultural 卐卍 ✝ ✚ ✡ ☥ ⎈ ☭ ☪ ☮ ☺ ☹
+☯ ☰ ☱ ☲ ☳ ☴ ☵ ☶ ☷ 
+☠ ☢ ☣ ☤ ♲ ♳ ⌬ ♨ ♿   ☉ ☼ ☾ ☽   ♀♂   ♔♕♖♗♘♙ ♚♛♜♝♞♟
+dinbats ❦
+
+Asian Punctuations:　、。！，：
+
+林花謝了春紅 太匆匆, 無奈朝來寒雨 晚來風
+胭脂淚 留人醉 幾時重, 自是人生長恨 水長東
+
+Emacs: Unicode Tutorial
+http://ergoemacs.org/emacs/emacs_n_unicode.html
+
+Unicode search
+http://xahlee.info/comp/unicode_index.html

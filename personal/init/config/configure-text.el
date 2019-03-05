@@ -78,10 +78,58 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Emoji
+;; Emoji / Icons
 ;;------------------------------------------------------------------------------
 
-;; todo: all-the-icons
+;; all-the-icons package for some nice icons.
+;; However, it has some manual setup the first time:
+;;---
+;; Install all-the-icons' fonts:
+;; https://github.com/domtronn/all-the-icons.el#installing-fonts
+;;
+;; In order for the icons to work it is very important that you install the
+;; Resource Fonts included in this package, they are available in the fonts
+;; directory. You can also install the latest fonts for this package in the
+;; (guessed?) based on the OS by calling the following function:
+;;
+;;   M-x all-the-icons-install-fonts
+;;
+;; Bear in mind, this will also run fc-cache -f -v on MacOS and Linux which can
+;; take some time to complete. For Windows, this function will prompt for a
+;; download directory for you to install them manually.
+;;---
+(if (package-installed-p 'all-the-icons)
+    (use-package all-the-icons
+      :if window-system)
+
+  ;; Bit questionable cuz I've never done this, but....
+  ;; To fix this warning:
+  ;;   Windows 7:
+  ;;     1) invoke the use-package call
+  ;;     2) M-x all-the-icons-install-fonts
+  ;;     3) Install wherever. $HOME/fonts maybe.
+  ;;     4) Be admin.
+  ;;     5) Select all, right click, "Install"
+  ;;     6) Pray
+  ;;     7) Curse
+  ;;  Windows 10:
+  ;;     1) Hope Win7 instructions work for Win10, but like actually work.
+  (spydez/warning/message nil nil
+                          "all-the-icons not installed. Will need manual help after install. See configure-text.el for details."))
+
+;; So now on a Windows 7 machine I have... some icons? Run both these:
+;;   (insert (all-the-icons-octicon "file-binary"))
+;;   (insert (all-the-icons-wicon "tornado"))
+;; Tornado shows up, but GitHub's File-Binary does not.
+;; ...
+;; ...er... Tornado does show up but only when it's not in a comment?
+;; I may have lots of work to do. Maybe just see if it works in Win10 and
+;; pray for a new work computer soon.
+;;
+;; Similar issue: https://github.com/domtronn/all-the-icons.el/issues/89
+;;   Troubleshooting: https://github.com/domtronn/all-the-icons.el/blob/master/README.md#troubleshooting
+;; TODO: try troubleshooting maybe
+
 
 ;; todo: emoji-cheat-sheet-plus?
 ;; https://github.com/itsjeyd/.emacs.d/blob/emacs24/init.el
