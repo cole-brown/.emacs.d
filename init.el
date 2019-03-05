@@ -726,6 +726,9 @@ For the transition, maybe a func for checking..."
 ;; Text: fill-column, UTF-8, etc.
 (require 'configure-text)
 
+;; Org-Mode: Final Boss of Emacs Major Modes
+(require 'configure-org-mode)
+
 ;; Dired Mode - seems IDE adjacent so it may go into configure-dev-env. Putting it there for now.
 ;;   - It could go into its own configure-dired though
 ;; Auto-Complete - hippie and dabbrev

@@ -21,9 +21,24 @@
 ;;------------------------------------------------------------------------------
 ;; General Settings
 ;;------------------------------------------------------------------------------
-(setq org-log-done t) ; auto-timestamp when TODOs are turned to DONE state
-(setq org-hide-leading-stars t) ; make outline a bit cleaner
-(setq org-odd-levels-only t)    ; make outline a bit cleaner
+(setq org-log-done t           ; auto-timestamp when TODOs are turned to DONE state
+
+      ;; Not 100% sold on these this time around... Keeping for now.
+      org-hide-leading-stars t ; make outline a bit cleaner
+      org-odd-levels-only t)   ; make outline a bit cleaner
+
+;; TODO sequence to pop up shortcuts to on running `C-c C-t' on a headline
+;;   (n) - n key will be shortcut into this state
+;;    @  - timestamp on enter
+;;    !  - prompt for note w/ timestamp on enter
+;;   /!  - prompt for note w/ timestamp on exit if none for next state
+;;    |  - separates "need action" states from "finished" states
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "STARTED(s!)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
+
+;; `Drawer' to log to. (Property/subheading thing).
+;; "LOGBOOK" is default if this is set to `t'.
+(setq org-log-into-drawer "LOGBOOK")
 
 
 ;;------------------------------------------------------------------------------

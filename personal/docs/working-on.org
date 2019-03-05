@@ -30,6 +30,8 @@ https://www.emacswiki.org/emacs/ProfileDotEmacs
 
 * packages to consider
 
+*** hello
+
 *** Dashboard
 
 (use-package dashboard
