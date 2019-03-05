@@ -15,6 +15,57 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Visual Studio build command
+;;------------------------------------------------------------------------------
+
+;; TODO: (try to) get this working maybe
+;;
+;; ;; Naming these?
+;; ;; Or get use-tool better and put these funcs in the tool?
+;; ;; spydez/devenv/visual-studio-2010/setup (from mbg/devenv-compile)?
+;; ;; spydez/devenv/visual-studio-201/compile (from weird-compile)?
+;;
+;; ;; TODO: make compile use windows shell instead of bash
+;; ;; https://gist.github.com/lionicsheriff/5971015
+;; ;; Usage: M-x mbg/devenv-compile
+;; ;;        M-x compile
+;; (defun mbg/devenv-compile nil
+;;   "Set up compile command for Visual Studio"
+;;   (interactive)
+;;   (let ((vsvars (shell-quote-argument "C:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\Common7\\Tools\\vsvars32.bat"));; C:\\Program Files (x86)\\Microsoft Visual Studio 11.0\\Common7\\Tools\\vsvars32.bat"))
+;; 	      (solution-file (shell-quote-argument
+;; 			                  ;; awesomely, locate-dominating-file returns the directory for the file
+;; 			                  ;; so when you use a pattern to find a file, you need to run it again in
+;; 			                  ;; the directory itself to get the file name. Who knew.
+;; 			                  (car (directory-files
+;; 			                        (locate-dominating-file default-directory
+;; 						                                          (lambda (dir)
+;; 							                                          (directory-files dir
+;; 									                                                       nil
+;; 									                                                       ".*\\.sln$"
+;; 									                                                       t)))
+;; 			                        t
+;; 			                        ".*\\.sln$"))))
+;; 	      (build-config "Debug"))
+;;     (message (concat "sln: " solution-file " @ Config: " build-config))
+;;     (setq compile-command (concat "call " vsvars " && devenv " solution-file " /Build " build-config))))
+;;
+;; ;; TODO: also try these for getting Visual Studio to compile
+;; ;; https://stackoverflow.com/a/4589933
+;;
+;; ;; TODO: try different shells? need cmd for Visual Studio?
+;; ;; https://www.reddit.com/r/emacs/comments/8qsvp9/question_is_there_a_way_to_run_different_shells/
+;; ;;
+;; ;; This one is better:
+;; ;;   "This will set shell-file-name locally when you call weird-compile, which
+;; ;; you can bind to the key of your choice."
+;; ;;   - Sean Allred: https://superuser.com/a/806388
+;; (defun weird-compile () (interactive)
+;;   (let ((shell-file-name "/bin/my-weird-sh"))
+;;     (call-interactively #'compile)))
+
+
+;;------------------------------------------------------------------------------
 ;; Hex Editor
 ;;------------------------------------------------------------------------------
 ;; Hex mode is: hexl

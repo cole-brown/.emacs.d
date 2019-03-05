@@ -17,6 +17,34 @@
 ;; TODO: pdf-tools? https://github.com/politza/pdf-tools
 ;;   https://github.com/itsjeyd/.emacs.d/blob/emacs24/init.el
 
+;; Visual Studio: vsvars: for setting up env for vs compile
+(use-tool-def-tool (use-tool-struct-tool--create :name 'vsvars
+  :doc
+  "vsvars for setting up environment for Visual Studio compile"
+  :exec-name
+  "vsvars32"
+
+  :versions
+  '("")
+
+  :used-by ;;todo
+  '(my-build-vc-proj-func-hopefully)
+
+  ;; Hey, we can leave things nil.
+  ;; :vars
+  ;; nil
+  ;;
+  ;; :path
+  ;; nil
+  ;;
+  ;; :version
+  ;; "z.3"
+  ;;
+  ;; :source
+  ;; 'git-for-windows
+  ))
+
+;; todo: mark as a git-for-windows tool?
 (use-tool-def-tool (use-tool-struct-tool--create :name 'gpg
   :doc
   "GnuPG used by e.g. EasyPG in emacs."
@@ -27,22 +55,23 @@
   '("gpg (GnuPG) 2.2.11-unknown")
   
   :used-by
-  '('epa-file)
+  '(epa-file)
 
   ;; Hey, we can leave things nil.
   ;; :vars
   ;; nil
-  ;; 
+  ;;
   ;; :path
   ;; nil
-  ;; 
+  ;;
   ;; :version
   ;; "z.3"
-  ;; 
+  ;;
   ;; :source
   ;; 'git-for-windows
   ))
 
+;; todo: mark as a git-for-windows tool?
 (use-tool-def-tool (use-tool-struct-tool--create :name 'git
   :doc
   "git. For Version Control."
@@ -53,9 +82,10 @@
   '("git version 2.20.1.windows.1")
   
   :used-by
-  '('magit)
+  '(magit)
   ))
 
+;; todo: mark as a git-for-windows tool?
 (use-tool-def-tool (use-tool-struct-tool--create :name 'diff
   :doc
   "For external diff."
@@ -66,9 +96,10 @@
   '("diff (GNU diffutils) 3.6")
   
   :used-by
-  '('magit)
+  '(magit)
   ))
 
+;; todo: mark as a git-for-windows tool?
 (use-tool-def-tool (use-tool-struct-tool--create :name 'bash
   :doc
   "Bourne Again Shell."
@@ -79,13 +110,15 @@
   '("GNU bash, version 4.4.23(1)-release (x86_64-pc-msys)")
   
   :used-by
-  '('shell)
+  '(shell)
   ))
 
 
 ;;------------------------------------------------------------------------------
 ;; Tool Sources
 ;;------------------------------------------------------------------------------
+
+;; TODO: VS2010 source
 
 ;; This one source - Git for Windows - is all I currently need.
 (use-tool-def-source (use-tool-struct-source--create :name 'git-for-windows
