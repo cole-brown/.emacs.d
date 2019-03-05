@@ -19,6 +19,7 @@
 ;;------------------------------------------------------------------------------
 
 ;; TODO: (try to) get this working maybe
+;; TODO: also try to use use-tool for vsvars?
 ;;
 ;; ;; Naming these?
 ;; ;; Or get use-tool better and put these funcs in the tool?

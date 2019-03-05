@@ -17,32 +17,33 @@
 ;; TODO: pdf-tools? https://github.com/politza/pdf-tools
 ;;   https://github.com/itsjeyd/.emacs.d/blob/emacs24/init.el
 
-;; Visual Studio: vsvars: for setting up env for vs compile
-(use-tool-def-tool (use-tool-struct-tool--create :name 'vsvars
-  :doc
-  "vsvars for setting up environment for Visual Studio compile"
-  :exec-name
-  "vsvars32"
-
-  :versions
-  '("")
-
-  :used-by ;;todo
-  '(my-build-vc-proj-func-hopefully)
-
-  ;; Hey, we can leave things nil.
-  ;; :vars
-  ;; nil
-  ;;
-  ;; :path
-  ;; nil
-  ;;
-  ;; :version
-  ;; "z.3"
-  ;;
-  ;; :source
-  ;; 'git-for-windows
-  ))
+;; TODO: also try to use use-tool for vsvars?
+;; ;; Visual Studio: vsvars: for setting up env for vs compile
+;; (use-tool-def-tool (use-tool-struct-tool--create :name 'vsvars
+;;   :doc
+;;   "vsvars for setting up environment for Visual Studio compile"
+;;   :exec-name
+;;   "vsvars32"
+;;
+;;   :versions
+;;   '("")
+;;
+;;   :used-by ;;todo
+;;   '(my-build-vc-proj-func-hopefully)
+;;
+;;   ;; Hey, we can leave things nil.
+;;   ;; :vars
+;;   ;; nil
+;;   ;;
+;;   ;; :path
+;;   ;; nil
+;;   ;;
+;;   ;; :version
+;;   ;; "z.3"
+;;   ;;
+;;   ;; :source
+;;   ;; 'git-for-windows
+;;   ))
 
 ;; todo: mark as a git-for-windows tool?
 (use-tool-def-tool (use-tool-struct-tool--create :name 'gpg
