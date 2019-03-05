@@ -667,6 +667,9 @@ For the transition, maybe a func for checking..."
 ;; Make sure emacs server daemon is running.
 (require 'configure-daemons)
 
+;; log or large file stuff
+(require 'configure-logs)
+
 ;; Helm/ido/etc
 (require 'configure-completion)
 

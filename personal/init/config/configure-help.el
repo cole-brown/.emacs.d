@@ -27,12 +27,17 @@
   :config
   (progn
     (setq guide-key/guide-key-sequence
-          '("C-x r"   ; rectangle editing - I use parts of it but not all
-            "C-x 4"   ; some window commands I never use
-            "C-c"     ; God only knows. Minor modes, user keys, the moon...
-            "C-c p")) ; Projectile's keymap
+          '("C-x r"     ; rectangle editing - I use parts of it but not all
+            "C-x 4"     ; some window commands I never use
+            "C-c"       ; God only knows. Minor modes, user keys, the moon...
+            (projectile-mode "C-c p") ; Projectile's keymap
+            (vlf-mode "C-c C-v")))    ; VLF (Very Large Files) keymap
     (guide-key-mode 1)))  ; Enable guide-key-mode
 ;; Trial: [2019-01-17]
+;; TODO: any way to mark things what they are?
+;;   Like `C-c C-v' are for VLF and "Prefix Command" isn't 100% useful.
+;;   Also `C-c p' is Projectile, but shows up as "??" first then "Prefix Command".
+;;   Meh.
 
 ;; (Help) You know I need someone.
 

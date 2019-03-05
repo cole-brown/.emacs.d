@@ -194,8 +194,18 @@
 ;; operate on either a small chunk, or across all the chunks of a very large
 ;; file."
 ;;   - https://writequit.org/articles/working-with-logs-in-emacs.html
-;; TODO: get vlf.
-;; TODO: look at the blog post for other things. hiding stuff, searching, helm...
+
+;; As logs are my only very large files that I want to be looking at with emacs,
+;; I'll set this up there:
+
+;;---
+;; Logs
+;;---
+;; See `configure-logs.el'
+;;
+;; There were enough goodies in that link
+;;   https://writequit.org/articles/working-with-logs-in-emacs.html
+;; that I decided it deserved its own config file.
 
 
 ;;------------------------------------------------------------------------------
