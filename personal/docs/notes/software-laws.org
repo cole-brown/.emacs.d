@@ -1,3 +1,7 @@
+#+TITLE:     Software Laws
+;;#+AUTHOR:    +Cole Brown+ That timsommer.be guy, maybe...
+;;#+EMAIL:     +git@spydez.com+ That timsommer.be guy's email, maybe...
+#+DATE:      [2019-02-27 Wed]
 
 https://www.reddit.com/r/programming/comments/aul273/famous_laws_of_software_development/
 https://www.timsommer.be/famous-laws-of-software-development/

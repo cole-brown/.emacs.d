@@ -1,4 +1,9 @@
+#+TITLE:     File Structure of .emacs.d
+#+AUTHOR:    Cole Brown
+#+EMAIL:     git@spydez.com
+#+DATE:      [2019-03-06 Wed]
 
+TODO: update this with latest dir tree.
 
 * Linux / directory structure
   /bin

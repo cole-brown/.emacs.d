@@ -1,4 +1,14 @@
+#+TITLE:     Treemacs Install Error
+#+AUTHOR:    Cole Brown
+#+EMAIL:     git@spydez.com
+#+DATE:      [2019-03-05 Tue]
+
 Treemacs had an error on first attempt to run it.
+Treemacs + no-littering = error (expecting a dir)
+
+Solution: 
+  Manually added a setq for `treemacs--last-error-persist-file' const.
+  (To put it in no-littering's /var dir as well.)
 
 * Rough timeline leading up:
 
@@ -13,7 +23,7 @@ Treemacs had an error on first attempt to run it.
   6) Suspected it might be no-littering.
   7) Checked no-littering for treemacs vars, only found one.
   8) Manually added a setq for `treemacs--last-error-persist-file' const.
-     (Put it in no-littering's /var dir as well.)
+     (To put it in no-littering's /var dir as well.)
   9) Everything is good now.
 
 Ideally:

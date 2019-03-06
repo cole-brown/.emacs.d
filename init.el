@@ -1,5 +1,9 @@
-;; -*- emacs-lisp -*-
-;; TODO: those code headers I see in emacs packages?
+;;; init.el --- init the emacs -*- mode: emacs-lisp; lexical-binding: t -*-
+;;; Commentary:
+
+;; TODO: A better commentary.
+
+;;; Code:
 
 (setq spydez/warning/current-type '(spydez interstitial-prose))
 

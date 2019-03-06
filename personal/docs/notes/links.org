@@ -1,3 +1,7 @@
+#+TITLE:     Links: Interesting or Maybe Useful
+#+AUTHOR:    Cole Brown
+#+EMAIL:     git@spydez.com
+#+DATE:      [2019-03-03 Sun]
 
 * Sys Admin
 

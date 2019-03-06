@@ -1,3 +1,7 @@
+#+TITLE:     Performance (Long Lines)
+#+AUTHOR:    Cole Brown
+#+EMAIL:     git@spydez.com
+#+DATE:      [2019-02-27 Wed]
 
 Solution:
   Too-Long-Lines-Mode

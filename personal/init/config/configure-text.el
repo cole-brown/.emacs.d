@@ -44,7 +44,7 @@
 ;;------------------------------------------------------------------------------
 ;; Markdown
 ;;------------------------------------------------------------------------------
-;; TODO: get a markdown mode if need to work with markdown more.
+;; get a markdown mode if need to work with markdown more.
 
 
 ;;------------------------------------------------------------------------------
@@ -57,7 +57,6 @@
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Output-Coding.html
 
 ;; May need a way of checking for smart quotes and em dashes and stuff when we don't want utf-8...
-;; TODO: That probably best for a helper function/macro than forcing myself into ASCII at all times. Right?
 (prefer-coding-system 'utf-8)
 (when (display-graphic-p)
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
@@ -156,14 +155,13 @@
 
 (when (>= emacs-major-version 26)
   (use-package display-line-numbers
-;    :disabled
-;    :ensure nil
     :defer nil
     :config
+    ;; TODO: I think I want this, or display-line-numbers-width. Need a long
+    ;; file to figure out which.
+    (setq display-line-numbers-width-start 't)
     (global-display-line-numbers-mode)))
 
-;; TODO: Do we have more setting for it? Like default size/format of line number gutter?
-;; TODO: Bigger default gutter would be great; I have 6k+ line files I visit regularly...
 
 ;;---
 ;; Also column numbers
