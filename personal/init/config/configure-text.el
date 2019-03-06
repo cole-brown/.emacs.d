@@ -128,7 +128,9 @@
 ;;
 ;; Similar issue: https://github.com/domtronn/all-the-icons.el/issues/89
 ;;   Troubleshooting: https://github.com/domtronn/all-the-icons.el/blob/master/README.md#troubleshooting
-;; TODO: try troubleshooting maybe
+;;
+;; Oh wait, maybe that tofu is the "file-binary". -_-
+;; They're still wrong/tofu when commented though.
 
 
 ;; todo: emoji-cheat-sheet-plus?
