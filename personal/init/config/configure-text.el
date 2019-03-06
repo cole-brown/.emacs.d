@@ -99,7 +99,16 @@
 ;;---
 (if (package-installed-p 'all-the-icons)
     (use-package all-the-icons
-      :if window-system)
+      :if (display-graphic-p)
+      ;; TODO: try out this hook
+      ;; :config
+      ;; (add-hook 'after-change-major-mode-hook
+      ;;           (lambda ()
+      ;;             (let* ((icon (all-the-icons-icon-for-mode major-mode))
+      ;;                    (face-prop (and (stringp icon) (get-text-property 0 'face icon))))
+      ;;               (when (and (stringp icon) (not (string= major-mode icon)) face-prop)
+      ;;                 (setq mode-name (propertize icon 'display '(:ascent center)))))))
+      )
 
   ;; Bit questionable cuz I've never done this, but....
   ;; To fix this warning:

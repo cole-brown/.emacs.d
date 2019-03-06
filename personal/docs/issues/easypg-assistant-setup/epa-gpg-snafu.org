@@ -16,6 +16,14 @@ Solution:
   - IMPORTANT!!!
     - Use `custom-set-variables' instead of setq or csetq.
     - See Solution Code
+    - NOTE!: `custom-set-variables' means, annoyingly, that our epg vars
+      always want to insert themselves into our custom.el file.
+      I don't want that because:
+      - The ugly hack to get a unixy path happens much later than custom.el load.
+      - The ugly path is different among my computers and custom.el is not (currently?).
+      - So you may want to give up and just put them in your `custom-file'...
+        ...or know that you'll have to keep removing them from it whenever 
+        something else adds to it (packages).
 
 Solution Code:
 

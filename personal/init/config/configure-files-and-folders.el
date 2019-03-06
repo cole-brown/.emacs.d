@@ -48,7 +48,15 @@
 ;; Note [2019-02-28]: This doesn't do anything by default - you have to turn it
 ;; on in the buffer. Or change settings that make it do things on its own.
 (use-package peep-dired
-  :delight ;; todo: set modeline to eyeball emoji
+  :delight ;; TODO: my google-fu is failing me or no one uses all-the-icons for minor modes...
+  ;; I just want an eyeball for peeping. :(
+  ;; Would ":after all-the-icons" help any?
+;;   '(:eval (propertize (all-the-icons-octicon "eye")
+;;             'face `(:family ,(all-the-icons-octicon-family) :height 1.2)
+;;             'display '(raise -0.1)))
+;; (all-the-icons-icon-for-mode)
+;; (all-the-icons-icon-for-file)
+;; (insert (all-the-icons-octicon "eye")) ;; todo: set modeline to eyeball emoji
 
   ;; Do we want these shortcuts or not?
   ;;   - Um... they already exist? Maybe this is to nuke them out of other
@@ -82,6 +90,18 @@
   ;; ;; Hooks
   ;; (add-hook 'peep-dired-hook #'turn-off-openwith-mode)
   )
+
+;;---
+;; all-the-icons-dired
+;;---
+;; TRIAL: [2019-03-06]
+(use-package all-the-icons-dired
+  :after all-the-icons
+  :if (display-graphic-p)
+  :hook (dired-mode . all-the-icons-dired-mode))
+;; Hey, neat. Thanks to wyuenho's dotfiles repo for showing up in a search for
+;; my attempts at the peep-dired delight line.
+;; https://github.com/wyuenho/dotfiles/blob/master/.emacs
 
 
 ;;------------------------------------------------------------------------------
