@@ -33,8 +33,9 @@
 
     ;; TODO: what does this do?
     ;; (setq yas-key-syntaxes '("w_" "w_." "^ "))
-    
-    (add-to-list 'yas-snippet-dirs spydez/dir/yasnippets) ;; want this one - mine - at front of list
+
+    ;; want my snippets at the front of the list
+    (add-to-list 'yas-snippet-dirs spydez/dir/yasnippets)
     
     ;; (setq yas-expand-only-for-last-commands nil)
     

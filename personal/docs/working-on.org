@@ -3,6 +3,19 @@
 #+EMAIL:     git@spydez.com
 #+DATE:      [2019-03-05 Tue]
 
+  - More things to do: [2/7]
+    - [X] More dates in org headers? Created, updated...
+      - I think just "date" for now...?
+    - [X] templates?
+      - [X] for org headers?
+      - [X] for blank .emacs.d config file?
+    - [ ] epa/gpg notes into issues, for now?
+    - [ ] A more canonical place for the org file dates?
+    - [ ] all-the-icons working enough for me now?
+    - [ ] make treemacs issue report?
+    - [ ] make no-littering issue or fix w/ pull request?
+
+
 
 * A list of things to consider working on
 

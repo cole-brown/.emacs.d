@@ -196,6 +196,8 @@ Version 2017-09-01"
 
 
   :config
+  ;; TODO: get rid of notes. make icons smaller?
+
   ;; Annoying error from (maybe?) no-littering/treemacs interactions...
   ;;   condition-case: Opening output file: No such file or directory,
   ;;   <path-to>/.emacs.d/.cache/treemacs-persist-at-last-error

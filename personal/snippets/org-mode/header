@@ -1,0 +1,19 @@
+# -*- mode: snippet -*-
+# contributor: Cole Brown <git@spydez.com>
+# name: org file header
+# key: <spy/header
+# notes: Double time stamps were being inserted. Found reason:
+#   "This happens because org-insert-time-stamp inserts a time stamp (like the
+# name says), but also returns the time stamp. Yasnippit inserts the return
+# value but you're also left with the one inserted by the function call. A fix
+# is to capture the return value, leaving only the inserted value: (let ((x
+# (org-insert-time-stamp nil t t ))))."
+#   - erikstokes - https://emacs.stackexchange.com/a/13219
+# Can also see what we can change about `C-c C-e #'.
+# --
+#+TITLE:       ${1:`(capitalize (file-name-nondirectory (file-name-sans-extension (buffer-file-name))))`}
+#+DESCRIPTION: ${2:description of your org-mode file}
+#+AUTHOR:      ${3:Cole Brown}
+#+EMAIL:       ${4:git@spydez.com}
+#+DATE:        ${5:`(let ((x (org-insert-time-stamp nil nil t))))`}
+$0
