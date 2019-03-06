@@ -193,38 +193,25 @@ Version 2017-09-01"
 
   ;;:bind
   ;; bind some keys so you can get into treemacs?
+  ;; M-x treemacs?
+  ;; M-x treemacs-find-file?
 
 
   :config
-  ;; TODO: get rid of notes. make icons smaller?
-
-  ;; Annoying error from (maybe?) no-littering/treemacs interactions...
-  ;;   condition-case: Opening output file: No such file or directory,
-  ;;   <path-to>/.emacs.d/.cache/treemacs-persist-at-last-error
-  ;;
-  ;; Treemacs wants a file at .cache/treemacs-persist-at-last-error
-  ;; and there is not one so kaboom? Or is it the directory?
-  ;;
-  ;; Not sure that's the intended functionality for the very first call of
-  ;; something treemacs related... /s
-  ;; Can we move it over to no-littering next to the other one?
-  ;; in no-littering.el: (setq treemacs-persist-file (var "treemacs-persist.org"))
+  ;; Bit of a snafu right now between treemacs and no-littering.
+  ;; See `spydez/dir/docs/issues' for notes and more.
+  ;; This is the dirty fix I can do on my end:
   (setq treemacs--last-error-persist-file (no-littering-expand-var-file-name
                                            "treemacs-persist-at-last-error.org"))
-  ;; Yeah, that fixed it... Probably should try to throw that up at
-  ;; no-littering in a pull request or something. Or treemacs. *shrug*
-  ;; both maybe.
-
-  ;; treemacs-persist-at-last-error.org now has this for contents:
-  ;; # State when last error occured on 2019-03-05 17:45:25
-  ;; # Error was 'Cannot end with a project or workspace name' in line '* Default Workspace'
-  ;;
-  ;; * Default Workspace
+  ;; A nicer fix will need treemacs and/or no-littering updates.
 
   ;; many settings that can be set can be set here
 
-  ;; The default width and height of the icons is 22 pixels. If you are
-  ;; using a Hi-DPI display, uncomment this to double the icon size.
+  ;;   "The default width and height of the icons is 22 pixels. If you are
+  ;; using a Hi-DPI display, uncomment this to double the icon size."
+  ;;
+  ;; Doesn't seem to work... maybe emacs on windows doesn't have the
+  ;; functionality needed - see function documentation help.
   ;;(treemacs-resize-icons 44)
   )
 

@@ -96,6 +96,8 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
   "Here there be +monsters+ documentation. Or documents... or a few doctors...")
 (defconst spydez/dir/docs/notes (spydez/dir-name "notes" spydez/dir/personal/docs)
   "Here there be +monsters+ documentation.")
+(defconst spydez/dir/docs/issues (spydez/dir-name "issues" spydez/dir/personal/docs)
+  "Here there be +monsters+ documentation about errors/bugs/issues/etc I've had.")
 
 (defconst spydez/dir/emacs/manual-packages (spydez/dir-name "manual-package-archive" spydez/dir/emacs)
   "Packages that are stuck back before package.el, {ELPA,MELPA,...}, use-package...")
