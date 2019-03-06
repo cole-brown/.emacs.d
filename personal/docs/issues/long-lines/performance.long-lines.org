@@ -6,6 +6,14 @@
 Solution:
   Too-Long-Lines-Mode
 
+* Prereqs and Versions
+
+Prereqs:
+  - Emacs for Windows installed
+    - (emacs-version)
+    - "GNU Emacs 26.1 (build 1, x86_64-w64-mingw32) of 2018-05-30"
+    - Probably just Emacs in general, not Windows specific?
+
 * Original issue
 
 ;;---

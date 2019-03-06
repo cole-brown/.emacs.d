@@ -10,6 +10,26 @@ Solution:
   Manually added a setq for `treemacs--last-error-persist-file' const.
   (To put it in no-littering's /var dir as well.)
 
+* Prereqs and Versions
+
+Prereqs:
+  - Emacs for Windows installed
+    - (emacs-version)
+    - "GNU Emacs 26.1 (build 1, x86_64-w64-mingw32) of 2018-05-30"
+  - Treemacs
+    - (treemacs-version)
+    - "v2.5-2019.03.05 @ 26.1"
+  - no-littering
+    - version....?
+      - https://melpa.org/#/?q=no-litter&sort=downloads&asc=false
+        - version: 20190224.2109
+
+Initially I had an earlier Git for Windows, with a gpg 1.x version (I think?).
+Oh. Actually initially I had two different gpg's - a 1.x and a 2.x.
+
+Warning: Ye olde GitHub app was causing first problem (different gpg version).
+So uninstall or get out of your windows or emacs PATH or all of those.
+
 * Rough timeline leading up:
 
   1) Many things happened. Noteably I added `no-littering' to my .emacs config.
