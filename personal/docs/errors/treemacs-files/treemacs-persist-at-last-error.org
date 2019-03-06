@@ -1,0 +1,4 @@
+# State when last error occured on 2019-03-05 17:45:25
+# Error was 'Cannot end with a project or workspace name' in line '* Default Workspace'
+
+* Default Workspace

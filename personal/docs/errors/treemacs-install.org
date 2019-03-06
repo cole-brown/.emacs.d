@@ -1,0 +1,78 @@
+Treemacs had an error on first attempt to run it.
+
+* Rough timeline leading up:
+
+  1) Many things happened. Noteably I added `no-littering' to my .emacs config.
+  2) Added treemacs as a use-package statement.
+  3) Package errors of some sort.
+     - Did the usual refresh/update to fix.
+  4) Added treemacs-projectile, treemacs-icons-dired, and treemacs-magit with use-package.
+  5) Tried `M-x treemacs-find-file' and `M-x treemacs'. Both had an error:
+     condition-case: Opening output file: No such file or directory,
+     <path-to>/.emacs.d/.cache/treemacs-persist-at-last-error
+  6) Suspected it might be no-littering.
+  7) Checked no-littering for treemacs vars, only found one.
+  8) Manually added a setq for `treemacs--last-error-persist-file' const.
+     (Put it in no-littering's /var dir as well.)
+  9) Everything is good now.
+
+Ideally:
+  - treemacs would store all its files in one place with one variable to set maybe?
+  - Or at least treemacs would add its second file to the README as a settable thing.
+  - no-littering would setup all of treemacs' files' locations.
+  - treemacs wouldn't keel over and die from not finding a file (or really directory)
+    it expects itself to have created for it.
+
+* Notes
+
+Was taking notes in the .el as I was working on it so here's the code:
+
+;; https://github.com/Alexander-Miller/treemacs
+(use-package treemacs
+  :defer t
+
+
+  ;;:bind
+  ;; bind some keys so you can get into treemacs?
+
+
+  :config
+  ;; Annoying error from (maybe?) no-littering/treemacs interactions...
+  ;;   condition-case: Opening output file: No such file or directory,
+  ;;   <path-to>/.emacs.d/.cache/treemacs-persist-at-last-error
+  ;;
+  ;; Treemacs wants a file at .cache/treemacs-persist-at-last-error
+  ;; and there is not one so kaboom? Or is it the directory?
+  ;;
+  ;; Not sure that's the intended functionality for the very first call of
+  ;; something treemacs related... /s
+  ;; Can we move it over to no-littering next to the other one?
+  ;; in no-littering.el: (setq treemacs-persist-file (var "treemacs-persist.org"))
+  (setq treemacs--last-error-persist-file (no-littering-expand-etc-file-name
+                                           "treemacs-persist-at-last-error.org"))
+  ;; Yeah, that fixed it... Probably should try to throw that up at
+  ;; no-littering in a pull request or something. Or treemacs. *shrug*
+  ;; both maybe.
+
+  ;; treemacs-persist-at-last-error.org now has this for contents:
+  ;; # State when last error occured on 2019-03-05 17:45:25
+  ;; # Error was 'Cannot end with a project or workspace name' in line '* Default Workspace'
+  ;; 
+  ;; * Default Workspace
+
+  ;; many settings that can be set can be set here
+  
+  ;; The default width and height of the icons is 22 pixels. If you are
+  ;; using a Hi-DPI display, uncomment this to double the icon size.
+  ;;(treemacs-resize-icons 44)
+  )
+
+(use-package treemacs-projectile
+  :after treemacs projectile)
+
+(use-package treemacs-icons-dired
+  :after treemacs dired
+  :config (treemacs-icons-dired-mode))
+
+(use-package treemacs-magit
+  :after treemacs magit)
