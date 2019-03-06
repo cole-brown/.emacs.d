@@ -23,6 +23,23 @@ Ideally:
   - treemacs wouldn't keel over and die from not finding a file (or really directory)
     it expects itself to have created for it.
 
+* Tabs
+
+https://github.com/Alexander-Miller/treemacs
+  https://github.com/Alexander-Miller/treemacs#keymap
+    https://github.com/emacscollective/no-littering/blob/master/no-littering.el
+    https://github.com/Alexander-Miller/treemacs/blob/5ae6281bde98024f1cea2287c5afedb32a5de844/src/elisp/treemacs-persistence.el
+
+* Treemacs source notes
+
+It checks if the normal regular file exists and if not makes dir and file.
+https://github.com/Alexander-Miller/treemacs/search?q=treemacs-persist-file&unscoped_q=treemacs-persist-file
+
+Doesn't check (?) for the error case file.
+treemacs--last-error-persist-file
+https://github.com/Alexander-Miller/treemacs/search?q=treemacs--last-error-persist-file&unscoped_q=treemacs--last-error-persist-file
+https://github.com/Alexander-Miller/treemacs/blob/5ae6281bde98024f1cea2287c5afedb32a5de844/src/elisp/treemacs-persistence.el
+
 * Notes
 
 Was taking notes in the .el as I was working on it so here's the code:
@@ -57,7 +74,7 @@ Was taking notes in the .el as I was working on it so here's the code:
   ;; treemacs-persist-at-last-error.org now has this for contents:
   ;; # State when last error occured on 2019-03-05 17:45:25
   ;; # Error was 'Cannot end with a project or workspace name' in line '* Default Workspace'
-  ;; 
+  ;;
   ;; * Default Workspace
 
   ;; many settings that can be set can be set here
