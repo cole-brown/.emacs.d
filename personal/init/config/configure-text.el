@@ -101,6 +101,8 @@
     (use-package all-the-icons
       :if (display-graphic-p)
       ;; TODO: try out this hook
+      ;; TODO: or try these: https://github.com/domtronn/all-the-icons.el/wiki/Mode-Line#wiki-content
+      ;; TODO: or both?
       ;; :config
       ;; (add-hook 'after-change-major-mode-hook
       ;;           (lambda ()

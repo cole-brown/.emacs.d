@@ -100,13 +100,26 @@
 ;; Set format to: yyyy-mm-dd HH:MM
 ;; (trimmed down from: yy-mm-dd HH:MM:SS (Time Zone) <Mail notify>
 (setq display-time-string-forms
-    ;; 2 digit year: '((substring year -2) "/" month "/" day
-    '(year "/" month "/" day
-      " " 24-hours ":" minutes ; ":" seconds
-      ; Long-ass TZ: (if time-zone " (") time-zone (if time-zone ")")
-      ; Mail notice: (if mail " Mail" "")
-      ))
+      ;; For 2 digit year: '((substring year -2) "/" month "/" day
+      ;; Have to convert month/day to numbers, format back to strings in order to
+      ;; make this not shitty (i.e. "2019-3- 6").
+      '(year "-" (format "%02d" (string-to-number month)) "-" (format "%02d" (string-to-number day))
+             " " 24-hours ":" minutes ; ":" seconds
+             ;; Long-ass TZ: (if time-zone " (") time-zone (if time-zone ")")
+             ;; Mail notice: (if mail " Mail" "")
+             ))
+;; So `display-time-format', `display-time-day-and-date', and
+;; `display-time-24hr-format' all seem to be useful and easier than
+;; display-time-string-forms, but I couldn't convince them to behave.
 (display-time-mode t)
+
+
+;;------------------------------------------------------------------------------
+;; TODOs
+;;------------------------------------------------------------------------------
+
+;; TODO: some of these are modeline? Do we have enough modeline stuff for a
+;; configure-modeline? some here, some all-the-icons?
 
 
 ;;------------------------------------------------------------------------------
