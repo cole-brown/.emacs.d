@@ -131,6 +131,33 @@ Adjust folder tree?
       finalize/?
         finalize-*
 
+.emacs.d/ [2019-03-07]
+  elpa/    - packages
+  etc/     - no-littering puts stuff here
+  var/     - no-littering puts stuff here
+  server/  - emacs server file
+  LICENSE  - license
+  early-init.el - emacs: early init
+  init.el       - emacs: regular init
+  manual-package-archive/ - ye olde non-elpa packages
+  personal/ - all my other emacs stuff
+    dev/    - devices
+      computers/ - individual computer setup/overrides
+      defaults/  - defaults for individuals/domains
+      domains/   - domain (home, work) level setup/overrides
+    docs/ - non-code files
+      issues/ - errors, bugs, and annoyances encountered
+      notes/  - notes and stuff like this
+      references/ - I don't trust the internet to keep these around until I need them again.
+    lisp/ - my non-init emacs-lisp code
+    snippets/ - my yasnippet collection
+    use-tool/ - my first, feeble, half-hearted attempt at making something to track exo-emacs applications.
+    init/ - initialization
+      zeroth/   - pre-boot stuff - early-init stuff
+      boot/     - post-early-init but pre-package configuration
+      config/   - setting up emacs, enabling and setting up packages, etc.
+      finalize/ - double checking, sanity checks...
+
 * Reorg in progress
 
   - .emacs.d/ [12/14]

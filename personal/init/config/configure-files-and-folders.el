@@ -224,6 +224,7 @@ Version 2017-09-01"
   (setq treemacs--last-error-persist-file (no-littering-expand-var-file-name
                                            "treemacs-persist-at-last-error.org"))
   ;; A nicer fix will need treemacs and/or no-littering updates.
+  ;;Hm... That didn't work on Win10 other comp... In :init maybe?
 
   ;; many settings that can be set can be set here
 
