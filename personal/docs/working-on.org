@@ -3,7 +3,11 @@
 #+EMAIL:     git@spydez.com
 #+DATE:      [2019-03-05 Tue]
 
-  - More things to do: [4/7]
+Next thing?
+  - https://github.com/nhoffman/.emacs.d/blob/master/init.org
+
+Current things?
+  - More things to do: [5/7]
     - [X] More dates in org headers? Created, updated...
       - I think just "date" for now...?
     - [X] templates?
@@ -14,7 +18,8 @@
     - [X] Notes/Issues
       - [X] configure-files-and-folders notes removed into its issue file notes
       - [X] epa/gpg notes into issues, for now?
-    - [ ] all-the-icons working enough for me now?
+    - [X] all-the-icons working enough for me now?
+      - Uh... sure. And there's a todo or two up for the rest...
     - [ ] make treemacs issue report?
     - [ ] make no-littering issue or fix w/ pull request?
 
@@ -48,8 +53,6 @@ https://www.emacswiki.org/emacs/OptimizingEmacsStartup
 https://www.emacswiki.org/emacs/ProfileDotEmacs
 
 * packages to consider
-
-*** hello
 
 *** Dashboard
 
