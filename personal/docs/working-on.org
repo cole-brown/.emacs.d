@@ -4,6 +4,14 @@
 #+DATE:      [2019-03-05 Tue]
 
 Next thing?
+  - update notes/*.org?
+    - file structure has changed...
+    - Think some todo'd placeholders have been done.
+    - remove references/?
+      - Or put those files in repo... useless files now when not on whatever comp I downloaded em on.
+      - ref files were for files that were/are very useful on their own and so preserving them for
+        a decade or whatever from now would be useful.
+        - Some of my old .emacs is just references to dead web links... not useful.
   - https://github.com/nhoffman/.emacs.d/blob/master/init.org
 
 Current things?
