@@ -5,7 +5,6 @@
 
 Next thing?
   - update notes/*.org?
-    - file structure has changed...
     - Think some todo'd placeholders have been done.
     - remove references/?
       - Or put those files in repo... useless files now when not on whatever comp I downloaded em on.
@@ -15,7 +14,7 @@ Next thing?
   - https://github.com/nhoffman/.emacs.d/blob/master/init.org
 
 Current things?
-  - More things to do: [5/7]
+  - More things to do: [6/8]
     - [X] More dates in org headers? Created, updated...
       - I think just "date" for now...?
     - [X] templates?
@@ -28,6 +27,7 @@ Current things?
       - [X] epa/gpg notes into issues, for now?
     - [X] all-the-icons working enough for me now?
       - Uh... sure. And there's a todo or two up for the rest...
+    - [X] file structure has changed...
     - [ ] make treemacs issue report?
     - [ ] make no-littering issue or fix w/ pull request?
 
