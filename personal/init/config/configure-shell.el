@@ -20,6 +20,10 @@
 ;;     (exec-path-from-shell-copy-env "PYTHONPATH")
 ;;     (exec-path-from-shell-initialize)))
 
+;; nhoffman's init.org has some potentially neat bash commands
+;;   http://nhoffman.github.io/.emacs.d/#org18bd455
+;; Not useful /right now/ as Git for Windows doesn't do a whole lot.
+
 
 ;;------------------------------------------------------------------------------
 ;; Shell: Git Bash for Windows?

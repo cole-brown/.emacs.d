@@ -115,15 +115,17 @@
 ;; e.g. Change in Visual Studio, auto-revert will notice and update here if no
 ;; changes here. Else it'll just quietly leave it alone.
 ;;
-;; TODO: message/complain if can't auto-revert but wants to?
-;; 
-;; Right now it's setting itself in some modes but not all. That's probably ok.
+;; [2019-03-07]: enabled global auto-revert
 
 ;; TODO: Consider magit-auto-revert-mode?
+;;   [2019-03-07] - Trying out global-auto-revert-mode so magit-auto-revert-mode
+;;                  is eclipsed.
 
 ;; auto-revert-mode is hiding in autorevert feature/file
 (use-package autorevert
-  :delight auto-revert-mode)
+  :delight auto-revert-mode
+  :config
+  (global-auto-revert-mode t))
 
 
 ;;------------------------------------------------------------------------------
