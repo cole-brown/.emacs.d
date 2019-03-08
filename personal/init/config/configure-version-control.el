@@ -109,13 +109,13 @@
 ;;---
 
 (when (display-graphic-p)
-   (use-package git-gutter-fringe
-     :ensure t
+  (use-package git-gutter-fringe
+    :ensure t
 
-     :delight (git-gutter-mode " g" git-gutter-fringe)
+    :delight (git-gutter-mode " g" git-gutter-fringe)
 
-     :config
-     (global-git-gutter-mode)))
+    :config
+    (global-git-gutter-mode)))
 
 ;; TODO: try out diff-hl? Would be nice to have for SVN, but git won the war so
 ;; SVN is probably on the way to extinct...
@@ -163,11 +163,11 @@
   ;;; It may be the answer, or maybe we just complain.
   ;;; todo: Change to check this (executable-find "git")
   ;;;   - in finalize-sanity (also sanity for "diff")
-  ;(when (and (equal system-type 'windows-nt)
-  ;	     (not (boundp 'magit-git-executable)))
-  ;  (if (boundp 'spydez/exe/git-path)
-  ;	(setq magit-git-executable spydez/exe/git-path)
-  ;    (error "init/configure-version-control:: use-package magit: no git path known?")))
+                                        ;(when (and (equal system-type 'windows-nt)
+                                        ;	     (not (boundp 'magit-git-executable)))
+                                        ;  (if (boundp 'spydez/exe/git-path)
+                                        ;	(setq magit-git-executable spydez/exe/git-path)
+                                        ;    (error "init/configure-version-control:: use-package magit: no git path known?")))
 
   ;;---
   ;; Diff options
@@ -177,11 +177,22 @@
   ;; Show word differences, not just "line has changed".
   ;; https://emacs.stackexchange.com/questions/43643/magit-how-to-show-differences-within-lines
   (setq magit-diff-refine-hunk 'all
-	magit-diff-section-arguments '("--ignore-space-change"))
+	      magit-diff-section-arguments '("--ignore-space-change"))
   ;; but for that to work I need it to find the diff exe...
   ;;(executable-find "diff")
   ;;(executable-find "git")
   ;; So we set that up in the spydez/tools/external bootstrap.
+
+  ;; TODO: Consider this. But the performance warnings seem a bit... dire.
+  ;; "Function: magit-after-save-refresh-status
+  ;;   "This function is intended to be added to after-save-hook. After doing
+  ;; that the corresponding status buffer is refreshed whenever a buffer is
+  ;; saved to a file inside a repository.
+  ;;   "Note that refreshing a Magit buffer is done by re-creating its contents
+  ;; from scratch, which can be slow in large repositories. If you are not
+  ;; satisfied with Magit’s performance, then you should obviously not add this
+  ;; function to that hook."
+  ;;   - https://magit.vc/manual/magit/Automatic-Refreshing-of-Magit-Buffers.html
 
   :bind
   ;; some defaults: https://www.emacswiki.org/emacs/VersionControl
@@ -190,8 +201,8 @@
   ;; todo: consider "C-x g" for magit-status? 
   (("C-x v d" . magit-status)
    ("C-x v p" . magit-push)
-   ;("C-x v C-d" . my/magit-status-in-directory)
-   ;("C-x v c" . my/magit-commit-all) ;; this overrides vc "cancel"... any better one to steal?
+   ;; ("C-x v C-d" . my/magit-status-in-directory)
+   ;; ("C-x v c" . my/magit-commit-all) ;; this overrides vc "cancel"... any better one to steal?
    )
   )
 
