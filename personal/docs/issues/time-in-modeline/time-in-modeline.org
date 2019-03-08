@@ -3,6 +3,23 @@
 #+EMAIL:       git@spydez.com
 #+DATE:        [2019-03-07 Thu]
 
+*sigh* Nevermind.
+
+Actual problem:
+;; Well.... fuck. I was setting this in configure-minibuffer and in configure-window.
+;; God fucking dammit.
+
+Actual solution:
+  - Curse
+  - Consider changing career.
+  - Delete one of the time modeline setup blocks.
+
+- [ ] TODO: figure out how to link to a source code file, ideally by comment or tag or something...
+
+Rest of this is wrong and bad. Don't read it.
+
+* A Wrong Solution
+
 display-time-mode took a lot of convincing to display a custom time.
 
 Solution:
@@ -17,9 +34,6 @@ Solution Code:
                       'face 'bold))) ;; slightly bolded
   (display-time-update)
   (display-time-mode t)
-
-See below for full code w/ comments. Or see config file.
-  - [ ] TODO: figure out how to link to a source code file, ideally by comment or tag or something...
 
 * Prereqs and Versions
 

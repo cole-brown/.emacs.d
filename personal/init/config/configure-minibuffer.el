@@ -85,43 +85,13 @@
       )
 
 
-;;---
-;; Time in the modeline
-;;---
-;; Puts a clock down in the mode line.
-
-;; For simple 24hr time:
-;; (setq display-time-24hr-format t)
-;; (display-time-mode t)
-
-;; For ISO time:
-;; https://emacs.stackexchange.com/questions/7365/how-to-display-date-in-julian-in-the-mode-line
-(require 'calendar)
-;; Well, we're not full ISO 8601, but closeish.
-;; Set format to: yyyy-mm-dd HH:MM
-;; Formatting:
-;;   https://www.gnu.org/software/emacs/manual/html_node/elisp/Time-Parsing.html
-(setq display-time-string-forms
-      '((propertize (format-time-string "%F %H:%M" now)
-;;                    ))) ;; no change
-;;                    'face 'mode-line-buffer-id))) ;; bold yellow/gold like buffer name
-                    'face 'bold))) ;; slightly bolded
-;; Faces to use to get into theme's customization from:
-;;   https://www.gnu.org/software/emacs/manual/html_node/emacs/Standard-Faces.html
-;; Propertize/format-time-string from:
-;;   https://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
-
-;; Have to update, it seems, to get the reformat before a minute or so has passed?
-(display-time-update)
-(display-time-mode t)
-
-
 ;;------------------------------------------------------------------------------
 ;; TODOs
 ;;------------------------------------------------------------------------------
 
 ;; TODO: some of these are modeline? Do we have enough modeline stuff for a
 ;; configure-modeline? some here, some all-the-icons?
+;; Some in configure-window, apparently.... -_-
 
 
 ;;------------------------------------------------------------------------------
