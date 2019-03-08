@@ -86,7 +86,8 @@
           projectile-mode-line-prefix " P")
           ;;(projectile-project-type))
 
-    ;; Completion system used by Projectile. (default is `ido' but we changed to... `default'?
+    ;; Completion system used by Projectile. Default is `ido' but we changed to... `default'?
+    ;; Should I set this to `helm'? Not sure.
     (setq projectile-completion-system 'default)
     ;; cache is good, right?
     (setq projectile-enable-caching t)
@@ -109,6 +110,8 @@
 (use-package helm-projectile
   :after (helm projectile)
   ;; Adds itself to projectile-command-map? It's at: C-c p h
+
+  ;; Do I need (helm-projectile-on)? I'm getting C-c p h anyways, so... Dunno?
   )
 
 

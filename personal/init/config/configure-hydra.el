@@ -20,6 +20,11 @@
 ;; Why is this needed over normal key-chord-define?
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#key-chord
 ;; Is it just the "MODIFICATION" from the docstring?
+;;   - yes.
+;; TODO: delete this? Comment out? Use normal define and see if keychord is
+;;   any more finger-intuitive...
+;;   Honestly maybe it's my chiclet keyboard w/ key cover... I should get
+;;   a mechanical keyboard for work already...
 (defun spydez/key-chord-define (keymap keys command)
   "Define in KEYMAP, a key-chord of two keys in KEYS starting a COMMAND.
 \nKEYS can be a string or a vector of two elements. Currently only elements
@@ -54,6 +59,8 @@ Repeated invocations toggle between the two most recently open buffers."
     (fset 'key-chord-define 'spydez/key-chord-define)
     ;; TODO: [2019-01-28] 0.16 one-key-delay feels off/fast/aweful fast. But leaving as when I
     ;; do manage it, it feels like a separate action from normal typing.
+    ;; TODO: [2019-03-08] Still not using this enough and >50% of the time
+    ;;   I'm not doing the chord - just inserting letters into buffers...
     (setq key-chord-one-key-delay 0.16)
     
     (key-chord-mode 1)
@@ -91,6 +98,13 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Hydra Hydra Hydra
 ;;------------------------------------------------------------------------------
 ;; For when you need even more emacs keyboard shenanigans.
+
+;; TODO: A hydra for my hydras? I.e. a `hydra-launcher'?
+;;   http://nhoffman.github.io/.emacs.d/#org9119f86
+
+;; TODO: rename my defhydras to spydez/hydra/*. Hard to know what's a hydra in
+;;   keychords, binds, and other places without refreshing my memory on how hydra
+;;   does magic lisp shenanigans.
 
 ;; Trial: [2019-01-28]
 (use-package hydra
