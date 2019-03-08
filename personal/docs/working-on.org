@@ -4,7 +4,7 @@
 #+DATE:      [2019-03-05 Tue]
 
 Next things?
-  - To Do: [0/2]
+  - To Do: [0/3]
     - [ ] update notes/*.org?
       - Think some todo'd placeholders have been done.
     - [ ] remove references/?
@@ -14,6 +14,7 @@ Next things?
         - Some of my old .emacs is just references to dead web links... not useful.
     - https://github.com/nhoffman/.emacs.d/blob/master/init.org
       - on: http://nhoffman.github.io/.emacs.d/#org0586751
+    - [ ] csetq vs setq all the places? see zeroth-funcs
 
 Current things?
   - More things to do: [7/10]

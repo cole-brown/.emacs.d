@@ -62,7 +62,7 @@
 (require 'zeroth-debug)
 
 ;; Funcs, vars for some very early strings/hashing.
-(require 'zeroth-strings)
+(require 'zeroth-funcs)
 
 
 ;;------------------------------------------------------------------------------

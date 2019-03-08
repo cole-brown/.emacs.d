@@ -50,6 +50,20 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Helpers
+;;------------------------------------------------------------------------------
+
+;; "A setq that is aware of the custom-set property of a variable."
+;;   - https://oremacs.com/2015/01/17/setting-up-ediff/
+;; TODO: Should I use this everywhere?
+;; TODO: This versus use-package's :custom keyword?
+(defmacro csetq (variable value)
+  `(funcall (or (get ',variable 'custom-set)
+                'set-default)
+            ',variable ,value))
+
+
+;;------------------------------------------------------------------------------
 ;; TODOs
 ;;------------------------------------------------------------------------------
 
@@ -57,4 +71,4 @@
 ;;------------------------------------------------------------------------------
 ;; Provide this.
 ;;------------------------------------------------------------------------------
-(provide 'zeroth-strings)
+(provide 'zeroth-funcs)
