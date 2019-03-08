@@ -723,6 +723,7 @@ For the transition, maybe a func for checking..."
 ;;   good instructions so it's easy to setup in order to download .emacs.d from github repo next time.
 
 ;; TODO: Reorder? hydra might depend on later stuff maybe?
+;;   - hydra might should go higher...
 ;; key-chords, hydra, some helper functions
 (require 'configure-hydra)
 
@@ -868,6 +869,9 @@ For the transition, maybe a func for checking..."
 ;; TODO: Autorevert. Tweak ARev minor mode? Disable it?
 
 (require 'configure-crypt)
+
+;; Do search late as it probably just relies on/sets up other things.
+(require 'configure-search)
 
 ;; chat, social stuff
 (require 'configure-chat)

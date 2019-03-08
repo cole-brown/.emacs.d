@@ -100,7 +100,9 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; For when you need even more emacs keyboard shenanigans.
 
 ;; TODO: A hydra for my hydras? I.e. a `hydra-launcher'?
-;;   http://nhoffman.github.io/.emacs.d/#org9119f86
+;; I think yes. Sounds good. Maybe hydras and common random shit.
+;;   mentioned:  http://nhoffman.github.io/.emacs.d/#org9119f86
+;;   actual launcher hydra: http://nhoffman.github.io/.emacs.d/#org09d7a13
 
 ;; TODO: rename my defhydras to spydez/hydra/*. Hard to know what's a hydra in
 ;;   keychords, binds, and other places without refreshing my memory on how hydra

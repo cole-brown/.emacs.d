@@ -29,11 +29,15 @@
 ;; https://orgmode.org/manual/Creating-timestamps.html
 ;; Use M-x org-time-stamp-inactive for inserting `[2019-01-29 Tue]' stamps into current non-org-mode buffer.
 
+;; TODO: why is this here and I should move to be with spydez/timestamp-ORG alias
+
 
 ;;------------------------------------------------------------------------------
 ;; From Sacha.org
 ;;------------------------------------------------------------------------------
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html
+
+;; TODO: put these in a namespace i.e. spydez/foo -> spydez/url/foo
 
 ;; a test url: (spydez/resolve-redirect "http://bit.ly/tdotco")
 ;; orig-name: kensanata/resolve-redirect
