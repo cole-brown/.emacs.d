@@ -3,15 +3,6 @@
 ;; Show *Messages* buffer.
 ;;   https://stackoverflow.com/questions/40075912/want-to-view-emacs-messages-buffer-while-emacs-loads
 
-;; TODO: Move all this to zeroth? Or just the stuff that's not about the messages buffer?
-;; Or just the next block with init-debug and debugging-p...?
-;;   - then make a spydez/debug/message-if (for if debugging)
-;;     - see configure-daemon for a good use case
-
-(defconst spydez/init-debug t) ;; nil)
-(defun spydez/debugging-p ()
-  (bound-and-true-p spydez/init-debug))
-
 ;; How about putting this at the beginning of your init.el?
 ;; (view-echo-area-messages)
 

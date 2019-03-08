@@ -41,7 +41,7 @@
          (slice (or slice spydez/hash/slice))
          (join (or join spydez/hash/join))
          (prefix (or prefix spydez/hash/prefix)))
-    ;; (spydez/debug/message "hashed: %s %s %s %s" input prefix hash slice join)
+    ;; (spydez/debug/message-always "hashed: %s %s %s %s" input prefix hash slice join)
     (spydez/list-join join
                       prefix
                       (substring hash-full 0 slice)

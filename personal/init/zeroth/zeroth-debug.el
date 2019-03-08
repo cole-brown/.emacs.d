@@ -5,9 +5,6 @@
 ;; 'Themed' Warnings/Messages for More Help in Fixing Things 
 ;;------------------------------------------------------------------------------
 
-;;---
-;; Warnings
-;;---
 (require 'warnings)
 ;; `:warning' should pop up the *Warning* buffer
 (setq warning-minimum-level :warning)
@@ -47,18 +44,28 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Warning-Basics.html#Wa
 ;; (spydez/warning/message nil nil "My spydez/warning/message test: %s %s" '(testing list) 'test-symbol)
 
 
-;;---
-;; Debugs
-;;---
+;;------------------------------------------------------------------------------
+;; 'Themed' Debugss/Messages for More Help in Fixing Things.
+;;------------------------------------------------------------------------------
 
-;; TODO: move this somewhere? debug-early or something?..
-;; TODO: global enable/disable flag
-;; TODO: lwarn w/ ":debug"?
-(defun spydez/debug/message (type message &rest args)
+;; See bootstrap-debug-early.el for some init debug options, settings, and flags.
+
+(defconst spydez/init-debug t) ;; nil)
+(defun spydez/debugging-p ()
+  (bound-and-true-p spydez/init-debug))
+
+;; obeys global enable/disable flag
+(defun spydez/debug/message-if (type message &rest args)
+  ;; Figured out a lisp thing.
+  ;; Thanks: https://stackoverflow.com/a/26707692
+  (when (spydez/debugging-p) (apply #'spydez/debug/message-always type message args)))
+;;(spydez/debug/message-if nil "My spydez/debug/message test: %s %s" '(testing list) 'test-symbol)
+
+(defun spydez/debug/message-always (type message &rest args)
   (let* ((type (or type '(spydez debug general)))
         (injected-message (format "  %s:  %s" type message)))
     (apply 'message injected-message args)))
-;;(spydez/debug/message nil "My spydez/debug/message test: %s %s" '(testing list) 'test-symbol)
+;;(spydez/debug/message-always nil "My spydez/debug/message test: %s %s" '(testing list) 'test-symbol)
 
 
 ;;------------------------------------------------------------------------------
@@ -69,4 +76,4 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Warning-Basics.html#Wa
 ;;------------------------------------------------------------------------------
 ;; Provide this.
 ;;------------------------------------------------------------------------------
-(provide 'zeroth-warning)
+(provide 'zeroth-debug)

@@ -59,7 +59,7 @@
 (require 'zeroth-garbage)
 
 ;; Funcs, vars for my debugging/warning messages.
-(require 'zeroth-warning)
+(require 'zeroth-debug)
 
 ;; Funcs, vars for some very early strings/hashing.
 (require 'zeroth-strings)
