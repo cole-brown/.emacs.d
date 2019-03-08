@@ -14,7 +14,7 @@ Next thing?
   - https://github.com/nhoffman/.emacs.d/blob/master/init.org
 
 Current things?
-  - More things to do: [6/8]
+  - More things to do: [6/9]
     - [X] More dates in org headers? Created, updated...
       - I think just "date" for now...?
     - [X] templates?
@@ -28,6 +28,8 @@ Current things?
     - [X] all-the-icons working enough for me now?
       - Uh... sure. And there's a todo or two up for the rest...
     - [X] file structure has changed...
+    - [ ] get yasnippets to load for org-mode, at least?
+      my 'header' template doesn't work until you poke yasnippets a bit.
     - [ ] make treemacs issue report?
     - [ ] make no-littering issue or fix w/ pull request?
 

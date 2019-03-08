@@ -2,10 +2,12 @@
 
 
 ;;------------------------------------------------------------------------------
-;; TODO: General Settings?
+;; General Settings
 ;;------------------------------------------------------------------------------
 
-;; TODO: these might belong in their own file...
+;; Setting up virtualenv to use with python:
+;;   http://nhoffman.github.io/.emacs.d/#org766cea6
+;; Works for pythons 2 and 3.
 
 
 ;;------------------------------------------------------------------------------

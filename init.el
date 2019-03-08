@@ -7,7 +7,6 @@
 
 (setq spydez/warning/current-type '(spydez interstitial-prose))
 
-
 ;; TODO: a pretty centered header or something here for to be pretty
 
 ;; TODO: use-tool package, like use-package, but for external tools like git, gpg

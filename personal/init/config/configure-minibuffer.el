@@ -97,20 +97,22 @@
 ;; For ISO time:
 ;; https://emacs.stackexchange.com/questions/7365/how-to-display-date-in-julian-in-the-mode-line
 (require 'calendar)
+;; Well, we're not full ISO 8601, but closeish.
 ;; Set format to: yyyy-mm-dd HH:MM
-;; (trimmed down from: yy-mm-dd HH:MM:SS (Time Zone) <Mail notify>
+;; Formatting:
+;;   https://www.gnu.org/software/emacs/manual/html_node/elisp/Time-Parsing.html
 (setq display-time-string-forms
-      ;; For 2 digit year: '((substring year -2) "/" month "/" day
-      ;; Have to convert month/day to numbers, format back to strings in order to
-      ;; make this not shitty (i.e. "2019-3- 6").
-      '(year "-" (format "%02d" (string-to-number month)) "-" (format "%02d" (string-to-number day))
-             " " 24-hours ":" minutes ; ":" seconds
-             ;; Long-ass TZ: (if time-zone " (") time-zone (if time-zone ")")
-             ;; Mail notice: (if mail " Mail" "")
-             ))
-;; So `display-time-format', `display-time-day-and-date', and
-;; `display-time-24hr-format' all seem to be useful and easier than
-;; display-time-string-forms, but I couldn't convince them to behave.
+      '((propertize (format-time-string "%F %H:%M" now)
+;;                    ))) ;; no change
+;;                    'face 'mode-line-buffer-id))) ;; bold yellow/gold like buffer name
+                    'face 'bold))) ;; slightly bolded
+;; Faces to use to get into theme's customization from:
+;;   https://www.gnu.org/software/emacs/manual/html_node/emacs/Standard-Faces.html
+;; Propertize/format-time-string from:
+;;   https://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
+
+;; Have to update, it seems, to get the reformat before a minute or so has passed?
+(display-time-update)
 (display-time-mode t)
 
 
