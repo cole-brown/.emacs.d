@@ -15,6 +15,13 @@
 ;; Guide-Key
 ;;------------------------------------------------------------------------------
 
+;; TODO: Switch to which-key. It's massively more popular and looks to have
+;; a nicer layout maybe?
+;;   - https://github.com/justbur/emacs-which-key/issues/29
+;; Start with this config:
+;;   http://nhoffman.github.io/.emacs.d/#orgb37c770
+
+
 ;; TODO: Doesn't work til turned off/back on. Need debugged?
 ;; It's hard to remember keyboard shortcuts. The guide-key package pops up help after a short delay. 
 ;;
