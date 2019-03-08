@@ -163,11 +163,11 @@
   ;;; It may be the answer, or maybe we just complain.
   ;;; todo: Change to check this (executable-find "git")
   ;;;   - in finalize-sanity (also sanity for "diff")
-                                        ;(when (and (equal system-type 'windows-nt)
-                                        ;	     (not (boundp 'magit-git-executable)))
-                                        ;  (if (boundp 'spydez/exe/git-path)
-                                        ;	(setq magit-git-executable spydez/exe/git-path)
-                                        ;    (error "init/configure-version-control:: use-package magit: no git path known?")))
+  ;; (when (and (equal system-type 'windows-nt)
+  ;; 	     (not (boundp 'magit-git-executable)))
+  ;;   (if (boundp 'spydez/exe/git-path)
+  ;; 	(setq magit-git-executable spydez/exe/git-path)
+  ;;     (error "init/configure-version-control:: use-package magit: no git path known?")))
 
   ;;---
   ;; Diff options
