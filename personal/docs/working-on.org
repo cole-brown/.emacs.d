@@ -3,20 +3,20 @@
 #+EMAIL:     git@spydez.com
 #+DATE:      [2019-03-05 Tue]
 
-Next thing?
-  - update notes/*.org?
-    - Think some todo'd placeholders have been done.
-    - remove references/?
+Next things?
+  - To Do: [0/2]
+    - [ ] update notes/*.org?
+      - Think some todo'd placeholders have been done.
+    - [ ] remove references/?
       - Or put those files in repo... useless files now when not on whatever comp I downloaded em on.
       - ref files were for files that were/are very useful on their own and so preserving them for
         a decade or whatever from now would be useful.
         - Some of my old .emacs is just references to dead web links... not useful.
-  - https://github.com/nhoffman/.emacs.d/blob/master/init.org
-    - on: http://nhoffman.github.io/.emacs.d/#org0586751
-  - Also on bootstrap-debug-early todo
+    - https://github.com/nhoffman/.emacs.d/blob/master/init.org
+      - on: http://nhoffman.github.io/.emacs.d/#org0586751
 
 Current things?
-  - More things to do: [6/9]
+  - More things to do: [7/10]
     - [X] More dates in org headers? Created, updated...
       - I think just "date" for now...?
     - [X] templates?
@@ -30,6 +30,7 @@ Current things?
     - [X] all-the-icons working enough for me now?
       - Uh... sure. And there's a todo or two up for the rest...
     - [X] file structure has changed...
+    - [X] Also on bootstrap-debug-early todo
     - [ ] get yasnippets to load for org-mode, at least?
       my 'header' template doesn't work until you poke yasnippets a bit.
     - [ ] make treemacs issue report?

@@ -50,9 +50,25 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Warning-Basics.html#Wa
 
 ;; See bootstrap-debug-early.el for some init debug options, settings, and flags.
 
+;; Can also debug into warnings buffer:
+;; (spydez/warning/message nil :debug "Couldn't do a thing.")
+;; (spydez/warning/message (append spydez/warning/current-type (list 'info)) :debug "Couldn't do a thing.")
+
 (defconst spydez/init-debug t) ;; nil)
 (defun spydez/debugging-p ()
   (bound-and-true-p spydez/init-debug))
+
+;; Third and greater type: whatever sub-types you want.
+(defconst spydez/debug/current-type '(spydez debug general))
+(defconst spydez/info/current-type '(spydez info))
+
+;; TODO: all these types... I'm not using them much.
+;; Should I make them take a symbol or list, then append that to their (current) defaults?
+
+;; TODO: currently have spydez/{warning,debug,info}/message[-{if,always}].
+;; Is that correct, or should I have e.g.
+;;   - spydez/message[-{if,always}]/{warning,debug,info}
+;;   - spydez/message/{warning,debug,info}[-{if,always}]
 
 ;; obeys global enable/disable flag
 (defun spydez/debug/message-if (type message &rest args)
@@ -62,15 +78,22 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Warning-Basics.html#Wa
 ;;(spydez/debug/message-if nil "My spydez/debug/message test: %s %s" '(testing list) 'test-symbol)
 
 (defun spydez/debug/message-always (type message &rest args)
-  (let* ((type (or type '(spydez debug general)))
+  (let* ((type (or type spydez/debug/current-type))
         (injected-message (format "  %s:  %s" type message)))
     (apply 'message injected-message args)))
 ;;(spydez/debug/message-always nil "My spydez/debug/message test: %s %s" '(testing list) 'test-symbol)
+
+(defun spydez/info/message-if (type message &rest args)
+  (let* ((type (or type spydez/info/current-type)))
+    (when (spydez/debugging-p) (apply #'spydez/debug/message-always type message args))))
+;;(spydez/info/message-if nil "My spydez/info/message-if test: %s %s" '(testing list) 'test-symbol)
 
 
 ;;------------------------------------------------------------------------------
 ;; TODOs
 ;;------------------------------------------------------------------------------
+
+;; TODO: also log all into my own buffer (regardless of level, debugging-p?)
 
 
 ;;------------------------------------------------------------------------------

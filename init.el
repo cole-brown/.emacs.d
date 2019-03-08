@@ -6,6 +6,7 @@
 ;;; Code:
 
 (setq spydez/warning/current-type '(spydez interstitial-prose))
+;;(spydez/info/message-if spydez/warning/current-type "init.el... Intermission.")
 
 ;; TODO: a pretty centered header or something here for to be pretty
 
@@ -298,7 +299,22 @@
 ;;                                 Bootstrap.                                 ;;
 ;;---To pull oneself up by the bootstraps, one must first find one's boots.---;;
 ;;                           ...Where are my boots?                           ;;
-(setq spydez/warning/current-type '(spydez bootstrap))
+
+;;---
+;; We're faking early-init's earlyness, so can't do these here right now.
+;; See below for place for now.
+;; (setq spydez/warning/current-type '(spydez bootstrap))
+;; (spydez/info/message-if spydez/warning/current-type "init.el... Bootstrapping.")
+;;---
+
+;;---
+;; I have only tried this init on:
+;;   (emacs-version)
+;;   "GNU Emacs 26.1 (build 1, x86_64-w64-mingw32)\n of 2018-05-30"
+;; So say we're restricted to emacs 26+?
+(unless (>= emacs-major-version 26)
+  (error "Emacs version 26 or higher is required"))
+;;---
 
 
 ;;---
@@ -311,13 +327,19 @@
 ;;---
 
 
-;;---
+;;-----
 ;; Bootloader loading...
 ;;---
 ;; I'm from the Future.
 ;; Compatibility with versions 26 and below.
 (unless (boundp 'early-init-file)
   (load (expand-file-name "early-init" user-emacs-directory)))
+;; Remove the load when early-init is real.
+;; Also move this bootstrapping info message up when early-init is real.
+(setq spydez/warning/current-type '(spydez bootstrap))
+(spydez/info/message-if spydez/warning/current-type "init.el... Bootstrapping.")
+;;-----
+
 
 ;;---
 ;; Little bit of Sanity...
@@ -508,6 +530,7 @@ For the transition, maybe a func for checking..."
 ;;---
 ;; Misc Stuff
 ;;---
+;; TODO: move this to configure-crypt? And/or rejigger configure-crypt so some can happen soon enough for this to be happy actually loading a file.
 ;; Load sensitive information from outside of .emacs.d
 (if (bound-and-true-p spydez/dir/common-doc-save)
     (when (not (load (expand-file-name ".emacs.secrets" spydez/dir/common-doc-save) 'noerror))
@@ -641,6 +664,7 @@ For the transition, maybe a func for checking..."
 ;; Configuration.
 ;;------------------------------------------------------------------------------
 (setq spydez/warning/current-type '(spydez config))
+(spydez/info/message-if spydez/warning/current-type "init.el... Configuration.")
 ;; Loading and init are done - now do any more required setup.
 
 ;; Interactive funcs I don't use in init but may want sometimes interactively,
@@ -914,6 +938,7 @@ For the transition, maybe a func for checking..."
 ;; The End.
 ;;------------------------------------------------------------------------------
 (setq spydez/warning/current-type '(spydez finalize))
+(spydez/info/message-if spydez/warning/current-type "init.el... Finalizing...")
 
 ;; todo: initial-buffer-choice vs spydez/auto-open-list???
 
@@ -929,6 +954,7 @@ For the transition, maybe a func for checking..."
 ;; TODO: define shortcuts to frequently used files?
 ;;   http://pages.sachachua.com/.emacs.d/Sacha.html#org9750649
 
+;; TODO: split frame, open these in other-window?
 ;; TODO: move to a finalize probably
 (defun spydez/auto-open-files ()
   (if (and window-system (boundp 'spydez/auto-open-list))
@@ -950,6 +976,7 @@ For the transition, maybe a func for checking..."
 
 (require 'zzz-finalize)
 (setq spydez/warning/current-type '(spydez running))
+(spydez/info/message-if spydez/warning/current-type "init.el...Ok. 3 2 1, let's go.")
 ;; fin
 
 ;; TODO: check out old cole-PC.emacs and bootstrap.el.

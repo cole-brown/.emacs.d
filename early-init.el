@@ -69,6 +69,7 @@
 ;; Step... 0.5? Domains, Master List, Per Computer Stuff.
 ;;------------------------------------------------------------------------------
 ;; Need to know something about my boots so I can pull the right straps.
+(spydez/info/message-if spydez/warning/current-type "early-init.el... Zeroth step.")
 
 ;;---
 ;; Domain & System Setup
