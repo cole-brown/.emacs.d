@@ -12,6 +12,8 @@ Next thing?
         a decade or whatever from now would be useful.
         - Some of my old .emacs is just references to dead web links... not useful.
   - https://github.com/nhoffman/.emacs.d/blob/master/init.org
+    - on: http://nhoffman.github.io/.emacs.d/#org0586751
+  - Also on bootstrap-debug-early todo
 
 Current things?
   - More things to do: [6/9]

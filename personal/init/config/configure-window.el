@@ -104,7 +104,7 @@
 ;; Puts a clock down in the mode line.
 
 ;; For ISO time:
-;; https://emacs.stackexchange.com/questions/7365/how-to-display-date-in-julian-in-the-mode-line
+;;   https://emacs.stackexchange.com/questions/7365/how-to-display-date-in-julian-in-the-mode-line
 
 ;; Formatting:
 ;;   https://www.gnu.org/software/emacs/manual/html_node/elisp/Time-Parsing.html

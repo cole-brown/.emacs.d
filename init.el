@@ -44,6 +44,8 @@
 ;;---
 
 ;; TODO: can 'literate programming' do multiple files?
+;; Think nhoffman has a good setup and some helpful commands for it.
+;;   http://nhoffman.github.io/.emacs.d/#org858a11b
 ;; http://www.howardism.org/Technical/Emacs/literate-programming-tutorial.html
 ;; https://en.wikipedia.org/wiki/Literate_programming
 ;; Can also check out this for general layout:
