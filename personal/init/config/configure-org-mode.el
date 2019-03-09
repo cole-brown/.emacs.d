@@ -24,6 +24,10 @@
 (setq org-log-done t           ; auto-timestamp when TODOs are turned to DONE state
 
       ;; Not 100% sold on these this time around... Keeping for now.
+      ;; TODO: maybe disabling these... and make a new work.org at the same
+      ;;   time? My work.org is getting annoying - I may have to find a better
+      ;;   format for notes than whatever structure and monolithic file I'm
+      ;;   trying to do now. Also could go to new todo sequence and logbook.
       org-hide-leading-stars t ; make outline a bit cleaner
       org-odd-levels-only t)   ; make outline a bit cleaner
 
