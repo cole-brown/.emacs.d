@@ -55,6 +55,14 @@
 ;; Disables mouse scroll acceleration, basically?
 ;; (setq mouse-wheel-progressive-speed nil)
 
+;; Don't really want any of these changed right now...
+;; (setq mouse-wheel-follow-mouse t) is for which frame scrolls: focused or hovered
+;; scroll-step: how much to scroll by to try to get point back in frame
+;; scroll-conservatively: ...same thing? but tries to do 'just enough'
+
+;; TODO: experiment with this one, might be good at 2-3 lines...
+;; scroll-margin: how many lines of buffer to leave
+
 
 ;;------------------------------------------------------------------------------
 ;; Title
