@@ -74,13 +74,16 @@
 ;;      - Firmly in number 1. Followed her init pretty exclusively until done
 ;;        with it, then branched off to other's stuff (like my own old .emacs).
 ;;   2) Noah Hoffman's init.org: https://github.com/nhoffman/.emacs.d/blob/master/init.org
-;;      - Well set up init.org. Second in line (well, third after my old .emacs).
+;;      - Well set up init.org.
+;;      - If you want not-GPL, beware the GPL waaaaay down at the end.
 ;;   3) Grant Rettke's (C3F) init.org: https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
 ;;      - Interesting layout for literate programming. Sections come up in
 ;;        whatever order and then when tangled, get put into a specific order.
 
 ;; Todo: Do we want ./spydez/references/ ignored or saved in git?
 ;;   - Don't really want to save if public in repo...
+;;   - Cannot save some of the references I want publically in my repo as it is GPL'd.
+;;     Minorly annoying wrench in the works.
 ;;
 ;; TODO: Start: zzamboni init.el: https://github.com/zzamboni/dot-emacs/blob/master/init.org
 ;; Many neat things?: https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html

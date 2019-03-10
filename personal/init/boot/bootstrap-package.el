@@ -42,46 +42,43 @@
 ;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 ;;(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 ;;
-;; Even more:
-;; http://nhoffman.github.io/.emacs.d/#orgf46780c
-;; '(("ELPA" . "http://tromey.com/elpa/")
-;;   ("gnu" . "http://elpa.gnu.org/packages/")
-;;   ("melpa" . "http://melpa.org/packages/")
-;;   ("melpa-stable" . "http://stable.melpa.org/packages/")
-;;   ("marmalade" . "http://marmalade-repo.org/packages/")
-;;   ("org" . "http://orgmode.org/elpa/")
-;;   ("elpy" . "http://jorgenschaefer.github.io/packages/")))
+;; Package Archives I Know of Right Now:
+;; - Default:
+;;   - gnu          : http://elpa.gnu.org/packages/
+;; - Popular:
+;;   - melpa        : http://melpa.org/packages/
+;;   - melpa-stable : http://stable.melpa.org/packages/
+;; - New (to me) / Less Popular:
+;;   - marmalade    : http://marmalade-repo.org/packages/
+;;   - org          : http://orgmode.org/elpa/
+;;   - ELPA         : http://tromey.com/elpa/
+;;   - elpy         : http://jorgenschaefer.github.io/packages/
 ;; eval for current: C-x C-e package-archives
+;;
+;; Gathered from these folks and other places:
+;;   http://pages.sachachua.com/.emacs.d/Sacha.html#org47943cc
+;;   http://nhoffman.github.io/.emacs.d/#orgf46780c
 
-;; Can use package-pinned-packages to choose which packages come from where.
+;; Can use `package-pinned-packages' to choose which packages come from where.
+
+;; Can use `package-archive-priorities' to assign priority levels (integers?)
+;; to package archives (by name). Can also set `package-menu-hide-low-priority'
+;; to hide in UI.
 
 (package-initialize)
 
-;;   "Starting in emacs 25.1, repositories can be assigned a priority, which can
-;; be used to hide packages in low priority repositories also represented in
-;; higher-priority repositories."
-;;   - http://nhoffman.github.io/.emacs.d/#orgf46780c
-;; Don't need it now with just two package archives, but if I get more...
-;; (setq package-archive-priorities
-;;       '(("org" . 30)
-;;         ("elpy" . 30)
-;;         ("melpa-stable" . 20)
-;;         ("marmalade" . 10)
-;;         ("gnu" . 10)
-;;         ("melpa" . 5)))
-;; (setq package-menu-hide-low-priority t)
 
 ;;------------------------------------------------------------------------------
 ;; Install Use-Package When Needed
 ;;------------------------------------------------------------------------------
 
 ;;---
-;; Old Install If...
+;; Install If...
 ;;---
 ;; Automatic install if not found.
-;; (unless (package-installed-p 'use-package)
-;;   (package-refresh-contents)
-;;   (package-install 'use-package))
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
 ;;---
 ;; Old Require: Just Require
@@ -93,51 +90,18 @@
 ;;---
 ;;   "This means you should put the following at the top of your Emacs, to
 ;; further reduce load time:"
-;; https://github.com/jwiegley/use-package
-;; (eval-when-compile
-;;   (require 'use-package))
+;;   - https://github.com/jwiegley/use-package
+(eval-when-compile
+  (require 'use-package))
 
 
-;;---
-;; Newer Install If (Also Require)...
-;;---
-;;   "This init file is designed to fail gracefully when packages are not yet
-;; installed. use-package can automate the installation of missing packages
-;; (when :ensure t is specified), or provides a warning that a package is not
-;; installed. However, we have a bit of a problem when it comes to use-package
-;; itself, which must be installed to avoid failures on startup. Here's the
-;; solution that I've arrived at:
-;;   - when use-package is not available, give the user the option of
-;;     installing it
-;;     - if yes, do so
-;;     - otherwise, define a macro that generates warning messages wherever
-;;       use-package is invoked."
-;; from http://nhoffman.github.io/.emacs.d/#orgf46780c
-(if (package-installed-p 'use-package)
-    ;; if installed, do the thing use-package says to do:
-    ;;   "This means you should put the following at the top of your Emacs, to
-    ;; further reduce load time:"
-    ;;   - https://github.com/jwiegley/use-package
-    (eval-when-compile
-      (require 'use-package))
-
-  ;; else, do what nhoffman's init does: ask, then install or make empty macro.
-  (if (yes-or-no-p "use-package is not installed yet - install it? ")
-      ;; then
-      (progn
-        ;; bootstrap use-package
-        (spydez/warning/message '(spydez bootstrap use-package-install)
-                                ':warning "Installing use-package...")
-        (package-refresh-contents)
-        (package-install 'use-package))
-    ;; else
-    (spydez/warning/message '(spydez bootstrap use-package-install)
-                            ':error "Defining fake use-package macro...")
-    (defmacro use-package (pkg &rest args)
-      ;; could bump down to :warning, but my init leans really heavily on use-package
-      (spydez/warning/message nil ':error
-                              "use-package is not installed - could not activate %s" (symbol-name pkg))
-      )))
+;;-
+;; There's a neat "check if use-package is installed, if not ask, if no make a
+;; macro that just warns that it's not installed"...
+;; But it is GPL so I had to chuck it.
+;; See:
+;;   http://nhoffman.github.io/.emacs.d/#orgf46780c
+;;-
 
 
 ;;-
