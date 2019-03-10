@@ -18,7 +18,7 @@
 ;; TODO: Switch to which-key. It's massively more popular and looks to have
 ;; a nicer layout maybe?
 ;;   - https://github.com/justbur/emacs-which-key/issues/29
-;; Start with this config:
+;; Take notes from this config:
 ;;   http://nhoffman.github.io/.emacs.d/#orgb37c770
 
 

@@ -5,6 +5,10 @@
 
 ;;; Code:
 
+;; TODO: "reload init" function
+;;  http://nhoffman.github.io/.emacs.d/#org858a11b
+;;  But I won't have to tangle...
+
 (setq spydez/warning/current-type '(spydez interstitial-prose))
 ;;(spydez/info/message-if spydez/warning/current-type "init.el... Intermission.")
 
