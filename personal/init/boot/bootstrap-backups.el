@@ -65,6 +65,9 @@
 ;;---
 ;; Seems pretty popular but I dunno.
 ;; Found in: https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html#sec-10-2-3
+;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Saving-Emacs-Sessions.html
+;; https://www.emacswiki.org/emacs/Desktop
+;; TODO: Try this out? Not convinced.
 ;; (desktop-save-mode 1)
 ;; (setq desktop-restore-eager 10)
 

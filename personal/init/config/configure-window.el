@@ -186,6 +186,16 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Lines, Buffers, Frames, Splits...
+;;------------------------------------------------------------------------------
+
+;; Some neat functions that transpose these things or swap frames or such.
+;;   http://nhoffman.github.io/.emacs.d/#org1f32ab7
+;;   http://nhoffman.github.io/.emacs.d/#orgaa6fa6d
+;; Seem to all be from elsewhere so copying shouldn't be a problem.
+
+
+;;------------------------------------------------------------------------------
 ;; Provide this.
 ;;------------------------------------------------------------------------------
 (provide 'configure-window)

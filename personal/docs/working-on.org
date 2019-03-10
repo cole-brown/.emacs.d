@@ -13,7 +13,7 @@ Next things?
         a decade or whatever from now would be useful.
         - Some of my old .emacs is just references to dead web links... not useful.
     - https://github.com/nhoffman/.emacs.d/blob/master/init.org
-      - on: http://nhoffman.github.io/.emacs.d/#org0586751
+      - on: 22 http://nhoffman.github.io/.emacs.d/#orgbb1bc84
     - [ ] csetq vs setq all the places? see zeroth-funcs
 
 Current things?
