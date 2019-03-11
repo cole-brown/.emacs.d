@@ -17,6 +17,10 @@
 ;; Org-Mode reference card pdf
 ;; https://orgmode.org/orgcard.pdf
 
+;; TODO: Check out this and see if I want to use any of it?:
+;;   https://zzamboni.org/post/beautifying-org-mode-in-emacs/
+;; My instinct is no... not til I use org-mode a lot more.
+
 
 ;;------------------------------------------------------------------------------
 ;; General Settings
