@@ -23,6 +23,14 @@
 ;;------------------------------------------------------------------------------
 (setq org-log-done t           ; auto-timestamp when TODOs are turned to DONE state
 
+      org-src-fontify-natively t ; fontify code block by their native mode?
+
+      ;; let's see how default of 2 is before changing
+      ;; org-edit-src-content-indentation 0 ; # of spaces added to src indent
+
+      ;; Don't know about soft word wrap. But we could do it in a hook for
+      ;; org-mode if desired. (visual-line-mode 1)
+
       ;; Not 100% sold on these this time around... Keeping for now.
       ;; TODO: maybe disabling these... and make a new work.org at the same
       ;;   time? My work.org is getting annoying - I may have to find a better

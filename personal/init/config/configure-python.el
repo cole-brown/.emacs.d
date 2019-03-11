@@ -30,6 +30,11 @@
 ;; python-mode itself comes with emacs now.
 ;; (setq python-fill-docstring-style 'django)
 
+;; Django has several modes for different parts:
+;; https://code.djangoproject.com/wiki/Emacs
+;;   - i.e. the python, the html, the css,
+;;     the templates w/ html and template language interwoven
+
 
 ;;------------------------------------------------------------------------------
 ;; Compilation
