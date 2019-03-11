@@ -28,19 +28,18 @@
 
   ;; source: Git for Windows
   (progn
-  (use-tool-source git-for-windows)
+    (use-tool-source git-for-windows)
 
-  ;; tools:
-  (use-tool git)
-  (use-tool gpg)
-  (use-tool bash)
+    ;; tools:
+    (use-tool git)
+    (use-tool gpg)
+    (use-tool bash)
     (use-tool diff))
 
-  ;; TODO TODAY TODO HERE
-  ;; source: hunspell for Windows
-;;  (progn
-;;    (use-tool-source hunspell-for-windows)
-;;    (use-tool hunspell))
+  ;; source & tool: hunspell (for Windows)
+  (progn
+    (use-tool-source hunspell-for-windows)
+    (use-tool hunspell))
   )
 
 ;; NOTE: BE MINIMAL AND LAZY

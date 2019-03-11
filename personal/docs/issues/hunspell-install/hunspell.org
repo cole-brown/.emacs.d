@@ -3,12 +3,26 @@
 #+EMAIL:       git@spydez.com
 #+DATE:        [2019-03-10 Sun]
 
+
+$ ./hunspell.exe --version
+@(#) International Ispell Version 3.2.06 (but really Hunspell 1.3.2)
+(executable-find "hunspell")
+
+* (The Choice:) Hunspell
+
 Best info so far as it includes "download and install hunspell" as a step...
   https://lists.gnu.org/archive/html/help-gnu-emacs/2014-04/msg00030.html
    - saved in: spydez/dir/docs/issues  hunspell-install/lists.gnu.org_hunspell-Windows_a-fully-working-example.txt
 
 Download Windows binaries:
   https://sourceforge.net/projects/ezwinports/
+    - extracted to C:/bin/hunspell-1.3.2-3-w32-bin @ "pfo-898a-27ab"
+    - (executable-find "hunspell")
+      - doesn't know about it. Will add to paths inside emacs.
+
+Added to use-tool as new tool and new source.
+
+* Old Tabs
 
 tabs:
 https://lists.gnu.org/archive/html/help-gnu-emacs/2014-04/msg00030.html
@@ -21,12 +35,75 @@ https://hunspell.github.io/
 https://www.emacswiki.org/emacs/InteractiveSpell
 https://www.emacswiki.org/emacs/AspellWindows
 
+* Re: Aspell
+
 aspell's windows version (0.50) no longer works in emacs (26.1).
   https://www.reddit.com/r/emacs/comments/8om3fn/emacs_261_requires_aspell_060_for_win32win64/
-(use-package flyspell
-  :init
-  (setq ispell-dictionary "en_US")
-  (setq ispell-program-name (executable-find "hunspell"))
-  (setq ispell-really-hunspell t)
-  :hook (prog-mode . flyspell-prog-mode)
-  (text-mode . flyspell-mode))
+
+* Flyspell (after hunspell installed)
+
+Setup:
+
+A simple flyspell:
+  (use-package flyspell
+    :init
+    (setq ispell-dictionary "en_US")
+    (setq ispell-program-name (executable-find "hunspell"))
+    (setq ispell-really-hunspell t)
+    :hook (prog-mode . flyspell-prog-mode)
+    (text-mode . flyspell-mode))
+
+My setup:
+  - nice warning if can't find hunspell
+    - And don't use flyspell
+      - TODO: Does not calling use-package cause it to not load?
+
+(setq spydez/file/hunspell (executable-find "hunspell"))
+(if spydez/file/hunspell
+    ;; Result from executable-find: hunspell is installed
+    ;; So set up flyspell with that.
+    (use-package flyspell
+      ;; :delight ;; Not sure whether I want to kill its modeline or not
+      :init
+      (progn
+        (setq ispell-program-name (executable-find "hunspell"))
+
+        ;; "en_US" is key to lookup in `ispell-local-dictionary-alist`.
+        ;; Please note it will be passed as default value to hunspell CLI `-d` option
+        ;; if you don't manually setup `-d` in `ispell-local-dictionary-alist`
+        (setq ispell-dictionary "en_US")
+
+        ;; TODO: get this from use-tool?.. Or do I need this at all?
+        ;; Don't think it's needed.
+        ;; (setq spydez/dir/hunspell-data "C:/bin/hunspell-1.3.2-3-w32-bin/share/hunspell")
+
+        ;; Really hard to figure out if this is needed at all besides in xml mode(s)...
+        (setq ispell-local-dictionary-alist
+              '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8)))
+
+        ;; allow some hunspell-only stuff
+        (setq ispell-really-hunspell t)
+
+        ;; Verbosity? These are t by default but not showing anything in *Messages* right now...
+        ;; (setq flyspell-issue-message-flag nil
+        ;;       flyspell-issue-welcome-flag nil)
+
+        ;; Personal Dictionary:
+        ;;   Looks like maybe can pass personal dict in as "-p" with "-d" list:
+        ;;     e.g. ("-d" "en_US" "-p" "path/to/personal.en")
+        ;;   Or maybe this is better:
+        ;;     TODO: a personal dictionary: C-h v ispell-personal-dictionary
+        )
+
+      :hook ;; only one list
+      ((prog-mode . flyspell-prog-mode)
+       (text-mode . flyspell-mode))
+
+      ;; If we want global flyspell:
+      ;; :config
+      ;; (flyspell-mode 1)
+      )
+  ;; else: no result from executable-find - warn and don't set up.
+  (spydez/warning/message nil nil "No backend tool for flyspell. Checked for `hunspell': %s"
+                          spydez/file/hunspell)
+  )

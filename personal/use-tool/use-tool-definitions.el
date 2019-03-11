@@ -46,33 +46,22 @@
 ;;   ))
 
 
-;; TODO TODAY TODO HERE
 ;; Spell check: hunspell
-;;(use-tool-def-tool (use-tool-struct-tool--create :name 'hunspell
-;;  :doc
-;;  "Spell checker program. Also needs a dictionary... somewhere..."
-;;  :exec-name
-;;  "hunspell"
-;;
-;;  :versions
-;;  '("") ;; todo
-;;
-;;  :used-by
-;;  '(ispell flyspell)
-;;
-;;  ;; Hey, we can leave things nil.
-;;  ;; :vars
-;;  ;; nil
-;;  ;;
-;;  ;; :path
-;;  ;; nil
-;;  ;;
-;;  ;; :version
-;;  ;; "z.3"
-;;  ;;
-;;  ;; :source
-;;  ;; 'hunspell-for-windows
-;;  ))
+(use-tool-def-tool (use-tool-struct-tool--create :name 'hunspell
+  :doc
+  "Spell checker program. Also needs a dictionary... somewhere..."
+  :exec-name
+  "hunspell"
+
+  :versions
+  '("@(#) International Ispell Version 3.2.06 (but really Hunspell 1.3.2)")
+
+  :used-by
+  '(ispell flyspell)
+
+  ;; :source
+  ;; 'hunspell-for-windows
+  ))
 
 ;; todo: mark as a git-for-windows tool?
 (use-tool-def-tool (use-tool-struct-tool--create :name 'gpg
@@ -150,29 +139,28 @@
 
 ;; TODO: VS2010 source
 
-;; TODO TODAY TODO HERE
 ;; hunspell tool is from hunspell - yeah.
-;;(use-tool-def-source (use-tool-struct-source--create :name 'hunspell-for-windows
-;;  :doc
-;;  "Hunspell spell checker for Windows."
-;;
-;;  :versions
-;;  '("") ;; todo
-;;
-;;  ;; :get-version
-;;  ;; (...)
-;;
-;;  :tools
-;;  '(hunspell)
-;;
-;;  ;; TODO: a lil' section for, like, config code of tools...
-;;
-;;  :systems
-;;  '(windows-nt)
-;;
-;;  :paths ;; todo
-;;   '((windows-nt "C:/Program Files/Git" "mingw64/bin" "usr/bin"))
-;;   ))
+(use-tool-def-source (use-tool-struct-source--create :name 'hunspell-for-windows
+  :doc
+  "Hunspell spell checker for Windows."
+
+  :versions
+  '("@(#) International Ispell Version 3.2.06 (but really Hunspell 1.3.2)")
+
+  ;; :get-version
+  ;; (...)
+
+  :tools
+  '(hunspell)
+
+  ;; TODO: a lil' section for, like, config code of tools...
+
+  :systems
+  '(windows-nt)
+
+  :paths
+   '((windows-nt "C:/bin/hunspell-1.3.2-3-w32-bin" "bin"))
+   ))
 
 ;; This one source - Git for Windows - is actually MinGW with a lot of
 ;; unix/gnu programs git needs.
