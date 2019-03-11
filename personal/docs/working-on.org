@@ -4,7 +4,8 @@
 #+DATE:      [2019-03-05 Tue]
 
 Next things?
-  - To Do: [0/3]
+  - To Do: [0/4]
+    - [ ] https://emacs.stackexchange.com/questions/2427/how-to-test-rest-api-with-emacs
     - [ ] update notes/*.org?
       - Think some todo'd placeholders have been done.
     - [ ] remove references/?
