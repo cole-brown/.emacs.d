@@ -40,6 +40,10 @@
 ;;------------------------------------------------------------------------------
 ;; TODO: get a spell checker? aspell, ispell, hunspell, something else?
 
+;; ispell is ancient.
+;; aspell's Windows version is so old emacs (26.1+) no longer supports it.
+;; So... hunspell!
+
 
 ;;------------------------------------------------------------------------------
 ;; Markdown

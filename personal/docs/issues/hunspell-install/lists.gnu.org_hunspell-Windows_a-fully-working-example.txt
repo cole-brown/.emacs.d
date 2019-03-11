@@ -1,0 +1,140 @@
+https://lists.gnu.org/archive/html/help-gnu-emacs/2014-04/msg00030.html
+
+ispell/hunspell/Windows: a fully-worked example
+From:	djc
+Subject:	ispell/hunspell/Windows: a fully-worked example
+Date:	Thu, 3 Apr 2014 00:39:31 -0700 (PDT)
+User-agent:	G2/1.0
+Thanks to several people, especially Eli Zaretskii, I now have ispell with 
+hunspell working with GNU emacs 24.3.1 under Windows 7.  Here is a full 
+explanation of my setup.
+
+==== Step 1: install hunspell
+
+hunspell doesn't require installation in the Windows sense: you only need to 
+place it somewhere, anywhere.  Except as in step 2 below, it has no effect at 
+all on Windows.
+
+    a. Download the hunspell installation kit from
+
+       http://sourceforge.net/projects/ezwinports/files
+
+       I have hunspell-1.3.2-2-w32-bin.zip.
+
+    b. Extract the contents of the zipfile to any directory. I chose
+
+       D:\hunspell
+
+==== Step 2: add hunspell to Windows PATH
+
+This step may be unnecessary, and I'll probably try removing it.  But here's 
+how:
+
+    a. Start --> Control Panel --> System --> Advanced system settings -->
+       "Advanced" tab --> Environment Variables
+
+    b. In the "System variables" window select "Path" and click "Edit..."
+
+    c. A window "Edit System Variable" will pop up showing the current
+       value of "Path".  At the end of that string add
+
+       ;{folder for hunspell.exe}
+
+       which on my system is
+
+       ;D:\hunspell\bin
+
+    d. Click your way out: OK --> OK --> OK --> close the control panel
+       window.
+
+==== Step 3: add the dictionaries you want
+
+There are many sources of dictionaries.
+
+    a. Put the dictionaries where hunspell expects to find them, in
+
+       ...\share\hunspell
+
+       On my system that is
+
+       D:\hunspell\share\hunspell
+
+    b. I added these dictionaries:
+
+       de_DE_frami (de_DE_frami.aff and de_DE_frami.dic)
+       en_US (en_US.aff and en_US.dic)
+       fr-classique (fr-classique.aff and fr-classique.dic)
+
+==== Step 4: set up ispell initialization in emacs, for instance in ".emacs"
+
+    a. Tell emacs and ispell where to find the executable.  I have
+
+       (add-to-list 'exec-path "D:/hunspell/bin/")
+
+       (setq ispell-program-name (locate-file "hunspell"
+                exec-path exec-suffixes 'file-executable-p))
+
+    b. Initialize "ispell-local-dictionary-alist".  I have
+
+       (setq ispell-local-dictionary-alist '(
+
+       (nil
+           "[[:alpha:]]"
+           "[^[:alpha:]]"
+           "[']"
+           t
+           ("-d" "en_US" "-p" "D:\\hunspell\\share\\hunspell\\personal.en")
+           nil
+           iso-8859-1)
+
+       ("american"
+           "[[:alpha:]]"
+           "[^[:alpha:]]"
+           "[']"
+           t
+           ("-d" "en_US" "-p" "D:\\hunspell\\share\\hunspell\\personal.en")
+           nil
+           iso-8859-1)
+       ("deutsch"
+           "[[:alpha:]ÄÖÜéäöüß]"
+           "[^[:alpha:]ÄÖÜéäöüß]"
+           "[']"
+           t
+           ("-d" "de_DE_frami" "-p" 
+"D:\\hunspell\\share\\hunspell\\personal.de")
+           nil
+           iso-8859-1)
+       ("francais"
+           "[[:alpha:]ÀÂÇÈÉÊËÎÏÔÙÛÜàâçèéêëîïôùûü]"
+           "[^[:alpha:]ÀÂÇÈÉÊËÎÏÔÙÛÜàâçèéêëîïôùûü]"
+           "[-']"
+           t
+           ("-d" "fr-classique" "-p" 
+"D:\\hunspell\\share\\hunspell\\personal.fr")
+           nil
+           utf-8)
+        ))
+
+       The first -- nil -- sub-list defines the default dictionary, which
+       on my system is American English, so except for the names (nil and
+       "american") those sub-lists are identical.
+
+       You will use the names in the sub-lists "american", "deutsch" and
+       "francais" with "ispell-change-dictionary" in ispell.
+
+    c. After (a) and (b) above, require ispell:
+
+       (require 'ispell)
+
+==== Step 5: use ispell
+
+    a. Select a dictionary for the buffer you want to check:
+
+       M-x ispell-change-dictionary
+
+       and select one of the names in "ispell-local-dictionary-alist".
+       Otherwise ispell will use the default dictionary under the "nil" list.
+
+    b. Invoke ispell.
+
+Voilà!

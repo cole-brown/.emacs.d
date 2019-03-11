@@ -1,0 +1,32 @@
+#+TITLE:       Hunspell - Install and Config
+#+AUTHOR:      Cole Brown
+#+EMAIL:       git@spydez.com
+#+DATE:        [2019-03-10 Sun]
+
+Best info so far as it includes "download and install hunspell" as a step...
+  https://lists.gnu.org/archive/html/help-gnu-emacs/2014-04/msg00030.html
+   - saved in: spydez/dir/docs/issues  hunspell-install/lists.gnu.org_hunspell-Windows_a-fully-working-example.txt
+
+Download Windows binaries:
+  https://sourceforge.net/projects/ezwinports/
+
+tabs:
+https://lists.gnu.org/archive/html/help-gnu-emacs/2014-04/msg00030.html
+
+maybe tabs:
+https://emacs.stackexchange.com/questions/14952/how-do-i-set-up-hunspell-on-a-windows-pc
+http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs.html
+https://hunspell.github.io/
+
+https://www.emacswiki.org/emacs/InteractiveSpell
+https://www.emacswiki.org/emacs/AspellWindows
+
+aspell's windows version (0.50) no longer works in emacs (26.1).
+  https://www.reddit.com/r/emacs/comments/8om3fn/emacs_261_requires_aspell_060_for_win32win64/
+(use-package flyspell
+  :init
+  (setq ispell-dictionary "en_US")
+  (setq ispell-program-name (executable-find "hunspell"))
+  (setq ispell-really-hunspell t)
+  :hook (prog-mode . flyspell-prog-mode)
+  (text-mode . flyspell-mode))
