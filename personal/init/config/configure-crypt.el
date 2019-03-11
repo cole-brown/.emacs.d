@@ -37,6 +37,10 @@
 
 ;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/
 
+;; TODO: there may be a way to suppress the graphical password prompt?
+;; http://nhoffman.github.io/.emacs.d/#org78893a1
+;;   - but my env var for that is already nil: (getenv "GPG_AGENT_INFO")
+
 
 ;;------------------------------------------------------------------------------
 ;; Secrets.

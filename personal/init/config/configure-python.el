@@ -14,9 +14,15 @@
 ;; Python
 ;;------------------------------------------------------------------------------
 
+;; TODO: python-mode vs elpy...?
+;; https://github.com/jorgenschaefer/elpy
+
 ;; I know I have settings in hook in old .emacs
 ;; but for now, just... leave all this commented out until I get to it.
 (defun spydez/hook/python-mode ()
+  ;; (setq tab-width ...
+  ;;       py-indent-offset ...
+  ;;       py-smart-indentation ...)
   ;; TODO: I probably want most or all of these, or some competing package/feature
   ;; (these from still-barebones csharp)
 ;  (paredit-mode 1)
