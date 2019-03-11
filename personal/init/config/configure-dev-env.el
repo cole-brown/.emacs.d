@@ -305,6 +305,39 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Duplicate region, and then comment one out.
+;; AKA Copy and Comment Region
+;;------------------------------------------------------------------------------
+;; Few different ways to do it out there - this one in my tiny test gave the 
+;; best formatting to the commented region and its new copy.
+;;   https://stackoverflow.com/a/23588908
+(defun spydez/copy-and-comment-region (beg end &optional arg)
+  "Duplicate the region and comment-out the copied text.
+See `comment-region' for behavior of a prefix arg."
+  (interactive "r\nP")
+  (copy-region-as-kill beg end)
+  (goto-char end)
+  (yank)
+  (comment-region beg end arg))
+
+
+;;------------------------------------------------------------------------------
+;; Unfill Paragraph
+;;------------------------------------------------------------------------------
+;; from: nhoffman http://nhoffman.github.io/.emacs.d/#org40b27e4
+;;   which is from: http://defindit.com/readme_files/emacs_hints_tricks.html
+;;     which is from: Stefan Monnier <foo at acm.org>
+;;       which is probably from the turtles that go all the way down
+;;
+;; This is actually the inverse of fill-paragraph. Takes a multi-line paragraph
+;; and makes it into a single line of text.
+(defun spydez/unfill-paragraph ()
+  (interactive)
+  (let ((fill-column (point-max)))
+  (fill-paragraph nil)))
+
+
+;;------------------------------------------------------------------------------
 ;; Provide this.
 ;;------------------------------------------------------------------------------
 (provide 'configure-dev-env)
