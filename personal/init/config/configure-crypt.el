@@ -56,10 +56,6 @@
 
 ;; TODO: a way to defer the getting of secrets so we don't just hang loading?
 ;;   - doesn't seem to be hanging so probably ok. Leaving until home and work comps both... work.
-(defconst spydez/dir/secrets (spydez/dir-name ".secrets.d" spydez/dir/home)
-  "Location of secrets dir on this computer.")
-(defconst spydez/file/secrets (expand-file-name "emacs.secrets.el.gpg" spydez/dir/secrets)
-  "Location of emacs' elisp secrets.")
 
 
 ;;------------------------------------------------------------------------------

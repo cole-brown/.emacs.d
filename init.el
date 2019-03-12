@@ -18,11 +18,24 @@
 ;; say what versions you want, what os you expect, have ways for packages
 ;; to hook in so like gpg can be connected to EPA even if half windows, half MinGW environment.
 
+;; TODO: get recentf into find-files (C-x C-f)? and buffers (C-x C-b)?
+;; it's in `C-x b', which is nice.
+
 ;;------------------------------------------------------------------------------
 ;; Notes, TODOs, Links
 ;;------------------------------------------------------------------------------
 ;; TODO: rename all these "TODOs" in my section headers so I can search for
 ;; 'TODO' without dozens of false alarms...
+
+;;---
+;; The Many Faces of TODO
+;;---
+;; TODO-EASY: I'm not doing it today for obvious reasons, but I bet future
+;;   me can knock it out of the park EZ.
+;; TODO-TODAY: You were here yesterday(/in the faint and distant past) and
+;;   thought you'd be back tomorrow.
+;; TODO: someday
+
 
 ;;---
 ;; Search...                                             (knights who say...)
@@ -414,6 +427,8 @@
 
 ;; TODO: setq vs customize-set-variable (...vs being in the custom file?)
 
+;; TODO: move these to a file?
+;;   - but they're before the path so must limit to places zeroth knows.
 
 ;;---
 ;; Directories for Emacs or Packages
@@ -600,6 +615,17 @@ For the transition, maybe a func for checking..."
 ;;  (spydez/warning/message nil nil "Empty bootstrap-this-late."))
 ;; I'm fine if this system has no late step.
 (require 'bootstrap-this-late nil 'noerror)
+
+;;---
+;; Final Chance to Affect Bootstrap...
+;;---
+(require 'dev-directories) ;; nil 'noerror) ;; TODO: leaving off noerror until home domain works as desired there
+;; Could definitely rename this if I could find a better name.
+;; TODO: Add a finalize step for adding files to auto-open-list?
+;; Add an "if file exists" check to auto-opening files?
+;; TODO: Some notion of "I expect these vars/funcs to be defined"?
+;;   Should I just def them before hand? That doesn't provide any validity
+;;   besides basic "it exists" sanity...
 
 
 ;;------------------------------------------------------------------------------
@@ -964,14 +990,9 @@ For the transition, maybe a func for checking..."
 
 ;; TODO: define shortcuts to frequently used files?
 ;;   http://pages.sachachua.com/.emacs.d/Sacha.html#org9750649
-
-;; TODO: split frame, open these in other-window?
-;; TODO: move to a finalize probably
-(defun spydez/auto-open-files ()
-  (if (and window-system (boundp 'spydez/auto-open-list))
-      (dolist (file spydez/auto-open-list)
-        (find-file file))))
-(add-hook 'emacs-startup-hook 'spydez/auto-open-files)
+;; todo: rename something better for its function here instead of what
+;; it happens to reside right now. `finalize-user-startup' or something
+(require 'finalize-domain) ;; nil 'noerror) ;; TODO: leaving off noerror until home domain works as desired there
 
 ;; TODO: move to a finalize probably?
 ;; Have a shell open and ready.
