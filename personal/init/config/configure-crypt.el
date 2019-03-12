@@ -74,6 +74,9 @@
 ;; (setq auth-sources
 ;;       '((:source "~/.emacs.d/secrets/.authinfo.gpg")))
 
+;; auth-source and auth-source-pass can be used as a password manager if needed
+
+
 ;;------------------------------------------------------------------------------
 ;; TODOs
 ;;------------------------------------------------------------------------------

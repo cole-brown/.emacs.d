@@ -21,7 +21,7 @@
 ;; use-package options:
 
 ;; verbose is useful when debugging startup. Might gain a bit of time disabling this when
-;; not debugging. (Maybe look into setting based on spydez/init-debug?)
+;; not debugging. (Maybe look into setting based on spydez/debugging-p?)
 (setq use-package-verbose t)
 (setq use-package-compute-statistics t)
 (setq use-package-minimum-reported-time 0)
@@ -31,6 +31,11 @@
 (setq package-enable-at-startup nil)
 ;; Everyone seems to always use this anyways. Ensure packages are installed if missing.
 (setq use-package-always-ensure t)
+
+;; This will set defer to default true for packages to not load on startup.
+;; Would make for a faster init time but slower random actions until everything
+;; happens to be auto-loaded.
+;; (setq use-package-always-defer t)
 
 
 ;;------------------------------------------------------------------------------
@@ -119,7 +124,8 @@
 (use-package auto-compile
   :config (auto-compile-on-load-mode))
 
-;; auto-compile options:
+;; auto-compile options: recompile if the uncompiled (.el) is
+;; newer than the compiled (.elc)
 (setq load-prefer-newer t)
 
 ;; no-littering to clean up .emacs.d a bit

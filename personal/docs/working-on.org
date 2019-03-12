@@ -4,10 +4,8 @@
 #+DATE:      [2019-03-05 Tue]
 
 Next things?
-  - To Do: [0/4]
+  - To Do: [0/3]
     - [ ] https://emacs.stackexchange.com/questions/2427/how-to-test-rest-api-with-emacs
-    - [ ] update notes/*.org?
-      - Think some todo'd placeholders have been done.
     - [ ] remove references/?
       - Or put those files in repo... useless files now when not on whatever comp I downloaded em on.
       - ref files were for files that were/are very useful on their own and so preserving them for
@@ -17,8 +15,15 @@ Next things?
       - on: 22 http://nhoffman.github.io/.emacs.d/#orgbb1bc84
     - [ ] csetq vs setq all the places? see zeroth-funcs
 
+
+Soon™ things?
+  - To Do: [0/2]
+    - [ ] make treemacs issue report?
+    - [ ] make no-littering issue or fix w/ pull request?
+
+
 Current things?
-  - More things to do: [7/10]
+  - More things to do: [9/9]
     - [X] More dates in org headers? Created, updated...
       - I think just "date" for now...?
     - [X] templates?
@@ -33,10 +38,11 @@ Current things?
       - Uh... sure. And there's a todo or two up for the rest...
     - [X] file structure has changed...
     - [X] Also on bootstrap-debug-early todo
-    - [ ] get yasnippets to load for org-mode, at least?
+    - [X] update notes/*.org?
+      - Think some todo'd placeholders have been done.
+      - Still one todo but its full of temp tab links
+    - [X] get yasnippets to load for org-mode, at least?
       my 'header' template doesn't work until you poke yasnippets a bit.
-    - [ ] make treemacs issue report?
-    - [ ] make no-littering issue or fix w/ pull request?
 
 
 * A list of things to consider working on

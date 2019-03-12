@@ -336,6 +336,16 @@ See `comment-region' for behavior of a prefix arg."
   (let ((fill-column (point-max)))
   (fill-paragraph nil)))
 
+;; TODO: if that is any use, there's a package...
+;;   "Add “unfill” commands to parallel the “fill” ones, bind A-q to
+;; unfill-paragraph and rebind M-q to the unfill-toggle command, which
+;; fills/unfills paragraphs alternatively."
+;;   - https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+;;(use-package unfill
+;;  :bind
+;;  ("M-q" . unfill-toggle)
+;;  ("A-q" . unfill-paragraph))
+
 
 ;;------------------------------------------------------------------------------
 ;; Provide this.

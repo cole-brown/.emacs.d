@@ -548,6 +548,13 @@ For the transition, maybe a func for checking..."
 ;; Possibly move custom-file setting up, and loading down below loading of bootstrap-this-late overrides.
 (load custom-file t)
 
+;; Custom file is annoying, especially because it gathers everything into one
+;; weird place. Also because it insists on having only one place (when it
+;; saves). So some stuff I want early (so custom.el has to be arly), and other
+;; stuff I want late (like gpg) and can't do much about.
+;;
+;; I'm hoping to find a way to relegate custom.el to just be package.el's vars...
+
 
 ;;---
 ;; Misc Stuff
@@ -565,6 +572,7 @@ For the transition, maybe a func for checking..."
 ;; Dev Env vars
 ;;---
 ;; TODO: put in bootstrap-consts? bootstrap-this-late? bootstrap-data?
+;; dev-consts? dev-dev-env? dev-dev-env-envs? development-environment-for-this-device-consts?
 
 ;; Tab widths. I like a smaller one for verbose/highly indented code (web dev mainly).
 ;; Normally use a larger one for non-web programming.

@@ -1,0 +1,19 @@
+#+TITLE:       Literate Programming
+#+AUTHOR:      Cole Brown
+#+EMAIL:       git@spydez.com
+#+DATE:        [2019-03-12 Tue]
+
+TODO: gather up more of my todos/links (I think some is in init.el?)
+
+* zzamboni.org
+
+https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+
+*** Quote:
+
+I have started using [[http://orgmode.org/][org-mode]] to writing, blogging, coding, presentations and more, thanks to the hearty recommendations and information from [[http://www.cmdln.org/][Nick]] and many others. I am duly impressed. I have been a fan of the idea of [[https://en.wikipedia.org/wiki/Literate_programming][literate programming]] for many years, and I have tried other tools before (most notably [[https://www.cs.tufts.edu/~nr/noweb/][noweb]], which I used during grad school for many of my homeworks and projects), but org-mode is the first tool I have encountered which seems to make it practical. Here are some of the resources I have found useful in learning it:
+
+- Howard Abrams' [[http://www.howardism.org/Technical/Emacs/literate-programming-tutorial.html][Introduction to Literate Programming]], which got me jumpstarted into writing code documented with org-mode.
+- Nick Anderson's [[https://github.com/nickanderson/Level-up-your-notes-with-Org][Level up your notes with Org]], which contains many useful tips and configuration tricks.
+- Sacha Chua's [[http://sachachua.com/blog/2014/01/tips-learning-org-mode-emacs/][Some tips for learning Org Mode for Emacs]], her [[http://pages.sachachua.com/.emacs.d/Sacha.html][Emacs configuration]] and many of her [[http://sachachua.com/blog/category/emacs/][other articles]].
+- Rainer König's [[https://www.youtube.com/playlist?list=PLVtKhBrRV_ZkPnBtt_TD1Cs9PJlU0IIdE][OrgMode Tutorial]] video series.
