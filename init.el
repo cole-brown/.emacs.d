@@ -552,12 +552,13 @@ For the transition, maybe a func for checking..."
 ;;---
 ;; Misc Stuff
 ;;---
+;; TODO: just delete? configure-crypt does not care about this anymore, I don't think...
 ;; TODO: move this to configure-crypt? And/or rejigger configure-crypt so some can happen soon enough for this to be happy actually loading a file.
 ;; Load sensitive information from outside of .emacs.d
-(if (bound-and-true-p spydez/dir/common-doc-save)
-    (when (not (load (expand-file-name ".emacs.secrets" spydez/dir/common-doc-save) 'noerror))
-      (spydez/warning/message nil :debug "No secrets to load."))
-  (spydez/warning/message nil nil "No secrets loaded. Do not know where to look. '%s' undefined." 'spydez/dir/common-doc-save))
+;;(if (bound-and-true-p spydez/dir/common-doc-save)
+;;    (when (not (load (expand-file-name ".emacs.secrets" spydez/dir/common-doc-save) 'noerror))
+;;      (spydez/warning/message nil :debug "No secrets to load."))
+;;  (spydez/warning/message nil nil "No secrets loaded. Do not know where to look. '%s' undefined." 'spydez/dir/common-doc-save))
 
 
 ;;---
@@ -582,6 +583,7 @@ For the transition, maybe a func for checking..."
 ;;  copy external tools to bootstrap-this-late for this pc
 ;;    - make default/empty here
 ;;    - do tool exec/env step after bootstrap (or at end of bootstrap?)
+
 
 ;;---
 ;; External Tools
