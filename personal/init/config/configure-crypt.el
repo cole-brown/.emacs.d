@@ -33,6 +33,7 @@
   ;;  '(epg-gpg-program (executable-find "gpg"))               ; windowsy
   ;;  '(epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy
   ;;  )
+  ;; [2019-03-13]
   ;; The fuck is going on - why did this suddenly start complaining?
   ;; "Error setting epg-gpg-home-directory: (void-variable spydez/hack/ugly-hacky-gpg-dir)"
   ;; Does this work any worse?
