@@ -1,4 +1,4 @@
-;; -*- emacs-lisp -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
 
 ;;-----------------------------------uryyb--------------------------------------
@@ -28,11 +28,18 @@
        (concat (spydez/dir/windows-to-mingw spydez/dir/home) ".gnupg/")))
   ;; TODO: what the fuck to do with these... I don't really want these in
   ;; custom file...
-  (custom-set-variables
-   '(epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
-   '(epg-gpg-program (executable-find "gpg"))               ; windowsy
-   '(epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy
-   ))
+  ;; (custom-set-variables
+  ;;  '(epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
+  ;;  '(epg-gpg-program (executable-find "gpg"))               ; windowsy
+  ;;  '(epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy
+  ;;  )
+  ;; The fuck is going on - why did this suddenly start complaining?
+  ;; "Error setting epg-gpg-home-directory: (void-variable spydez/hack/ugly-hacky-gpg-dir)"
+  ;; Does this work any worse?
+  (csetq epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
+  (csetq epg-gpg-program (executable-find "gpg"))               ; windowsy
+  (csetq epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy
+  )
 ;; TODO: get gpg more cross-computery via use-tool
 
 ;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/
@@ -40,6 +47,9 @@
 ;; TODO: there may be a way to suppress the graphical password prompt?
 ;; http://nhoffman.github.io/.emacs.d/#org78893a1
 ;;   - but my env var for that is already nil: (getenv "GPG_AGENT_INFO")
+
+;; Query passphrase through the minibuffer, instead of the pinentry program
+(setq epg-pinentry-mode 'loopback)
 
 
 ;;------------------------------------------------------------------------------

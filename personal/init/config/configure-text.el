@@ -97,6 +97,8 @@
         )
 
       :hook ;; only one list
+      ;; TODO: shitty perf on an org-mode file with longish lines
+      ;; (or just lots of 'misspelled' words?)
       ((prog-mode . flyspell-prog-mode)
        (text-mode . flyspell-mode))
 

@@ -25,6 +25,7 @@
 ;;------------------------------------------------------------------------------
 ;; General Settings
 ;;------------------------------------------------------------------------------
+;;TODO: (use-package org ??
 (setq org-log-done t           ; auto-timestamp when TODOs are turned to DONE state
 
       org-src-fontify-natively t ; fontify code block by their native mode?
@@ -65,14 +66,6 @@
 
 ;; TODO: an org-mode use-package for grouping all these settings?
 
-;; By default, org-indent produces an indicator "Ind" in the modeline. We use diminish to hide it.
-;; TODO: this:
-;; (use-package org-indent
-;;   :ensure nil
-;;   :diminish)
-
-;; TODO-TODAY: https://zzamboni.org/post/my-emacs-configuration-with-commentary/
-;; on "Keybindings" in org-mode section. Maybe search for: "C-c l"
 
 ;;------------------------------------------------------------------------------
 ;; Hooks
@@ -87,6 +80,18 @@
 ;;   (setq yas/trigger-key [tab])
 ;;   (define-key yas/keymap [tab] 'yas/next-field-group))
 ;; (add-hook 'org-mode-hook 'spydez/org-mode-hook)
+
+;;   "Enable Speed Keys, which allows quick single-key commands when the cursor
+;; is placed on a heading. Usually the cursor needs to be at the beginning of a
+;; headline line, but defining it with this function makes them active on any of
+;; the asterisks at the beginning of the line (useful with the font highlighting
+;; I use, as all but the last asterisk are sometimes not visible)."
+;;   https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+;; Manual:
+;;   https://orgmode.org/manual/Speed-keys.html
+(setq org-use-speed-commands
+      (lambda () (and (looking-at org-outline-regexp) (looking-back "^\**"))))
+;; Not exactly a hook, but kinda...
 
 
 ;;------------------------------------------------------------------------------
@@ -143,11 +148,35 @@
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org712e999
 ;; org-crypt
 
+;; By default, org-indent produces an indicator "Ind" in the modeline. We use diminish to hide it.
+(use-package org-indent
+  :ensure nil
+  :after org
+  :diminish)
+
 
 ;;------------------------------------------------------------------------------
 ;; Org Keybinds
 ;;------------------------------------------------------------------------------
-;; Don't think I have any right now but here's some if I do eventually:
+
+;; Bind a few keys for globally useful org stuff.
+;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+(bind-keys*
+  ;; Set up C-c l to store a link to the current org object, in counterpart to
+  ;; the default C-c C-l to insert a link.
+  ("C-c l" . org-store-link)
+
+  ;; Set up C-c a to call up agenda mode.
+  ("C-c a" . org-agenda)
+  ;; TODO: try using org agenda mode maybe
+
+  ;; I have read the help for `org-capture' and have one question...
+  ;; WTF is org-capture?
+  ("C-c c" . org-capture)
+  ;; TODO: ...I don't know - comment this out?
+  )
+
+;; Some more keybinds to consider here:
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org44fc1f8
 
 
@@ -156,6 +185,28 @@
 ;;------------------------------------------------------------------------------
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#orgf7563c2
 ;; https://stackoverflow.com/questions/15011703/is-there-an-emacs-org-mode-command-to-jump-to-an-org-heading
+
+
+;;------------------------------------------------------------------------------
+;; Literate Programming
+;;------------------------------------------------------------------------------
+;; I do want to do this... but it would involve rewriting all my emacs files?
+;; ...which I'm barely started on... but there's so much there already...
+
+;; TODO: try this literate programming out
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org2f334cf
+;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/#literate-programming-using-org-babel
+
+
+;;------------------------------------------------------------------------------
+;; Org Journal
+;;------------------------------------------------------------------------------
+;; TODO: try out org-journal? this guy hasn't gotten around to it either.
+;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/#keeping-a-journal
+;; (use-package org-journal
+;;   :after org
+;;   :custom
+;;   (org-journal-dir "~/Documents/logbook"))
 
 
 ;;------------------------------------------------------------------------------
@@ -229,6 +280,8 @@
 ;; UTF-8 checkboxes
 ;;
 ;; This snippet turns - [X] into ☑ and - [ ] into ☐, but leaves [-] alone.
+;;   - wish it set [-]...
+;; TODO: make that wish come true.
 ;;
 ;; (setq org-html-checkbox-type 'unicode)
 ;; (setq org-html-checkbox-types
@@ -264,22 +317,14 @@
 ;; https://github.com/zweifisch/ob-http
 ;; (use-package ob-http)
 
+;; See configure-web.el for what I'm using now: non-org-mode package `restclient'
+
 
 ;;------------------------------------------------------------------------------
 ;; Diagrams and Graphics
 ;;------------------------------------------------------------------------------
 ;; It can be done. Ditaa and Graphviz or something.
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org1683357
-
-
-;;------------------------------------------------------------------------------
-;; Literate Programming
-;;------------------------------------------------------------------------------
-;; I do want to do this... but it would involve rewriting all my emacs files?
-;; ...which I'm barely started on... but there's so much there already...
-
-;; TODO: try this literate programming out
-;; http://pages.sachachua.com/.emacs.d/Sacha.html#org2f334cf
 
 
 ;;------------------------------------------------------------------------------
@@ -295,7 +340,24 @@
 ;;------------------------------------------------------------------------------
 ;; Absolutely no use for this org->HTML/JS slideshow right now but kinda neat.
 ;; https://github.com/hexmode/ox-reveal
+;; https://github.com/yjwen/org-reveal
 ;; (use-package ox-reveal :disabled t)
+;; Uh... wait. Is it org-reveal or ox-reveal?
+
+
+;;------------------------------------------------------------------------------
+;; Exporting
+;;------------------------------------------------------------------------------
+;; Many many ways to export. html, latex, markdown...
+;; Some here:
+;;   https://zzamboni.org/post/my-emacs-configuration-with-commentary/#various-exporters
+;;   - ox-md:  Markdown
+;;   - ox-gfm: GitHub Flavored Markdown
+;;   - org-jira/ox-jira: Jira markup
+;;   - ox-confluence:    Confluence markup
+;;   - ox-texinfo:
+;;   - ox-latex
+;;   - ...
 
 
 ;;------------------------------------------------------------------------------

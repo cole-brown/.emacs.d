@@ -90,6 +90,11 @@
 ;; References.
 ;;---
 
+;; TODO: gather up urls, for domains/pages that show up often enough,
+;;   save off into secrets.d/references or something?
+;;   Cuz I want 'em around next time. Which will be 10-16 years from now
+;;   if history repeats itself.
+
 ;; Special extra useful links:
 ;;   1) Sacha Chua's init.org: http://pages.sachachua.com/.emacs.d/Sacha.html
 ;;      - Firmly in number 1. Followed her init pretty exclusively until done
