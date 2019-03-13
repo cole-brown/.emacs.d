@@ -9,6 +9,8 @@
 ;;  http://nhoffman.github.io/.emacs.d/#org858a11b
 ;;  But I won't have to tangle...
 
+;; TODO-EASY: put .org.txt into the mode list for org-mode
+
 (setq spydez/warning/current-type '(spydez interstitial-prose))
 ;;(spydez/info/message-if spydez/warning/current-type "init.el... Intermission.")
 

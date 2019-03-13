@@ -35,13 +35,20 @@
       ;; Don't know about soft word wrap. But we could do it in a hook for
       ;; org-mode if desired. (visual-line-mode 1)
 
+      ;; Well structured indentation. Freehand notes/text stay indented to
+      ;; headline level.
+      org-startup-indented t
+      ;; Note 1: This changes how it /looks/, not how the raw text is formatted.
+      ;; Note 2: This also hides leading stars for headlines.
+
       ;; Not 100% sold on these this time around... Keeping for now.
       ;; TODO: maybe disabling these... and make a new work.org at the same
       ;;   time? My work.org is getting annoying - I may have to find a better
       ;;   format for notes than whatever structure and monolithic file I'm
       ;;   trying to do now. Also could go to new todo sequence and logbook.
-      org-hide-leading-stars t ; make outline a bit cleaner
-      org-odd-levels-only t)   ; make outline a bit cleaner
+      ;;org-hide-leading-stars t ; make outline a bit cleaner
+      ;;org-odd-levels-only t    ; make outline a bit cleaner
+      )
 
 ;; TODO sequence to pop up shortcuts to on running `C-c C-t' on a headline
 ;;   (n) - n key will be shortcut into this state
@@ -56,6 +63,16 @@
 ;; "LOGBOOK" is default if this is set to `t'.
 (setq org-log-into-drawer "LOGBOOK")
 
+;; TODO: an org-mode use-package for grouping all these settings?
+
+;; By default, org-indent produces an indicator "Ind" in the modeline. We use diminish to hide it.
+;; TODO: this:
+;; (use-package org-indent
+;;   :ensure nil
+;;   :diminish)
+
+;; TODO-TODAY: https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+;; on "Keybindings" in org-mode section. Maybe search for: "C-c l"
 
 ;;------------------------------------------------------------------------------
 ;; Hooks
