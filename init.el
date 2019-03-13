@@ -10,6 +10,8 @@
 ;;  But I won't have to tangle...
 
 ;; TODO-EASY: put .org.txt into the mode list for org-mode
+;;   can do in use-package - e.g.:
+;;     :mode ("\\.http\\'" . restclient-mode)
 
 (setq spydez/warning/current-type '(spydez interstitial-prose))
 ;;(spydez/info/message-if spydez/warning/current-type "init.el... Intermission.")
@@ -880,6 +882,9 @@ For the transition, maybe a func for checking..."
 ;;  - go?
 (require 'configure-python)
 (require 'configure-elisp)
+
+;; web related things (restclient)
+(require 'configure-web)
 
 ;; todo: htmlize? I don't think I ever really used it...
 ;; converts buffers to html
