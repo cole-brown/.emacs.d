@@ -4,8 +4,10 @@
 #+DATE:      [2019-03-05 Tue]
 
 Next things?
-  - To Do: [0/3]
-    - [ ] https://emacs.stackexchange.com/questions/2427/how-to-test-rest-api-with-emacs
+  - To Do: [0/4]
+    - [ ] finish trawling zzazmboni config:
+      - left off here: https://zzamboni.org/post/my-emacs-configuration-with-commentary/#literate-programming-using-org-babel
+    - [ ] configure-crypt needs babying... again... (again... (again?..))
     - [ ] remove references/?
       - Or put those files in repo... useless files now when not on whatever comp I downloaded em on.
       - ref files were for files that were/are very useful on their own and so preserving them for
@@ -23,7 +25,8 @@ Soon™ things?
 
 
 Current things?
-  - More things to do: [9/9]
+  - More things to do: [10/10]
+    - [X] https://emacs.stackexchange.com/questions/2427/how-to-test-rest-api-with-emacs
     - [X] More dates in org headers? Created, updated...
       - I think just "date" for now...?
     - [X] templates?

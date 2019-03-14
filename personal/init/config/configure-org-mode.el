@@ -25,10 +25,12 @@
 ;;------------------------------------------------------------------------------
 ;; General Settings
 ;;------------------------------------------------------------------------------
-;;TODO: (use-package org ??
-(setq org-log-done t           ; auto-timestamp when TODOs are turned to DONE state
+;;TODO: org use-package?
+;; (use-package org
+;;   :pin manual
+;; Or just (require 'org) it
 
-      org-src-fontify-natively t ; fontify code block by their native mode?
+(setq org-log-done t           ; auto-timestamp when TODOs are turned to DONE state
 
       ;; let's see how default of 2 is before changing
       ;; org-edit-src-content-indentation 0 ; # of spaces added to src indent
@@ -65,6 +67,9 @@
 (setq org-log-into-drawer "LOGBOOK")
 
 ;; TODO: an org-mode use-package for grouping all these settings?
+
+;; Put .org.txt into the mode list for org-mode
+(add-to-list 'auto-mode-alist '("\\.org.txt$" . org-mode))
 
 
 ;;------------------------------------------------------------------------------
@@ -196,6 +201,32 @@
 ;; TODO: try this literate programming out
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org2f334cf
 ;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/#literate-programming-using-org-babel
+;;   - Also has some UML stuff.
+
+;; Fontify code block by their native mode? Yes please.
+(setq org-src-fontify-natively t)
+
+;;   "In principle this makes it so that indentation in src blocks works as in
+;; their native mode, but in my experience it does not always work reliably. For
+;; full proper indentation, always edit the code in a native buffer by pressing
+;; "C-c '"."
+;;   - https://zzamboni.org/post/my-emacs-configuration-with-commentary/#literate-programming-using-org-babel
+(setq org-src-tab-acts-natively t)
+
+;; Automatically runs org-babel-tangle upon saving any org-mode buffer, which
+;; means the resulting files will be automatically kept up to date.
+;; (org-mode . (lambda () (add-hook 'after-save-hook 'org-babel-tangle
+;;                                  'run-at-end 'only-in-org-mode)))
+;; Need to translate out of use-package format.
+
+;; Also add hooks to measure and report how long the tangling took.
+;; (org-babel-pre-tangle  . (lambda ()
+;;                            (setq zz/pre-tangle-time (current-time))))
+;; (org-babel-post-tangle . (lambda ()
+;;                            (message "org-babel-tangle took %s"
+;;                                            (format "%.2f seconds"
+;;                                                    (float-time (time-since zz/pre-tangle-time))))))
+;; Need to translate out of use-package format.
 
 
 ;;------------------------------------------------------------------------------
