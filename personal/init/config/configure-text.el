@@ -268,6 +268,21 @@
 
 
 ;;------------------------------------------------------------------------------
+;; iedit: multi-point editting
+;;------------------------------------------------------------------------------
+;; TODO: try this out.
+;; Invoke C-; and all occurrences of the symbol under the cursor (or the
+;; current selection) are highlighted and any changes you make on one of them
+;; will be automatically applied to all others.
+;;   https://zzamboni.org/post/my-emacs-configuration-with-commentary/#general-settings-and-modules
+;; (use-package iedit
+;;   :custom
+;;   (iedit-toggle-key-default (kbd "C-;"))
+;;   :config
+;;   (set-face-background 'iedit-occurrence "Magenta"))
+
+
+;;------------------------------------------------------------------------------
 ;; TODO: bells?
 ;;------------------------------------------------------------------------------
 

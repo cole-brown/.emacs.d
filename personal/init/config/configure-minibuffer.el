@@ -92,9 +92,9 @@
   ;;       uniquify-separator "/"
 
   (setq uniquify-buffer-name-style 'post-forward
-      uniquify-separator ":"            ; "file.txt:path/to"
-      uniquify-after-kill-buffer-p t    ; rename after killing uniquified
-      uniquify-ignore-buffers-re "^\\*" ; don't muck with special buffers
+        uniquify-separator ":"            ; "file.txt:path/to"
+        uniquify-after-kill-buffer-p t    ; rename after killing uniquified
+        uniquify-ignore-buffers-re "^\\*" ; don't muck with special buffers
         ))
 
 

@@ -147,6 +147,14 @@
 ;;   :config
 ;;   (desktop-save-mode))
 
+;; TODO: Probably pair Desktop with this:
+;; midnight-mode purges buffers which haven’t been displayed in a time period.
+;; (use-package midnight
+;;   :defer 3
+;;   :config
+;;   (setq midnight-period 7200) ;; seconds (2 hours)
+;;   (midnight-mode 1))
+
 
 ;;------------------------------------------------------------------------------
 ;; Copy Filename

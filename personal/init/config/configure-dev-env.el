@@ -19,6 +19,16 @@
 ;;   https://kapeli.com/dash
 ;; Has Unity3d and stuff. Probably not our old version, though.
 
+;; Turn on the online documentation mode for all programming modes (not all of
+;; them support it).
+;; Emacs 26 has it by default. Should I use use-package in that case?
+;; Let's try and see how it goes.
+(use-package eldoc
+  :ensure nil
+  :delight
+  :hook
+  (prog-mode . turn-on-eldoc-mode))
+
 
 ;;------------------------------------------------------------------------------
 ;; Visual Studio build command
@@ -231,6 +241,8 @@
 ;;---
 ;; Rainbow Delimiters
 ;;---
+;; [2019-03-14] Trying out in emacs-lisp-mode. See configure-elisp for now.
+;;
 ;; TODO: Trial this... Does it slows things down a little.
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org36b0308
 ;; (use-package rainbow-delimiters

@@ -5,6 +5,9 @@
 ;; TODO: General Settings?
 ;;------------------------------------------------------------------------------
 
+;; TODO: check this out for stuff:
+;;   https://www.emacswiki.org/emacs/CSharpMode
+
 ;; TODO: these might belong in their own file...
 
 ;; TODO: check this for any useful things?

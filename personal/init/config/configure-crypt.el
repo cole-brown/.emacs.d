@@ -88,6 +88,12 @@
 ;; auth-source and auth-source-pass can be used as a password manager if needed
 
 
+;; "Use helm-pass as an interface to pass."
+;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/#other-tools
+;; TODO: check this out and what is `pass'?
+;; (use-package helm-pass)
+
+
 ;;------------------------------------------------------------------------------
 ;; TODOs
 ;;------------------------------------------------------------------------------
