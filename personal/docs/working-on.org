@@ -4,9 +4,7 @@
 #+DATE:      [2019-03-05 Tue]
 
 Next things?
-  - To Do: [0/4]
-    - [ ] finish trawling zzazmboni config:
-      - left off here: https://zzamboni.org/post/my-emacs-configuration-with-commentary/#literate-programming-using-org-babel
+  - To Do: [0/3]
     - [ ] configure-crypt needs babying... again... (again... (again?..))
     - [ ] remove references/?
       - Or put those files in repo... useless files now when not on whatever comp I downloaded em on.
@@ -25,7 +23,9 @@ Soon™ things?
 
 
 Current things?
-  - More things to do: [10/10]
+  - More things to do: [11/11]
+    - [X] finish trawling zzazmboni config:
+      - left off here: https://zzamboni.org/post/my-emacs-configuration-with-commentary/#literate-programming-using-org-babel
     - [X] https://emacs.stackexchange.com/questions/2427/how-to-test-rest-api-with-emacs
     - [X] More dates in org headers? Created, updated...
       - I think just "date" for now...?

@@ -105,6 +105,10 @@
   :hook
   (org-mode . (lambda () (org-bullets-mode 1))))
 
+;; TODO: try this out?
+;;   org custom id helpers
+;;   https://writequit.org/articles/emacs-org-mode-generate-ids.html#the-solution
+
 ;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/#beautifying-org-mode
 ;; More font stuff:
 ;; 
