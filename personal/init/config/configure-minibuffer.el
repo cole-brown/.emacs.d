@@ -50,6 +50,7 @@
 ;;------------------------------------------------------------------------------
 ;; Mode line
 ;;------------------------------------------------------------------------------
+;; TODO: move these to a configure-modeline.el
 
 ;;---
 ;; Smart Mode Line
@@ -74,15 +75,27 @@
 ;;---
 ;; Unique buffer names
 ;;---
-(require 'uniquify)
-;; "file.txt/to/path"
-;; (setq uniquify-buffer-name-style 'forward)
-;;       uniquify-separator "/"
-(setq uniquify-buffer-name-style 'post-forward
+(use-package uniquify
+  :ensure nil
+
+  ;; TODO: try these instead, see if they get sucked into custom-file
+  ;; (I don't want them in there...).
+  ;; :custom
+  ;; (uniquify-buffer-name-style 'post-forward)
+  ;; (uniquify-separator ":")            ; "file.txt:path/to"
+  ;; (uniquify-after-kill-buffer-p t)    ; rename after killing uniquified
+  ;; (uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+
+  :config
+  ;; "file.txt/to/path"
+  ;; (setq uniquify-buffer-name-style 'forward)
+  ;;       uniquify-separator "/"
+
+  (setq uniquify-buffer-name-style 'post-forward
       uniquify-separator ":"            ; "file.txt:path/to"
       uniquify-after-kill-buffer-p t    ; rename after killing uniquified
       uniquify-ignore-buffers-re "^\\*" ; don't muck with special buffers
-      )
+        ))
 
 
 ;;------------------------------------------------------------------------------

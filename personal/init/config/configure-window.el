@@ -99,6 +99,46 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Cursor/Line: Highlighting?
+;;------------------------------------------------------------------------------
+;; I really am liking Beacon, so these must not kill that and also must
+;; play nice.
+
+;;   "Using the built-in global-hl-mode to always highlight the current line,
+;; together with the col-highlight package, which highlights the column only
+;; after a defined interval has passed.
+;;
+;;   "Using the crosshairs package, which combines both but always highlights both
+;; the column and the line. It also has a “highlight crosshairs when idle” mode,
+;; but I prefer to have the current line always highlighted, I’m only undecided
+;; about the always-on column highlighting.
+;;
+;;   "Sometimes I find the always-highlighted column to be distracting, but other
+;; times I find it useful. So I have both pieces of code here, I’m still
+;; deciding. For now only hl-line is enabled."
+;;   - https://zzamboni.org/post/my-emacs-configuration-with-commentary/#appearance-buffer-file-management-and-theming
+;;
+;; TODO: Do I want any of these even?
+;; Trial: [2019-03-14]
+(use-package hl-line
+  :defer nil
+  :ensure nil
+  :config
+  (global-hl-line-mode))
+;; (use-package col-highlight
+;;   :disabled
+;;   :defer nil
+;;   :config
+;;   (col-highlight-toggle-when-idle)
+;;   (col-highlight-set-interval 2))
+;; (use-package crosshairs
+;;   :disabled
+;;   :defer nil
+;;   :config
+;;   (crosshairs-mode))
+
+
+;;------------------------------------------------------------------------------
 ;; Mode line: Time
 ;;------------------------------------------------------------------------------
 ;; Puts a clock down in the mode line.
