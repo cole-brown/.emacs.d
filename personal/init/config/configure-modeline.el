@@ -87,8 +87,39 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Moody
+;; Moody - Appearance
 ;;------------------------------------------------------------------------------
+;; https://github.com/tarsius/moody
+;; "Tabs" (kinda) style layout of the mode line.
+(use-package moody
+  :demand t
+  :config
+  (setq x-underline-at-descent-line t)
+  (moody-replace-mode-line-buffer-identification)
+  (moody-replace-vc-mode)
+  ;; TODO: Would be awesome if I could put the time/date into a 'tab'.
+  ;;   2x points if can also anchor to the right-hand side.
+  )
+
+;;------------------------------------------------------------------------------
+;; Minions - Better hiding of minor modes?
+;;------------------------------------------------------------------------------
+;; https://github.com/tarsius/minions
+(use-package minions
+  :demand t
+
+  :custom
+  ;; options:
+  ;;   minions-blacklist: never show in menu
+  ;;   minions-whitelist: always show in menu, even when not enabled
+  ;;   minions-direct: let these exist on actual modeline
+  ;;   minions-mode-line-lighter: Text used for minions menu in mode line
+  ;;   minions-mode-line-delimiters: Strings placed around mode elements
+  ;;     - (does this manually format entire mode string in modeline then?)
+  (minions-mode-line-lighter ":" "Smile instead of wink.")
+
+  :config
+  (minions-mode))
 
 
 ;;------------------------------------------------------------------------------
