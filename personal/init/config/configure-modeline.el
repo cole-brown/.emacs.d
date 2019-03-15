@@ -94,7 +94,7 @@
 (use-package moody
   :demand t
   :config
-  (setq x-underline-at-descent-line t)
+  (setq x-underline-at-descent-line t) ;; No idea why.
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-vc-mode)
   ;; TODO: Would be awesome if I could put the time/date into a 'tab'.
@@ -108,6 +108,8 @@
 (use-package minions
   :demand t
 
+  ;; TODO: switch many many things over to :custom? Doesn't look like it hits
+  ;; the custom-file at all.
   :custom
   ;; options:
   ;;   minions-blacklist: never show in menu
