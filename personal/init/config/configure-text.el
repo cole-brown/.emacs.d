@@ -245,12 +245,6 @@
     (global-display-line-numbers-mode)))
 
 
-;;---
-;; Also column numbers
-;;---
-(column-number-mode t)
-
-
 ;;------------------------------------------------------------------------------
 ;; Smartscan for jumping to next instance of symbol-at-point
 ;;------------------------------------------------------------------------------

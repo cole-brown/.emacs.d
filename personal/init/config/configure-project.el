@@ -119,6 +119,12 @@
 ;; TODOs
 ;;------------------------------------------------------------------------------
 
+;; TODO: Check out "eyebrowse" package?
+;;   http://manuel-uberti.github.io/emacs/2018/03/10/moody-and-minions/
+;;     https://manuel-uberti.github.io/emacs/2017/08/06/eyebrowse/
+;;       https://github.com/wasamasa/eyebrowse
+;;     https://github.com/manuel-uberti/.emacs.d/blob/5c1dcfb8c34e2f5de7af7c7a20a85276d8075baa/lisp/mu-mode-line.el
+
 ;; TODO: What needs done to get projectile running on this repo?
 ;; TODO: What needs done to get projectile running on work repo?
 ;; TODO: Start trying out those `C-c p ...' commands

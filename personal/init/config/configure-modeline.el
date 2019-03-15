@@ -5,6 +5,14 @@
 ;; General Settings
 ;;------------------------------------------------------------------------------
 
+;; Line and column numbers in mode line
+(column-number-mode t)
+(line-number-mode t)
+
+;; Size indicator in mode line with position
+;; Trial: [2019-03-15 Fri]
+(size-indication-mode t) ;; "x%" ->  "x% of 6.5k"
+
 
 ;;------------------------------------------------------------------------------
 ;; Mode line: Time / Clock
@@ -101,6 +109,7 @@
   ;;   2x points if can also anchor to the right-hand side.
   )
 
+
 ;;------------------------------------------------------------------------------
 ;; Minions - Better hiding of minor modes?
 ;;------------------------------------------------------------------------------
@@ -156,6 +165,9 @@
 ;;------------------------------------------------------------------------------
 ;; TODOs
 ;;------------------------------------------------------------------------------
+
+;; Could go full crazy and just define `mode-line-format' myself...
+;; e.g. https://github.com/CSRaghunandan/.emacs.d/blob/master/setup-files/setup-mode-line.el
 
 
 ;;------------------------------------------------------------------------------
