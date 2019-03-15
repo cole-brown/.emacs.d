@@ -187,3 +187,26 @@ Adjust folder tree?
 * TODOs
 
 search for: TODO-reorg-done
+* CLOC
+Morbid curiosity.
+
+Well... Morbid curiosity, and lots of comments (apparently).
+
+http://cloc.sourceforge.net/
+https://github.com/AlDanial/cloc/releases/tag/1.80
+
+** Count on: [2019-03-15 Fri]
+cole@cole-PC MINGW64 ~/.emacs.d (master)
+$ /c/bin/cloc/cloc-1.80.exe --vcs=git
+      91 text files.
+      90 unique files.
+      25 files ignored.
+
+github.com/AlDanial/cloc v 1.80  T=1.00 s (66.0 files/s, 8965.0 lines/s)
+-------------------------------------------------------------------------------
+Language                     files          blank        comment           code
+-------------------------------------------------------------------------------
+Lisp                            66           1778           5223           1964
+-------------------------------------------------------------------------------
+SUM:                            66           1778           5223           1964
+-------------------------------------------------------------------------------
