@@ -11,6 +11,32 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Client for Language Server Protocol
+;;------------------------------------------------------------------------------
+
+;; Don't need/can't use this right now, but eventually maybe I'll join the
+;; futuristic 2015+ technology train?
+
+;; https://www.reddit.com/r/emacs/comments/ahzrg0/announcement_lspmode_60_released/
+;; Emacs packages:
+;;   https://github.com/emacs-lsp/lsp-mode
+;;   https://github.com/emacs-lsp/lsp-ui
+;;   https://github.com/emacs-lsp/dap-mode
+
+;; Though... OmniSharp does have a C# server...
+;;   https://langserver.org/
+;;   https://github.com/Microsoft/language-server-protocol
+
+
+;;------------------------------------------------------------------------------
+;; Flycheck
+;;------------------------------------------------------------------------------
+;; https://www.flycheck.org/en/latest/
+;; TODO: Flycheck? Here? configure-cpp? configure-prog (prog-mode)?
+;; TODO: Flycheck as its own thing? Does it loop into lsp-mode now?
+
+
+;;------------------------------------------------------------------------------
 ;; Documentation
 ;;------------------------------------------------------------------------------
 

@@ -266,6 +266,11 @@
 ;; https://melpa.org/#/helm-company
 ;; TODO: use-package helm-company?
 
+;; Maybe `company-box' for some pretty icons?
+;; https://github.com/sebastiencs/company-box
+;; https://www.reddit.com/r/emacs/comments/b06grn/companybox_icon_too_large/
+;; https://www.reddit.com/r/emacs/comments/8z4jcs/tip_how_to_integrate_company_as_completion/
+
 
 ;;------------------------------------------------------------------------------
 ;; Provide this.
