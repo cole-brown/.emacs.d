@@ -135,7 +135,7 @@
   ;;   Leave `no-littering-etc-directory' and `no-littering-var-directory'
   ;;   at default: .emacs.d/etc and .emacs.d/var
   )
-;; Make it so `M-X package-autoremove' doesn't try to remove this...
+;; Make it so `M-x package-autoremove' doesn't try to remove this...
 ;; Seems it's complicated: https://github.com/purcell/emacs.d/issues/415
 ;; But hand editting it into custom.el:package-selected-packages does it.
 ;;
@@ -152,7 +152,7 @@
 ;; If you get an error like this on installing a new package:
 ;;   Error (use-package): Failed to install magit: http://melpa.org/packages/magit-20190113.1949.tar: Not found
 ;;   Error (use-package): Cannot load magit
-;; Just evalulate (package-refresh-contents) again.
+;; Just evalulate this again: (package-refresh-contents)
 
 
 ;; TODO: make this into a help command I can call that'll do the pop open
@@ -161,6 +161,8 @@
 ;;   M-x list-packages
 ;;   'U' to mark upgrades
 ;;   'x' to upgrade?
+;; After it's all done, maybe run:
+;;   M-x package-autoremove
 ;;
 ;; Almost what I want in a function?:
 ;;   https://emacs.stackexchange.com/questions/16398/noninteractively-upgrade-all-packages

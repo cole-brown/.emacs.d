@@ -14,6 +14,7 @@ Next things?
     - https://github.com/nhoffman/.emacs.d/blob/master/init.org
       - on: 22 http://nhoffman.github.io/.emacs.d/#orgbb1bc84
     - [ ] csetq vs setq all the places? see zeroth-funcs
+      - csetq vs setq vs jamming everything into (use-package ... :custom ...)
 
 
 Soon™ things?
