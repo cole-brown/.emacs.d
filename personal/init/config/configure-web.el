@@ -36,7 +36,10 @@
 (use-package restclient
   ;; Set some file extensions to use restclient in
   :mode (("\\.http\\'" . restclient-mode)
-         ("\\.restclient\\'" . restclient-mode))
+         ("\\.restclient\\'" . restclient-mode)
+         ;; restclient puts the response buffer into html mode automatically,
+         ;; but sometimes I save that response as this extension.
+         ("\\.restresponse\\'" . html-mode))
   )
 
 ;; See (expand-filename "example.restclient" spydez/dir/personal/docs)
