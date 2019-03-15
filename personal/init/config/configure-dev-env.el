@@ -115,36 +115,6 @@
 
 
 ;;------------------------------------------------------------------------------
-;; dabbrev - Dynamic Abbreviation Expand
-;;------------------------------------------------------------------------------
-;; Exclude very large buffers from dabbrev
-;; http://pages.sachachua.com/.emacs.d/Sacha.html#org84a9889
-(defconst spydez/size-char/dabbrev-ignore (* 5 1024 1024)
-  "Ignore large buffers for dabbrev expansion.")
-(defun spydez/dabbrev-friend-buffer (other-buffer)
-  (< (buffer-size other-buffer) spydez/dabbrev-friend-buffer))
-
-(setq dabbrev-friend-buffer-function 'spydez/dabbrev-friend-buffer)
-
-;; Make sure case is preserved when using M-/ completion
-(setq dabbrev-case-replace nil)
-
-
-;;------------------------------------------------------------------------------
-;; Hippie Expand
-;;------------------------------------------------------------------------------
-;; https://www.emacswiki.org/emacs/HippieExpand
-;; Replace dabbrev with hippie, which uses dabbrev as part of its expand check.
-;; http://pages.sachachua.com/.emacs.d/Sacha.html#org84a9889
-(bind-key "M-/" 'hippie-expand)
-
-;; http://pages.sachachua.com/.emacs.d/Sacha.html#org84a9889
-;; TODO: when yasnippets is added, add its completion to hippie's list.
-(add-to-list 'hippie-expand-try-functions-list 'yas-hippie-try-expand)
-;; TODO: others as well?
-
-
-;;------------------------------------------------------------------------------
 ;; Auto-revert mode
 ;;------------------------------------------------------------------------------
 ;; For updating a file/buffer when it's changed on disk.

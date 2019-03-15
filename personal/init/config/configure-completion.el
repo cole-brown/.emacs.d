@@ -273,6 +273,76 @@
 
 
 ;;------------------------------------------------------------------------------
+;; dabbrev - Dynamic Abbreviation Expand
+;;------------------------------------------------------------------------------
+;; Exclude very large buffers from dabbrev
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org84a9889
+(defconst spydez/size-char/dabbrev-ignore (* 5 1024 1024)
+  "Ignore large buffers for dabbrev expansion.")
+;; TODO: does emacs have a nice X MB/GB/Whatever -> bytes func?
+;;   I have one or two places where I'm doing this multiplying...
+(defun spydez/dabbrev-friend-buffer (other-buffer)
+  (< (buffer-size other-buffer) spydez/dabbrev-friend-buffer))
+
+(setq dabbrev-friend-buffer-function 'spydez/dabbrev-friend-buffer)
+
+;; Make sure case is preserved when using M-/ completion
+(setq dabbrev-case-replace nil)
+
+
+;;------------------------------------------------------------------------------
+;; Hippie Expand
+;;------------------------------------------------------------------------------
+;; https://www.emacswiki.org/emacs/HippieExpand
+;; Replace dabbrev with hippie, which uses dabbrev as part of its expand check.
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org84a9889
+(bind-key "M-/" 'hippie-expand)
+
+;; I was getting full lines completed first... Are they from yas or what?
+;; I don't want them. Maybe last - I should try last.
+;;   `try-expand-list' is the function ruining everything right now... So 'or what.'
+;;
+;; hippie-expand-try-functions-list is currently:
+;;   (try-complete-file-name-partially try-complete-file-name
+;;   try-expand-all-abbrevs try-expand-list try-expand-line try-expand-dabbrev
+;;   try-expand-dabbrev-all-buffers try-expand-dabbrev-from-kill
+;;   try-complete-lisp-symbol-partially try-complete-lisp-symbol)
+;;
+;; That... is terrible. Who wants file names and repeating old lines of code
+;; first, wtf?
+;;
+;; Try this instead? Mainly moved dabbrev up to top.
+;; Thanks to Trey Jackson for having run into this first and telling everyone:
+;; http://trey-jackson.blogspot.com/2007/12/emacs-tip-5-hippie-expand.html
+(setq hippie-expand-try-functions-list
+      ;; dabbrev first, as it is usually useful
+      '(try-expand-dabbrev
+        try-expand-dabbrev-all-buffers
+        try-expand-dabbrev-from-kill
+
+        ;; ...sure. All those filenames I need auto-completed.
+        try-complete-file-name-partially
+        try-complete-file-name
+
+        ;; I have read the docstring and am only more clueless.
+        try-expand-all-abbrevs
+
+        ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org84a9889
+        ;; Wild guess at putting yas here. Might go just belove dabbrev.
+        yas-hippie-try-expand
+
+        ;; What sane person needs these, and why don't they use functions
+        ;; or something...
+        try-expand-list
+        try-expand-line
+        try-complete-lisp-symbol-partially
+        try-complete-lisp-symbol))
+
+;; Do we leave hippie and M-/ as one thing, and company as a totally different thing?
+;; Think I'll try that for now.
+
+
+;;------------------------------------------------------------------------------
 ;; Provide this.
 ;;------------------------------------------------------------------------------
 (provide 'configure-completion)
