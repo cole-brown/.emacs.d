@@ -21,6 +21,15 @@
 ;; TODO: get recentf into find-files (C-x C-f)? and buffers (C-x C-b)?
 ;; it's in `C-x b', which is nice.
 
+;; TODO: Where do I want a random link about a teaching OS written in Rust?
+;;   https://os.phil-opp.com/
+;; TODO: Also this "Write yourself a Git!" blog post? Could maybe do it in
+;;   Rust or Go instead of Python...
+;;   https://wyag.thb.lt/
+;;   https://news.ycombinator.com/item?id=19386141
+;; Maybe I need a "Neat Links that will languish unread and unnoticed for years"
+
+
 ;;------------------------------------------------------------------------------
 ;; Notes, TODOs, Links
 ;;------------------------------------------------------------------------------

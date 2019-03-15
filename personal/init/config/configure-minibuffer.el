@@ -53,6 +53,35 @@
 ;; TODO: move these to a configure-modeline.el
 
 ;;---
+;; Major Mode Icons?
+;;---
+;; This config does a lot, maybe try building our own?
+;;   http://www.coli.uni-saarland.de/~slemaguer/emacs/main.html#org7288b2d
+
+;; Wish I could turn off the 'line endings' icon... and the lock/unlock one...
+;; and the 'black text on white square' mode icons...
+;; Trial: [2019-03-15 Fri]
+;; TODO: Not sure about this - try out something else.
+;; (use-package mode-icons
+;;   ;; Do I need to wait for all-the-icons? Not 100% sure it uses it. It does
+;;   ;; use the fonts I installed to go with all-the-icons, though.
+;;   :after all-the-icons
+;;
+;;   :init
+;;   (setq
+;;         ;; Mode Icons in the 'buffer names' list (like when changing buffers)...
+;;         ;; doesn't seem to behave well with Helm's buffer list.
+;;         mode-icons-change-mode-name nil
+;;
+;;         ;; You can also change the icon to match the active mode line (disabled by default):
+;;         mode-icons-desaturate-active t
+;;         )
+;;
+;;   :config
+;;   (mode-icons-mode))
+
+
+;;---
 ;; Smart Mode Line
 ;;---
 ;; "Display a more compact mode line."
