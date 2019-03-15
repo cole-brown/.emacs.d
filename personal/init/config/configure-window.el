@@ -139,38 +139,9 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Mode line: Time
+;; Mode line: Time / Clock
 ;;------------------------------------------------------------------------------
-;; Puts a clock down in the mode line.
-
-;; For ISO time:
-;;   https://emacs.stackexchange.com/questions/7365/how-to-display-date-in-julian-in-the-mode-line
-
-;; Formatting:
-;;   https://www.gnu.org/software/emacs/manual/html_node/elisp/Time-Parsing.html
-;; Simple version (format: yyyy-mm-dd HH:MM):
-;; (setq display-time-format "%F %H:%M")
-;; (display-time-mode t)
-
-;; More complicated version:
-;;   We're not full ISO 8601, but closeish. Set format to: yyyy-mm-dd HH:MM
-(setq display-time-string-forms
-      '((propertize (format-time-string "%F %H:%M" now)
-;;                    ))) ;; no change
-;;                    'face 'mode-line-buffer-id))) ;; bold yellow/gold like buffer name
-                    'face 'bold))) ;; slightly bolded
-;; Faces to use to get into theme's customization from:
-;;   https://www.gnu.org/software/emacs/manual/html_node/emacs/Standard-Faces.html
-;; Propertize/format-time-string from:
-;;   https://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
-
-;; and enable
-(display-time-mode t)
-;; eval this when testing changes: (display-time-update)
-
-;; todo: color clock if late, or approaching late?
-;;   would need a dynamic function instead of a format list/string.
-
+;; Moved to configure-modeline.
 
 ;;------------------------------------------------------------------------------
 ;; Jump between Emacs windows more efficientcly.

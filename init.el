@@ -761,6 +761,7 @@ For the transition, maybe a func for checking..."
 
 ;; Minibuffer and mode line tweaks
 (require 'configure-minibuffer)
+(require 'configure-modeline)
 
 ;; Window setup (menu bar, color theme, etc)
 (require 'configure-window)

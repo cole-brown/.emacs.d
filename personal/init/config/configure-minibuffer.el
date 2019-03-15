@@ -48,83 +48,9 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Mode line
+;; Mode Line
 ;;------------------------------------------------------------------------------
-;; TODO: move these to a configure-modeline.el
-
-;;---
-;; Major Mode Icons?
-;;---
-;; This config does a lot, maybe try building our own?
-;;   http://www.coli.uni-saarland.de/~slemaguer/emacs/main.html#org7288b2d
-
-;; Wish I could turn off the 'line endings' icon... and the lock/unlock one...
-;; and the 'black text on white square' mode icons...
-;; Trial: [2019-03-15 Fri]
-;; TODO: Not sure about this - try out something else.
-;; (use-package mode-icons
-;;   ;; Do I need to wait for all-the-icons? Not 100% sure it uses it. It does
-;;   ;; use the fonts I installed to go with all-the-icons, though.
-;;   :after all-the-icons
-;;
-;;   :init
-;;   (setq
-;;         ;; Mode Icons in the 'buffer names' list (like when changing buffers)...
-;;         ;; doesn't seem to behave well with Helm's buffer list.
-;;         mode-icons-change-mode-name nil
-;;
-;;         ;; You can also change the icon to match the active mode line (disabled by default):
-;;         mode-icons-desaturate-active t
-;;         )
-;;
-;;   :config
-;;   (mode-icons-mode))
-
-
-;;---
-;; Smart Mode Line
-;;---
-;; "Display a more compact mode line."
-;;   - http://pages.sachachua.com/.emacs.d/Sacha.html#orga2e2814
-;;
-;; "Smart Mode Line is a sexy mode-line for Emacs. It aims to be easy to read
-;; from small to large monitors by using colors, a prefix feature, and smart
-;; truncation."
-;;   - https://github.com/Malabarba/smart-mode-line
-;;
-;; Well I'll try it... but right now it's not all that different. Maybe
-;; when more packages are installed...
-(use-package smart-mode-line)
-;; Trial: [2019-01-17]
-
-;; Could configure some regexes into sml/replacer-regexp-list when up and running.
-;; See git repo readme or Google.
-
-
-;;---
-;; Unique buffer names
-;;---
-(use-package uniquify
-  :ensure nil
-
-  ;; TODO: try these instead, see if they get sucked into custom-file
-  ;; (I don't want them in there...).
-  ;; :custom
-  ;; (uniquify-buffer-name-style 'post-forward)
-  ;; (uniquify-separator ":")            ; "file.txt:path/to"
-  ;; (uniquify-after-kill-buffer-p t)    ; rename after killing uniquified
-  ;; (uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
-
-  :config
-  ;; "file.txt/to/path"
-  ;; (setq uniquify-buffer-name-style 'forward)
-  ;;       uniquify-separator "/"
-
-  (setq uniquify-buffer-name-style 'post-forward
-        uniquify-separator ":"            ; "file.txt:path/to"
-        uniquify-after-kill-buffer-p t    ; rename after killing uniquified
-        uniquify-ignore-buffers-re "^\\*" ; don't muck with special buffers
-        ))
+;; Moved to a configure-modeline.el.
 
 
 ;;------------------------------------------------------------------------------
