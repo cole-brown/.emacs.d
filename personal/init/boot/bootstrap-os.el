@@ -28,12 +28,12 @@
 
   ;; source: Git for Windows
   (progn
-  (use-tool-source git-for-windows)
+    (use-tool-source git-for-windows)
 
-  ;; tools:
-  (use-tool git)
-  (use-tool gpg)
-  (use-tool bash)
+    ;; tools:
+    (use-tool git)
+    (use-tool gpg)
+    (use-tool bash)
     (use-tool diff))
 
   ;; TODO TODAY TODO HERE
