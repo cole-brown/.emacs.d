@@ -11,8 +11,6 @@ Next things?
       - ref files were for files that were/are very useful on their own and so preserving them for
         a decade or whatever from now would be useful.
         - Some of my old .emacs is just references to dead web links... not useful.
-    - https://github.com/nhoffman/.emacs.d/blob/master/init.org
-      - on: 22 http://nhoffman.github.io/.emacs.d/#orgbb1bc84
     - [ ] csetq vs setq all the places? see zeroth-funcs
       - csetq vs setq vs jamming everything into (use-package ... :custom ...)
 
@@ -24,7 +22,8 @@ Soon™ things?
 
 
 Current things?
-  - More things to do: [11/11]
+  - More things to do: [12/12]
+    - [X] https://github.com/nhoffman/.emacs.d/blob/master/init.org
     - [X] finish trawling zzazmboni config:
       - left off here: https://zzamboni.org/post/my-emacs-configuration-with-commentary/#literate-programming-using-org-babel
     - [X] https://emacs.stackexchange.com/questions/2427/how-to-test-rest-api-with-emacs

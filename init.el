@@ -5,9 +5,16 @@
 
 ;;; Code:
 
-;; TODO: "reload init" function
-;;  http://nhoffman.github.io/.emacs.d/#org858a11b
-;;  But I won't have to tangle...
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
+
+;;------                                                                  ------
+;;----                                                                      ----
+;;----------------------------------init.el-------------------------------------
+;;--                              Hello there.                                --
+;;------------------------------------------------------------------------------
+;;----                                                                      ----
+;;------                                                                  ------
+
 
 (setq spydez/warning/current-type '(spydez interstitial-prose))
 ;;(spydez/info/message-if spydez/warning/current-type "init.el... Intermission.")
@@ -102,6 +109,8 @@
 ;;   3) Grant Rettke's (C3F) init.org: https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
 ;;      - Interesting layout for literate programming. Sections come up in
 ;;        whatever order and then when tangled, get put into a specific order.
+;;   4) zzamboni's init.org: https://github.com/zzamboni/dot-emacs/blob/master/init.org
+;;      - Well explained. Useful org-mode stuff.
 
 ;; Todo: Do we want ./spydez/references/ ignored or saved in git?
 ;;   - Don't really want to save if public in repo...
@@ -195,6 +204,8 @@
 
 ;; TODO: any way to have emacs run a command (async) to get output from a remote server?
 ;; Right now: emacs and ssh don't talk to each other well.
+
+;; TODO: focus.el? https://www.reddit.com/r/emacs/comments/b1vrar/lsp_support_for_focusel_using_lspmode/
 
 
 ;;---
@@ -690,11 +701,13 @@ For the transition, maybe a func for checking..."
 ;; failing and having to resort to asking Projectile nicely... I am fully
 ;; qualified to s-
 ;; I dunno... Delight maybe?
+;;   The correct answer was... `minions'.
 
 ;; library used for some list functions (by me and by some packages)
 ;; making it explicit now that I use it too
 ;; https://github.com/magnars/dash.el
 (use-package dash)
+;; `f' and `s' for files and strings are popular too.
 
 ;; Setup backups, autosaves, and history.
 (require 'bootstrap-backups)
