@@ -21,7 +21,7 @@
 ;; use-package options:
 
 ;; verbose is useful when debugging startup. Might gain a bit of time disabling this when
-;; not debugging. (Maybe look into setting based on spydez/init-debug?)
+;; not debugging. (Maybe look into setting based on spydez/debugging-p?)
 (setq use-package-verbose t)
 (setq use-package-compute-statistics t)
 (setq use-package-minimum-reported-time 0)
@@ -31,6 +31,11 @@
 (setq package-enable-at-startup nil)
 ;; Everyone seems to always use this anyways. Ensure packages are installed if missing.
 (setq use-package-always-ensure t)
+
+;; This will set defer to default true for packages to not load on startup.
+;; Would make for a faster init time but slower random actions until everything
+;; happens to be auto-loaded.
+;; (setq use-package-always-defer t)
 
 
 ;;------------------------------------------------------------------------------
@@ -119,7 +124,8 @@
 (use-package auto-compile
   :config (auto-compile-on-load-mode))
 
-;; auto-compile options:
+;; auto-compile options: recompile if the uncompiled (.el) is
+;; newer than the compiled (.elc)
 (setq load-prefer-newer t)
 
 ;; no-littering to clean up .emacs.d a bit
@@ -129,7 +135,7 @@
   ;;   Leave `no-littering-etc-directory' and `no-littering-var-directory'
   ;;   at default: .emacs.d/etc and .emacs.d/var
   )
-;; Make it so `M-X package-autoremove' doesn't try to remove this...
+;; Make it so `M-x package-autoremove' doesn't try to remove this...
 ;; Seems it's complicated: https://github.com/purcell/emacs.d/issues/415
 ;; But hand editting it into custom.el:package-selected-packages does it.
 ;;
@@ -146,7 +152,7 @@
 ;; If you get an error like this on installing a new package:
 ;;   Error (use-package): Failed to install magit: http://melpa.org/packages/magit-20190113.1949.tar: Not found
 ;;   Error (use-package): Cannot load magit
-;; Just evalulate (package-refresh-contents) again.
+;; Just evalulate this again: (package-refresh-contents)
 
 
 ;; TODO: make this into a help command I can call that'll do the pop open
@@ -155,6 +161,8 @@
 ;;   M-x list-packages
 ;;   'U' to mark upgrades
 ;;   'x' to upgrade?
+;; After it's all done, maybe run:
+;;   M-x package-autoremove
 ;;
 ;; Almost what I want in a function?:
 ;;   https://emacs.stackexchange.com/questions/16398/noninteractively-upgrade-all-packages

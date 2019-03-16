@@ -130,6 +130,33 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Desktop?
+;;------------------------------------------------------------------------------
+
+;; Desktop-Save mode saves the current buffer configuration on exit and
+;; reloads it on restart.
+;; TODO: Not 100% convinced I want this, but I do want to try it.
+;; (use-package desktop
+;;   :defer nil
+;;   :custom
+;;   (desktop-restore-eager   1   "Restore only the first buffer right away")
+;;   (desktop-lazy-idle-delay 1   "Restore the rest of the buffers 1 seconds later")
+;;   (desktop-lazy-verbose    nil "Be silent about lazily opening buffers")
+;;   :bind
+;;   ("C-M-s-k" . desktop-clear)
+;;   :config
+;;   (desktop-save-mode))
+
+;; TODO: Probably pair Desktop with this:
+;; midnight-mode purges buffers which haven’t been displayed in a time period.
+;; (use-package midnight
+;;   :defer 3
+;;   :config
+;;   (setq midnight-period 7200) ;; seconds (2 hours)
+;;   (midnight-mode 1))
+
+
+;;------------------------------------------------------------------------------
 ;; Copy Filename
 ;;------------------------------------------------------------------------------
 ;; This (or similar (prelude-copy-file-name-to-clipboard)) used to be in Prelude emacs.

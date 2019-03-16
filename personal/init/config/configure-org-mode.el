@@ -17,19 +17,54 @@
 ;; Org-Mode reference card pdf
 ;; https://orgmode.org/orgcard.pdf
 
+;; TODO: Check out this and see if I want to use any of it?:
+;;   https://zzamboni.org/post/beautifying-org-mode-in-emacs/
+;; My instinct is no... not til I use org-mode a lot more.
+
 
 ;;------------------------------------------------------------------------------
 ;; General Settings
 ;;------------------------------------------------------------------------------
-(setq org-log-done t           ; auto-timestamp when TODOs are turned to DONE state
+;;TODO: org use-package?
+;; (use-package org
+;;   :pin manual
+;; Or just (require 'org) it?
+;; Oh, here:
+;;   "specify :ensure nil so that use-package doesn’t try to install it, and
+;;   just loads and configures it."
+;; So... TODO this:
+;; (use-package org
+;;   :ensure nil
+;;   :init or :custom or :bind or etc for these things
+;;   maybe some functions for each region so it's digestable instead of 500 lines
+;;   :config
+;;   <some/all/most of the below>
+;;   )
 
-      ;; Not 100% sold on these this time around... Keeping for now.
-      ;; TODO: maybe disabling these... and make a new work.org at the same
-      ;;   time? My work.org is getting annoying - I may have to find a better
-      ;;   format for notes than whatever structure and monolithic file I'm
-      ;;   trying to do now. Also could go to new todo sequence and logbook.
-      org-hide-leading-stars t ; make outline a bit cleaner
-      org-odd-levels-only t)   ; make outline a bit cleaner
+;; auto-timestamp when TODOs are turned to DONE state
+(setq org-log-done t)
+
+;; let's see how default of 2 is before changing
+;; (setq org-edit-src-content-indentation 0) ; # of spaces added to src indent
+
+;; Don't know about soft word wrap. But we could do it in a hook for
+;; org-mode if desired.
+;; Wait... it's already on in org-mode? (todo:) From where?
+;; (visual-line-mode 1)
+
+;; Well structured indentation. Freehand notes/text stay indented to
+;; headline level.
+(setq org-startup-indented t)
+;; Note 1: This changes how it /looks/, not how the raw text is formatted.
+;; Note 2: This also hides leading stars for headlines.
+
+;; Not 100% sold on these this time around... Keeping for now.
+;; TODO: maybe disabling these... and make a new work.org at the same
+;;   time? My work.org is getting annoying - I may have to find a better
+;;   format for notes than whatever structure and monolithic file I'm
+;;   trying to do now. Also could go to new todo sequence and logbook.
+;;(setq org-hide-leading-stars t) ; make outline a bit cleaner
+;;(setq org-odd-levels-only t)    ; make outline a bit cleaner
 
 ;; TODO sequence to pop up shortcuts to on running `C-c C-t' on a headline
 ;;   (n) - n key will be shortcut into this state
@@ -40,9 +75,76 @@
 (setq org-todo-keywords
       '((sequence "TODO(t)" "STARTED(s!)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
 
-;; `Drawer' to log to. (Property/subheading thing).
-;; "LOGBOOK" is default if this is set to `t'.
+;; `Drawer' to log to. (Property/subheading thing). "LOGBOOK" is default if this
+;; is set to `t'. This is for the place org-mode puts those todo timestamps,
+;; state change notes, and user notes just under the headline.
 (setq org-log-into-drawer "LOGBOOK")
+
+;; TODO: an org-mode use-package for grouping all these settings?
+
+;; Put .org.txt into the mode list for org-mode
+(add-to-list 'auto-mode-alist '("\\.org.txt$" . org-mode))
+
+
+;;------------------------------------------------------------------------------
+;; Making org-mode pretty
+;;------------------------------------------------------------------------------
+
+;; Set org-hid-emphasis-markers so that the markup indicators are not shown.
+;; (so +strike+, /italic/, *bold* show font change, but hides the +/*)
+(setq org-hide-emphasis-markers t)
+
+;; Show list markers with a middle dot instead of the original character.
+(font-lock-add-keywords 'org-mode
+                        '(("^ *\\([-]\\) "
+                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+;; Display the titles with nice unicode bullets instead of the text ones.
+(use-package org-bullets
+  :after org
+  :hook
+  (org-mode . (lambda () (org-bullets-mode 1))))
+
+;; TODO: try this out?
+;;   org custom id helpers
+;;   https://writequit.org/articles/emacs-org-mode-generate-ids.html#the-solution
+
+;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/#beautifying-org-mode
+;; More font stuff:
+;; 
+;; ;; Choose a nice font for the document title and the section headings. The first
+;; ;; one found in the system from the list below is used, and the same font is
+;; ;; used for the different levels, in varying sizes.
+;; (let* ((variable-tuple
+;;         (cond ((x-list-fonts   "Source Sans Pro") '(:font   "Source Sans Pro"))
+;;               ((x-list-fonts   "Lucida Grande")   '(:font   "Lucida Grande"))
+;;               ((x-list-fonts   "Verdana")         '(:font   "Verdana"))
+;;               ((x-family-fonts "Sans Serif")      '(:family "Sans Serif"))
+;;               (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+;;        (base-font-color (face-foreground 'default nil 'default))
+;;        (headline       `(:inherit default :weight bold :foreground ,base-font-color)))
+;; 
+;;   (custom-theme-set-faces
+;;    'user
+;;    `(org-level-8        ((t (,@headline ,@variable-tuple))))
+;;    `(org-level-7        ((t (,@headline ,@variable-tuple))))
+;;    `(org-level-6        ((t (,@headline ,@variable-tuple))))
+;;    `(org-level-5        ((t (,@headline ,@variable-tuple))))
+;;    `(org-level-4        ((t (,@headline ,@variable-tuple :height 1.1))))
+;;    `(org-level-3        ((t (,@headline ,@variable-tuple :height 1.1))))
+;;    `(org-level-2        ((t (,@headline ,@variable-tuple :height 1.25))))
+;;    `(org-level-1        ((t (,@headline ,@variable-tuple :height 1.25))))
+;;    `(org-document-title ((t (,@headline ,@variable-tuple :height 1.25 :underline nil))))))
+;; Not sure I like it. Needs a lot of tweaking and not convinced about the height.
+;; Does make the org-bullets nicer, though.
+
+;; Can also set up a variable-pitch face to a proportional font I like...
+;; (variable-pitch ((t (:family "Source Sans Pro" :height 160 :weight light))))
+;; ;;(variable-pitch ((t (:family "Avenir Next" :height 160 :weight light))))
+;;
+;; Setting up the fixed-pitch face to be the same as my usual default face. My
+;; current one is Inconsolata.
+;; (fixed-pitch ((t (:family "Inconsolata"))))
 
 
 ;;------------------------------------------------------------------------------
@@ -58,6 +160,21 @@
 ;;   (setq yas/trigger-key [tab])
 ;;   (define-key yas/keymap [tab] 'yas/next-field-group))
 ;; (add-hook 'org-mode-hook 'spydez/org-mode-hook)
+
+;;   "Enable Speed Keys, which allows quick single-key commands when the cursor
+;; is placed on a heading. Usually the cursor needs to be at the beginning of a
+;; headline line, but defining it with this function makes them active on any of
+;; the asterisks at the beginning of the line (useful with the font highlighting
+;; I use, as all but the last asterisk are sometimes not visible)."
+;;   https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+;; Manual:
+;;   https://orgmode.org/manual/Speed-keys.html
+(setq org-use-speed-commands
+      (lambda () (and (looking-at org-outline-regexp) (looking-back "^\**"))))
+;; Not exactly a hook, but kinda...
+;; TODO: I'd rather have that function where I can comment it and name it
+;; and stuff but I need to figure out how to elisp for "You want a variable?
+;; Well here's a function to run instead." You know... lambda things.
 
 
 ;;------------------------------------------------------------------------------
@@ -82,8 +199,9 @@
 
 
 ;; Editing the Org tree
-;; I often cut and paste subtrees. This makes it easier to cut something and
-;; paste it elsewhere in the hierarchy.
+;;   "I often cut and paste subtrees. This makes it easier to cut something and
+;; paste it elsewhere in the hierarchy."
+;;   - Sacha, probably.
 ;; TODO: trial this
 ;; (with-eval-after-load 'org
 ;;      (bind-key "C-c k" 'org-cut-subtree org-mode-map)
@@ -114,11 +232,47 @@
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org712e999
 ;; org-crypt
 
+;; By default, org-indent produces an indicator "Ind" in the modeline. We use diminish to hide it.
+(use-package org-indent
+  :ensure nil
+  :after org
+  :diminish)
+
+;; A function that reformats the current buffer by regenerating the text from
+;; its internal parsed representation.
+;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/#reformatting-an-org-buffer
+;; original name: zz/org-reformat-buffer
+(defun spydez/org-reformat-buffer ()
+  (interactive)
+  (when (yes-or-no-p "Really format current buffer? ")
+    (let ((document (org-element-interpret-data (org-element-parse-buffer))))
+      (erase-buffer)
+      (insert document)
+      (goto-char (point-min)))))
+
 
 ;;------------------------------------------------------------------------------
 ;; Org Keybinds
 ;;------------------------------------------------------------------------------
-;; Don't think I have any right now but here's some if I do eventually:
+
+;; Bind a few keys for globally useful org stuff.
+;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+(bind-keys*
+  ;; Set up C-c l to store a link to the current org object, in counterpart to
+  ;; the default C-c C-l to insert a link.
+  ("C-c l" . org-store-link)
+
+  ;; Set up C-c a to call up agenda mode.
+  ("C-c a" . org-agenda)
+  ;; TODO: try using org agenda mode maybe
+
+  ;; I have read the help for `org-capture' and have one question...
+  ;; WTF is org-capture?
+  ("C-c c" . org-capture)
+  ;; TODO: ...I don't know - comment this out?
+  )
+
+;; Some more keybinds to consider here:
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org44fc1f8
 
 
@@ -127,6 +281,54 @@
 ;;------------------------------------------------------------------------------
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#orgf7563c2
 ;; https://stackoverflow.com/questions/15011703/is-there-an-emacs-org-mode-command-to-jump-to-an-org-heading
+
+
+;;------------------------------------------------------------------------------
+;; Literate Programming
+;;------------------------------------------------------------------------------
+;; I do want to do this... but it would involve rewriting all my emacs files?
+;; ...which I'm barely started on... but there's so much there already...
+
+;; TODO: try this literate programming out
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org2f334cf
+;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/#literate-programming-using-org-babel
+;;   - Also has some UML stuff.
+
+;; Fontify code block by their native mode? Yes please.
+(setq org-src-fontify-natively t)
+
+;;   "In principle this makes it so that indentation in src blocks works as in
+;; their native mode, but in my experience it does not always work reliably. For
+;; full proper indentation, always edit the code in a native buffer by pressing
+;; "C-c '"."
+;;   - https://zzamboni.org/post/my-emacs-configuration-with-commentary/#literate-programming-using-org-babel
+(setq org-src-tab-acts-natively t)
+
+;; Automatically runs org-babel-tangle upon saving any org-mode buffer, which
+;; means the resulting files will be automatically kept up to date.
+;; (org-mode . (lambda () (add-hook 'after-save-hook 'org-babel-tangle
+;;                                  'run-at-end 'only-in-org-mode)))
+;; Need to translate out of use-package format.
+
+;; Also add hooks to measure and report how long the tangling took.
+;; (org-babel-pre-tangle  . (lambda ()
+;;                            (setq zz/pre-tangle-time (current-time))))
+;; (org-babel-post-tangle . (lambda ()
+;;                            (message "org-babel-tangle took %s"
+;;                                            (format "%.2f seconds"
+;;                                                    (float-time (time-since zz/pre-tangle-time))))))
+;; Need to translate out of use-package format.
+
+
+;;------------------------------------------------------------------------------
+;; Org Journal
+;;------------------------------------------------------------------------------
+;; TODO: try out org-journal? this guy hasn't gotten around to it either.
+;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/#keeping-a-journal
+;; (use-package org-journal
+;;   :after org
+;;   :custom
+;;   (org-journal-dir "~/Documents/logbook"))
 
 
 ;;------------------------------------------------------------------------------
@@ -200,6 +402,8 @@
 ;; UTF-8 checkboxes
 ;;
 ;; This snippet turns - [X] into ☑ and - [ ] into ☐, but leaves [-] alone.
+;;   - wish it set [-]...
+;; TODO: make that wish come true.
 ;;
 ;; (setq org-html-checkbox-type 'unicode)
 ;; (setq org-html-checkbox-types
@@ -211,12 +415,28 @@
 ;;------------------------------------------------------------------------------
 ;; Org-Mode and Links
 ;;------------------------------------------------------------------------------
-;; Uh... does this belong in org-mode or links?..
 
 ;; Quick Links
 ;; (setq org-link-abbrev-alist
 ;;       '(("google" . "http://www.google.com/search?q=")
 ;; 	("gmap" . "http://maps.google.com/maps?q=%s")))
+
+;;   "The following elisp function will take a link around the current point as
+;; recognised by org-bracket-link-regexp, so either [[Link][Description]] or
+;; [[Link]], and replace it by Description in the first case or Link in the
+;; second case."
+;; From https://emacs.stackexchange.com/a/10714/11843
+;; original name: afs/org-replace-link-by-link-description
+(defun spydez/org-replace-link-by-link-description ()
+  "Replace an org link by its description or if empty its address"
+  (interactive)
+  (if (org-in-regexp org-bracket-link-regexp 1)
+      (let ((remove (list (match-beginning 0) (match-end 0)))
+            (description (if (match-end 3)
+                             (org-match-string-no-properties 3)
+                           (org-match-string-no-properties 1))))
+        (apply 'delete-region remove)
+        (insert description))))
 
 
 ;;------------------------------------------------------------------------------
@@ -235,22 +455,14 @@
 ;; https://github.com/zweifisch/ob-http
 ;; (use-package ob-http)
 
+;; See configure-web.el for what I'm using now: non-org-mode package `restclient'
+
 
 ;;------------------------------------------------------------------------------
 ;; Diagrams and Graphics
 ;;------------------------------------------------------------------------------
 ;; It can be done. Ditaa and Graphviz or something.
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org1683357
-
-
-;;------------------------------------------------------------------------------
-;; Literate Programming
-;;------------------------------------------------------------------------------
-;; I do want to do this... but it would involve rewriting all my emacs files?
-;; ...which I'm barely started on... but there's so much there already...
-
-;; TODO: try this literate programming out
-;; http://pages.sachachua.com/.emacs.d/Sacha.html#org2f334cf
 
 
 ;;------------------------------------------------------------------------------
@@ -266,7 +478,24 @@
 ;;------------------------------------------------------------------------------
 ;; Absolutely no use for this org->HTML/JS slideshow right now but kinda neat.
 ;; https://github.com/hexmode/ox-reveal
+;; https://github.com/yjwen/org-reveal
 ;; (use-package ox-reveal :disabled t)
+;; Uh... wait. Is it org-reveal or ox-reveal?
+
+
+;;------------------------------------------------------------------------------
+;; Exporting
+;;------------------------------------------------------------------------------
+;; Many many ways to export. html, latex, markdown...
+;; Some here:
+;;   https://zzamboni.org/post/my-emacs-configuration-with-commentary/#various-exporters
+;;   - ox-md:  Markdown
+;;   - ox-gfm: GitHub Flavored Markdown
+;;   - org-jira/ox-jira: Jira markup
+;;   - ox-confluence:    Confluence markup
+;;   - ox-texinfo:
+;;   - ox-latex
+;;   - ...
 
 
 ;;------------------------------------------------------------------------------

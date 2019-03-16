@@ -3,8 +3,23 @@
 #+EMAIL:     git@spydez.com
 #+DATE:      [2019-03-03 Sun]
 
-* Sys Admin
+* Learning
+[2019-03-15]
 
+** Rust / Operating System
+
+a teaching OS written in Rust
+
+https://os.phil-opp.com/
+
+** Git / (...Rust maybe?)
+
+"Write yourself a Git!" blog post. Could maybe do it in Rust or Go instead of Python...
+https://wyag.thb.lt/
+https://news.ycombinator.com/item?id=19386141
+
+* Sys Admin
+[2019-03-04]
 
 Giant list of open-source sysadmin software/resources.
 https://github.com/kahun/awesome-sysadmin

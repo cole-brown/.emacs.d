@@ -2,6 +2,20 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Functions
+;;------------------------------------------------------------------------------
+;; Macro to measure how long a command takes.
+;;   From https://zzamboni.org/post/my-emacs-configuration-with-commentary/#other-tools
+;;     From https://stackoverflow.com/questions/23622296/emacs-timing-execution-of-function-calls-in-emacs-lisp
+(defmacro spydez/debug/measure-time (&rest body)
+  "Measure the time it takes to evaluate BODY."
+  `(let ((time (current-time)))
+     ,@body
+     (message "%.06f" (float-time (time-since time)))))
+;; (spydez/debug/measure-time (message "Time!"))
+
+
+;;------------------------------------------------------------------------------
 ;; 'Themed' Warnings/Messages for More Help in Fixing Things 
 ;;------------------------------------------------------------------------------
 

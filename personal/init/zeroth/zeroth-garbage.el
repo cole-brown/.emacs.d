@@ -52,7 +52,7 @@
 ;; (default thresh is 800k, percent is 0.1)
 ;; https://github.com/purcell/emacs.d/commit/6d9439b74153f91f614bba48b734a43e8cacf57e
 
-(let ((spydez/gc-cons-threshold/init (* 256 1000 1000))
+(let ((spydez/gc-cons-threshold/init (* 256 1000 1000)) ;; most-positive-fixnum)
       ;; TODO: mess with gc-cons-percentage?
       )
   (setq gc-cons-threshold spydez/gc-cons-threshold/init)

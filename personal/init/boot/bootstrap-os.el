@@ -36,11 +36,10 @@
     (use-tool bash)
     (use-tool diff))
 
-  ;; TODO TODAY TODO HERE
-  ;; source: hunspell for Windows
-;;  (progn
-;;    (use-tool-source hunspell-for-windows)
-;;    (use-tool hunspell))
+  ;; source & tool: hunspell (for Windows)
+  (progn
+    (use-tool-source hunspell-for-windows)
+    (use-tool hunspell))
   )
 
 ;; NOTE: BE MINIMAL AND LAZY

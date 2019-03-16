@@ -99,38 +99,49 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Mode line: Time
+;; Cursor/Line: Highlighting?
 ;;------------------------------------------------------------------------------
-;; Puts a clock down in the mode line.
+;; I really am liking Beacon, so these must not kill that and also must
+;; play nice.
 
-;; For ISO time:
-;;   https://emacs.stackexchange.com/questions/7365/how-to-display-date-in-julian-in-the-mode-line
+;;   "Using the built-in global-hl-mode to always highlight the current line,
+;; together with the col-highlight package, which highlights the column only
+;; after a defined interval has passed.
+;;
+;;   "Using the crosshairs package, which combines both but always highlights both
+;; the column and the line. It also has a “highlight crosshairs when idle” mode,
+;; but I prefer to have the current line always highlighted, I’m only undecided
+;; about the always-on column highlighting.
+;;
+;;   "Sometimes I find the always-highlighted column to be distracting, but other
+;; times I find it useful. So I have both pieces of code here, I’m still
+;; deciding. For now only hl-line is enabled."
+;;   - https://zzamboni.org/post/my-emacs-configuration-with-commentary/#appearance-buffer-file-management-and-theming
+;;
+;; TODO: Do I want any of these even?
+;; Trial: [2019-03-14]
+(use-package hl-line
+  :defer nil
+  :ensure nil
+  :config
+  (global-hl-line-mode))
+;; (use-package col-highlight
+;;   :disabled
+;;   :defer nil
+;;   :config
+;;   (col-highlight-toggle-when-idle)
+;;   (col-highlight-set-interval 2))
+;; (use-package crosshairs
+;;   :disabled
+;;   :defer nil
+;;   :config
+;;   (crosshairs-mode))
 
-;; Formatting:
-;;   https://www.gnu.org/software/emacs/manual/html_node/elisp/Time-Parsing.html
-;; Simple version (format: yyyy-mm-dd HH:MM):
-;; (setq display-time-format "%F %H:%M")
-;; (display-time-mode t)
 
-;; More complicated version:
-;;   We're not full ISO 8601, but closeish. Set format to: yyyy-mm-dd HH:MM
-(setq display-time-string-forms
-      '((propertize (format-time-string "%F %H:%M" now)
-;;                    ))) ;; no change
-;;                    'face 'mode-line-buffer-id))) ;; bold yellow/gold like buffer name
-                    'face 'bold))) ;; slightly bolded
-;; Faces to use to get into theme's customization from:
-;;   https://www.gnu.org/software/emacs/manual/html_node/emacs/Standard-Faces.html
-;; Propertize/format-time-string from:
-;;   https://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
-
-;; and enable
-(display-time-mode t)
-;; eval this when testing changes: (display-time-update)
-
-;; todo: color clock if late, or approaching late?
-;;   would need a dynamic function instead of a format list/string.
-
+;;------------------------------------------------------------------------------
+;; Mode line: Time / Clock
+;;------------------------------------------------------------------------------
+;; Moved to configure-modeline.
 
 ;;------------------------------------------------------------------------------
 ;; Jump between Emacs windows more efficientcly.

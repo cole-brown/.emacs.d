@@ -38,11 +38,78 @@
 ;;------------------------------------------------------------------------------
 ;; Spellchecking
 ;;------------------------------------------------------------------------------
-;; TODO: get a spell checker? aspell, ispell, hunspell, something else?
 
-;; ispell is ancient.
-;; aspell's Windows version is so old emacs (26.1+) no longer supports it.
-;; So... hunspell!
+;; - ispell is ancient.
+;; - aspell's Windows version is so old emacs (26.1+) no longer supports it.
+;; - So... hunspell!
+
+;; Note: `hunspell -D' is suggested to be run in command line to see what
+;; dictionaries hunspell knows about. That, however, just gets me stuck
+;; in hunspell's executable waiting for input if run from Git Bash.
+;; You gotta use cmd.exe shell.
+
+;; Helpful or confusing links.
+;; http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs.html
+;; https://github.com/manugoyal/.emacs.d
+
+;; TODO: on-off toggle would be nice, probably...
+;;   - maybe in that main hydra or function keys thing I've been thinking about
+;; TODO: personal dict for adding stuff like "hunspell" and "dict"
+;; TODO: what are main keybinds for spellchecking?
+;;   Can you do it without a popup dialog and a mouse?
+
+;; TODO: some check with use-tool instead?
+(setq spydez/file/hunspell (executable-find "hunspell"))
+(if spydez/file/hunspell
+    ;; Result from executable-find: hunspell is installed
+    ;; So set up flyspell with that.
+    (use-package flyspell
+      ;; :delight ;; Not sure whether I want to kill its modeline or not
+      :init
+      (progn
+        (setq ispell-program-name (executable-find "hunspell"))
+
+        ;; "en_US" is key to lookup in `ispell-local-dictionary-alist`.
+        ;; Please note it will be passed as default value to hunspell CLI `-d` option
+        ;; if you don't manually setup `-d` in `ispell-local-dictionary-alist`
+        (setq ispell-dictionary "en_US")
+
+        ;; TODO: get this from use-tool?.. Or do I need this at all?
+        ;; Don't think it's needed.
+        ;; (setq spydez/dir/hunspell-data "C:/bin/hunspell-1.3.2-3-w32-bin/share/hunspell")
+
+        ;; Really hard to figure out if this is needed at all besides in xml mode(s)...
+        (setq ispell-local-dictionary-alist
+              '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8)))
+
+        ;; allow some hunspell-only stuff
+        (setq ispell-really-hunspell t)
+
+        ;; Verbosity? These are t by default but not showing anything in *Messages* right now...
+        ;; (setq flyspell-issue-message-flag nil
+        ;;       flyspell-issue-welcome-flag nil)
+
+        ;; Personal Dictionary:
+        ;;   Looks like maybe can pass personal dict in as "-p" with "-d" list:
+        ;;     e.g. ("-d" "en_US" "-p" "path/to/personal.en")
+        ;;   Or maybe this is better:
+        ;;     TODO: a personal dictionary: C-h v ispell-personal-dictionary
+        )
+
+      :hook ;; only one list
+      ;; TODO: shitty perf on an org-mode file with longish lines
+      ;; (or just lots of 'misspelled' words?)
+      ((prog-mode . flyspell-prog-mode)
+       (text-mode . flyspell-mode))
+
+      ;; If we want global flyspell:
+      ;; :config
+      ;; (flyspell-mode 1)
+      )
+  ;; else: no result from executable-find - warn and don't set up.
+  (spydez/warning/message nil nil "No backend tool for flyspell. Checked for `hunspell': %s"
+                          spydez/file/hunspell)
+  )
 
 
 ;;------------------------------------------------------------------------------
@@ -178,12 +245,6 @@
     (global-display-line-numbers-mode)))
 
 
-;;---
-;; Also column numbers
-;;---
-(column-number-mode t)
-
-
 ;;------------------------------------------------------------------------------
 ;; Smartscan for jumping to next instance of symbol-at-point
 ;;------------------------------------------------------------------------------
@@ -198,6 +259,21 @@
   ;; :defer t
   :config
   (global-smartscan-mode t))
+
+
+;;------------------------------------------------------------------------------
+;; iedit: multi-point editting
+;;------------------------------------------------------------------------------
+;; TODO: try this out.
+;; Invoke C-; and all occurrences of the symbol under the cursor (or the
+;; current selection) are highlighted and any changes you make on one of them
+;; will be automatically applied to all others.
+;;   https://zzamboni.org/post/my-emacs-configuration-with-commentary/#general-settings-and-modules
+;; (use-package iedit
+;;   :custom
+;;   (iedit-toggle-key-default (kbd "C-;"))
+;;   :config
+;;   (set-face-background 'iedit-occurrence "Magenta"))
 
 
 ;;------------------------------------------------------------------------------

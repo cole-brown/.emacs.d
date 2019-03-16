@@ -4,10 +4,8 @@
 #+DATE:      [2019-03-05 Tue]
 
 Next things?
-  - To Do: [0/4]
-    - [ ] https://emacs.stackexchange.com/questions/2427/how-to-test-rest-api-with-emacs
-    - [ ] update notes/*.org?
-      - Think some todo'd placeholders have been done.
+  - To Do: [0/3]
+    - [ ] configure-crypt needs babying... again... (again... (again?..))
     - [ ] remove references/?
       - Or put those files in repo... useless files now when not on whatever comp I downloaded em on.
       - ref files were for files that were/are very useful on their own and so preserving them for
@@ -16,9 +14,20 @@ Next things?
     - https://github.com/nhoffman/.emacs.d/blob/master/init.org
       - on: 22 http://nhoffman.github.io/.emacs.d/#orgbb1bc84
     - [ ] csetq vs setq all the places? see zeroth-funcs
+      - csetq vs setq vs jamming everything into (use-package ... :custom ...)
+
+
+Soon™ things?
+  - To Do: [0/2]
+    - [ ] make treemacs issue report?
+    - [ ] make no-littering issue or fix w/ pull request?
+
 
 Current things?
-  - More things to do: [7/10]
+  - More things to do: [11/11]
+    - [X] finish trawling zzazmboni config:
+      - left off here: https://zzamboni.org/post/my-emacs-configuration-with-commentary/#literate-programming-using-org-babel
+    - [X] https://emacs.stackexchange.com/questions/2427/how-to-test-rest-api-with-emacs
     - [X] More dates in org headers? Created, updated...
       - I think just "date" for now...?
     - [X] templates?
@@ -33,10 +42,11 @@ Current things?
       - Uh... sure. And there's a todo or two up for the rest...
     - [X] file structure has changed...
     - [X] Also on bootstrap-debug-early todo
-    - [ ] get yasnippets to load for org-mode, at least?
+    - [X] update notes/*.org?
+      - Think some todo'd placeholders have been done.
+      - Still one todo but its full of temp tab links
+    - [X] get yasnippets to load for org-mode, at least?
       my 'header' template doesn't work until you poke yasnippets a bit.
-    - [ ] make treemacs issue report?
-    - [ ] make no-littering issue or fix w/ pull request?
 
 
 * A list of things to consider working on
@@ -69,7 +79,7 @@ https://www.emacswiki.org/emacs/ProfileDotEmacs
 
 * packages to consider
 
-*** Dashboard
+** Dashboard
 
 (use-package dashboard
   :config
@@ -77,7 +87,7 @@ https://www.emacswiki.org/emacs/ProfileDotEmacs
 
 https://www.reddit.com/r/emacs/comments/8jaflq/tip_how_to_use_your_dashboard_properly/
 
-*** Ace Jump Mode
+** Ace Jump Mode
 
 Looks like it's Avy vs Ace Jump. Not sure if I want either. Avy seems newer?
 
@@ -90,7 +100,7 @@ $ find . -iname "*.el" -o -iname "*.org" | grep -v "/var/" | grep -v "/pre-no-li
 ./personal/docs/references/nhoffman.init.org:replacement for ace-jump-mode.
 ./personal/init/config/configure-hydra.el:    ;; Not using avy right now. Similar to ace-jump or easymotion.
 
-*** ediff
+** ediff
 
 Do I need this with magit? Or at all?
 
@@ -105,7 +115,7 @@ https://www.emacswiki.org/emacs/EdiffMode
 https://oremacs.com/2015/01/17/setting-up-ediff/
   - has reasons to use with magit
 
-*** helm search things
+** helm search things
 
 (use-package wgrep)
 
@@ -113,7 +123,7 @@ https://oremacs.com/2015/01/17/setting-up-ediff/
 
 (use-package helm-git-grep)
 
-*** page break line
+** page break line
 
 https://github.com/purcell/page-break-lines
 

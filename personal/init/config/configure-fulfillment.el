@@ -38,7 +38,7 @@
 ;; Melpa uses this one, and it has different vars and setup.
 ;;   https://github.com/cadadr/elisp/blob/devel/forecast.el
 (use-package forecast
-  :defer t
+  :commands forecast
   :config
   (load spydez/file/secrets)
   (setq forecast-api-key secret/api-key/darksky
@@ -48,6 +48,7 @@
         forecast-units 'us
         )
   )
+;; *sigh* figure out how to autoload this correctly...
 
 ;; TODO: this for rain and moon:
 ;;   "See also the docstring for the face `forecast-moon-phase', which

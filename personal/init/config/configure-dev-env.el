@@ -11,6 +11,32 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Client for Language Server Protocol
+;;------------------------------------------------------------------------------
+
+;; Don't need/can't use this right now, but eventually maybe I'll join the
+;; futuristic 2015+ technology train?
+
+;; https://www.reddit.com/r/emacs/comments/ahzrg0/announcement_lspmode_60_released/
+;; Emacs packages:
+;;   https://github.com/emacs-lsp/lsp-mode
+;;   https://github.com/emacs-lsp/lsp-ui
+;;   https://github.com/emacs-lsp/dap-mode
+
+;; Though... OmniSharp does have a C# server...
+;;   https://langserver.org/
+;;   https://github.com/Microsoft/language-server-protocol
+
+
+;;------------------------------------------------------------------------------
+;; Flycheck
+;;------------------------------------------------------------------------------
+;; https://www.flycheck.org/en/latest/
+;; TODO: Flycheck? Here? configure-cpp? configure-prog (prog-mode)?
+;; TODO: Flycheck as its own thing? Does it loop into lsp-mode now?
+
+
+;;------------------------------------------------------------------------------
 ;; Documentation
 ;;------------------------------------------------------------------------------
 
@@ -18,6 +44,16 @@
 ;; https://github.com/areina/helm-dash
 ;;   https://kapeli.com/dash
 ;; Has Unity3d and stuff. Probably not our old version, though.
+
+;; Turn on the online documentation mode for all programming modes (not all of
+;; them support it).
+;; Emacs 26 has it by default. Should I use use-package in that case?
+;; Let's try and see how it goes.
+(use-package eldoc
+  :ensure nil
+  :delight
+  :hook
+  (prog-mode . turn-on-eldoc-mode))
 
 
 ;;------------------------------------------------------------------------------
@@ -76,36 +112,6 @@
 ;; Hex Editor
 ;;------------------------------------------------------------------------------
 ;; Hex mode is: hexl
-
-
-;;------------------------------------------------------------------------------
-;; dabbrev - Dynamic Abbreviation Expand
-;;------------------------------------------------------------------------------
-;; Exclude very large buffers from dabbrev
-;; http://pages.sachachua.com/.emacs.d/Sacha.html#org84a9889
-(defconst spydez/size-char/dabbrev-ignore (* 5 1024 1024)
-  "Ignore large buffers for dabbrev expansion.")
-(defun spydez/dabbrev-friend-buffer (other-buffer)
-  (< (buffer-size other-buffer) spydez/dabbrev-friend-buffer))
-
-(setq dabbrev-friend-buffer-function 'spydez/dabbrev-friend-buffer)
-
-;; Make sure case is preserved when using M-/ completion
-(setq dabbrev-case-replace nil)
-
-
-;;------------------------------------------------------------------------------
-;; Hippie Expand
-;;------------------------------------------------------------------------------
-;; https://www.emacswiki.org/emacs/HippieExpand
-;; Replace dabbrev with hippie, which uses dabbrev as part of its expand check.
-;; http://pages.sachachua.com/.emacs.d/Sacha.html#org84a9889
-(bind-key "M-/" 'hippie-expand)
-
-;; http://pages.sachachua.com/.emacs.d/Sacha.html#org84a9889
-;; TODO: when yasnippets is added, add its completion to hippie's list.
-(add-to-list 'hippie-expand-try-functions-list 'yas-hippie-try-expand)
-;; TODO: others as well?
 
 
 ;;------------------------------------------------------------------------------
@@ -231,6 +237,8 @@
 ;;---
 ;; Rainbow Delimiters
 ;;---
+;; [2019-03-14] Trying out in emacs-lisp-mode. See configure-elisp for now.
+;;
 ;; TODO: Trial this... Does it slows things down a little.
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org36b0308
 ;; (use-package rainbow-delimiters
@@ -302,6 +310,49 @@
 
 ;; NOTE: f.lux uses M-<PageUp> and M-<PageDown> (aka M-<prev>/M-<next>)
 ;; Disable it in the f.lux settings.
+
+
+;;------------------------------------------------------------------------------
+;; Duplicate region, and then comment one out.
+;; AKA Copy and Comment Region
+;;------------------------------------------------------------------------------
+;; Few different ways to do it out there - this one in my tiny test gave the 
+;; best formatting to the commented region and its new copy.
+;;   https://stackoverflow.com/a/23588908
+(defun spydez/copy-and-comment-region (beg end &optional arg)
+  "Duplicate the region and comment-out the copied text.
+See `comment-region' for behavior of a prefix arg."
+  (interactive "r\nP")
+  (copy-region-as-kill beg end)
+  (goto-char end)
+  (yank)
+  (comment-region beg end arg))
+
+
+;;------------------------------------------------------------------------------
+;; Unfill Paragraph
+;;------------------------------------------------------------------------------
+;; from: nhoffman http://nhoffman.github.io/.emacs.d/#org40b27e4
+;;   which is from: http://defindit.com/readme_files/emacs_hints_tricks.html
+;;     which is from: Stefan Monnier <foo at acm.org>
+;;       which is probably from the turtles that go all the way down
+;;
+;; This is actually the inverse of fill-paragraph. Takes a multi-line paragraph
+;; and makes it into a single line of text.
+(defun spydez/unfill-paragraph ()
+  (interactive)
+  (let ((fill-column (point-max)))
+  (fill-paragraph nil)))
+
+;; TODO: if that is any use, there's a package...
+;;   "Add “unfill” commands to parallel the “fill” ones, bind A-q to
+;; unfill-paragraph and rebind M-q to the unfill-toggle command, which
+;; fills/unfills paragraphs alternatively."
+;;   - https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+;;(use-package unfill
+;;  :bind
+;;  ("M-q" . unfill-toggle)
+;;  ("A-q" . unfill-paragraph))
 
 
 ;;------------------------------------------------------------------------------

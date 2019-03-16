@@ -153,6 +153,29 @@
 ;; TODO: some sort of throbber or status buffer or something for magit pushing to upstream?
 ;;  - I get bored and distracted waiting...
 
+;; TODO: check out these funcs?
+;; "When you press C-c C-g, magit-status runs full-screen, but when you press q,
+;; it restores your previous window setup. Very handy."
+;;   - https://zzamboni.org/post/my-emacs-configuration-with-commentary/#other-tools
+;; (use-package magit
+;;   :diminish auto-revert-mode
+;;   :bind
+;;   (("C-c C-g" . magit-status)
+;;    :map magit-status-mode-map
+;;    ("q"       . magit-quit-session))
+;;   :config
+;;   (defadvice magit-status (around magit-fullscreen activate)
+;;     "Make magit-status run alone in a frame."
+;;     (window-configuration-to-register :magit-fullscreen)
+;;     ad-do-it
+;;     (delete-other-windows))
+;;
+;;   (defun magit-quit-session ()
+;;     "Restore the previous window configuration and kill the magit buffer."
+;;     (interactive)
+;;     (kill-buffer)
+;;     (jump-to-register :magit-fullscreen)))
+
 (use-package magit
   :config
   ;;---

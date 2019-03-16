@@ -12,8 +12,33 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Blank
+;; Occur DWIM (Do What I Mean)
 ;;------------------------------------------------------------------------------
+;; https://oremacs.com/2015/01/26/occur-dwim/
+;; It will offer as the default candidate:
+;;   - the current region, if it's active
+;;   - the current symbol, otherwise
+(defun occur-dwim ()
+  "Call `occur' with a sane default."
+  (interactive)
+  (push (if (region-active-p)
+            (buffer-substring-no-properties
+             (region-beginning)
+             (region-end))
+          (let ((sym (thing-at-point 'symbol)))
+            (when (stringp sym)
+              (regexp-quote sym))))
+        regexp-history)
+  (call-interactively 'occur))
+
+;; A Hydra that goes nicely with occur:
+;;   Since occur, like some other functions (grep, rgrep, compile), works with
+;; next-error, it's possible to use this Hydra to navigate the occur matches:
+;; (hydra-create "M-g"
+;;   '(("h" first-error "first")
+;;     ("j" next-error "next")
+;;     ("k" previous-error "prev")))
+;; TODO: use this for occur and grep and such?
 
 
 ;;------------------------------------------------------------------------------
@@ -37,6 +62,11 @@
 ;;   projectile-grep
 ;;   helm-projectile-grep
 ;;   ...
+
+;; TODO: try out this visual help for emacs-style regex
+;;   https://github.com/benma/visual-regexp.el
+;; Also check out their visual-regexp-setroids for normal-style
+;; (perl style? modern style?) regexs.
 
 
 ;;------------------------------------------------------------------------------

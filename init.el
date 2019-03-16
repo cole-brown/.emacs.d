@@ -18,11 +18,25 @@
 ;; say what versions you want, what os you expect, have ways for packages
 ;; to hook in so like gpg can be connected to EPA even if half windows, half MinGW environment.
 
+;; TODO: get recentf into find-files (C-x C-f)? and buffers (C-x C-b)?
+;; it's in `C-x b', which is nice.
+
+
 ;;------------------------------------------------------------------------------
 ;; Notes, TODOs, Links
 ;;------------------------------------------------------------------------------
 ;; TODO: rename all these "TODOs" in my section headers so I can search for
 ;; 'TODO' without dozens of false alarms...
+
+;;---
+;; The Many Faces of TODO
+;;---
+;; TODO-EASY: I'm not doing it today for obvious reasons, but I bet future
+;;   me can knock it out of the park EZ.
+;; TODO-TODAY: You were here yesterday(/in the faint and distant past) and
+;;   thought you'd be back tomorrow.
+;; TODO: someday
+
 
 ;;---
 ;; Search...                                             (knights who say...)
@@ -72,6 +86,11 @@
 ;;---
 ;; References.
 ;;---
+
+;; TODO: gather up urls, for domains/pages that show up often enough,
+;;   save off into secrets.d/references or something?
+;;   Cuz I want 'em around next time. Which will be 10-16 years from now
+;;   if history repeats itself.
 
 ;; Special extra useful links:
 ;;   1) Sacha Chua's init.org: http://pages.sachachua.com/.emacs.d/Sacha.html
@@ -414,6 +433,8 @@
 
 ;; TODO: setq vs customize-set-variable (...vs being in the custom file?)
 
+;; TODO: move these to a file?
+;;   - but they're before the path so must limit to places zeroth knows.
 
 ;;---
 ;; Directories for Emacs or Packages
@@ -533,22 +554,31 @@ For the transition, maybe a func for checking..."
 ;; Possibly move custom-file setting up, and loading down below loading of bootstrap-this-late overrides.
 (load custom-file t)
 
+;; Custom file is annoying, especially because it gathers everything into one
+;; weird place. Also because it insists on having only one place (when it
+;; saves). So some stuff I want early (so custom.el has to be arly), and other
+;; stuff I want late (like gpg) and can't do much about.
+;;
+;; I'm hoping to find a way to relegate custom.el to just be package.el's vars...
+
 
 ;;---
 ;; Misc Stuff
 ;;---
+;; TODO: just delete? configure-crypt does not care about this anymore, I don't think...
 ;; TODO: move this to configure-crypt? And/or rejigger configure-crypt so some can happen soon enough for this to be happy actually loading a file.
 ;; Load sensitive information from outside of .emacs.d
-(if (bound-and-true-p spydez/dir/common-doc-save)
-    (when (not (load (expand-file-name ".emacs.secrets" spydez/dir/common-doc-save) 'noerror))
-      (spydez/warning/message nil :debug "No secrets to load."))
-  (spydez/warning/message nil nil "No secrets loaded. Do not know where to look. '%s' undefined." 'spydez/dir/common-doc-save))
+;;(if (bound-and-true-p spydez/dir/common-doc-save)
+;;    (when (not (load (expand-file-name ".emacs.secrets" spydez/dir/common-doc-save) 'noerror))
+;;      (spydez/warning/message nil :debug "No secrets to load."))
+;;  (spydez/warning/message nil nil "No secrets loaded. Do not know where to look. '%s' undefined." 'spydez/dir/common-doc-save))
 
 
 ;;---
 ;; Dev Env vars
 ;;---
 ;; TODO: put in bootstrap-consts? bootstrap-this-late? bootstrap-data?
+;; dev-consts? dev-dev-env? dev-dev-env-envs? development-environment-for-this-device-consts?
 
 ;; Tab widths. I like a smaller one for verbose/highly indented code (web dev mainly).
 ;; Normally use a larger one for non-web programming.
@@ -567,6 +597,7 @@ For the transition, maybe a func for checking..."
 ;;  copy external tools to bootstrap-this-late for this pc
 ;;    - make default/empty here
 ;;    - do tool exec/env step after bootstrap (or at end of bootstrap?)
+
 
 ;;---
 ;; External Tools
@@ -600,6 +631,17 @@ For the transition, maybe a func for checking..."
 ;;  (spydez/warning/message nil nil "Empty bootstrap-this-late."))
 ;; I'm fine if this system has no late step.
 (require 'bootstrap-this-late nil 'noerror)
+
+;;---
+;; Final Chance to Affect Bootstrap...
+;;---
+(require 'dev-directories) ;; nil 'noerror) ;; TODO: leaving off noerror until home domain works as desired there
+;; Could definitely rename this if I could find a better name.
+;; TODO: Add a finalize step for adding files to auto-open-list?
+;; Add an "if file exists" check to auto-opening files?
+;; TODO: Some notion of "I expect these vars/funcs to be defined"?
+;;   Should I just def them before hand? That doesn't provide any validity
+;;   besides basic "it exists" sanity...
 
 
 ;;------------------------------------------------------------------------------
@@ -711,6 +753,7 @@ For the transition, maybe a func for checking..."
 
 ;; Minibuffer and mode line tweaks
 (require 'configure-minibuffer)
+(require 'configure-modeline)
 
 ;; Window setup (menu bar, color theme, etc)
 (require 'configure-window)
@@ -843,6 +886,9 @@ For the transition, maybe a func for checking..."
 (require 'configure-python)
 (require 'configure-elisp)
 
+;; web related things (restclient)
+(require 'configure-web)
+
 ;; todo: htmlize? I don't think I ever really used it...
 ;; converts buffers to html
 ;; http://fly.srk.fer.hr/~hniksic/emacs/htmlize.el
@@ -964,14 +1010,9 @@ For the transition, maybe a func for checking..."
 
 ;; TODO: define shortcuts to frequently used files?
 ;;   http://pages.sachachua.com/.emacs.d/Sacha.html#org9750649
-
-;; TODO: split frame, open these in other-window?
-;; TODO: move to a finalize probably
-(defun spydez/auto-open-files ()
-  (if (and window-system (boundp 'spydez/auto-open-list))
-      (dolist (file spydez/auto-open-list)
-        (find-file file))))
-(add-hook 'emacs-startup-hook 'spydez/auto-open-files)
+;; todo: rename something better for its function here instead of what
+;; it happens to reside right now. `finalize-user-startup' or something
+(require 'finalize-domain) ;; nil 'noerror) ;; TODO: leaving off noerror until home domain works as desired there
 
 ;; TODO: move to a finalize probably?
 ;; Have a shell open and ready.

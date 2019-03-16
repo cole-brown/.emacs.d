@@ -1,4 +1,4 @@
-;; -*- emacs-lisp -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
 
 ;;-----------------------------------uryyb--------------------------------------
@@ -28,14 +28,29 @@
        (concat (spydez/dir/windows-to-mingw spydez/dir/home) ".gnupg/")))
   ;; TODO: what the fuck to do with these... I don't really want these in
   ;; custom file...
-  (custom-set-variables
-   '(epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
-   '(epg-gpg-program (executable-find "gpg"))               ; windowsy
-   '(epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy
-   ))
+  ;; (custom-set-variables
+  ;;  '(epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
+  ;;  '(epg-gpg-program (executable-find "gpg"))               ; windowsy
+  ;;  '(epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy
+  ;;  )
+  ;; [2019-03-13]
+  ;; The fuck is going on - why did this suddenly start complaining?
+  ;; "Error setting epg-gpg-home-directory: (void-variable spydez/hack/ugly-hacky-gpg-dir)"
+  ;; Does this work any worse?
+  (csetq epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
+  (csetq epg-gpg-program (executable-find "gpg"))               ; windowsy
+  (csetq epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy
+  )
 ;; TODO: get gpg more cross-computery via use-tool
 
 ;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+
+;; TODO: there may be a way to suppress the graphical password prompt?
+;; http://nhoffman.github.io/.emacs.d/#org78893a1
+;;   - but my env var for that is already nil: (getenv "GPG_AGENT_INFO")
+
+;; Query passphrase through the minibuffer, instead of the pinentry program
+(setq epg-pinentry-mode 'loopback)
 
 
 ;;------------------------------------------------------------------------------
@@ -52,10 +67,6 @@
 
 ;; TODO: a way to defer the getting of secrets so we don't just hang loading?
 ;;   - doesn't seem to be hanging so probably ok. Leaving until home and work comps both... work.
-(defconst spydez/dir/secrets (spydez/dir-name ".secrets.d" spydez/dir/home)
-  "Location of secrets dir on this computer.")
-(defconst spydez/file/secrets (expand-file-name "emacs.secrets.el.gpg" spydez/dir/secrets)
-  "Location of emacs' elisp secrets.")
 
 
 ;;------------------------------------------------------------------------------
@@ -73,6 +84,15 @@
 ;; TODO secrets in subfolder of .emacs.d, a single dot file outside, or what?
 ;; (setq auth-sources
 ;;       '((:source "~/.emacs.d/secrets/.authinfo.gpg")))
+
+;; auth-source and auth-source-pass can be used as a password manager if needed
+
+
+;; "Use helm-pass as an interface to pass."
+;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/#other-tools
+;; TODO: check this out and what is `pass'?
+;; (use-package helm-pass)
+
 
 ;;------------------------------------------------------------------------------
 ;; TODOs

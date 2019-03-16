@@ -29,15 +29,22 @@
 
 (add-hook 'emacs-lisp-mode-hook 'spydez/hook/emacs-lisp-mode)
 
+
 ;;------------------------------------------------------------------------------
 ;; ElDoc
 ;;------------------------------------------------------------------------------
-;; Emacs 26 has it by default. Should I use use-package in that case?
-;; Let's try and see how it goes.
-(use-package eldoc
-  :ensure nil
-  :defer t
-  :delight)
+;; Moved to configure-dev-env as it's usable in more than just elisp?
+
+
+;;------------------------------------------------------------------------------
+;; Parentheses
+;;------------------------------------------------------------------------------
+;; Trying out rainbow-delimiters for emacs lisp mode; could expand to
+;; all prog-mode if super useful.
+;; Trial: [2019-03-14]
+(use-package rainbow-delimiters
+  :hook
+  (emacs-lisp-mode . rainbow-delimiters-mode))
 
 
 ;;------------------------------------------------------------------------------
