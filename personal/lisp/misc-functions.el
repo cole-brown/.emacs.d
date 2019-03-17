@@ -35,9 +35,19 @@
 ;; Misc Utility Functions
 ;;------------------------------------------------------------------------------
 
+;; 
 (defun spydez/range (start count &optional step-size)
+  "`loop' isn't a real thing so this doesn't work right now and there's
+number-sequence anyways."
   (let ((step (if (integerp step-size) step-size 1)))
     (loop repeat count for i from start by step collect i)))
+
+(defun spydez/py-range (start &optional end step)
+  "Acts like python's `range' function instead of `number-sequence'"
+  (unless end
+    (setq end start
+          start 0))
+  (number-sequence start (1- end) step))
 
 ;; I think this is better right where it's used as it's just the once.
 ;; (defun spydez/auto-open-files () 

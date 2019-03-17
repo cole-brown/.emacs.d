@@ -4,7 +4,7 @@
 #+DATE:      [2019-03-05 Tue]
 
 Next things?
-  - To Do: [0/3]
+  - To Do: [0/4]
     - [ ] configure-crypt needs babying... again... (again... (again?..))
     - [ ] remove references/?
       - Or put those files in repo... useless files now when not on whatever comp I downloaded em on.
@@ -13,6 +13,8 @@ Next things?
         - Some of my old .emacs is just references to dead web links... not useful.
     - [ ] csetq vs setq all the places? see zeroth-funcs
       - csetq vs setq vs jamming everything into (use-package ... :custom ...)
+    - [ ] this hydra looks useful maybe:
+      - https://github.com/abo-abo/hydra/wiki/Emacs#Transpose
 
 
 Soon™ things?

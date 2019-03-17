@@ -17,31 +17,36 @@
 ;;------------------------------------------------------------------------------
 ;; Emacs doesn't have enough weird keyboarding - let's add more.
 
-;; Why is this needed over normal key-chord-define?
-;; From http://pages.sachachua.com/.emacs.d/Sacha.html#key-chord
-;; Is it just the "MODIFICATION" from the docstring?
-;;   - yes.
-;; TODO: delete this? Comment out? Use normal define and see if keychord is
-;;   any more finger-intuitive...
-;;   Honestly maybe it's my chiclet keyboard w/ key cover... I should get
-;;   a mechanical keyboard for work already...
-(defun spydez/key-chord-define (keymap keys command)
-  "Define in KEYMAP, a key-chord of two keys in KEYS starting a COMMAND.
-\nKEYS can be a string or a vector of two elements. Currently only elements
-that corresponds to ascii codes in the range 32 to 126 can be used.
-\nCOMMAND can be an interactive function, a string, or nil.
-If COMMAND is nil, the key-chord is removed.
-
-MODIFICATION: Do not define the transposed key chord.
-"
-  (if (/= 2 (length keys))
-      (error "Key-chord keys must have two elements"))
-  ;; Exotic chars in a string are >255 but define-key wants 128..255 for those
-  (let ((key1 (logand 255 (aref keys 0)))
-        (key2 (logand 255 (aref keys 1))))
-    (define-key keymap (vector 'key-chord key1 key2) command)))
-(fset 'key-chord-define 'spydez/key-chord-define)
-;; TODO: why is this fset here and in use-package key-chord :init?
+;; [2019-03-16 Sat] Commenting this func out to see if it makes key-chords
+;; more intuitive for me (will now accept transpose of defined
+;; (e.g. chord "eu" == "ue")
+;;   - NOTE: also see `fset' call below in key-chord
+;;
+;; ;; Why is this needed over normal key-chord-define?
+;; ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#key-chord
+;; ;; Is it just the "MODIFICATION" from the docstring?
+;; ;;   - yes.
+;; ;; TODO: delete this? Comment out? Use normal define and see if keychord is
+;; ;;   any more finger-intuitive...
+;; ;;   Honestly maybe it's my chiclet keyboard w/ key cover... I should get
+;; ;;   a mechanical keyboard for work already...
+;; (defun spydez/key-chord-define (keymap keys command)
+;;   "Define in KEYMAP, a key-chord of two keys in KEYS starting a COMMAND.
+;; \nKEYS can be a string or a vector of two elements. Currently only elements
+;; that corresponds to ascii codes in the range 32 to 126 can be used.
+;; \nCOMMAND can be an interactive function, a string, or nil.
+;; If COMMAND is nil, the key-chord is removed.
+;; 
+;; MODIFICATION: Do not define the transposed key chord.
+;; "
+;;   (if (/= 2 (length keys))
+;;       (error "Key-chord keys must have two elements"))
+;;   ;; Exotic chars in a string are >255 but define-key wants 128..255 for those
+;;   (let ((key1 (logand 255 (aref keys 0)))
+;;         (key2 (logand 255 (aref keys 1))))
+;;     (define-key keymap (vector 'key-chord key1 key2) command)))
+;; (fset 'key-chord-define 'spydez/key-chord-define)
+;; ;; TODO: why is this fset here and in use-package key-chord :init?
 
 ;; From https://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer/
 (defun spydez/switch-to-previous-buffer ()
@@ -56,7 +61,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (use-package key-chord
   :init
   (progn
-    (fset 'key-chord-define 'spydez/key-chord-define)
+    ;; (fset 'key-chord-define 'spydez/key-chord-define)
+    
     ;; TODO: [2019-01-28] 0.16 one-key-delay feels off/fast/aweful fast. But leaving as when I
     ;; do manage it, it feels like a separate action from normal typing.
     ;; TODO: [2019-03-08] Still not using this enough and >50% of the time
