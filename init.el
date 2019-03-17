@@ -1039,6 +1039,8 @@ For the transition, maybe a func for checking..."
 ;; Choose a random one maybe. Have various things push their
 ;; help info for this into a list during use-package init or config...
 
+(require 'finalize-keybinds)
+
 (require 'zzz-finalize)
 (setq spydez/warning/current-type '(spydez running))
 (spydez/info/message-if spydez/warning/current-type "init.el...Ok. 3 2 1, let's go.")
