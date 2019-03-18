@@ -1027,6 +1027,8 @@ For the transition, maybe a func for checking..."
 ;; it happens to reside right now. `finalize-user-startup' or something
 (require 'finalize-domain) ;; nil 'noerror) ;; TODO: leaving off noerror until home domain works as desired there
 
+(require 'finalize-keybinds)
+
 ;; TODO: move to a finalize probably?
 ;; Have a shell open and ready.
 ;; (when window-system (shell))
@@ -1038,8 +1040,6 @@ For the transition, maybe a func for checking..."
 ;; for my custom stuff or new stuff e.g. magit, hydra, my shortcuts...
 ;; Choose a random one maybe. Have various things push their
 ;; help info for this into a list during use-package init or config...
-
-(require 'finalize-keybinds)
 
 (require 'zzz-finalize)
 (setq spydez/warning/current-type '(spydez running))
