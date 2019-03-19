@@ -7,6 +7,34 @@
 
 
 ;;------------------------------------------------------------------------------
+;; All of the transposes!
+;;------------------------------------------------------------------------------
+
+;; https://github.com/abo-abo/hydra/wiki/Emacs#Transpose
+(if (and (featurep 'key-chord)
+         (featurep 'hydra))
+    ;; then
+    (progn
+      (defhydra spydez/hydra/transpose (:color red)
+        "Transpose"
+        ("c" transpose-chars "characters")
+        ("w" transpose-words "words")
+        ("o" org-transpose-words "Org mode words")
+        ("l" transpose-lines "lines")
+        ("s" transpose-sentences "sentences")
+        ("e" org-transpose-elements "Org mode elements")
+        ("p" transpose-paragraphs "paragraphs")
+        ("t" org-table-transpose-table-at-point "Org mode table")
+        ("q" nil "cancel" :color blue))
+      ;; Not sure about key chord... "cg" maybe better?
+      ;; Going with 'tp' transpose and also 'p' is in the common-stuff hydra
+      (key-chord-define-global "tp" 'spydez/hydra/transpose/body))
+  ;; else
+  (spydez/warning/message nil nil
+                          "Key-Chord or Hydra package not present. Cannot make spydez/hydra/transpose."))
+
+
+;;------------------------------------------------------------------------------
 ;; Common Actions
 ;;------------------------------------------------------------------------------
 
@@ -38,7 +66,8 @@
       ;; ".p" might work better... (one row up)
       (key-chord-define-global ".p" 'spydez/hydra/common-stuff/body)
       )
-  (spydez/warning/message nil nil "Key-Chord or Hydra package not present. Cannot make spydez/common-stuff."))
+  (spydez/warning/message nil nil
+                          "Key-Chord or Hydra package not present. Cannot make spydez/hydra/common-stuff."))
 ;; TODO: make a hydra here for... files and stuff with 'eu' keychord.
 ;;    TODO: add a 'reload-init' type func in it if I'm in the right project or something?
 ;; TODO: need macros and stuff for the open-files bit, I think?

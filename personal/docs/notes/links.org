@@ -18,6 +18,8 @@ https://os.phil-opp.com/
 https://wyag.thb.lt/
 https://news.ycombinator.com/item?id=19386141
 
+** Rust Cookbook
+https://rust-lang-nursery.github.io/rust-cookbook/
 * Sys Admin
 [2019-03-04]
 

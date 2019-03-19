@@ -1,19 +1,28 @@
 ;;; init.el --- init the emacs -*- mode: emacs-lisp; lexical-binding: t -*-
 ;;; Commentary:
 
-;; TODO: A better commentary.
+;; Initialize the emacs.
+
+;; Current Shortcomings:
+;;   - No tracking of desired packages, so dropping one for another (e.g. let go
+;;     of guide-key for which-key) can result in dead weight.
+;;   - Bit over-engineered, probably. My last .emacs was not intuitive to
+;;     tweak/fix when getting set up on a new device, so I probably went
+;;     overboard with warnings/messages and overridability this time around...
+;; TODO: is this commentary or notes? I think notes? but then...
+;; what is commentary even?
+
+;; TODO (still): better commentary.
 
 ;;; Code:
 
-;; -*- mode: emacs-lisp; lexical-binding: t -*-
-
-;;------                                                                  ------
-;;----                                                                      ----
-;;----------------------------------init.el-------------------------------------
-;;--                              Hello there.                                --
-;;------------------------------------------------------------------------------
-;;----                                                                      ----
-;;------                                                                  ------
+;;------                                                                ------;;
+;;----                                                                    ----;;
+;;----------------------------------init.el-----------------------------------;;
+;;--                              Hello there.                              --;;
+;;----------------------------------------------------------------------------;;
+;;----                                                                    ----;;
+;;------                                                                ------;;
 
 
 (setq spydez/warning/current-type '(spydez interstitial-prose))
