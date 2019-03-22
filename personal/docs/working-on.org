@@ -4,7 +4,12 @@
 #+DATE:      [2019-03-05 Tue]
 
 Next things?
-  - To Do: [0/4]
+  - To Do: [0/8]
+    - [ ] a per-device way of saying "off", "minimum", or "full" for features?
+      - e.g. want full C# dev env at work, but minimum at home? Set it that way and
+        language server, other external tools won't bother - just code hilighting maybe.
+      - e.g.2. want rust or w/e flavor of the month catches my eye at home but
+        none of it at work
     - [ ] configure-crypt needs babying... again... (again... (again?..))
     - [ ] remove references/?
       - Or put those files in repo... useless files now when not on whatever comp I downloaded em on.
@@ -15,12 +20,43 @@ Next things?
       - csetq vs setq vs jamming everything into (use-package ... :custom ...)
     - [ ] this hydra looks useful maybe:
       - https://github.com/abo-abo/hydra/wiki/Emacs#Transpose
+    - [ ] kill buffer cmd w/ no-kill list
+      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eiv960e
+    - [ ] default-directory var for pretending a file is elsewhere
+      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eivtuo4
+    - [ ] A command for searching explainshell.com with a string
+      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eiv75b8
+
+
+Tabs:
+  [[https://melpa.org/#/?q=pager&sort=downloads&asc=false][MELPA]]
+    [[https://jwiegley.github.io/use-package/keywords/#preface-init-config][use-package keywords]]
+    [[https://github.com/dholm/dotemacs/blob/master/.emacs.d/lisp/modes/csharp.el][C# stuff]]
+      https://github.com/OmniSharp/omnisharp-emacs
+      https://github.com/dholm/dotemacs/tree/master/.emacs.d/lisp
+    https://github.com/purcell/emacs.d/blob/master/init.el
+      http://www.flycheck.org/en/latest/
+    https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
+    [[https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=emacs%20cedet&=&=&oq=&gs_l=&pbx=1][CEDET stuff]]
+      http://cedet.sourceforge.net/languagesupport.shtml
+      http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+      https://www.emacswiki.org/emacs/CEDET_Quickstart
+      https://www.logilab.org/blogentry/173886
+    https://github.com/daedreth/UncleDavesEmacs#user-content-ido-and-why-i-started-using-helm
+      https://github.com/PythonNut/emacs-config
+      https://www.masteringemacs.org/
+    https://github.com/emacs-tw/awesome-emacs
+    https://www.reddit.com/r/emacs/comments/b0na5p/unfamous_great_emacs_package/
 
 
 Soon™ things?
-  - To Do: [0/2]
+  - To Do: [0/3]
     - [ ] make treemacs issue report?
     - [ ] make no-littering issue or fix w/ pull request?
+    - [ ] commands/hydra for putting personalized markers down (TODO, "Left off here.", etc)
+      - hook into... save? magit? to check for,complain about markers so they hopefully don't
+        get checked in?
+        - Maybe another command to convert them to impersonal/delete.
 
 
 Current things?

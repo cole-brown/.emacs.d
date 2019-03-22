@@ -15,6 +15,11 @@
 ;;------------------------------------------------------------------------------
 ;; Feature/Function/Executable Wrappers
 ;;------------------------------------------------------------------------------
+
+;; TODO: with-var, with-all-vars, with-any-vars?
+;; TODO?: with-{any,all}-functions?
+;; TODO?: with-all-executables?
+
 (defmacro with-feature (feature &rest body)
   "If FEATURE is available, load it and evaluate BODY."
   (declare (indent defun))
@@ -53,7 +58,7 @@
 
 ;; Delete whole file if I don't end up actually using it.
 
-;; Get whole ";;;", "Commentary", "Code" header setup for all my elisp files.
+;; Get whole ";;;", "Commentary", "Code" header setup for all my elisp files?
 
 
 ;;------------------------------------------------------------------------------
