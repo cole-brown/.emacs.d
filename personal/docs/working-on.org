@@ -57,7 +57,7 @@ Soon™ things?
       - hook into... save? magit? to check for,complain about markers so they hopefully don't
         get checked in?
         - Maybe another command to convert them to impersonal/delete.
-
+    - https://github.com/dzop/emacs-zmq
 
 Current things?
   - More things to do: [12/12]

@@ -60,55 +60,69 @@
 
 ;; TODO: some check with use-tool instead?
 (setq spydez/file/hunspell (executable-find "hunspell"))
-(if spydez/file/hunspell
-    ;; Result from executable-find: hunspell is installed
-    ;; So set up flyspell with that.
-    (use-package flyspell
-      ;; :delight ;; Not sure whether I want to kill its modeline or not
-      :init
-      (progn
-        (setq ispell-program-name (executable-find "hunspell"))
 
-        ;; "en_US" is key to lookup in `ispell-local-dictionary-alist`.
-        ;; Please note it will be passed as default value to hunspell CLI `-d` option
-        ;; if you don't manually setup `-d` in `ispell-local-dictionary-alist`
-        (setq ispell-dictionary "en_US")
+;; TODO: move enabled flags to a central place maybe?
+(defconst spydez/enabled/flyspell nil ;; t
+  "Spell checking with Flyspell/Hunspell. Seems to be causing a
+  lot of lag when moving around in a file.")
 
-        ;; TODO: get this from use-tool?.. Or do I need this at all?
-        ;; Don't think it's needed.
-        ;; (setq spydez/dir/hunspell-data "C:/bin/hunspell-1.3.2-3-w32-bin/share/hunspell")
+(if spydez/enabled/flyspell
+    ;; Enabled, so do normal stuff:
+    (if spydez/file/hunspell
+        ;; Result from executable-find: hunspell is installed
+        ;; So set up flyspell with that.
+        (use-package flyspell
+          ;; :delight ;; Not sure whether I want to kill its modeline or not
+          :init
+          (progn
+            (setq ispell-program-name (executable-find "hunspell"))
 
-        ;; Really hard to figure out if this is needed at all besides in xml mode(s)...
-        (setq ispell-local-dictionary-alist
-              '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8)))
+            ;; "en_US" is key to lookup in `ispell-local-dictionary-alist`.
+            ;; Please note it will be passed as default value to hunspell CLI `-d` option
+            ;; if you don't manually setup `-d` in `ispell-local-dictionary-alist`
+            (setq ispell-dictionary "en_US")
 
-        ;; allow some hunspell-only stuff
-        (setq ispell-really-hunspell t)
+            ;; TODO: get this from use-tool?.. Or do I need this at all?
+            ;; Don't think it's needed.
+            ;; (setq spydez/dir/hunspell-data "C:/bin/hunspell-1.3.2-3-w32-bin/share/hunspell")
 
-        ;; Verbosity? These are t by default but not showing anything in *Messages* right now...
-        ;; (setq flyspell-issue-message-flag nil
-        ;;       flyspell-issue-welcome-flag nil)
+            ;; Really hard to figure out if this is needed at all besides in xml mode(s)...
+            (setq ispell-local-dictionary-alist
+                  '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8)))
 
-        ;; Personal Dictionary:
-        ;;   Looks like maybe can pass personal dict in as "-p" with "-d" list:
-        ;;     e.g. ("-d" "en_US" "-p" "path/to/personal.en")
-        ;;   Or maybe this is better:
-        ;;     TODO: a personal dictionary: C-h v ispell-personal-dictionary
-        )
+            ;; allow some hunspell-only stuff
+            (setq ispell-really-hunspell t)
 
-      :hook ;; only one list
-      ;; TODO: shitty perf on an org-mode file with longish lines
-      ;; (or just lots of 'misspelled' words?)
-      ((prog-mode . flyspell-prog-mode)
-       (text-mode . flyspell-mode))
+            ;; Verbosity? These are t by default but not showing anything in *Messages* right now...
+            ;; (setq flyspell-issue-message-flag nil
+            ;;       flyspell-issue-welcome-flag nil)
 
-      ;; If we want global flyspell:
-      ;; :config
-      ;; (flyspell-mode 1)
+            ;; Personal Dictionary:
+            ;;   Looks like maybe can pass personal dict in as "-p" with "-d" list:
+            ;;     e.g. ("-d" "en_US" "-p" "path/to/personal.en")
+            ;;   Or maybe this is better:
+            ;;     TODO: a personal dictionary: C-h v ispell-personal-dictionary
+            )
+
+          :hook ;; only one list
+          ;; TODO: shitty perf on an org-mode file with longish lines
+          ;; (or just lots of 'misspelled' words?)
+          ((prog-mode . flyspell-prog-mode)
+           (text-mode . flyspell-mode))
+
+          ;; If we want global flyspell:
+          ;; :config
+          ;; (flyspell-mode 1)
+          )
+      ;; else: no result from executable-find - warn and don't set up.
+      (spydez/warning/message nil nil "No backend tool for flyspell. Checked for `hunspell': %s"
+                              spydez/file/hunspell)
       )
-  ;; else: no result from executable-find - warn and don't set up.
-  (spydez/warning/message nil nil "No backend tool for flyspell. Checked for `hunspell': %s"
-                          spydez/file/hunspell)
+
+  ;; else, disabled so just note that.
+  ;; TODO: make this a `with' function? `with-flag' or something maybe?
+  (spydez/warning/message nil :debug "Config disabled: %s %s"
+                          'spydez/enabled/flyspell spydez/enabled/flyspell)
   )
 
 
@@ -225,7 +239,7 @@
 
 ;; Used to use linum-mode...
 (when (< emacs-major-version 26)
-;; (global-linum-mode 1)) ; show line numbers everywhere
+  ;; (global-linum-mode 1)) ; show line numbers everywhere
   (error "Really old emacs. Enable linum in config?"))
 
 ;; But... See this:

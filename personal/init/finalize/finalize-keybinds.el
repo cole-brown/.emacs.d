@@ -11,7 +11,7 @@
 ;;------------------------------------------------------------------------------
 
 ;; https://github.com/abo-abo/hydra/wiki/Emacs#Transpose
-(if (and (featurep 'key-chord)
+(if (and (featurep 'key-chord) ;; TODO: with-features
          (featurep 'hydra))
     ;; then
     (progn
@@ -19,11 +19,12 @@
         "Transpose"
         ("c" transpose-chars "characters")
         ("w" transpose-words "words")
-        ("o" org-transpose-words "Org mode words")
         ("l" transpose-lines "lines")
         ("s" transpose-sentences "sentences")
-        ("e" org-transpose-elements "Org mode elements")
         ("p" transpose-paragraphs "paragraphs")
+        ("x" transpose-sexps "sexprs")
+        ("o" org-transpose-words "Org mode words")
+        ("e" org-transpose-elements "Org mode elements")
         ("t" org-table-transpose-table-at-point "Org mode table")
         ("q" nil "cancel" :color blue))
       ;; Not sure about key chord... "cg" maybe better?
