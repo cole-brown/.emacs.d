@@ -10,6 +10,10 @@
 ;; All of the transposes!
 ;;------------------------------------------------------------------------------
 
+;; TODO: better/less common bigrams... "script" is triggering my "tp" transpose hydra
+;; https://english.stackexchange.com/a/110579
+;; https://www.reddit.com/r/emacs/comments/22hzx7/what_are_your_keychord_abbreviations/
+
 ;; https://github.com/abo-abo/hydra/wiki/Emacs#Transpose
 (if (and (featurep 'key-chord) ;; TODO: with-features
          (featurep 'hydra))
