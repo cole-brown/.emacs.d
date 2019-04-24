@@ -273,6 +273,18 @@ Version 2017-09-01"
 (use-package treemacs-magit
   :after treemacs magit)
 
+
+;;------------------------------------------------------------------------------
+;; disk-usage
+;;------------------------------------------------------------------------------
+;; https://www.reddit.com/r/emacs/comments/as8cri/diskusageel_a_disk_usage_analyzer_for_emacs/
+;; https://gitlab.com/ambrevar/emacs-disk-usage
+;; Trial: [2019-04-18 Thu]
+(use-package disk-usage
+  :defer t
+  :commands (disk-usage disk-usage-here disk-usage-dired-at-point))
+
+
 ;;------------------------------------------------------------------------------
 ;; TODO: these. Parenthesis, bells?
 ;;------------------------------------------------------------------------------
