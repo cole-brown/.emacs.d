@@ -35,13 +35,14 @@
 ;; Misc Utility Functions
 ;;------------------------------------------------------------------------------
 
-;; 
-(defun spydez/range (start count &optional step-size)
-  "`loop' isn't a real thing so this doesn't work right now and there's
-number-sequence anyways."
-  (let ((step (if (integerp step-size) step-size 1)))
-    (loop repeat count for i from start by step collect i)))
+;; delete? `loop' doesn't exist (now?) :: (spydez/range 0 10)
+;; (defun spydez/range (start count &optional step-size)
+;;   "`loop' isn't a real thing so this doesn't work right now and there's
+;; number-sequence anyways."
+;;   (let ((step (if (integerp step-size) step-size 1)))
+;;     (loop repeat count for i from start by step collect i)))
 
+;; a `range' type function more like I expect...
 (defun spydez/py-range (start &optional end step)
   "Acts like python's `range' function instead of `number-sequence'"
   (unless end
@@ -87,47 +88,10 @@ number-sequence anyways."
 
 
 ;;------------------------------------------------------------------------------
-;; Dates & Times
-;;------------------------------------------------------------------------------
-
-;; best format
-(setq spydez/yyyy-mm-dd "%Y-%m-%d")
-;; pretty much worst format
-(setq spydez/dd-mon-yy "%d %b %y")
-;; And... the terrible USA format.
-(setq spydez/mm-dd-yyyy "%%m-%d-%Y")
-(setq spydez/mm-dd-yy "%%m-%d-%y")
-
-;; Was used in an old weekly-status template
-(defun spydez/next-friday (format)
-  (let ((today (nth 6 (decode-time (current-time)))))
-    (format-time-string 
-     format
-     (time-add 
-      (current-time) 
-      (days-to-time 
-       (if (eq 5 today) ; saturday is only day bigger than friday
-           6
-         (- 5 today)))))))
-
-;; Insert ISO 8601 timestamp.
-(defun spydez/timestamp-ISO ()
-  "Produces and inserts a full ISO 8601 format timestamp of NOW."
-  (interactive)
-  (insert (format-time-string "%Y-%m-%dT%T%z")))
-
-(defalias 'spydez/timestamp-ORG 'org-time-stamp-inactive
-  "Produces and inserts an abbreviated timestamp using org-time-stamp-inactive.")
-
-
-;;------------------------------------------------------------------------------
 ;; TODOs
 ;;------------------------------------------------------------------------------
 
-;; TODO: I don't think I use any of these, so they might just be better as gone.
-
-;; TODO: A smaller, quicker prefix to both provide a clean auto-complete for
-;; these interactive funcs and let them be a bit more discoverable.
+;; TODO: Trim/remove any unused functions?
 
 ;; Also these are ~10 years old and back when I knew almost enough about
 ;; emacs/elisp to set it up correctly. There may be some that don't need

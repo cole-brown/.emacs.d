@@ -5,14 +5,7 @@
 
 Next things?
   - To Do: [0/12]
-    - [ ] rename spy/<datestamp> funcs? or delete?
-      - have:
-        - spydez/timestamp-ISO
-        - spydez/timestamp-ORG
-        - spydez/dd-mon-yy
-        - spydez/yyyy-mm-dd
-      - want?
-        - spydez/datetime/{ISO-datetime, ORG, US-human, ISO-date-sortable} ???
+    - [ ] ag, ack, gack, gawk, your mom, grep, something?
     - [ ] fill-*
       - fill-paragraph to a better keybind than M-q?
       - fill-region to a keybind?
@@ -81,7 +74,15 @@ Soon™ things?
     - https://github.com/dzop/emacs-zmq
 
 Current things?
-  - More things to do: [13/13]
+  - More things to do: [14/14]
+    - [X] rename spy/<datestamp> funcs? or delete?
+      - have:
+        - spydez/timestamp-ISO
+        - spydez/timestamp-ORG
+        - spydez/dd-mon-yy
+        - spydez/yyyy-mm-dd
+      - want?
+        - spydez/datetime/{ISO-datetime, ORG, US-human, ISO-date-sortable} ???
     - [X] yascroll.el
       - https://github.com/m2ym/yascroll-el
       - Meh. A bug since 2015 still exists in it that would require me to require cl before its stuff so nope.

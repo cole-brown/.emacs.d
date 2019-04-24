@@ -744,6 +744,7 @@ For the transition, maybe a func for checking..."
 ;;   - set keybinds to some
 ;;   - use e.g. range for e.g. tabstops
 (require 'misc-functions)
+(require 'date-and-time) ;; TODO: move this to finalize section?
 
 ;; Stuff that affects emacs itself, like garbage collection.
 ;; Anything earlier than this might be in early-init.

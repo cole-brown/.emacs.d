@@ -23,13 +23,14 @@
 ;;------------------------------------------------------------------------------
 ;; M-x org-time-stamp-inactive
 ;;------------------------------------------------------------------------------
-;; for stamps like [2019-01-30]
+;; For stamps like: [2019-01-30]
+;; Has been aliased to `spydez/timestamp-ORG' as I can never remember it.
 
-;; TODO: this is neat... move it to that file we were going to create for that neat link thing...?
+;; Use `M-x org-time-stamp-inactive' or `M-x spydez/timestamp-ORG' for inserting
+;; `[2019-01-29 Tue]' type stamps into current non-org-mode buffer.
+
+;; Or use `C-c !' for org-mode buffer.
 ;; https://orgmode.org/manual/Creating-timestamps.html
-;; Use M-x org-time-stamp-inactive for inserting `[2019-01-29 Tue]' stamps into current non-org-mode buffer.
-
-;; TODO: why is this here and I should move to be with spydez/timestamp-ORG alias
 
 
 ;;------------------------------------------------------------------------------
