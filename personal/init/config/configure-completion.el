@@ -50,13 +50,13 @@
           helm-M-x-requires-pattern nil
           helm-ff-skip-boring-files t)
     (helm-mode))
-  :bind (("C-x b" . helm-mini) ;; TODO-TRIAL [2019-03-01]: swapped helm-buffers-list with this. Is that ok?
-         ("C-h a" . helm-apropos)
-         ("C-x C-b" . helm-buffers-list)
+  :bind (("C-x b" . helm-mini) ;; [2019-03-01]: swapped helm-buffers-list with this.
+         ("C-x C-b" . helm-mini) ;; [2019-05-01]: helm-mini is more useful than helm-buffers-list, IMO.
          ("C-c h" . helm-buffers-list)
+         ("C-h a" . helm-apropos)
          ("M-y" . helm-show-kill-ring)
-         ("M-x" . helm-M-x)
 
+         ("M-x" . helm-M-x)
          ;; from my old emacs config, muscle memory and ultimately:
          ;;   http://steve.yegge.googlepages.com/effective-emacs
          ("C-x C-m" . helm-M-x) ; Invoke M-x w/o the Alt key. Useful for Dvorak.
