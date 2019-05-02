@@ -4,7 +4,8 @@
 #+DATE:      [2019-03-05 Tue]
 
 Next things?
-  - To Do: [0/12]
+  - To Do: [0/13]
+    - [ ] have recentf ignore elpa dir?
     - [ ] ag, ack, gack, gawk, your mom, grep, something?
     - [ ] fill-*
       - fill-paragraph to a better keybind than M-q?
@@ -17,6 +18,10 @@ Next things?
       - '-' as date/word sep (space illegal/replaced)
       - func to travel to/open in dired mode the directory
         - and create it if non-existant
+    - [ ] org-journal - try it out?
+      - https://github.com/bastibe/org-journal
+      - try w/ encryption (fix gpg again again... again... -_-)
+        - https://arenzana.org/2019/04/emacs-org-mode/
     - [ ] a per-device way of saying "off", "minimum", or "full" for features?
       - e.g. want full C# dev env at work, but minimum at home? Set it that way and
         language server, other external tools won't bother - just code hilighting maybe.
