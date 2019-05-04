@@ -12,7 +12,9 @@
 
 ;; TODO: move elsewhere.
 ;;   - maybe: personal/dev/domains/{home,work}/dev-directories.el
-(defvar spydez/dir/tasks (spydez/dir-name "workspace" spydez/dir/home)
+(defvar spydez/dir/tasks
+  "C:/home/spydez/taskspaces/" ;; TODO: Debug dir. Use below instead.
+  ;; (spydez/dir-name "workspace" spydez/dir/home)
   "User's folder for small work tasks.")
 
 ;; Gonna need regex for this eventually, probably. But not now.
@@ -49,40 +51,93 @@ First one of the correct length is used currently.")
 ;; TODO: command to copy full task's dir path to clipboard
 ;;   - will need the dwim today's task, I think?
 ;;   - could just stub out dwim with "find today's pre-existing else taskspace root dir"
+(defun spydez/taskspaces/task-dir/clipboard ()
+  "Command to copy full task's dir path to clipboard."
+  (interactive)
 
-;; TODO: dwim today's task ? (create if none, choose from multiple, return if just the one...)
-(defun spydez/taskspace/task-name/dwim (arg)
+  ;; TODO: what are all the cases here?
+  ;;   - 0 tasks today -> nil?
+  ;;   - 1 -> that
+  ;;   - 2+ -> ???
+  ;;   - previous dates???
+  (error "Just a stub right now... TODO this.")
+  )
+
+
+;; TODO: interactive? What flag?
+;;   - if not interactive, move down to utils section
+(defun spydez/taskspace/task-name/dwim (input)
+  "Returns task-name from input."
+
+  ;; if not command, return nil instead of error
+  (cond ((null input) (error "Input is nil."))
+
+        ;; TODO: if input not correct format -> error
+        ;;   - strip to last bit if path
+
+        ;; if dir, naively assume it's a taskspace
+        ((file-directory-p input) (file-name-nondirectory input))
+
+        ;; TODO: if not dir, add root and see if dir now?
+        ))
+;; (spydez/taskspace/task-name/dwim "C:/home/spydez/taskspaces/2019-05-03_0_hello-there")
+
+
+;; TODO: dwim today's task dir? (create if none, choose from multiple, return if just the one...)
+(defun spydez/taskspace/task-dir/dwim (arg)
   "DWIM to return today's task dir string (full path)...
 Create if none. Return if just the one. Choose from multiple."
   (interactive "p") ;; numeric prefix arg
   ;; format-time-string: use optional TIME arg for "not-today" (see help)
   (let* ((date (format-time-string spydez/datetime/format/yyyy-mm-dd))
-         (taskspaces (spydez/taskspace/list-date date)))
+         (taskspaces (spydez/taskspace/list-date date))
+         (length-ts (length taskspaces)))
 
     (cond ((null date) (error "Date string is nil: %s" date))
 
           ;; TODO: if zero, create one (prompt for short desc)
           ;;  - just alphanumeric and space/-, convert spaces to dashes?
           ((null taskspaces) (error "TODO: No taskspace for date %s. Create one here." date))
+          ;; TODO: forward to maker cmd func
 
           ;; If just one, return it.
           ;; How to create second in that case? Use a non-dwim create func?
           ;;   - I think yes.
-          ((= 1 (length taskspaces)) (car taskspaces))
+          ((= 1 length-ts) (car taskspaces))
 
           ;; TODO: if 2+, prompt for which to return (ideally by fuzzy match?)
-          ((> 1 (length taskspaces))
+          ((> 1 length-ts)
            (error "TODO: Multiple taskspaces. Prompt for which to return (ideally by fuzzy match?)"))
+          ;; TODO: forward to chooser cmd func (one choice should be "new...")
 
           ;; Don't need a default case... Fall through with nil.
           ;;(t nil)
     )))
-;; M-x spydez/taskspace/task-name/dwim
-;; (spydez/taskspace/task-name/dwim 0)
+;; M-x spydez/taskspace/task-dir/dwim
+;; (spydez/taskspace/task-dir/dwim 0)
 
-;; TODO: open spydez/dir/tasks in dired mode buffer
 
-;; TODO: dwim <date>'s task ? (is this a dupe of spydez/taskspace/task-name/dwim?)
+(defun spydez/taskspace/create (arg)
+  "Create a new taskspace."
+  (interactive "sShort Description: ")
+  ;; Do we need a max len? Leaving out until I feel otherwise.
+
+  ;; Verify alphanumeric w/ hyphen and underscore?
+  ;; Verify something looser? "String can be filename?"
+  ;; Verify with both:
+  ;;   - the 'file-name-invalid-regexp' (sanity)
+  ;;   - and also alphanumeric /w -_ (sensibility)
+
+  (message "%s" arg)
+  ;; (error "TODO: this")
+  )
+;; M-x spydez/taskspace/create
+;; (spydez/taskspace/create "testing-create")
+
+
+;; TODO: open spydez/dir/tasks in dired mode buffer? open task dir in dired?
+
+;; TODO: dwim <date>'s task ? (is this a dupe of spydez/taskspace/task-dir/dwim?)
 
 ;; TODO: optional/prefix arg for yesterday, day before, etc? Or use org-mode's
 ;; calendar picker thing?
