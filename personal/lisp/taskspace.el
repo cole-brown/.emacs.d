@@ -12,6 +12,7 @@
 
 ;; TODO: move elsewhere.
 ;;   - maybe: personal/dev/domains/{home,work}/dev-directories.el
+;;   - defaults here? maybe a (with-var ...) or something?
 (defvar spydez/dir/tasks
   "C:/home/spydez/taskspaces/" ;; TODO: Debug dir. Use below instead.
   ;; (spydez/dir-name "workspace" spydez/dir/home)
@@ -42,6 +43,9 @@
   "Order of items in task's descriptive directory name. List of alists.
 First one of the correct length is used currently.")
 ;; (cdr (assoc 'date (nth 0 spydez/tasks/dir-name/parts-alists)))
+
+(defconst spydez/tasks/dir-name/valid-desc-regexp "^[[:alnum:]_\\-]\\{3,\\}$"
+  "Letters, numbers, underscore, and hypen are valid.")
 
 
 ;;------------------------------------------------------------------------------
@@ -89,7 +93,7 @@ First one of the correct length is used currently.")
 Create if none. Return if just the one. Choose from multiple."
   (interactive "p") ;; numeric prefix arg
   ;; format-time-string: use optional TIME arg for "not-today" (see help)
-  (let* ((date (format-time-string spydez/datetime/format/yyyy-mm-dd))
+  (let* ((date (format-time-string spydez/datetime/format/yyyy-mm-dd)) ;; todo: get-date func
          (taskspaces (spydez/taskspace/list-date date))
          (length-ts (length taskspaces)))
 
@@ -122,11 +126,8 @@ Create if none. Return if just the one. Choose from multiple."
   (interactive "sShort Description: ")
   ;; Do we need a max len? Leaving out until I feel otherwise.
 
-  ;; Verify alphanumeric w/ hyphen and underscore?
-  ;; Verify something looser? "String can be filename?"
-  ;; Verify with both:
-  ;;   - the 'file-name-invalid-regexp' (sanity)
-  ;;   - and also alphanumeric /w -_ (sensibility)
+  ;; is `arg' ok as desc part?
+  (spydez/taskspace/verify-description arg)
 
   (message "%s" arg)
   ;; (error "TODO: this")
@@ -147,11 +148,120 @@ Create if none. Return if just the one. Choose from multiple."
 ;; Taskspace Utils
 ;;------------------------------------------------------------------------------
 
+(defun spydez/taskspace/create-dir (description date-arg)
+  "Assumes valid input description."
+         ;; Get today's date.
+  (let* ((date (spydez/taskspace/get-date date-arg))
+         ;; Get today's dirs.
+         (date-dirs (spydez/taskspace/list-date date))
+         ;;   - figure out index of this one
+         (number (spydez/taskspace/get-number date-dirs))
+
+
+         ;; Build dir string from all that.
+         (dir-name ())) ;; TODO this
+    ;; Make sure desc hasn't been created today?
+    ;; Make sure it doesn't exist.
+    ;; Make sure it does exist. XD
+
+    )
+
+  ;; todo: all that
+  )
+
+
+(defun spydez/taskspace/get-number (dir-list)
+  "Checks dirs in list, returns highest number part + 1."
+  (let ((number -1))
+    ;; check all input dirs (should be only one day's dirs but whatever...
+    (dolist (dir dir-list number)
+      (let ((dir-num-part (spydez/taskspace/split-name dir 'number)))
+        ;; string-to-number can't deal with nil apparently
+        (unless (null dir-num-part)
+          (setq number (max number (string-to-number dir-num-part)))
+          )))
+    ;; number is set at max, we return next in sequence
+    (1+ number)))
+;; (spydez/taskspace/get-number '("foo/bar/2000_0_baz"))
+;; (spydez/taskspace/get-number '())
+;; (spydez/taskspace/get-number '("foo/bar/2000_0_baz" "foo/bar/2000_qux" "foo/bar/2000_qux_jeff" "foo/bar/2000_8_quux"))
+
+
+(defun spydez/taskspace/get-date (arg)
+  "Returns a date in the correct string format.
+TODO: Use arg somehow for not-today dates?"
+  ;; TODO: if arg, not today. Else, today.
+  (format-time-string spydez/datetime/format/yyyy-mm-dd))
+;; Today: (spydez/taskspace/get-date nil)
+;; TODO: Not Today?: (spydez/taskspace/get-date -1)
+
+
+(defun spydez/taskspace/verify-description (name)
+  "Verifies that `name' is an allowable part of the directory name."
+
+  ;; Sanity check 1: `name' must be a valid filename, for a very loose definition.
+  ;; Sanity check 2: Not a path sep in there?
+  ;; Valid check:    Verify name obeys my regexp.
+  (let ((matched-invalid (string-match file-name-invalid-regexp name))
+        (dir-sep-check (file-name-nondirectory name))
+        (valid-name (string-match spydez/tasks/dir-name/valid-desc-regexp name)))
+
+    ;; check for bad input, fail if so... Bad if:
+    (if (or matched-invalid                    ;; - DOES match /invalid/ filename regexp
+            (not (string= name dir-sep-check)) ;; - or non-dir name DOES NOT match input name
+            (null valid-name))                 ;; - or DOES NOT match /valid/ name regexp
+        ;; Just return nil for fail.
+        nil
+
+      ;; else... Ok name. Do something?
+
+      ;; Verify they didn't try to give us the whole thing? (check for date?)
+      ;; (Eh... Not gonna bother right now.)
+
+      ;; return input when valid
+      name
+      )))
+;; weird name: (spydez/taskspace/verify-description "\0")
+;; too short:  (spydez/taskspace/verify-description "0")
+;; good!:      (spydez/taskspace/verify-description "hello-there")
+;; dir sep:    (spydez/taskspace/verify-description "hello-there/here")
+
+
+(defun spydez/taskspace/make-name (date number description)
+  "Creates a full name from inputs obeying first formatting order
+found in parts-alists."
+        ;; How long is the parts-alist we're looking for
+  (let* ((name-parts (list date number description))
+         (name-len (length (seq-remove #'null name-parts)))
+         (split-alist)
+         (output))
+    ;; find the right alist for building the dir string
+    ;; TODO: pull this out of here and split-name and make func maybe?
+    (dolist (alist spydez/tasks/dir-name/parts-alists split-alist)
+      (when (= name-len (length alist))
+        (setq split-alist alist)))
+
+    (unless (null split-alist)
+
+      ;; TODO-TODAY: Surely there's some sort of map/filter/reduce(join) instead of this shit...
+
+      ;; use split-alist and name-parts to build output
+      (dolist (part-assoc split-alist output)
+        ;; for each part, get int
+        ;; TODO: sort into vector or something? Doing stupid way for now...
+        (message "%s %s %s %s %s" name-parts part-assoc output (cdr part-assoc) (nth (cdr part-assoc) name-parts))
+        (setq output (concat output (nth (cdr part-assoc) name-parts)))
+        ))))
+;; (spydez/taskspace/make-name "2000" "1" "hi")
+;; (spydez/taskspace/make-name "hi" nil nil)
+
+
 ;; util to split up dir name and then give desired bit back
 ;;  - should work for manually made ones that don't have the middle <#> part
 (defun spydez/taskspace/split-name (name part)
   "Splits name based on taskspace naming/separator rules and returns the
 requested part. Part can be one of: '(date number description)."
+
   (unless (or (null name) (null part))
     ;; unless or if/error?
     (let* ((split-name (split-string name spydez/tasks/dir-name/separator))
@@ -161,16 +271,22 @@ requested part. Part can be one of: '(date number description)."
       ;; find the right alist for parsing the split dir string
       (dolist (alist spydez/tasks/dir-name/parts-alists split-alist)
         (when (= len-split (length alist))
-          (setq split-alist alist)
-          ))
+          (setq split-alist alist)))
 
-      ;; figure out what index is desired,
-      ;; then pull out the desired string (and return it)
-      (nth (cdr (assoc part split-alist)) split-name)
-      )))
+      ;; now try to pull out part requested
+      (if (not (assoc part split-alist))
+          nil ;; they requested something invalid for this `name'
+
+        ;; figure out what index is desired,
+        ;; then pull out the desired string (and return it)
+        (nth (cdr (assoc part split-alist)) split-name)
+        ))))
 ;; (spydez/taskspace/split-name "2000_0_foo" 'date)
 ;; (spydez/taskspace/split-name "2000_0_foo" nil)
-
+;; (spydez/taskspace/split-name "2000_0_foo" 'number)
+;; (spydez/taskspace/split-name "2000_foo" 'number)
+;; TODO: make work with 3+ where date is 1, number is 2, 3+ are all desc that had "_" in it...
+;; (spydez/taskspace/split-name "2000_0_foo_jeff" 'number)
 
 (defun spydez/taskspace/dir= (name dir part)
   "True if `name' is equal to the split-name `part' of `dir'.
@@ -242,6 +358,8 @@ Else nil."
 
 ;; TODO: move to its own namespace? `taskspace/*' instead of a variety of
 ;; `spydez/taskspace/*' and `spydez/*'?
+
+;; TODO: rename `spydez/tasks/*' vars to `spydez/taskspace/*'?
 
 
 ;;------------------------------------------------------------------------------
