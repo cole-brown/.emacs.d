@@ -13,7 +13,7 @@
 ;; TODO: move elsewhere.
 ;;   - maybe: personal/dev/domains/{home,work}/dev-directories.el
 ;;   - defaults here? maybe a (with-var ...) or something?
-(defvar spydez/dir/tasks
+(defconst spydez/dir/tasks
   "C:/home/spydez/taskspaces/" ;; TODO: Debug dir. Use below instead.
   ;; (spydez/dir-name "workspace" spydez/dir/home)
   "User's folder for small work tasks.")
@@ -30,6 +30,9 @@
 (defconst spydez/tasks/dir-name/separator "_"
   "Split directory name on this to extract date, dedup number, and description.")
 
+;; TODO: Turn these into regexes w/ capture groups, I think...
+;; Have make-name and split-name use the regexes to make/split.
+;; http://ergoemacs.org/emacs/elisp_string_functions.html
 (defconst spydez/tasks/dir-name/parts-alists
   '(
     ;; Three part. Code does this all the time?
@@ -147,9 +150,9 @@ Create if none. Return if just the one. Choose from multiple."
 ;;------------------------------------------------------------------------------
 ;; Taskspace Utils
 ;;------------------------------------------------------------------------------
-
+(require 'cl) ;; for `some'
 (defun spydez/taskspace/create-dir (description date-arg)
-  "Assumes valid input description."
+  "Creates dir w/ description, date, and (generated) number, if valid & unused description."
          ;; Get today's date.
   (let* ((date (spydez/taskspace/get-date date-arg))
          ;; Get today's dirs.
@@ -157,17 +160,32 @@ Create if none. Return if just the one. Choose from multiple."
          ;;   - figure out index of this one
          (number (spydez/taskspace/get-number date-dirs))
 
-
          ;; Build dir string from all that.
-         (dir-name ())) ;; TODO this
-    ;; Make sure desc hasn't been created today?
-    ;; Make sure it doesn't exist.
-    ;; Make sure it does exist. XD
+         (dir-name (spydez/taskspace/make-name date number description))
+         (dir-full-path (expand-file-name dir-name spydez/dir/tasks)))
 
-    )
+    ;; (message "create-dir: %s %s %s %s" date date-dirs number dir-name)
 
-  ;; todo: all that
-  )
+    ;; Only create if:
+    ;;   - valid description input and
+    ;;   - no dupes or accidental double creates
+    ;;   - it doesn't exist (this is probably redundant if verify-description works right)
+    (when (and (spydez/taskspace/verify-description description)
+               (not (some (lambda (x) (spydez/taskspace/dir= description x 'description)) date-dirs))
+               (not (file-exists-p dir-full-path)))
+
+      ;; Make it.
+      ;; make-directory helpfully has no data on what it returns or why or when
+      ;; or anything. But it returns nil on success so... super useful guys.
+      (make-directory dir-full-path)
+
+      ;; How about we report something actually useful maybe?
+      ;; Full path of created dir on... success?
+      ;; Nil on folder non-existance.
+      (if (file-exists-p dir-full-path)
+          dir-full-path
+        nil))))
+;; (spydez/taskspace/create-dir "testcreate" nil)
 
 
 (defun spydez/taskspace/get-number (dir-list)
@@ -226,34 +244,33 @@ TODO: Use arg somehow for not-today dates?"
 ;; good!:      (spydez/taskspace/verify-description "hello-there")
 ;; dir sep:    (spydez/taskspace/verify-description "hello-there/here")
 
-
 (defun spydez/taskspace/make-name (date number description)
   "Creates a full name from inputs obeying first formatting order
 found in parts-alists."
         ;; How long is the parts-alist we're looking for
-  (let* ((name-parts (list date number description))
-         (name-len (length (seq-remove #'null name-parts)))
-         (split-alist)
-         (output))
+  (let* ((name-parts (seq-map (lambda (x) (format "%s" x)) ;; stringify each (don't want nulls here...)
+                              (seq-remove #'null ;; but take out nulls?
+                                          (list date number description)))) ;; turn inputs into list
+         (name-len (length name-parts))
+         (split-alist))
     ;; find the right alist for building the dir string
     ;; TODO: pull this out of here and split-name and make func maybe?
     (dolist (alist spydez/tasks/dir-name/parts-alists split-alist)
       (when (= name-len (length alist))
         (setq split-alist alist)))
 
+    ;; (message "make-name: %s->%s %s %s null?%s"
+    ;;          name-parts (seq-remove #'null name-parts)
+    ;;          name-len
+    ;;          split-alist (null split-alist))
+
     (unless (null split-alist)
-
-      ;; TODO-TODAY: Surely there's some sort of map/filter/reduce(join) instead of this shit...
-
-      ;; use split-alist and name-parts to build output
-      (dolist (part-assoc split-alist output)
-        ;; for each part, get int
-        ;; TODO: sort into vector or something? Doing stupid way for now...
-        (message "%s %s %s %s %s" name-parts part-assoc output (cdr part-assoc) (nth (cdr part-assoc) name-parts))
-        (setq output (concat output (nth (cdr part-assoc) name-parts)))
-        ))))
+      (string-join (seq-remove #'null name-parts) spydez/tasks/dir-name/separator)
+        )))
 ;; (spydez/taskspace/make-name "2000" "1" "hi")
+;; (spydez/taskspace/make-name "2000" nil "hi")
 ;; (spydez/taskspace/make-name "hi" nil nil)
+;; (spydez/taskspace/make-name "2019-05-14" 0 "testcreate")
 
 
 ;; util to split up dir name and then give desired bit back
@@ -361,6 +378,7 @@ Else nil."
 
 ;; TODO: rename `spydez/tasks/*' vars to `spydez/taskspace/*'?
 
+;; TODO: uh... tests?
 
 ;;------------------------------------------------------------------------------
 ;; The End.
