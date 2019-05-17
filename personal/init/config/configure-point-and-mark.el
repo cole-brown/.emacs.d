@@ -15,15 +15,15 @@
 
 ;; https://emacsredux.com/blog/2013/05/22/smarter-navigation-to-the-beginning-of-a-line/
 ;; Trial [2019-01-29]
+;; Trial 2 ([2019-05-17]): Do beginning of line first, not second?
+;;   This still could be annoying in, for example, macros... We'll see.
 (defun spydez/smarter-move-beginning-of-line (arg)
-  ;; TODO: is this really the way for docstrings to be? All wonked over to
-  ;; the left instead of neatly indented?
-  "Move point back to indentation of beginning of line.
+  "Move point to beginning of line.
 
-Move point to the first non-whitespace character on this line.
-If point is already there, move to the beginning of the line.
-Effectively toggle between the first non-whitespace character and
-the beginning of the line.
+Move point to the beginning of the line. If point is already
+there, move to the first non-whitespace character on this line.
+Effectively toggle between the beginning of the line and the
+first non-whitespace character.
 
 If ARG is not nil or 1, move forward ARG - 1 lines first.  If
 point reaches the beginning or end of the buffer, stop there."
@@ -36,9 +36,9 @@ point reaches the beginning or end of the buffer, stop there."
       (forward-line (1- arg))))
 
   (let ((orig-point (point)))
-    (back-to-indentation)
+    (move-beginning-of-line 1)
     (when (= orig-point (point))
-      (move-beginning-of-line 1))))
+      (back-to-indentation))))
 
 ;; remap C-a to `smarter-move-beginning-of-line'
 (global-set-key [remap move-beginning-of-line]

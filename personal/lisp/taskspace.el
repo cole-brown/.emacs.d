@@ -134,6 +134,13 @@ Create if none. Return if just the one. Choose from multiple."
 
   (message "%s" arg)
   ;; (error "TODO: this")
+
+  ;; call create-dir
+
+  ;; put skeleton org into dir?
+  ;; or just build buffer to save into dir as org notes.
+  ;;   - notes.<desc>.org?
+  ;;   - _notes.<desc>.org?
   )
 ;; M-x spydez/taskspace/create
 ;; (spydez/taskspace/create "testing-create")
