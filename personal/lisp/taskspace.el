@@ -125,23 +125,40 @@ Create if none. Return if just the one. Choose from multiple."
 
 
 (defun spydez/taskspace/create (arg)
-  "Create a new taskspace."
+  "Creates a new taskspace for today with the description supplied."
   (interactive "sShort Description: ")
   ;; Do we need a max len? Leaving out until I feel otherwise.
 
   ;; is `arg' ok as desc part?
-  (spydez/taskspace/verify-description arg)
+  (if (not (spydez/taskspace/verify-description arg))
+      ;; fail w/ message and return nil?
+      ;; (progn
+      ;;   (message "Invalid description: %s" arg)
+      ;;   nil)
+      ;; Trying out just erroring out instead.
+      ;; We are up to the interactive level now.
+      (error "Invalid description: %s" arg)
 
-  (message "%s" arg)
-  ;; (error "TODO: this")
+    ;; else
+    ;; create the dir/project for today
+    (let ((taskpath (spydez/taskspace/create-dir arg 'today)))
+      (if (null taskpath)
+          ;; couldn't create it for some reason...
+          (error "Error creating taskspace directory for: %s" arg)
 
-  ;; call create-dir
+        ;; else
+        ;; TODO-TODAY
+        ;; put a projectile file into dir?
+        ;; named: .projectile
+        ;;   https://projectile.readthedocs.io/en/latest/projects/#ignoring-files
 
-  ;; put skeleton org into dir?
-  ;; or just build buffer to save into dir as org notes.
-  ;;   - notes.<desc>.org?
-  ;;   - _notes.<desc>.org?
-  )
+        ;; put skeleton org into dir?
+        ;; or just build buffer to save into dir as org notes.
+        ;;   - notes.<desc>.org?
+        ;;   - _notes.<desc>.org?
+
+        ;; copy taskpath to clipboard?
+        ))))
 ;; M-x spydez/taskspace/create
 ;; (spydez/taskspace/create "testing-create")
 
@@ -218,6 +235,7 @@ TODO: Use arg somehow for not-today dates?"
   ;; TODO: if arg, not today. Else, today.
   (format-time-string spydez/datetime/format/yyyy-mm-dd))
 ;; Today: (spydez/taskspace/get-date nil)
+;; Also Today?: (spydez/taskspace/get-date 'today)
 ;; TODO: Not Today?: (spydez/taskspace/get-date -1)
 
 
@@ -384,6 +402,7 @@ Else nil."
 ;; `spydez/taskspace/*' and `spydez/*'?
 
 ;; TODO: rename `spydez/tasks/*' vars to `spydez/taskspace/*'?
+;; TODO: move to its own dir like use-tool?
 
 ;; TODO: uh... tests?
 
