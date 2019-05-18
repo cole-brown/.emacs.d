@@ -68,9 +68,18 @@ Repeated invocations toggle between the two most recently open buffers."
     ;; TODO: [2019-03-08] Still not using this enough and >50% of the time
     ;;   I'm not doing the chord - just inserting letters into buffers...
     (setq key-chord-one-key-delay 0.16)
-    
+
     (key-chord-mode 1)
-    
+
+    ;; TODO: make delay bigger. Try out 0.3 or something
+    ;; TODO: Good hydra keys?
+    ;;   - '-' plus a letter? Dash is homerow pinkie for dvorak.
+    ;;   - ...?
+    ;; https://www.reddit.com/r/emacs/comments/22hzx7/what_are_your_keychord_abbreviations/
+    ;; https://github.com/Russell91/emacs/blob/master/key-chord.el has these and maybe others:
+    ;;    (key-chord-define c++-mode-map ";;"  "\C-e;")
+    ;;    (key-chord-define c++-mode-map "{}"  "{\n\n}\C-p\t")
+
     ;; k can be bound too
     ;; TODO: test all these cuz I'm not sure
     (key-chord-define-global "uu"     'undo)

@@ -5,19 +5,22 @@
 
 Next things?
   - To Do: [0/13]
-    - [ ] have recentf ignore elpa dir?
-    - [ ] ag, ack, gack, gawk, your mom, grep, something?
-    - [ ] fill-*
-      - fill-paragraph to a better keybind than M-q?
-      - fill-region to a keybind?
-      - key-chord hydra for fill-* commands?
-    - [ ] feature?: temp/workspace dated/numbered dirs
+    - [ ] org-mode stuff to look at:
+      - https://www.reddit.com/r/emacs/comments/b90xc5/orgmode_your_life/
+    - [ ] taskspace.el
+          feature?: temp/workspace dated/numbered dirs
       - e.g. first/only dir of the day: 2019-04-05_0_<description>
       - second: 2019-04-05_1_<2nd-description>
       - '_' as date/num/desc separator
       - '-' as date/word sep (space illegal/replaced)
       - func to travel to/open in dired mode the directory
         - and create it if non-existant
+    - [ ] have recentf ignore elpa dir?
+    - [ ] ag, ack, gack, gawk, your mom, grep, something?
+    - [ ] fill-*
+      - fill-paragraph to a better keybind than M-q?
+      - fill-region to a keybind?
+      - key-chord hydra for fill-* commands?
     - [ ] org-journal - try it out?
       - https://github.com/bastibe/org-journal
       - try w/ encryption (fix gpg again again... again... -_-)
@@ -28,8 +31,6 @@ Next things?
       - e.g.2. want rust or w/e flavor of the month catches my eye at home but
         none of it at work
     - [ ] configure-crypt needs babying... again... (again... (again?..))
-    - [ ] org-mode stuff to look at:
-      - https://www.reddit.com/r/emacs/comments/b90xc5/orgmode_your_life/
     - [ ] remove references/?
       - Or put those files in repo... useless files now when not on whatever comp I downloaded em on.
       - ref files were for files that were/are very useful on their own and so preserving them for
