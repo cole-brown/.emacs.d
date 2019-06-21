@@ -39,6 +39,10 @@
   ;;----------------------------------------------------------------------------
   :init ;; can do multiple forms until next keyword
 
+  ;;-----------------
+  ;; General Settings
+  ;;-----------------
+
   ;; auto-timestamp when TODOs are turned to DONE state
   (setq org-log-done t)
 
@@ -104,7 +108,85 @@
         '(("google" . "https://www.google.com/search?q=%h")
           ("map" . "https://maps.google.com/maps?q=%h")
           ))
-  
+
+  ;;   "Enable Speed Keys, which allows quick single-key commands when the cursor
+  ;; is placed on a heading. Usually the cursor needs to be at the beginning of a
+  ;; headline line, but defining it with this function makes them active on any of
+  ;; the asterisks at the beginning of the line (useful with the font highlighting
+  ;; I use, as all but the last asterisk are sometimes not visible)."
+  ;;   https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+  ;; Manual:
+  ;;   https://orgmode.org/manual/Speed-keys.html
+  (setq org-use-speed-commands
+        (lambda () (and (looking-at org-outline-regexp) (looking-back "^\**"))))
+  ;; Not exactly a hook, but kinda...
+  ;; TODO: I'd rather have that function where I can comment it and name it
+  ;; and stuff but I need to figure out how to elisp for "You want a variable?
+  ;; Well here's a function to run instead." You know... lambda things.
+
+  ;;-----------------
+  ;; /General Settings
+  ;;-----------------
+
+
+  ;;-----------------
+  ;; Making It Pretty
+  ;;-----------------
+
+  ;; Set org-hid-emphasis-markers so that the markup indicators are not shown.
+  ;; (so +strike+, /italic/, *bold* show font change, but hides the +/*)
+  (setq org-hide-emphasis-markers t)
+
+  ;; Show list markers with a middle dot instead of the original character.
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+  ;; TODO: try this out?
+  ;;   org custom id helpers
+  ;;   https://writequit.org/articles/emacs-org-mode-generate-ids.html#the-solution
+
+  ;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/#beautifying-org-mode
+  ;; More font stuff:
+  ;;
+  ;; ;; Choose a nice font for the document title and the section headings. The first
+  ;; ;; one found in the system from the list below is used, and the same font is
+  ;; ;; used for the different levels, in varying sizes.
+  ;; (let* ((variable-tuple
+  ;;         (cond ((x-list-fonts   "Source Sans Pro") '(:font   "Source Sans Pro"))
+  ;;               ((x-list-fonts   "Lucida Grande")   '(:font   "Lucida Grande"))
+  ;;               ((x-list-fonts   "Verdana")         '(:font   "Verdana"))
+  ;;               ((x-family-fonts "Sans Serif")      '(:family "Sans Serif"))
+  ;;               (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+  ;;        (base-font-color (face-foreground 'default nil 'default))
+  ;;        (headline       `(:inherit default :weight bold :foreground ,base-font-color)))
+  ;;
+  ;;   (custom-theme-set-faces
+  ;;    'user
+  ;;    `(org-level-8        ((t (,@headline ,@variable-tuple))))
+  ;;    `(org-level-7        ((t (,@headline ,@variable-tuple))))
+  ;;    `(org-level-6        ((t (,@headline ,@variable-tuple))))
+  ;;    `(org-level-5        ((t (,@headline ,@variable-tuple))))
+  ;;    `(org-level-4        ((t (,@headline ,@variable-tuple :height 1.1))))
+  ;;    `(org-level-3        ((t (,@headline ,@variable-tuple :height 1.1))))
+  ;;    `(org-level-2        ((t (,@headline ,@variable-tuple :height 1.25))))
+  ;;    `(org-level-1        ((t (,@headline ,@variable-tuple :height 1.25))))
+  ;;    `(org-document-title ((t (,@headline ,@variable-tuple :height 1.25 :underline nil))))))
+  ;; Not sure I like it. Needs a lot of tweaking and not convinced about the height.
+  ;; Does make the org-bullets nicer, though.
+
+  ;; Can also set up a variable-pitch face to a proportional font I like...
+  ;; (variable-pitch ((t (:family "Source Sans Pro" :height 160 :weight light))))
+  ;; ;;(variable-pitch ((t (:family "Avenir Next" :height 160 :weight light))))
+  ;;
+  ;; Setting up the fixed-pitch face to be the same as my usual default face. My
+  ;; current one is Inconsolata.
+  ;; (fixed-pitch ((t (:family "Inconsolata"))))
+
+  ;;-----------------
+  ;; /Making It Pretty
+  ;;-----------------
+
   ;;------------------
   ;; /':init' section.
   ;;------------------
@@ -129,11 +211,23 @@
 
 
   ;;----------------------------------------------------------------------------
+  ;; Org-Mode Hooks
+  ;;----------------------------------------------------------------------------
+  ;;:hook
+
+  ;; Thought I had two but I don't actually have any at all right now...
+
+  ;;-----------------
+  ;; /':hook' section
+  ;;-----------------
+
+
+  ;;----------------------------------------------------------------------------
   ;; Org-Mode Config (Post-Load)
   ;;----------------------------------------------------------------------------
-  :config ;; can do multiple forms until next keyword
+  ;;:config ;; can do multiple forms until next keyword
 
-  ;; (anything?)
+  ;; (anything?) *crickets*
 
   ;;------------------------------------
   ;; /':config' section - nothing after.
@@ -147,97 +241,16 @@
 ;; Making org-mode pretty
 ;;------------------------------------------------------------------------------
 
-;; Set org-hid-emphasis-markers so that the markup indicators are not shown.
-;; (so +strike+, /italic/, *bold* show font change, but hides the +/*)
-(setq org-hide-emphasis-markers t)
-
-;; Show list markers with a middle dot instead of the original character.
-(font-lock-add-keywords 'org-mode
-                        '(("^ *\\([-]\\) "
-                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
 ;; Display the titles with nice unicode bullets instead of the text ones.
 (use-package org-bullets
   :after org
   :hook
   (org-mode . (lambda () (org-bullets-mode 1))))
 
-;; TODO: try this out?
-;;   org custom id helpers
-;;   https://writequit.org/articles/emacs-org-mode-generate-ids.html#the-solution
-
-;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/#beautifying-org-mode
-;; More font stuff:
-;; 
-;; ;; Choose a nice font for the document title and the section headings. The first
-;; ;; one found in the system from the list below is used, and the same font is
-;; ;; used for the different levels, in varying sizes.
-;; (let* ((variable-tuple
-;;         (cond ((x-list-fonts   "Source Sans Pro") '(:font   "Source Sans Pro"))
-;;               ((x-list-fonts   "Lucida Grande")   '(:font   "Lucida Grande"))
-;;               ((x-list-fonts   "Verdana")         '(:font   "Verdana"))
-;;               ((x-family-fonts "Sans Serif")      '(:family "Sans Serif"))
-;;               (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
-;;        (base-font-color (face-foreground 'default nil 'default))
-;;        (headline       `(:inherit default :weight bold :foreground ,base-font-color)))
-;; 
-;;   (custom-theme-set-faces
-;;    'user
-;;    `(org-level-8        ((t (,@headline ,@variable-tuple))))
-;;    `(org-level-7        ((t (,@headline ,@variable-tuple))))
-;;    `(org-level-6        ((t (,@headline ,@variable-tuple))))
-;;    `(org-level-5        ((t (,@headline ,@variable-tuple))))
-;;    `(org-level-4        ((t (,@headline ,@variable-tuple :height 1.1))))
-;;    `(org-level-3        ((t (,@headline ,@variable-tuple :height 1.1))))
-;;    `(org-level-2        ((t (,@headline ,@variable-tuple :height 1.25))))
-;;    `(org-level-1        ((t (,@headline ,@variable-tuple :height 1.25))))
-;;    `(org-document-title ((t (,@headline ,@variable-tuple :height 1.25 :underline nil))))))
-;; Not sure I like it. Needs a lot of tweaking and not convinced about the height.
-;; Does make the org-bullets nicer, though.
-
-;; Can also set up a variable-pitch face to a proportional font I like...
-;; (variable-pitch ((t (:family "Source Sans Pro" :height 160 :weight light))))
-;; ;;(variable-pitch ((t (:family "Avenir Next" :height 160 :weight light))))
-;;
-;; Setting up the fixed-pitch face to be the same as my usual default face. My
-;; current one is Inconsolata.
-;; (fixed-pitch ((t (:family "Inconsolata"))))
-
 
 ;;------------------------------------------------------------------------------
-;; Hooks
+;; Org-Mode Functions & Misc 
 ;;------------------------------------------------------------------------------
-
-;; TODO: not sure if we need to hook yas and org together anymore.
-;;  - make a test org-mode snippet and see if it Just Works (tm)?
-;;
-;; (defun spydez/org-mode-hook ()
-;;   ;; yasnippet
-;;   (make-variable-buffer-local 'yas/trigger-key)
-;;   (setq yas/trigger-key [tab])
-;;   (define-key yas/keymap [tab] 'yas/next-field-group))
-;; (add-hook 'org-mode-hook 'spydez/org-mode-hook)
-
-;;   "Enable Speed Keys, which allows quick single-key commands when the cursor
-;; is placed on a heading. Usually the cursor needs to be at the beginning of a
-;; headline line, but defining it with this function makes them active on any of
-;; the asterisks at the beginning of the line (useful with the font highlighting
-;; I use, as all but the last asterisk are sometimes not visible)."
-;;   https://zzamboni.org/post/my-emacs-configuration-with-commentary/
-;; Manual:
-;;   https://orgmode.org/manual/Speed-keys.html
-(setq org-use-speed-commands
-      (lambda () (and (looking-at org-outline-regexp) (looking-back "^\**"))))
-;; Not exactly a hook, but kinda...
-;; TODO: I'd rather have that function where I can comment it and name it
-;; and stuff but I need to figure out how to elisp for "You want a variable?
-;; Well here's a function to run instead." You know... lambda things.
-
-
-;;------------------------------------------------------------------------------
-;; Org Mode!
-;;------------------------------------------------------------------------------
-;; Don't need to use-package it or anything...
 
 ;; TODO: set these to spydez/{dir,file}/org/something consts if defined
 ;; (setq org-directory "~/personal")
@@ -289,10 +302,14 @@
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org712e999
 ;; org-crypt
 
-;; By default, org-indent produces an indicator "Ind" in the modeline. We use diminish to hide it.
+;; Enable org-indent-mode for a cleaner outline view.
+;; https://orgmode.org/manual/Clean-view.html
 (use-package org-indent
   :ensure nil
   :after org
+
+  ;; By default, org-indent-mode produces an indicator "Ind" in the modeline.
+  ;; Use diminish to hide it.
   :diminish)
 
 ;; A function that reformats the current buffer by regenerating the text from
@@ -381,12 +398,15 @@
 ;;------------------------------------------------------------------------------
 ;; Org Journal
 ;;------------------------------------------------------------------------------
-;; TODO: try out org-journal? this guy hasn't gotten around to it either.
+;; TODO: try out org-journal?
 ;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/#keeping-a-journal
+;; https://arenzana.org/2019/04/emacs-org-mode/#orgeaaf198
+;; https://github.com/bastibe/org-journal
 ;; (use-package org-journal
 ;;   :after org
 ;;   :custom
-;;   (org-journal-dir "~/Documents/logbook"))
+;;   (org-journal-dir "~/Documents/logbook")
+;;   (org-journal-date-format "%A, %d %B %Y")) ;; or a better format, probably.
 
 
 ;;------------------------------------------------------------------------------
@@ -471,7 +491,7 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Org-Mode and Links
+;; Org-Mode & Links
 ;;------------------------------------------------------------------------------
 
 ;; Quick Links
