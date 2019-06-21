@@ -23,83 +23,72 @@
 
 
 ;;------------------------------------------------------------------------------
-;; General Settings
-;;------------------------------------------------------------------------------
-;;TODO: org use-package?
-;; (use-package org
-;;   :pin manual
-;; Or just (require 'org) it?
-;; Oh, here:
-;;   "specify :ensure nil so that use-package doesn’t try to install it, and
-;;   just loads and configures it."
-;; So... TODO this:
-;; (use-package org
-;;   :ensure nil
-;;   :init or :custom or :bind or etc for these things
-;;   maybe some functions for each region so it's digestable instead of 500 lines
-;;   :config
-;;   <some/all/most of the below>
-;;   )
-
-;; auto-timestamp when TODOs are turned to DONE state
-(setq org-log-done t)
-
-;; let's see how default of 2 is before changing
-;; (setq org-edit-src-content-indentation 0) ; # of spaces added to src indent
-
-;; Don't know about soft word wrap. But we could do it in a hook for
-;; org-mode if desired.
-;; Wait... it's already on in org-mode? (todo:) From where?
-;; (visual-line-mode 1)
-
-;; Well structured indentation. Freehand notes/text stay indented to
-;; headline level.
-(setq org-startup-indented t)
-;; Note 1: This changes how it /looks/, not how the raw text is formatted.
-;; Note 2: This also hides leading stars for headlines.
-
-;; Not 100% sold on these this time around... Keeping for now.
-;; TODO: maybe disabling these... and make a new work.org at the same
-;;   time? My work.org is getting annoying - I may have to find a better
-;;   format for notes than whatever structure and monolithic file I'm
-;;   trying to do now. Also could go to new todo sequence and logbook.
-;;(setq org-hide-leading-stars t) ; make outline a bit cleaner
-;;(setq org-odd-levels-only t)    ; make outline a bit cleaner
-
-;; TODO sequence to pop up shortcuts to on running `C-c C-t' on a headline
-;;   (n) - n key will be shortcut into this state
-;;    @  - timestamp on enter
-;;    !  - prompt for note w/ timestamp on enter
-;;   /!  - prompt for note w/ timestamp on exit if none for next state
-;;    |  - separates "need action" states from "finished" states
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "STARTED(s!)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
-
-;; `Drawer' to log to. (Property/subheading thing). "LOGBOOK" is default if this
-;; is set to `t'. This is for the place org-mode puts those todo timestamps,
-;; state change notes, and user notes just under the headline.
-(setq org-log-into-drawer "LOGBOOK")
-
-;; TODO: an org-mode use-package for grouping all these settings?
-
-;; Put .org.txt into the mode list for org-mode
-(add-to-list 'auto-mode-alist '("\\.org.txt$" . org-mode))
-
-;; Don't allow accidental edits of invisible regions in org files.
-;; https://yiufung.net/post/org-mode-hidden-gems-pt1/
-(setq org-catch-invisible-edits 'show-and-error)
-
-;;------------------------------------------------------------------------------
 ;;- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-;;            O R G - M O D E  -  T H E   T H I N G   I T S E L F
+;;                        ORG-MODE - The Thing Itself
+;;  The Cthulu of Emacs. Required and will drive you insane trying to grok.
 ;;- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;------------------------------------------------------------------------------
-;; TODO: Move org-mode itsef's setup into here.
 (use-package org
+  ;; specify ':ensure nil' so that use-package doesn’t try to install it,
+  ;; and just loads and configures it.
+  :ensure nil
+
 
   ;;----------------------------------------------------------------------------
-  ;; Org-Mode General Settings
+  ;; Org-Mode Init & General Settings
   ;;----------------------------------------------------------------------------
+  :init ;; can do multiple forms until next keyword
+
+  ;; auto-timestamp when TODOs are turned to DONE state
+  (setq org-log-done t)
+
+  ;; let's see how default of 2 is before changing
+  ;; (setq org-edit-src-content-indentation 0) ; # of spaces added to src indent
+
+  ;; Don't know about soft word wrap. But we could do it in a hook for
+  ;; org-mode if desired.
+  ;; Wait... it's already on in org-mode. Well if we want to turn it off...
+  ;; (visual-line-mode 1)
+
+  ;; Well structured indentation. Freehand notes/text stay indented to
+  ;; headline level.
+  (setq org-startup-indented t)
+  ;; Note 1: This changes how it /looks/, not how the raw text is formatted.
+  ;; Note 2: This also hides leading stars for headlines.
+
+  ;; Not 100% sold on these this time around... Keeping for now.
+  ;; TODO: maybe disabling these... and make a new work.org at the same
+  ;;   time? My work.org is getting annoying - I may have to find a better
+  ;;   format for notes than whatever structure and monolithic file I'm
+  ;;   trying to do now. Also could go to new todo sequence and logbook.
+  ;;(setq org-hide-leading-stars t) ; make outline a bit cleaner
+  ;;(setq org-odd-levels-only t)    ; make outline a bit cleaner
+
+  ;; TODO sequence to pop up shortcuts to on running `C-c C-t' on a headline
+  ;;   (n) - n key will be shortcut into this state
+  ;;    @  - timestamp on enter
+  ;;    !  - prompt for note w/ timestamp on enter
+  ;;   /!  - prompt for note w/ timestamp on exit if none for next state
+  ;;    |  - separates "need action" states from "finished" states
+  (setq org-todo-keywords
+        '((sequence "TODO(t)"
+                    "STARTED(s!)"
+                    "WAITING(w@/!)"
+                    "|"
+                    "DONE(d!)"
+                    "CANCELLED(c@)")))
+
+  ;; `Drawer' to log to. (Property/subheading thing). "LOGBOOK" is default if this
+  ;; is set to `t'. This is for the place org-mode puts those todo timestamps,
+  ;; state change notes, and user notes just under the headline.
+  (setq org-log-into-drawer "LOGBOOK")
+
+  ;; Put .org.txt into the mode list for org-mode
+  (add-to-list 'auto-mode-alist '("\\.org.txt$" . org-mode))
+
+  ;; Don't allow accidental edits of invisible regions in org files.
+  ;; https://yiufung.net/post/org-mode-hidden-gems-pt1/
+  (setq org-catch-invisible-edits 'show-and-error)
 
   ;; Hide extra newlines between (sub)trees
   ;; https://yiufung.net/post/org-mode-hidden-gems-pt1/
@@ -114,7 +103,12 @@
   (setq org-link-abbrev-alist
         '(("google" . "https://www.google.com/search?q=%h")
           ("map" . "https://maps.google.com/maps?q=%h")
-           ))
+          ))
+  
+  ;;------------------
+  ;; /':init' section.
+  ;;------------------
+
 
   ;;----------------------------------------------------------------------------
   ;; Org-Mode Keybinds
@@ -127,8 +121,27 @@
               ;; outline-show-children, which only shows direct children
               ;; headings, not all descendants' headings.
               ;; https://yiufung.net/post/org-mode-hidden-gems-pt1/
-              ("C-c <tab>" . #'org-kill-note-or-show-branches)))
+              ("C-c <tab>" . #'org-kill-note-or-show-branches))
 
+  ;;-----------------
+  ;; /':bind' section
+  ;;-----------------
+
+
+  ;;----------------------------------------------------------------------------
+  ;; Org-Mode Config (Post-Load)
+  ;;----------------------------------------------------------------------------
+  :config ;; can do multiple forms until next keyword
+
+  ;; (anything?)
+
+  ;;------------------------------------
+  ;; /':config' section - nothing after.
+  ;;------------------------------------
+  )
+
+
+;; TODO: rest of these into the use-package as appropriate.
 
 ;;------------------------------------------------------------------------------
 ;; Making org-mode pretty
