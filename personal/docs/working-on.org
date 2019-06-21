@@ -4,7 +4,7 @@
 #+DATE:      [2019-03-05 Tue]
 
 Next things?
-  - To Do: [0/13]
+  - To Do: [0/15]
     - [ ] org-mode stuff to look at:
       - https://www.reddit.com/r/emacs/comments/b90xc5/orgmode_your_life/
     - [ ] taskspace.el
@@ -15,6 +15,7 @@ Next things?
       - '-' as date/word sep (space illegal/replaced)
       - func to travel to/open in dired mode the directory
         - and create it if non-existant
+    - [ ] Is there a command to list out applicable yasnippets?
     - [ ] have recentf ignore elpa dir?
     - [ ] ag, ack, gack, gawk, your mom, grep, something?
     - [ ] fill-*

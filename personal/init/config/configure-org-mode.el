@@ -85,6 +85,50 @@
 ;; Put .org.txt into the mode list for org-mode
 (add-to-list 'auto-mode-alist '("\\.org.txt$" . org-mode))
 
+;; Don't allow accidental edits of invisible regions in org files.
+;; https://yiufung.net/post/org-mode-hidden-gems-pt1/
+(setq org-catch-invisible-edits 'show-and-error)
+
+;;------------------------------------------------------------------------------
+;;- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;;            O R G - M O D E  -  T H E   T H I N G   I T S E L F
+;;- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+;;------------------------------------------------------------------------------
+;; TODO: Move org-mode itsef's setup into here.
+(use-package org
+
+  ;;----------------------------------------------------------------------------
+  ;; Org-Mode General Settings
+  ;;----------------------------------------------------------------------------
+
+  ;; Hide extra newlines between (sub)trees
+  ;; https://yiufung.net/post/org-mode-hidden-gems-pt1/
+  (setq org-cycle-separator-lines 0)
+
+  ;; [[link:tag]] becomes something else.
+  ;; e.g.: [[google:test]] becomes link:
+  ;;       'https://www.google.com/search?q=test' when clicked
+  ;;   - '%s' in link-alist replaced with link's 'tag'
+  ;;   - '%h' in link-alist replaced with link's (html encoded) 'tag'
+  ;; https://yiufung.net/post/org-mode-hidden-gems-pt4/
+  (setq org-link-abbrev-alist
+        '(("google" . "https://www.google.com/search?q=%h")
+          ("map" . "https://maps.google.com/maps?q=%h")
+           ))
+
+  ;;----------------------------------------------------------------------------
+  ;; Org-Mode Keybinds
+  ;;----------------------------------------------------------------------------
+  ;; NOTE: THESE ARE ORG-MODE ONLY! And that is intended.
+
+  :bind (:map org-mode-map
+              ;; 'C-c <tab>' to show headings only (no top parent notes, no
+              ;; children notes, just headings). Org-Mode had 'C-c <tab>' as
+              ;; outline-show-children, which only shows direct children
+              ;; headings, not all descendants' headings.
+              ;; https://yiufung.net/post/org-mode-hidden-gems-pt1/
+              ("C-c <tab>" . #'org-kill-note-or-show-branches)))
+
 
 ;;------------------------------------------------------------------------------
 ;; Making org-mode pretty
@@ -252,8 +296,9 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Org Keybinds
+;; Global Org Keybinds
 ;;------------------------------------------------------------------------------
+;; NOTE: THESE ARE GLOBAL BINDS. And that is intended.
 
 ;; Bind a few keys for globally useful org stuff.
 ;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/

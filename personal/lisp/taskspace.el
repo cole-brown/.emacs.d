@@ -290,7 +290,7 @@ found in parts-alists."
     ;;          split-alist (null split-alist))
 
     (unless (null split-alist)
-      (string-join (seq-remove #'null name-parts) spydez/tasks/dir-name/separator)
+      (mapconcat #'identity (seq-remove #'null name-parts) spydez/tasks/dir-name/separator)
         )))
 ;; (spydez/taskspace/make-name "2000" "1" "hi")
 ;; (spydez/taskspace/make-name "2000" nil "hi")

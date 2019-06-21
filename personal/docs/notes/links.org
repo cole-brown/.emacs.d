@@ -3,6 +3,29 @@
 #+EMAIL:     git@spydez.com
 #+DATE:      [2019-03-03 Sun]
 
+* Misc
+
+http://www.stilldrinking.org/programming-sucks
+
+https://www.usenix.org/system/files/1311_05-08_mickens.pdf
+
+http://www.yacoset.com/Home/signs-that-you-re-a-good-programmer
+
+** To read:
+
+http://www.yacoset.com/Home/signs-that-you-re-a-bad-programmer
+https://jlongster.com/How-I-Became-Better-Programmer
+https://dev.to/jamesmh/how-to-become-a-senior-developer-3di3
+
+* Wikis / References
+
+http://lambda-the-ultimate.org/
+
+** Ward Cunningham's Wiki
+aka "WikiWikiWeb"
+
+http://c2.com/cgi/wiki
+
 * Learning
 [2019-03-15]
 
