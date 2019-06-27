@@ -98,6 +98,10 @@
 ;; C-h f <cmd> -> help for function name
 ;; C-h a -> helm-apropos: Helm-driven function search, kinda
 
+;; Flatten a list for some function that takes &rest instead:
+;;   You're looking for `apply'. And you (apply #'func ...).
+;;   ...Don't forget to quote that function symbol.
+;;   https://emacs.stackexchange.com/questions/17985/turn-a-list-into-a-set-of-arguments-for-a-function
 
 ;;---
 ;; References.

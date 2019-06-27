@@ -6,20 +6,34 @@
 ;;------------------------------------------------------------------------------
 
 
+(require 'cl) ;; for `some'
+
 ;;------------------------------------------------------------------------------
 ;; General Settings
 ;;------------------------------------------------------------------------------
 
-;; TODO: move elsewhere.
+;; TODO: move/overwrite-with-setq elsewhere.
 ;;   - maybe: personal/dev/domains/{home,work}/dev-directories.el
 ;;   - defaults here? maybe a (with-var ...) or something?
 (defconst spydez/dir/tasks
-  "C:/home/spydez/taskspaces/" ;; TODO: Debug dir. Use below instead.
-  ;; (spydez/dir-name "workspace" spydez/dir/home)
+;;  "C:/home/spydez/taskspaces/" ;; Debug dir. Use below instead.
+  (spydez/dir-name "workspace" spydez/dir/home)
   "User's folder for small work tasks.")
 
+(defconst spydez/dir/tasks/copy-files-src
+  "C:/home/spydez/taskspaces/00_copy-src" ;; TODO: Debug dir. Use below-ish instead.
+  ;; (spydez/dir-name "taskspace-new" spydez/dir/home)
+  "User's folder for small work tasks.")
+
+(defun spydez/tasks/test-gen () (format "%s" "testing the file gen func"))
+(defconst spydez/tasks/gen-files-alist
+  '((".projectile" . "testing this file")
+    ("_notes.org" . spydez/tasks/test-gen)))
+
 ;; Gonna need regex for this eventually, probably. But not now.
-(defconst spydez/dir/tasks/always-ignore '("." ".." "00_archive")
+(defconst spydez/dir/tasks/always-ignore '("." ".."
+                                           "00_archive"
+                                           (file-name-nondirectory spydez/dir/tasks/copy-files-src))
   "Always ignore these when getting/determining a taskspace directory.")
 
 ;; directory name format: <date>_<#>_<description>
@@ -139,29 +153,49 @@ Create if none. Return if just the one. Choose from multiple."
       ;; We are up to the interactive level now.
       (error "Invalid description: %s" arg)
 
-    ;; else
+    ;; else:
     ;; create the dir/project for today
     (let ((taskpath (spydez/taskspace/create-dir arg 'today)))
       (if (null taskpath)
           ;; couldn't create it for some reason...
+          ;; TODO: Better reasons if known. "already exists" would be nice for that case.
           (error "Error creating taskspace directory for: %s" arg)
 
-        ;; else
-        ;; TODO-TODAY
-        ;; put a projectile file into dir?
-        ;; named: .projectile
-        ;;   https://projectile.readthedocs.io/en/latest/projects/#ignoring-files
+        ;; else:
+        ;; copy files into new taskspace
+        (unless (not (file-directory-p spydez/dir/tasks/copy-files-src))
+          (apply #'spydez/taskspace/copy-files
+                 ;; arg 1: our new taskpath
+                 taskpath
+                 ;; arg &rest: all the files to copy with:
+                 ;;   - full path name
+                 ;;   - no dot files
+                 ;;     - no '.', '..'
+                 ;;     - yes actual dotfiles somehow?
+                 ;;     - This is what I want, so... ok.
+                 (directory-files spydez/dir/tasks/copy-files-src
+                                  'full
+                                  directory-files-no-dot-files-regexp)))
 
-        ;; put skeleton org into dir?
-        ;; or just build buffer to save into dir as org notes.
+        ;; gen files into new taskspace
+        (unless (not spydez/tasks/gen-files-alist)
+          (spydez/taskspace/generate-files taskpath spydez/tasks/gen-files-alist))
+
+        ;; Either of those can put a projectile file into the taskspace.
+        ;; Just name it: .projectile
+        ;;   See: https://projectile.readthedocs.io/en/latest/projects/#ignoring-files
+
+        ;; Can also put skeleton org file. Or just org file with yasnippet ready to go...
+        ;; TODO: dynamic names for files?
         ;;   - notes.<desc>.org?
         ;;   - _notes.<desc>.org?
 
-        ;; copy taskpath to clipboard?
+        ;; copy taskpath to clipboard
+        (kill-new taskpath)
+        (message "Created taskspace: %s" (file-name-nondirectory taskpath))
         ))))
 ;; M-x spydez/taskspace/create
 ;; (spydez/taskspace/create "testing-create")
-
 
 ;; TODO: open spydez/dir/tasks in dired mode buffer? open task dir in dired?
 
@@ -174,7 +208,73 @@ Create if none. Return if just the one. Choose from multiple."
 ;;------------------------------------------------------------------------------
 ;; Taskspace Utils
 ;;------------------------------------------------------------------------------
-(require 'cl) ;; for `some'
+
+(defun spydez/taskspace/generate-files (taskpath file-alist)
+  "Generates each file in alist into the new taskpath. Expects
+((filename . string-or-func)...) from alist. Creates 'filename' in taskspace
+and then inserts string into it, or uses func to generate contents.
+Does not currently support directory structures/trees. Returns nil or error.
+Error is all files not generated in alist: ((filename . 'reason')...)"
+
+  ;; let it just do nothing when empty list
+  (let (errors-alist) ;; empty return value alist
+    (dolist (entry file-alist errors-alist)
+      (let* ((file (file-name-nondirectory (car entry)))
+             (filepath (expand-file-name file taskpath))
+             (str-or-func (cdr entry)))
+        (cond
+         ;; ERROR: already exists...
+         ((file-exists-p filepath)
+          (push `(,filepath . "file already exist") errors-alist))
+;;         ;; ERROR: generator not bound
+;;         ((not (boundp str-or-func))
+;;          (push `(,filepath . "string/function not bound") errors-alist))
+         ;; ERROR: unknown generator
+         ((and (not (stringp str-or-func))
+               (not (functionp str-or-func)))
+          (push `(,filepath . "generator is not string or function") errors-alist))
+
+         ;; HAPPY!
+         (t
+          ;; (message "for '%s', copying '%s' to '%s'" taskpath path (expand-file-name (file-name-nondirectory path) taskpath))
+          (with-temp-file filepath
+            (if (stringp str-or-func)
+                (insert str-or-func)
+              (insert (funcall str-or-func)))))
+
+         ;; dolist returns the errors
+         )))))
+
+(defun spydez/taskspace/copy-files (taskpath &rest filepaths)
+  "Copy each of the files in `filepaths'. Expects well-qualified filepaths
+(absolute, relative, or otherwise). Does not currently support
+directory structures/trees. Returns nil or error. Error is all
+files not copied in alist: ((filepath . 'reason')...)"
+
+  ;; let it just do nothing when empty list
+  (let (errors-alist) ;; empty return value alist
+    (dolist (path filepaths errors-alist)
+      (cond
+       ;; ERROR: can't find or...
+       ((not (file-exists-p path))
+        (push `(,path . "file does not exist") errors-alist))
+       ;; ERROR: can't read file or...
+       ((not (file-readable-p path))
+        (push `(,path . "file is not readable") errors-alist))
+       ;; ERROR: not a file (dir or symlink or something)
+       ((not (file-regular-p path))
+        (push `(,path . "path is not a file") errors-alist))
+
+       ;; HAPPY: copy it
+       (t
+        (copy-file path ;; from "the full path of where it is" to...
+                   ;; taskpath + "the filename part of where it is"
+                   (expand-file-name (file-name-nondirectory path) taskpath)))
+
+       ;; dolist returns the errors
+       ))))
+
+
 (defun spydez/taskspace/create-dir (description date-arg)
   "Creates dir w/ description, date, and (generated) number, if valid & unused description."
          ;; Get today's date.
@@ -277,7 +377,7 @@ found in parts-alists."
                               (seq-remove #'null ;; but take out nulls?
                                           (list date number description)))) ;; turn inputs into list
          (name-len (length name-parts))
-         (split-alist))
+         split-alist)
     ;; find the right alist for building the dir string
     ;; TODO: pull this out of here and split-name and make func maybe?
     (dolist (alist spydez/tasks/dir-name/parts-alists split-alist)
@@ -308,7 +408,7 @@ requested part. Part can be one of: '(date number description)."
     ;; unless or if/error?
     (let* ((split-name (split-string name spydez/tasks/dir-name/separator))
            (len-split (length split-name))
-           (split-alist))
+           split-alist)
 
       ;; find the right alist for parsing the split dir string
       (dolist (alist spydez/tasks/dir-name/parts-alists split-alist)
@@ -373,7 +473,7 @@ Else nil."
   "Get any/all taskspaces for today."
   (unless (null date-str)
     (let ((task-dirs (spydez/taskspace/list-all))
-          (date-dirs)) ;; return val
+          date-dirs) ;; return val
       (dolist (dir task-dirs date-dirs)
         (when (spydez/taskspace/dir= date-str dir 'date)
           (push dir date-dirs)
