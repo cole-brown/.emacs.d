@@ -10,7 +10,7 @@
 ;; All of the transposes!
 ;;------------------------------------------------------------------------------
 
-;; TODO: better/less common bigrams... "script" is triggering my "tp" transpose hydra
+;; If I still need better/less common bigrams/chords...
 ;; https://english.stackexchange.com/a/110579
 ;; https://www.reddit.com/r/emacs/comments/22hzx7/what_are_your_keychord_abbreviations/
 
@@ -33,7 +33,7 @@
         ("q" nil "cancel" :color blue))
       ;; Not sure about key chord... "cg" maybe better?
       ;; Going with 'tp' transpose and also 'p' is in the common-stuff hydra
-      (key-chord-define-global "tp" 'spydez/hydra/transpose/body))
+      (spydez/key-chord/define-global "t" 'spydez/hydra/transpose/body))
   ;; else
   (spydez/warning/message nil nil
                           "Key-Chord or Hydra package not present. Cannot make spydez/hydra/transpose."))

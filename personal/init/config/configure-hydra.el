@@ -70,6 +70,7 @@
 
 (defun spydez/key-chord/define-global (key function-symbol)
   "Helper for using key-chord-define-global with spydez/key-chord/prefix."
+  ;; TODO: Error or warn if overwriting an existing chord.
   (key-chord-define-global (spydez/key-chord/chord key) function-symbol))
 
 ;; From https://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer/
@@ -97,8 +98,8 @@ Repeated invocations toggle between the two most recently open buffers."
 
     ;; https://www.reddit.com/r/emacs/comments/22hzx7/what_are_your_keychord_abbreviations/
     ;; https://github.com/Russell91/emacs/blob/master/key-chord.el has these and maybe others:
-    ;;    (key-chord-define c++-mode-map ";;"  "\C-e;")
-    ;;    (key-chord-define c++-mode-map "{}"  "{\n\n}\C-p\t")
+    ;;    (spydez/key-chord/define c++-mode-map ";;"  "\C-e;")
+    ;;    (spydez/key-chord/define c++-mode-map "{}"  "{\n\n}\C-p\t")
 
     ;; k can be bound too
     ;; TRIAL [2019-01-28]: test all these cuz I'm not sure
@@ -119,15 +120,15 @@ Repeated invocations toggle between the two most recently open buffers."
     ;;   M-/ might be enough for expanding. It was before this update/upgrade.
     ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org656616c
     ;; Trial: [2019-01-28]; Disabled: [2019-02-06]
-    ;;(key-chord-define-global "  "     'spydez/insert-space-or-expand)
+    ;;(spydez/key-chord/define-global "  " 'spydez/insert-space-or-expand)
 
     ;; Not using avy right now. Similar to ace-jump or easymotion.
     ;; https://github.com/abo-abo/avy
-    ;; (key-chord-define-global "jl"     'avy-goto-line)
-    ;; (key-chord-define-global "jj"     'avy-goto-word-1)
+    ;; (spydez/key-chord/define-global "jl" 'avy-goto-line)
+    ;; (spydez/key-chord/define-global "jj" 'avy-goto-word-1)
 
     ;; Not using god-mode, but could consider. https://github.com/chrisdone/god-mode
-    ;; (key-chord-define-global "vv"     'god-mode-all)
+    ;; (spydez/key-chord/define-global "vv" 'god-mode-all)
   ))
 
 
@@ -146,6 +147,7 @@ Repeated invocations toggle between the two most recently open buffers."
   :config
 
   (defhydra spydez/hydra/window-movement ()
+    "Window Movement"
     ("<left>" windmove-left)
     ("<right>" windmove-right)
     ("<down>" windmove-down)
@@ -165,6 +167,7 @@ Repeated invocations toggle between the two most recently open buffers."
     ("q" nil))
 
   (defhydra spydez/hydra/join-lines ()
+    "Join Lines"
     ("<up>" join-line)
     ("<down>" (join-line 1))
     ("t" join-line)
@@ -181,7 +184,7 @@ Repeated invocations toggle between the two most recently open buffers."
   ;;   ("a" (org-agenda nil "a") "Agenda"))
 
   (defhydra spydez/hydra/key-chord-commands ()
-    "Main"
+    "Main Hydra"
     ("k" kill-sexp)
     ("b" helm-buffers-list :color blue)
     ("f" find-file :color blue)
@@ -210,7 +213,7 @@ Repeated invocations toggle between the two most recently open buffers."
 
   ;; TODO: define shortcut into this hydra?
   (defhydra spydez/hydra/engine-mode (:color blue)
-    "Engine mode"
+    "Engine Mode"
     ("g" engine/search-google "google")
     ("e" engine/search-emacswiki "emacswiki")
     ("w" engine/search-wikipedia "wikipedia")
