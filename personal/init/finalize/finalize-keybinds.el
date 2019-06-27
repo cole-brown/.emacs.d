@@ -69,7 +69,9 @@
       
       ;; "eu" is super convenient on Dvorak, but it's a bad combo for English words...
       ;; ".p" might work better... (one row up)
-      (key-chord-define-global ".p" 'spydez/hydra/common-stuff/body)
+      ;; "-p"? Key chords that aren't English or Codelish are hard..ep.
+      ;; double dash for the common hydra?
+      (spydez/key-chord/define-global "-" 'spydez/hydra/common-stuff/body)
       )
   (spydez/warning/message nil nil
                           "Key-Chord or Hydra package not present. Cannot make spydez/hydra/common-stuff."))

@@ -77,7 +77,7 @@
 ;; (when (and (featurep 'hydra)
 ;;            (featurep 'bind-key))
 ;;
-;;   (defhydra hydra-apropos (:color blue)
+;;   (defhydra spydez/hydra/apropos (:color blue)
 ;;     "Apropos"
 ;;     ("a" apropos "apropos")
 ;;     ("c" apropos-command "cmd")
@@ -90,14 +90,14 @@
 ;;     ("t" tags-apropos "tags")
 ;;     ("z" hydra-customize-apropos/body "customize"))
 ;;
-;;   (defhydra hydra-customize-apropos (:color blue)
+;;   (defhydra spydez/hydra/customize-apropos (:color blue)
 ;;     "Apropos (customize)"
 ;;     ("a" customize-apropos "apropos")
 ;;     ("f" customize-apropos-faces "faces")
 ;;     ("g" customize-apropos-groups "groups")
 ;;     ("o" customize-apropos-options "options"))
 ;;
-;;   (defhydra hydra-info (:color blue)
+;;   (defhydra spydez/hydra/info (:color blue)
 ;;     "Info"
 ;;     ("e" (funcall (info-display-topic "emacs")) "Emacs")
 ;;     ("l" (funcall (info-display-topic "elisp")) "Elisp")

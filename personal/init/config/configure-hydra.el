@@ -48,6 +48,30 @@
 ;; (fset 'key-chord-define 'spydez/key-chord-define)
 ;; ;; TODO: why is this fset here and in use-package key-chord :init?
 
+(defconst spydez/key-chord/prefix ?-
+  "'-' is our common key-chord character.")
+
+;; Function for not forgetting what my main thingy is for key-chords.
+;; Also for redefining it (again) if it is too annoying.
+(defun spydez/key-chord/chord (key)
+  "Returns string for a key-chord starting with our default key-chord character."
+  ;; Error Checking:
+  ;; Must be char or string.
+  (if (not (char-or-string-p key))
+      (error "Key-chord key supplied must be char or string: %s" key))
+  ;; Must be 1 char string if string.
+  (if (and (stringp key)
+           (/= 1 (length key)))
+      (error "Key-chord key string supplied must have one element: %s" key))
+
+  (let* ((key-char (if (stringp key) (string-to-char key) key))
+         (chord (string spydez/key-chord/prefix key-char)))
+    chord))
+
+(defun spydez/key-chord/define-global (key function-symbol)
+  "Helper for using key-chord-define-global with spydez/key-chord/prefix."
+  (key-chord-define-global (spydez/key-chord/chord key) function-symbol))
+
 ;; From https://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer/
 (defun spydez/switch-to-previous-buffer ()
   "Switch to previously open buffer.
@@ -71,26 +95,24 @@ Repeated invocations toggle between the two most recently open buffers."
 
     (key-chord-mode 1)
 
-    ;; TODO: make delay bigger. Try out 0.3 or something
-    ;; TODO: Good hydra keys?
-    ;;   - '-' plus a letter? Dash is homerow pinkie for dvorak.
-    ;;   - ...?
     ;; https://www.reddit.com/r/emacs/comments/22hzx7/what_are_your_keychord_abbreviations/
     ;; https://github.com/Russell91/emacs/blob/master/key-chord.el has these and maybe others:
     ;;    (key-chord-define c++-mode-map ";;"  "\C-e;")
     ;;    (key-chord-define c++-mode-map "{}"  "{\n\n}\C-p\t")
 
     ;; k can be bound too
-    ;; TODO: test all these cuz I'm not sure
-    (key-chord-define-global "uu"     'undo)
-    (key-chord-define-global "kk"     'kill-whole-line)
-    (key-chord-define-global "jj"     'spydez/switch-to-previous-buffer)
-    (key-chord-define-global "yy"     'spydez/window-movement/body)
-    (key-chord-define-global "jw"     'switch-window)
-    (key-chord-define-global "j."     'join-lines/body)
-    (key-chord-define-global "FF"     'find-file) ;; TODO: helm or ido find instead?
-    (key-chord-define-global "hh"     'spydez/key-chord-commands/body)
-    (key-chord-define-global "xx"     'er/expand-region)
+    ;; TRIAL [2019-01-28]: test all these cuz I'm not sure
+    (spydez/key-chord/define-global "m" 'spydez/hydra/common-stuff/body)
+
+    (spydez/key-chord/define-global "u" 'undo)
+    (spydez/key-chord/define-global "k" 'kill-whole-line)
+    (spydez/key-chord/define-global "j" 'spydez/switch-to-previous-buffer)
+    (spydez/key-chord/define-global "y" 'spydez/hydra/window-movement/body)
+    (spydez/key-chord/define-global "w" 'switch-window)
+    (spydez/key-chord/define-global "j" 'spydez/hydra/join-lines/body)
+    (spydez/key-chord/define-global "f" 'helm-find-files)
+    (spydez/key-chord/define-global "h" 'spydez/hydra/key-chord-commands/body)
+    (spydez/key-chord/define-global "x" 'er/expand-region)
 
     ;; TODO: Hold down spacebar to space something out 10 or 20 spaces or whatever...
     ;;   and this gets called a lot. I don't think I like space-space as a chord?..
@@ -119,16 +141,11 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;   mentioned:  http://nhoffman.github.io/.emacs.d/#org9119f86
 ;;   actual launcher hydra: http://nhoffman.github.io/.emacs.d/#org09d7a13
 
-;; TODO: rename my defhydras to spydez/hydra/*. Hard to know what's a hydra in
-;;   keychords, binds, and other places without refreshing my memory on how hydra
-;;   does magic lisp shenanigans.
-
 ;; Trial: [2019-01-28]
 (use-package hydra
   :config
 
-  ;; "yy" key chord
-  (defhydra spydez/window-movement ()
+  (defhydra spydez/hydra/window-movement ()
     ("<left>" windmove-left)
     ("<right>" windmove-right)
     ("<down>" windmove-down)
@@ -147,8 +164,7 @@ Repeated invocations toggle between the two most recently open buffers."
     ("b" helm-buffers-list)
     ("q" nil))
 
-  ;; "j." key chord
-  (defhydra join-lines ()
+  (defhydra spydez/hydra/join-lines ()
     ("<up>" join-line)
     ("<down>" (join-line 1))
     ("t" join-line)
@@ -159,13 +175,12 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; Can add it back in if I start clocking stuff.
 
   ;; Could use this if I identify some org things I do a lot...
-  ;; (defhydra spydez/org (:color blue)
+  ;; (defhydra spydez/hydra/org (:color blue)
   ;;   "Convenient Org stuff."
   ;;   ("p" spydez/org-show-active-projects "Active projects")
   ;;   ("a" (org-agenda nil "a") "Agenda"))
 
-  ;; "hh" key chord
-  (defhydra spydez/key-chord-commands ()
+  (defhydra spydez/hydra/key-chord-commands ()
     "Main"
     ("k" kill-sexp)
     ("b" helm-buffers-list :color blue)
@@ -187,14 +202,14 @@ Repeated invocations toggle between the two most recently open buffers."
     ;; ("x" spydez/org-finish-previous-task-and-clock-in-new-one "Finish and clock in" :color blue)
     ;; ("i" spydez/org-quick-clock-in-task "Clock in" :color blue)
     ;; ("o" spydez/org-off-my-computer :color blue)
-    ("w" spydez/engine-mode-hydra/body "web" :exit t)
+    ("w" spydez/hydra/engine-mode/body "web" :exit t)
     ;; ("a" spydez/org-check-agenda :color blue)
     ;; ("r" spydez/describe-random-interactive-function)
     ;; ("L" spydez/org-insert-link)
     )
 
   ;; TODO: define shortcut into this hydra?
-  (defhydra spydez/engine-mode-hydra (:color blue)
+  (defhydra spydez/hydra/engine-mode (:color blue)
     "Engine mode"
     ("g" engine/search-google "google")
     ("e" engine/search-emacswiki "emacswiki")
@@ -223,7 +238,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Trial [2019-02-06]
 (use-package engine-mode
   :config
-  ;; NOTE: keep synced with engine-mode-hydra?
+  ;; NOTE: keep synced with spydez/hydra/engine-mode?
   ;; NOTE: Escape any % needed with another %. E.g. here: "c%%23" -> url: "c%23" -> search term: "c#"
   ;; NOTE: ones without keybind/hydra can be got at via engine/search-<engine>
   (progn
@@ -268,7 +283,7 @@ Repeated invocations toggle between the two most recently open buffers."
     (defengine youtube
       "http://www.youtube.com/results?aq=f&oq=&search_query=%s")
 
-    (bind-key* "C-c /" 'spydez/engine-mode-hydra/body)
+    (bind-key* "C-c /" 'spydez/hydra/engine-mode/body)
     (engine-mode)))
 
 
