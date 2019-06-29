@@ -83,6 +83,12 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Setup key chords
 ;; TODO: prune the list to actually used stuff
 ;; Trial: [2019-01-28]
+;; TODO: Fucking key-chords god dammit 3.0... >.<
+;;   - "-t" this time. And this 'alt-tab' bug I have to investigate...
+;;     - Maybe just have "--" or something be the __ONLY__ key-chord,
+;;       and then that can have entries into hydras and stuff?
+;;     - Also elisp function names are killing me.
+;;   - Need that dupe checker. I have two '-j' chords now. 
 (use-package key-chord
   :init
   (progn

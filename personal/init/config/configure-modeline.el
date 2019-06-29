@@ -105,7 +105,41 @@
   (setq x-underline-at-descent-line t) ;; No idea why.
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-vc-mode)
+
   ;; TODO: Would be awesome if I could put the time/date into a 'tab'.
+  ;; Have to get the time string replaced by moody ala `(moody-replace-vc-mode)' above.
+  ;;
+  ;; mode-line-format
+  ;;   -> ("%e" mode-line-front-space mode-line-mule-info mode-line-client
+  ;;       mode-line-modified mode-line-remote mode-line-frame-identification
+  ;;       moody-mode-line-buffer-identification "   " mode-line-position
+  ;;       (vc-mode moody-vc-mode) "  " minions-mode-line-modes
+  ;;       mode-line-misc-info mode-line-end-spaces)
+  ;;
+  ;; mode-line-misc-info
+  ;;   -> global-mode-string
+  ;;      -> ("" display-time-string)
+  ;;
+  ;; Could go full crazy and just define `mode-line-format' myself...
+  ;; e.g. https://github.com/CSRaghunandan/.emacs.d/blob/master/setup-files/setup-mode-line.el
+  ;;
+  ;; So... something like this...
+  ;; (defun spydez/moody/replace-mode-line-misc-info (&optional reverse)
+  ;;   (interactive "P")
+  ;;   (moody-replace-element 'mode-line-misc-info
+  ;;                          'spydez/moody/mode-line-misc-info
+  ;;                          reverse))
+  ;; Need to parse out mode-line-misc-info, parse out global-mode-string?,
+  ;; replace display-time-string with my shit, and then I'm done??
+  ;; (defvar spydez/moody/mode-line-misc-info
+  ;;   '(:eval (moody-tab (<misc-info and/or time stuff here>) nil 'down)))
+  ;; (put 'spydez/moody/mode-line-misc-info 'risky-local-variable t)
+  ;; (make-variable-buffer-local 'spydez/moody/mode-line-misc-info)
+  ;;
+  ;; TODO-TODAY: It may be easier to just figure out how to get the time into
+  ;; the modeline as its own string/symbol... Then just have moody replace that...
+  ;; Yeah... my own time spot would be nice I think.
+
   ;;   2x points if can also anchor to the right-hand side.
   )
 
