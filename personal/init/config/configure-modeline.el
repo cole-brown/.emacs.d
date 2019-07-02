@@ -10,8 +10,19 @@
 (line-number-mode t)
 
 ;; Size indicator in mode line with position
-;; Trial: [2019-03-15 Fri]
-(size-indication-mode t) ;; "x%" ->  "x% of 6.5k"
+;; Tried Out: [2019-03-15 Fri]
+;; Ended: [2019-07-01 Mon]
+;;   Good info but I have it in the titlebar already and I want more space for
+;;   other things in the modeline.
+;; Positive to enable, negative to disable.
+;; (size-indication-mode -1) ;; 1) ;; "x%" ->  "x% of 6.5k"
+
+;; TODO: move to a use-package bootstrap or zeroth or something?
+;; TODO-TOO: make one for every package?
+;; TODO-3: make a helper where you can put the package name and it'll check
+;;   if bound-and-true-p? e.g.: (spydez/using-package 'moody) -> t/nil
+(defconst spydez/use-package/moody t
+  "True if moody should be enabled in use-package.")
 
 
 ;;------------------------------------------------------------------------------
@@ -19,33 +30,55 @@
 ;;------------------------------------------------------------------------------
 ;; Puts a clock down in the mode line.
 
-;; For ISO time:
-;;   https://emacs.stackexchange.com/questions/7365/how-to-display-date-in-julian-in-the-mode-line
+(defconst spydez/moody/enable-time t
+  "True if moody should manage a clock in the modeline. False if it should not.")
 
-;; Formatting:
-;;   https://www.gnu.org/software/emacs/manual/html_node/elisp/Time-Parsing.html
-;; Simple version (format: yyyy-mm-dd HH:MM):
-;; (setq display-time-format "%F %H:%M")
-;; (display-time-mode t)
+(defun spydez/moody/managing-time ()
+  "True if moody should manage a clock in the modeline. False if it should not."
+  (and spydez/moody/enable-time   ;; explicitly enabled
+       (featurep 'moody)          ;; moody is installed
+       spydez/use-package/moody ;; moody is enabled in use-package
+       ))
 
-;; More complicated version:
-;;   We're not full ISO 8601, but closeish. Set format to: yyyy-mm-dd HH:MM
-(setq display-time-string-forms
-      '((propertize (format-time-string "%F %H:%M" now)
-;;                    ))) ;; no change
-;;                    'face 'mode-line-buffer-id))) ;; bold yellow/gold like buffer name
-                    'face 'bold))) ;; slightly bolded
-;; Faces to use to get into theme's customization from:
-;;   https://www.gnu.org/software/emacs/manual/html_node/emacs/Standard-Faces.html
-;; Propertize/format-time-string from:
-;;   https://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
+(defconst spydez/modeline/time-format
+  "%F %R"
+  "We're not full ISO 8601, but closeish. Format for time in modeline is: yyyy-mm-dd HH:MM")
 
-;; and enable
-(display-time-mode t)
-;; eval this when testing changes: (display-time-update)
+;;---
+;; Display Time Mode
+;;----
+(unless (spydez/moody/managing-time)
+  ;;(message "display-time-mode is managing time!")
 
-;; todo: color clock if late, or approaching late?
-;;   would need a dynamic function instead of a format list/string.
+  ;; For ISO time:
+  ;;   https://emacs.stackexchange.com/questions/7365/how-to-display-date-in-julian-in-the-mode-line
+
+  ;; Formatting:
+  ;;   https://www.gnu.org/software/emacs/manual/html_node/elisp/Time-Parsing.html
+  ;; Simple version (format: yyyy-mm-dd HH:MM):
+  ;; (setq display-time-format "%F %H:%M")
+  ;; (display-time-mode t)
+
+  ;; More complicated version:
+  ;;   We're not full ISO 8601, but closeish. Set format to: yyyy-mm-dd HH:MM
+  (setq display-time-string-forms
+        '((propertize (format-time-string spydez/modeline/time-format now)
+                      ;;                    ))) ;; no change
+                      ;;                    'face 'mode-line-buffer-id))) ;; bold yellow/gold like buffer name
+                      'face 'bold))) ;; slightly bolded
+  ;; Faces to use to get into theme's customization from:
+  ;;   https://www.gnu.org/software/emacs/manual/html_node/emacs/Standard-Faces.html
+  ;; Propertize/format-time-string from:
+  ;;   https://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
+
+  ;; and enable
+  (display-time-mode t)
+  ;; eval this when testing changes: (display-time-update)
+
+  ;; todo: color clock if late, or approaching late?
+  ;;   would need a dynamic function instead of a format list/string.
+
+  ) ;; /unless spydez/moody/managing-time
 
 
 ;;------------------------------------------------------------------------------
@@ -100,47 +133,86 @@
 ;; https://github.com/tarsius/moody
 ;; "Tabs" (kinda) style layout of the mode line.
 (use-package moody
+  :if spydez/use-package/moody
   :demand t
+
   :config
+
+  ;;---
+  ;; General
+  ;;----
+
   (setq x-underline-at-descent-line t) ;; No idea why.
+
+  ;; tabify buffer name
   (moody-replace-mode-line-buffer-identification)
+  ;; TODO: Use this??? moody-replace-sml/mode-line-buffer-identification
+  ;;   - I am using smart-mode-line... I think.
+  ;;   - do I need: ':after smart-mode-line' ??
+
+  ;; tabify vc-mode info
   (moody-replace-vc-mode)
 
-  ;; TODO: Would be awesome if I could put the time/date into a 'tab'.
-  ;; Have to get the time string replaced by moody ala `(moody-replace-vc-mode)' above.
-  ;;
-  ;; mode-line-format
-  ;;   -> ("%e" mode-line-front-space mode-line-mule-info mode-line-client
-  ;;       mode-line-modified mode-line-remote mode-line-frame-identification
-  ;;       moody-mode-line-buffer-identification "   " mode-line-position
-  ;;       (vc-mode moody-vc-mode) "  " minions-mode-line-modes
-  ;;       mode-line-misc-info mode-line-end-spaces)
-  ;;
-  ;; mode-line-misc-info
-  ;;   -> global-mode-string
-  ;;      -> ("" display-time-string)
-  ;;
-  ;; Could go full crazy and just define `mode-line-format' myself...
-  ;; e.g. https://github.com/CSRaghunandan/.emacs.d/blob/master/setup-files/setup-mode-line.el
-  ;;
-  ;; So... something like this...
-  ;; (defun spydez/moody/replace-mode-line-misc-info (&optional reverse)
-  ;;   (interactive "P")
-  ;;   (moody-replace-element 'mode-line-misc-info
-  ;;                          'spydez/moody/mode-line-misc-info
-  ;;                          reverse))
-  ;; Need to parse out mode-line-misc-info, parse out global-mode-string?,
-  ;; replace display-time-string with my shit, and then I'm done??
-  ;; (defvar spydez/moody/mode-line-misc-info
-  ;;   '(:eval (moody-tab (<misc-info and/or time stuff here>) nil 'down)))
-  ;; (put 'spydez/moody/mode-line-misc-info 'risky-local-variable t)
-  ;; (make-variable-buffer-local 'spydez/moody/mode-line-misc-info)
-  ;;
-  ;; TODO-TODAY: It may be easier to just figure out how to get the time into
-  ;; the modeline as its own string/symbol... Then just have moody replace that...
-  ;; Yeah... my own time spot would be nice I think.
+  ;;---
+  ;; Custom: Time tab.
+  ;;---
+  (when (spydez/moody/managing-time)
+    (message "Moody is managing time!")
+    ;; Have to get the time string replaced by moody ala `(moody-replace-vc-mode)' above.
 
-  ;;   2x points if can also anchor to the right-hand side.
+    ;; It exists in the modeline like so:
+    ;;   mode-line-format
+    ;;     -> ("%e" mode-line-front-space mode-line-mule-info mode-line-client
+    ;;         mode-line-modified mode-line-remote mode-line-frame-identification
+    ;;         moody-mode-line-buffer-identification "   " mode-line-position
+    ;;         (vc-mode moody-vc-mode) "  " minions-mode-line-modes
+    ;;         mode-line-misc-info mode-line-end-spaces)
+    ;;   
+    ;;   mode-line-misc-info
+    ;;     -> global-mode-string
+    ;;        -> ("" display-time-string)
+
+    ;; Could go full crazy and just define `mode-line-format' myself...
+    ;; (In order to pull time out into its own definitively separate thing.
+    ;; e.g. https://github.com/CSRaghunandan/.emacs.d/blob/master/setup-files/setup-mode-line.el
+    ;; Or I could just steal mode-line-misc-info. (fset ...) if needed.
+    ;;
+    ;; Just replacing mode-line-misc-info right now.
+    (defun spydez/moody/replace-mode-line-misc-info (&optional reverse)
+      (interactive "P")
+      (moody-replace-element 'mode-line-misc-info
+                             'spydez/moody/mode-line-misc-info
+                             reverse))
+
+    ;; ;; Our non-moody-tab time wants to be different - propertized.
+    ;; ;; But moody is moody or I can't grok today. So no propertize in moody?
+    ;; (setq display-time-string-forms
+    ;;       '(format-time-string "%F %H:%M" now))
+
+    (defun spydez/moody/time-string ()
+      "Outputs string like: '2019-07-02 10:05'"
+      (format-time-string spydez/modeline/time-format))
+
+    ;; Errors... yay:
+    ;; (defvar spydez/moody/mode-line-misc-info
+    ;;   '(:eval (moody-ribbon 'display-time-string nil 'up)))
+    ;; Error during redisplay: (eval (moody-ribbon (quote display-time-string) nil (quote up))) signaled (wrong-type-argument sequencep display-time-string)
+    ;; Ok - the error there is that display-time-string should be evaluated as
+    ;; a function, not passed as a symbol.
+
+    ;; Need to parse out mode-line-misc-info, parse out global-mode-string?,
+    ;; replace display-time-string with my shit, and then I'm done?? Nonono, no.
+    ;; No. Just moody-tab the whole thing and do that shit later if required.
+    (defvar spydez/moody/mode-line-misc-info
+      '(:eval (moody-tab (spydez/moody/time-string) nil 'up)))
+    (put 'spydez/moody/mode-line-misc-info 'risky-local-variable t)
+    (make-variable-buffer-local 'spydez/moody/mode-line-misc-info)
+    
+    ;; make it so
+    (spydez/moody/replace-mode-line-misc-info)
+
+    ;; TODO: Anchor time to the right-hand side (with just the left slant from moody tab?).
+    )
   )
 
 

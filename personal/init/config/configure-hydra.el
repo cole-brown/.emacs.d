@@ -88,7 +88,15 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;     - Maybe just have "--" or something be the __ONLY__ key-chord,
 ;;       and then that can have entries into hydras and stuff?
 ;;     - Also elisp function names are killing me.
-;;   - Need that dupe checker. I have two '-j' chords now. 
+;;   - Need that dupe checker. I have two '-j' chords now.
+;; TODO: or maybe:
+;;   - don't key-chord if a previous non-chord key has been
+;;     pressed in key-chord-____-delay seconds?
+;;   - Better maybe: Count chain of input events. Event streak only incremented
+;;     if each happens within key-chord-one-key-delay of previous? Ignore
+;;     while chain count > N. Set chain count to 0 when streak broken.
+;;     Ignore a key-chord if count > N.
+;; TODO-FIRST: are there more key-chord vars to help out other than one-key-delay?
 (use-package key-chord
   :init
   (progn
