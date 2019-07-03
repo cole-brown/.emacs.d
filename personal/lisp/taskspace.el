@@ -627,10 +627,14 @@ Returns nil or a string in `taskspaces'."
 ;;------------------------------------------------------------------------------
 
 ;; TODO: make it its own real boy. I mean package.
-;; TODO: move to its own dir like use-tool?
-;; TODO: setup in config via use-package.
+;;   - make our vars/consts into defcustoms
+;;   - move to its own dir like use-tool?
+;;   - Comments/layout like a real package.
+;;     e.g. https://github.com/tarsius/moody/blob/master/moody.el
+;;   - setup in config via use-package.
+;;   - stop using spydez/... vars/helpers?
 
-;; TODO: uh... tests?
+;; TODO: uh... tests? idk
 
 ;;------------------------------------------------------------------------------
 ;; The End.
