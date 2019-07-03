@@ -19,6 +19,9 @@
 ;; TODO: with-var, with-all-vars, with-any-vars?
 ;; TODO?: with-{any,all}-functions?
 ;; TODO?: with-all-executables?
+;; TODO?: with-___-when, with-___-unless, with-___-if
+;;   e.g. (with-function-when #'spydez/foo/using-bar ...) -> when function is bound and returns true...
+;;   e.g. (with-function-when #'spydez/foo/using-bar 'args ...) -> when function is bound and returns true when passed args?..
 
 (defmacro with-feature (feature &rest body)
   "If FEATURE is available, load it and evaluate BODY."

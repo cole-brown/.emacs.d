@@ -11,9 +11,12 @@
 ;; TODO: add a shortcut for `find-dired'?
 ;; `C-x C-d' maybe?
 
+;; TODO: May need DiredSortMenu (or DiredSortMenu+) on windows.
+;;   None of this shit for sorting/formatting/displaying works other than '-lah'
+
 ;; https://github.com/itsjeyd/.emacs.d/blob/emacs24/init.el
 ;; add human-readable flag
-(setq dired-listing-switches "-lah --time-style=long-iso")
+(setq dired-listing-switches "-lah --time-style=long-iso --group-directories-first")
 
 ;; Was `top'. Any non (top always) value means always ask.
 (setq dired-recursive-deletes  +1)
@@ -35,6 +38,18 @@
 ;; Trial [2019-01-29]
 (require 'find-dired)
 (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
+
+;; https://stackoverflow.com/questions/18823742/in-emacs-24-3-1-on-windows-7-how-can-i-group-directories-first-in-dired
+;; this doesn't seem to do anything...
+;; (when (string-equal system-type "windows-nt")
+;;   (setq ls-lisp-dirs-first t)
+;;
+;;   ;; hide the link count, user, and group columns - default is '(links uid gid)
+;;   (setq ls-lisp-verbosity nil)
+;;
+;;   ;; use ISO dates (the first is for recent dates, second for old dates)
+;;   (setq ls-lisp-format-time-list '("%Y-%m-%d %H:%M" "%Y-%m-%d %H:%M"))
+;;   (setq ls-lisp-use-localized-time-format t))
 
 
 ;;---
