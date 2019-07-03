@@ -21,25 +21,26 @@
 (defconst spydez/taskspace/shell-fn #'shell
   "Function to call to open shell buffer. `shell' and `eshell' work.")
 
-(defconst spydez/dir/tasks
+(defconst spydez/taskspace/dir
 ;;  "C:/home/spydez/taskspaces/" ;; Debug dir. Use below instead.
   (spydez/dir-name "workspace" spydez/dir/home)
   "User's folder for small work tasks.")
 
-(defconst spydez/dir/tasks/copy-files-src
+(defconst spydez/taskspace/dir/copy-files-src
 ;;  "C:/home/spydez/taskspaces/00_copy-src" ;; Debug dir. Use below-ish instead.
   (spydez/dir-name "taskspace-new" spydez/dir/home)
   "User's folder for small work tasks.")
 
-(defun spydez/tasks/test-gen () (format "%s" "testing the file gen func"))
-(defconst spydez/tasks/gen-files-alist
+(defun spydez/taskspace/test-gen () (format "%s" "testing the file gen func"))
+(defconst spydez/taskspace/gen-files-alist
   '((".projectile" . "testing this file")
-    ("_notes.org" . spydez/tasks/test-gen)))
+    ("_notes.org" . spydez/taskspace/test-gen)))
 
 ;; Gonna need regex for this eventually, probably. But not now.
-(defconst spydez/dir/tasks/always-ignore '("." ".."
-                                           "00_archive"
-                                           (file-name-nondirectory spydez/dir/tasks/copy-files-src))
+(defconst spydez/taskspace/dir/always-ignore
+  '("." ".."
+    "00_archive"
+    (file-name-nondirectory spydez/taskspace/dir/copy-files-src))
   "Always ignore these when getting/determining a taskspace directory.")
 
 ;; directory name format: <date>_<#>_<description>
@@ -47,13 +48,13 @@
 ;;   - <#>:    two digit number starting at zero, for multiple tasks per day
 ;;   - <description>: don't care - human info
 
-(defconst spydez/tasks/dir-name/separator "_"
+(defconst spydez/taskspace/dir-name/separator "_"
   "Split directory name on this to extract date, dedup number, and description.")
 
 ;; TODO: Turn these into regexes w/ capture groups, I think?..
 ;; Have make-name and split-name use the regexes to make/split.
 ;; http://ergoemacs.org/emacs/elisp_string_functions.html
-(defconst spydez/tasks/dir-name/parts-alists
+(defconst spydez/taskspace/dir-name/parts-alists
   '(
     ;; Three part. Code does this all the time?
     ((date . 0)
@@ -65,9 +66,9 @@
    )
   "Order of items in task's descriptive directory name. List of alists.
 First one of the correct length is used currently.")
-;; (cdr (assoc 'date (nth 0 spydez/tasks/dir-name/parts-alists)))
+;; (cdr (assoc 'date (nth 0 spydez/taskspace/dir-name/parts-alists)))
 
-(defconst spydez/tasks/dir-name/valid-desc-regexp "^[[:alnum:]_\\-]\\{3,\\}$"
+(defconst spydez/taskspace/dir-name/valid-desc-regexp "^[[:alnum:]_\\-]\\{3,\\}$"
   "Letters, numbers, underscore, and hypen are valid.")
 
 
@@ -175,7 +176,7 @@ Create if none. Return if just the one. Choose from multiple."
 
         ;; else:
         ;; copy files into new taskspace
-        (unless (not (file-directory-p spydez/dir/tasks/copy-files-src))
+        (unless (not (file-directory-p spydez/taskspace/dir/copy-files-src))
           (apply #'spydez/taskspace/copy-files
                  ;; arg 1: our new taskpath
                  taskpath
@@ -185,13 +186,13 @@ Create if none. Return if just the one. Choose from multiple."
                  ;;     - no '.', '..'
                  ;;     - yes actual dotfiles somehow?
                  ;;     - This is what I want, so... ok.
-                 (directory-files spydez/dir/tasks/copy-files-src
+                 (directory-files spydez/taskspace/dir/copy-files-src
                                   'full
                                   directory-files-no-dot-files-regexp)))
 
         ;; gen files into new taskspace
-        (unless (not spydez/tasks/gen-files-alist)
-          (spydez/taskspace/generate-files taskpath spydez/tasks/gen-files-alist))
+        (unless (not spydez/taskspace/gen-files-alist)
+          (spydez/taskspace/generate-files taskpath spydez/taskspace/gen-files-alist))
 
         ;; Either of those can put a projectile file into the taskspace.
         ;; Just name it: .projectile
@@ -204,7 +205,11 @@ Create if none. Return if just the one. Choose from multiple."
 
         ;; copy taskpath to clipboard
         (kill-new taskpath)
+        ;; say something
         (message "Created taskspace: %s" (file-name-nondirectory taskpath))
+        ;; (message "Created taskspace: %s" taskpath)
+        ;; return it
+        taskpath
         ))))
 ;; M-x spydez/taskspace/create
 ;; (spydez/taskspace/create "testing-create")
@@ -236,16 +241,16 @@ Create if none. Return if just the one. Choose from multiple."
   "Interactive. Opens the taskspace's overall top dir in emacs."
   (interactive)
 
-  (if (not (file-directory-p spydez/dir/tasks))
+  (if (not (file-directory-p spydez/taskspace/dir))
       ;; not a dir - error out
-      (error "Can't find taskspace parent directory: '%s'" spydez/dir/tasks)
+      (error "Can't find taskspace parent directory: '%s'" spydez/taskspace/dir)
 
     ;; ok - message and open (probably in dired but let emacs decide)
-    (find-file spydez/dir/tasks)
+    (find-file spydez/taskspace/dir)
     ;; say something
-    (message "Opening taskspace parent: %s" (file-name-nondirectory spydez/dir/tasks))
+    (message "Opening taskspace parent: %s" (file-name-nondirectory spydez/taskspace/dir))
     ;; return the top dir?
-    spydez/dir/tasks
+    spydez/taskspace/dir
     ))
 ;; (spydez/taskspace/parent-dired)
 ;; M-x spydez/taskspace/parent-dired
@@ -367,7 +372,7 @@ files not copied in alist: ((filepath . 'reason')...)"
 
          ;; Build dir string from all that.
          (dir-name (spydez/taskspace/make-name date number description))
-         (dir-full-path (expand-file-name dir-name spydez/dir/tasks)))
+         (dir-full-path (expand-file-name dir-name spydez/taskspace/dir)))
 
     ;; (message "create-dir: %s %s %s %s" date date-dirs number dir-name)
 
@@ -428,7 +433,7 @@ TODO: Use arg somehow for not-today dates?"
   ;; Valid check:    Verify name obeys my regexp.
   (let ((matched-invalid (string-match file-name-invalid-regexp name))
         (dir-sep-check (file-name-nondirectory name))
-        (valid-name (string-match spydez/tasks/dir-name/valid-desc-regexp name)))
+        (valid-name (string-match spydez/taskspace/dir-name/valid-desc-regexp name)))
 
     ;; check for bad input, fail if so... Bad if:
     (if (or matched-invalid                    ;; - DOES match /invalid/ filename regexp
@@ -462,7 +467,7 @@ found in parts-alists."
          split-alist)
     ;; find the right alist for building the dir string
     ;; TODO: pull this out of here and split-name and make func maybe?
-    (dolist (alist spydez/tasks/dir-name/parts-alists split-alist)
+    (dolist (alist spydez/taskspace/dir-name/parts-alists split-alist)
       (when (= name-len (length alist))
         (setq split-alist alist)))
 
@@ -472,7 +477,7 @@ found in parts-alists."
     ;;          split-alist (null split-alist))
 
     (unless (null split-alist)
-      (mapconcat #'identity (seq-remove #'null name-parts) spydez/tasks/dir-name/separator)
+      (mapconcat #'identity (seq-remove #'null name-parts) spydez/taskspace/dir-name/separator)
         )))
 ;; (spydez/taskspace/make-name "2000" "1" "hi")
 ;; (spydez/taskspace/make-name "2000" nil "hi")
@@ -488,12 +493,12 @@ requested part. Part can be one of: '(date number description)."
 
   (unless (or (null name) (null part))
     ;; unless or if/error?
-    (let* ((split-name (split-string name spydez/tasks/dir-name/separator))
+    (let* ((split-name (split-string name spydez/taskspace/dir-name/separator))
            (len-split (length split-name))
            split-alist)
 
       ;; find the right alist for parsing the split dir string
-      (dolist (alist spydez/tasks/dir-name/parts-alists split-alist)
+      (dolist (alist spydez/taskspace/dir-name/parts-alists split-alist)
         (when (= len-split (length alist))
           (setq split-alist alist)))
 
@@ -530,18 +535,18 @@ Else nil."
 ;; (spydez/taskspace/dir= "2000" "c:/foo/bar/2000_0_testcase" 'date)
 
 
-;; Get children directories of spydez/dir/tasks, ignoring
-;; spydez/dir/tasks/always-ignore.
+;; Get children directories of spydez/taskspace/dir, ignoring
+;; spydez/taskspace/dir/always-ignore.
 (defun spydez/taskspace/list-all ()
-  "Get children directories of spydez/dir/tasks, ignoring spydez/dir/tasks/always-ignore."
+  "Get children directories of spydez/taskspace/dir, ignoring spydez/taskspace/dir/always-ignore."
 
   (let (task-dirs) ;; empty list for return value
     ;; loop on each file in the directory
-    (dolist (file (directory-files spydez/dir/tasks 'full) task-dirs)
+    (dolist (file (directory-files spydez/taskspace/dir 'full) task-dirs)
       (when (and (file-directory-p file) ;; ignore files and...
                  (not (member ;; ignore things in ignore list
                        (file-name-nondirectory file)
-                       spydez/dir/tasks/always-ignore)))
+                       spydez/taskspace/dir/always-ignore)))
         (push file task-dirs)
         ))
     ;; dolist returns our constructed list since we put it as `result'
@@ -622,7 +627,6 @@ Returns nil or a string in `taskspaces'."
 ;;------------------------------------------------------------------------------
 
 ;; TODO: make it its own real boy. I mean package.
-;; TODO: rename `spydez/tasks/*' vars to `spydez/taskspace/*'?
 ;; TODO: move to its own namespace? `taskspace/*' instead of a variety of
 ;; `spydez/taskspace/*' and `spydez/*'?
 ;; TODO: move to its own dir like use-tool?
