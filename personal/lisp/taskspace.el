@@ -7,22 +7,28 @@
 
 
 (require 'cl) ;; for `some'
+(require 'seq) ;; for `seq-contains'
 
 ;;------------------------------------------------------------------------------
 ;; General Settings
 ;;------------------------------------------------------------------------------
 
-;; TODO: move/overwrite-with-setq elsewhere.
+
+;; TODO: move or overwrite-with-setq elsewhere.
 ;;   - maybe: personal/dev/domains/{home,work}/dev-directories.el
-;;   - defaults here? maybe a (with-var ...) or something?
+;;   - defaults here? maybe a (with-var ...) there or something?
+
+(defconst spydez/taskspace/shell-fn #'shell
+  "Function to call to open shell buffer. `shell' and `eshell' work.")
+
 (defconst spydez/dir/tasks
 ;;  "C:/home/spydez/taskspaces/" ;; Debug dir. Use below instead.
   (spydez/dir-name "workspace" spydez/dir/home)
   "User's folder for small work tasks.")
 
 (defconst spydez/dir/tasks/copy-files-src
-  "C:/home/spydez/taskspaces/00_copy-src" ;; TODO: Debug dir. Use below-ish instead.
-  ;; (spydez/dir-name "taskspace-new" spydez/dir/home)
+;;  "C:/home/spydez/taskspaces/00_copy-src" ;; Debug dir. Use below-ish instead.
+  (spydez/dir-name "taskspace-new" spydez/dir/home)
   "User's folder for small work tasks.")
 
 (defun spydez/tasks/test-gen () (format "%s" "testing the file gen func"))
@@ -44,7 +50,7 @@
 (defconst spydez/tasks/dir-name/separator "_"
   "Split directory name on this to extract date, dedup number, and description.")
 
-;; TODO: Turn these into regexes w/ capture groups, I think...
+;; TODO: Turn these into regexes w/ capture groups, I think?..
 ;; Have make-name and split-name use the regexes to make/split.
 ;; http://ergoemacs.org/emacs/elisp_string_functions.html
 (defconst spydez/tasks/dir-name/parts-alists
@@ -69,78 +75,84 @@ First one of the correct length is used currently.")
 ;; Taskspace Commands
 ;;------------------------------------------------------------------------------
 
-;; TODO: command to copy full task's dir path to clipboard
-;;   - will need the dwim today's task, I think?
-;;   - could just stub out dwim with "find today's pre-existing else taskspace root dir"
-(defun spydez/taskspaces/task-dir/clipboard ()
-  "Command to copy full task's dir path to clipboard."
+
+(defun spydez/taskspace/task-name/dwim ()
+  "Interactive. DWIM to clipboard and return today's task string (partial/final path)...
+Create if none. Return if just the one. Choose from multiple."
   (interactive)
 
-  ;; TODO: what are all the cases here?
-  ;;   - 0 tasks today -> nil?
-  ;;   - 1 -> that
-  ;;   - 2+ -> ???
-  ;;   - previous dates???
-  (error "Just a stub right now... TODO this.")
-  )
+  ;; Get task's full path, reduce to just task directory...
+  (let* ((fullpath (call-interactively #'spydez/taskspace/task-dir/dwim))
+         (taskname (file-name-nondirectory fullpath)))
+    
+    ;; copy to clipboard
+    (kill-new taskname)
+    
+    ;; We'd need another return from task-dir/dwim to know what it did...
+    ;; ;; say what we did
+    ;; (message "Existing taskspace: %s" taskname)
+    
+    ;; return it
+    taskname
+    ))
+;; (spydez/taskspace/task-name/dwim)
+;; M-x spydez/taskspace/task-name/dwim
 
 
-;; TODO: interactive? What flag?
-;;   - if not interactive, move down to utils section
-(defun spydez/taskspace/task-name/dwim (input)
-  "Returns task-name from input."
-
-  ;; if not command, return nil instead of error
-  (cond ((null input) (error "Input is nil."))
-
-        ;; TODO: if input not correct format -> error
-        ;;   - strip to last bit if path
-
-        ;; if dir, naively assume it's a taskspace
-        ((file-directory-p input) (file-name-nondirectory input))
-
-        ;; TODO: if not dir, add root and see if dir now?
-        ))
-;; (spydez/taskspace/task-name/dwim "C:/home/spydez/taskspaces/2019-05-03_0_hello-there")
-
-
-;; TODO: dwim today's task dir? (create if none, choose from multiple, return if just the one...)
-(defun spydez/taskspace/task-dir/dwim (arg)
-  "DWIM to return today's task dir string (full path)...
+(defun spydez/taskspace/task-dir/dwim ()
+  "Interactive. DWIM to clipboard and return today's task dir string (full path)...
 Create if none. Return if just the one. Choose from multiple."
-  (interactive "p") ;; numeric prefix arg
-  ;; format-time-string: use optional TIME arg for "not-today" (see help)
-  (let* ((date (format-time-string spydez/datetime/format/yyyy-mm-dd)) ;; todo: get-date func
+  (interactive)
+
+  (let* ((date (spydez/taskspace/get-date 'today))
          (taskspaces (spydez/taskspace/list-date date))
          (length-ts (length taskspaces)))
 
-    (cond ((null date) (error "Date string is nil: %s" date))
+    (cond
+     ;; error out if we have no idea what date to dwim with...
+     ((null date) (error "Date string is nil: %s" date))
 
-          ;; TODO: if zero, create one (prompt for short desc)
-          ;;  - just alphanumeric and space/-, convert spaces to dashes?
-          ((null taskspaces) (error "TODO: No taskspace for date %s. Create one here." date))
-          ;; TODO: forward to maker cmd func
+     ;; if none, create one.
+     ((null taskspaces)
+      ;; call-interactively will give user prompt for description, 
+      ;; etc. as if they called themselves.
+      (call-interactively #'spydez/taskspace/create))
 
-          ;; If just one, return it.
-          ;; How to create second in that case? Use a non-dwim create func?
-          ;;   - I think yes.
-          ((= 1 length-ts) (car taskspaces))
+     ;; If just one, return it.
+     ;; How to create second in that case? Use a non-dwim create func?
+     ;;   - I think yes.
+     ((= length-ts 1)
 
-          ;; TODO: if 2+, prompt for which to return (ideally by fuzzy match?)
-          ((> 1 length-ts)
-           (error "TODO: Multiple taskspaces. Prompt for which to return (ideally by fuzzy match?)"))
-          ;; TODO: forward to chooser cmd func (one choice should be "new...")
+      ;; copy to clipboard
+      (kill-new (first taskspaces))
+      ;; say what we did
+      (message "Existing taskspace: %s" (first taskspaces))
+      ;; return it
+      (first taskspaces))
 
-          ;; Don't need a default case... Fall through with nil.
-          ;;(t nil)
-    )))
+     ;; For now, only give existing choices. User can use a non-dwim create func if they want new.
+     ((> length-ts 1)
+
+      ;; list available choices to user, get the taskspace they chose
+      (let ((choice (spydez/taskspace/list-choices taskspaces 'nondirectory)))
+        ;; copy to clipboard
+        (kill-new choice)
+        ;; say what we did
+        (message "Chose taskspace: %s" choice)
+        ;; return it
+        choice
+        ))
+
+     ;; Don't need a default case... Fall through with nil.
+     ;;(t nil)
+     )))
 ;; M-x spydez/taskspace/task-dir/dwim
-;; (spydez/taskspace/task-dir/dwim 0)
+;; (spydez/taskspace/task-dir/dwim)
 
 
 (defun spydez/taskspace/create (arg)
-  "Creates a new taskspace for today with the description supplied."
-  (interactive "sShort Description: ")
+  "Interactive. Creates a new taskspace for today with the description supplied."
+  (interactive "sNew Task Short Description: ")
   ;; Do we need a max len? Leaving out until I feel otherwise.
 
   ;; is `arg' ok as desc part?
@@ -197,10 +209,77 @@ Create if none. Return if just the one. Choose from multiple."
 ;; M-x spydez/taskspace/create
 ;; (spydez/taskspace/create "testing-create")
 
-;; TODO: open spydez/dir/tasks in dired mode buffer? open task dir in dired?
+
+(defun spydez/taskspace/dired ()
+  "Interactive. Opens the current taskspace's top dir in emacs."
+  (interactive)
+
+  ;; prompt user for the taskspace with an attempt at DWIM
+  (let ((task (call-interactively #'spydez/taskspace/task-dir/dwim)))
+    ;; expecting a path from task-dir/dwim
+    (if (not (file-directory-p task))
+        ;; not a dir - error out
+        (error "Can't find taskspace (not a directory?): '%s'" task)
+
+      ;; ok - message and open (probably in dired but let emacs decide)
+      (find-file task)
+      ;; say something
+      (message "Opening taskspace: %s" (file-name-nondirectory task))
+      ;; return the chosen task's dir?
+      task
+      )))
+;; (spydez/taskspace/dired)
+;; M-x spydez/taskspace/dired
+
+
+(defun spydez/taskspace/parent-dired ()
+  "Interactive. Opens the taskspace's overall top dir in emacs."
+  (interactive)
+
+  (if (not (file-directory-p spydez/dir/tasks))
+      ;; not a dir - error out
+      (error "Can't find taskspace parent directory: '%s'" spydez/dir/tasks)
+
+    ;; ok - message and open (probably in dired but let emacs decide)
+    (find-file spydez/dir/tasks)
+    ;; say something
+    (message "Opening taskspace parent: %s" (file-name-nondirectory spydez/dir/tasks))
+    ;; return the top dir?
+    spydez/dir/tasks
+    ))
+;; (spydez/taskspace/parent-dired)
+;; M-x spydez/taskspace/parent-dired
+
+
+;; TODO: Need to get my shell better. MSYS/Git-Bash shell and emacs
+;; don't like each other all that much by default.
+(defun spydez/taskspace/shell ()
+  "Interactive. Opens the current taskspace's top dir in an emacs shell buffer.
+Shell opened can be set by modifying `spydez/taskspace/shell-fn'."
+  (interactive)
+
+  (if (not (functionp spydez/taskspace/shell-fn))
+      (error "`spydez/taskspace/shell-fn' is not bound to a fuction. %s" spydez/taskspace/shell-fn)
+
+    ;; prompt user for the taskspace with an attempt at DWIM
+    (let ((task (call-interactively #'spydez/taskspace/task-dir/dwim)))
+      ;; expecting a path from task-dir/dwim
+      (if (not (file-directory-p task))
+          ;; not a dir - error out
+          (error "Can't find taskspace (not a directory?): '%s'" task)
+
+        ;; open with shell-fn
+        (funcall spydez/taskspace/shell-fn)
+        ;; say something
+        (message "Opening taskspace shell: %s" (file-name-nondirectory task))
+        ;; return the chosen task's dir?
+        task
+        ))))
+;; (spydez/taskspace/shell)
+;; M-x spydez/taskspace/shell
+
 
 ;; TODO: dwim <date>'s task ? (is this a dupe of spydez/taskspace/task-dir/dwim?)
-
 ;; TODO: optional/prefix arg for yesterday, day before, etc? Or use org-mode's
 ;; calendar picker thing?
 
@@ -208,6 +287,7 @@ Create if none. Return if just the one. Choose from multiple."
 ;;------------------------------------------------------------------------------
 ;; Taskspace Utils
 ;;------------------------------------------------------------------------------
+
 
 (defun spydez/taskspace/generate-files (taskpath file-alist)
   "Generates each file in alist into the new taskpath. Expects
@@ -244,6 +324,7 @@ Error is all files not generated in alist: ((filename . 'reason')...)"
 
          ;; dolist returns the errors
          )))))
+
 
 (defun spydez/taskspace/copy-files (taskpath &rest filepaths)
   "Copy each of the files in `filepaths'. Expects well-qualified filepaths
@@ -369,6 +450,7 @@ TODO: Use arg somehow for not-today dates?"
 ;; good!:      (spydez/taskspace/verify-description "hello-there")
 ;; dir sep:    (spydez/taskspace/verify-description "hello-there/here")
 
+
 (defun spydez/taskspace/make-name (date number description)
   "Creates a full name from inputs obeying first formatting order
 found in parts-alists."
@@ -480,29 +562,71 @@ Else nil."
           )))))
 ;; (spydez/taskspace/list-date "2019-04-25")
 
-;; TODO: if 0 today, prompt user for short description in minibuffer,
-;;   then make dir and stuff happens.
 
-;; TODO: if 1, go to that dir and stuff happens.
+;; Thank you to this thread:
+;; https://emacs.stackexchange.com/questions/32248/how-to-write-a-function-with-an-interactive-choice-of-the-value-of-the-argument
+;; I was not finding any usable help/tutorials/documentation
+;; for my knowledge/skill level until I found that.
+(defun spydez/taskspace/list-choices (taskspaces &optional display)
+  "Given a list of taskspaces from e.g. spydez/taskspace/list-date,
+prompt user with list of choices, take the user's input, and
+match back up with an entry in the list of taskspaces.
 
-;; TODO: if >1, propt user for choice, then go to choice and stuff happens.
+`display' can be:
+- nil: Pass taskspaces as-is to completion. AKA display as-is.
+- nondirectory: Strip each element to `file-name-nondirectory'
 
-;; TODO: what is "stuff happens"?
-;;   - make/open org file?
-;;   - open dired buffer so user can pick stuff?
+Choice is matched back to taskspaces via dumb string matching. First
+match in taskspaces that substring matches user's choice from
+`completing-read' is returned as choice.
 
-;; TODO: a projectile file or something so projectile knows the folder is, like, a thing?
+Returns nil or a string in `taskspaces'."
+
+  ;; Figure out how to display to user first.
+  (let (display-names)
+    (cond
+     ;; nil -> as-is
+     ((null display)
+      (setq display-names taskspaces))
+
+     ;; nondirectory -> strip each to remove all parent dirs
+     ((equal display 'nondirectory)
+      (setq display-names (mapcar #'file-name-nondirectory taskspaces)))
+
+     ;; unexpected -> error?
+     ;;   - TODO: -> nil instead?
+     (t (error "Unknown display option `%s'" display))
+     )
+
+    ;; Give user their choices...
+    ;;
+    ;; With helm at the wheel, this goes to helm--completing-read-default.
+    ;; `confirm' to force completion to one complete choice.
+    ;; TODO: Pretty up for Helm? Name the choices window something nice -
+    ;;   it's just "pp-eval-expression" right now.
+    (let ((choice (completing-read "Choose Taskspace: "
+                                   display-names nil 'confirm)))
+
+      ;; ...and match their choice back up with a taskname.
+      (seq-contains taskspaces
+                    choice
+                    (lambda (input taskname)
+                      "Check substring match of user's input against taskname."
+                      (string-match-p (regexp-quote input) taskname)))
+      )))
+;; (spydez/taskspace/list-choices (spydez/taskspace/list-all) 'nondirectory)
 
 
 ;;------------------------------------------------------------------------------
 ;; TODOs
 ;;------------------------------------------------------------------------------
 
+;; TODO: make it its own real boy. I mean package.
+;; TODO: rename `spydez/tasks/*' vars to `spydez/taskspace/*'?
 ;; TODO: move to its own namespace? `taskspace/*' instead of a variety of
 ;; `spydez/taskspace/*' and `spydez/*'?
-
-;; TODO: rename `spydez/tasks/*' vars to `spydez/taskspace/*'?
 ;; TODO: move to its own dir like use-tool?
+;; TODO: setup in config via use-package.
 
 ;; TODO: uh... tests?
 
