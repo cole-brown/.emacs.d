@@ -192,7 +192,9 @@ Create if none. Return if just the one. Choose from multiple."
 
         ;; gen files into new taskspace
         (unless (not taskspace/gen-files-alist)
-          (taskspace/generate-files taskpath taskspace/gen-files-alist))
+          (let ((gen-errors (taskspace/generate-files taskpath taskspace/gen-files-alist)))
+            (when gen-errors
+              (message "Taskspace file generation errors: %s" gen-errors))))
 
         ;; Either of those can put a projectile file into the taskspace.
         ;; Just name it: .projectile
