@@ -628,6 +628,8 @@ Returns nil or a string in `taskspaces'."
 ;; TODOs
 ;;------------------------------------------------------------------------------
 
+;; TODO: Make empty dirs when creating task? (e.g. "archive" or "done" or something)
+
 ;; TODO: make it its own real boy. I mean package.
 ;;   - make our vars/consts into defcustoms
 ;;   - move to its own dir like use-tool?
