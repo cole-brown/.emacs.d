@@ -119,6 +119,28 @@
 ;; TODOs
 ;;------------------------------------------------------------------------------
 
+
+(use-package taskspace
+  :ensure nil
+
+  :custom
+  (taskspace/datetime/format spydez/datetime/format/yyyy-mm-dd)
+  ;; (taskspace/shell-fn #'shell) ;; leave as default
+  (taskspace/dir (spydez/dir-name "workspace" spydez/dir/home))
+
+  ;; (taskspace/dir/copy-files-src ...) ;; don't have any right now
+  ;; (taskspace/gen-files-alist ...) ;; defaults are fine
+  ;; (taskspace/dir/always-ignore ...) ;; may have to adjust soon?
+
+  ;; (taskspace/dir-name/separator ...)
+  ;; (taskspace/dir-name/parts-alists ...)
+  ;; (taskspace/dir-name/valid-desc-regexp ...)
+  )
+
+;;------------------------------------------------------------------------------
+;; TODOs
+;;------------------------------------------------------------------------------
+
 ;; TODO: Check out "eyebrowse" package?
 ;;   http://manuel-uberti.github.io/emacs/2018/03/10/moody-and-minions/
 ;;     https://manuel-uberti.github.io/emacs/2017/08/06/eyebrowse/

@@ -1,5 +1,6 @@
 ;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
+;; TODO-PKG: header format and other package stuff (autoload magic comment)
 
 ;;---------------------------------taskspace------------------------------------
 ;;--                   Simple Taskspace / Task Management                     --
@@ -13,48 +14,66 @@
 ;; General Settings
 ;;------------------------------------------------------------------------------
 
+(defgroup taskspace nil
+  "Tool for creating/using simple taskspaces/workspaces for short tasks,
+bug investigation, log munging, or whatever."
+  :group 'convenience)
 
-;; TODO: move or overwrite-with-setq elsewhere.
-;;   - maybe: personal/dev/domains/{home,work}/dev-directories.el
-;;   - defaults here? maybe a (with-var ...) there or something?
+(defcustom taskspace/datetime/format "%Y-%m-%d"
+  "Date format for parsing/naming taskspace directory names."
+  :group 'taskspace
+  :type 'string)
 
-(defconst taskspace/shell-fn #'shell
-  "Function to call to open shell buffer. `shell' and `eshell' work.")
+(defcustom taskspace/shell-fn #'shell
+  "Function to call to open shell buffer. `shell' and `eshell' work."
+  :group 'taskspace
+  :type 'function)
 
-(defconst taskspace/dir
-;;  "C:/home/spydez/taskspaces/" ;; Debug dir. Use below instead.
-  (spydez/dir-name "workspace" spydez/dir/home)
-  "User's folder for small work tasks.")
+(defcustom taskspace/dir
+  (file-name-as-directory (expand-file-name "taskspace" user-emacs-directory))
+  "User's folder for small work tasks."
+  :group 'taskspace
+  :type 'directory)
 
-(defconst taskspace/dir/copy-files-src
-;;  "C:/home/spydez/taskspaces/00_copy-src" ;; Debug dir. Use below-ish instead.
-  (spydez/dir-name "taskspace-new" spydez/dir/home)
-  "User's folder for small work tasks.")
+(defcustom taskspace/dir/copy-files-src
+  (file-name-as-directory (expand-file-name "taskspace-new" taskspace/dir))
+  "User's folder for files to copy into new taskspaces."
+  :group 'taskspace
+  :type 'directory)
 
-(defun taskspace/test-gen () (format "%s" "testing the file gen func"))
-(defconst taskspace/gen-files-alist
-  '((".projectile" . "testing this file")
-    ("_notes.org" . taskspace/test-gen)))
+;;(defun taskspace/test-gen () (format "%s" "testing the file gen func"))
+(defcustom taskspace/gen-files-alist
+  '((".projectile" . "") ;; empty file
+    ("_notes.org" . "")) ;; also empty
+  "Files to generate for new taskspaces. Expects an alist like:
+(('file1.name' . 'contents') ('file2.name' . #'your-gen-function))"
+  :group 'taskspace
+  :type '(alist :key-type string
+                :value-type (choice string function)))
 
 ;; Gonna need regex for this eventually, probably. But not now.
-(defconst taskspace/dir/always-ignore
+(defcustom taskspace/dir/always-ignore
   '("." ".."
     "00_archive"
     (file-name-nondirectory taskspace/dir/copy-files-src))
-  "Always ignore these when getting/determining a taskspace directory.")
+  "Always ignore these when getting/determining a taskspace directory."
+  :group 'taskspace
+  :type 'sexp)
 
 ;; directory name format: <date>_<#>_<description>
 ;;   - <date>: yyyy-mm-dd format
 ;;   - <#>:    two digit number starting at zero, for multiple tasks per day
 ;;   - <description>: don't care - human info
 
-(defconst taskspace/dir-name/separator "_"
-  "Split directory name on this to extract date, dedup number, and description.")
+(defcustom taskspace/dir-name/separator "_"
+  "Split directory name on this to extract date, dedup number, and description."
+  :group 'taskspace
+  :type 'string)
 
 ;; TODO: Turn these into regexes w/ capture groups, I think?..
 ;; Have make-name and split-name use the regexes to make/split.
 ;; http://ergoemacs.org/emacs/elisp_string_functions.html
-(defconst taskspace/dir-name/parts-alists
+(defcustom taskspace/dir-name/parts-alists
   '(
     ;; Three part. Code does this all the time?
     ((date . 0)
@@ -65,17 +84,25 @@
      (description . 2))
    )
   "Order of items in task's descriptive directory name. List of alists.
-First one of the correct length is used currently.")
+First one of the correct length is used currently."
+  :group 'taskspace
+  :type 'sexp)
 ;; (cdr (assoc 'date (nth 0 taskspace/dir-name/parts-alists)))
 
-(defconst taskspace/dir-name/valid-desc-regexp "^[[:alnum:]_\\-]\\{3,\\}$"
-  "Letters, numbers, underscore, and hypen are valid.")
+(defcustom taskspace/dir-name/valid-desc-regexp "^[[:alnum:]_\\-]\\{3,\\}$"
+  "Letters, numbers, underscore, and hypen are valid."
+  :group 'taskspace
+  :type 'regexp)
 
 
 ;;------------------------------------------------------------------------------
 ;; Taskspace Commands
 ;;------------------------------------------------------------------------------
 
+
+;; TODO-DWIM: (interactive "p") ;; or "P"?
+;;   - and then 0 is choose from /all/
+;;   - and then -N is choose from ones N days ago
 
 (defun taskspace/task-name/dwim ()
   "Interactive. DWIM to clipboard and return today's task string (partial/final path)...
@@ -421,7 +448,7 @@ files not copied in alist: ((filepath . 'reason')...)"
   "Returns a date in the correct string format.
 TODO: Use arg somehow for not-today dates?"
   ;; TODO: if arg, not today. Else, today.
-  (format-time-string spydez/datetime/format/yyyy-mm-dd))
+  (format-time-string taskspace/datetime/format))
 ;; Today: (taskspace/get-date nil)
 ;; Also Today?: (taskspace/get-date 'today)
 ;; TODO: Not Today?: (taskspace/get-date -1)
@@ -630,13 +657,9 @@ Returns nil or a string in `taskspaces'."
 
 ;; TODO: Make empty dirs when creating task? (e.g. "archive" or "done" or something)
 
-;; TODO: make it its own real boy. I mean package.
-;;   - make our vars/consts into defcustoms
-;;   - move to its own dir like use-tool?
+;; TODO-PKG:
 ;;   - Comments/layout like a real package.
 ;;     e.g. https://github.com/tarsius/moody/blob/master/moody.el
-;;   - setup in config via use-package.
-;;   - stop using spydez/... vars/helpers?
 
 ;; TODO: uh... tests? idk
 
