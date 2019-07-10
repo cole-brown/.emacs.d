@@ -17,7 +17,7 @@
 
   ;; system's folder exists but still have a default bootstrap-this-early.
   (when (and (eq spydez/bootstrap/expected-complete 'default) ; default bootstrap
-             (and (boundp 'spydez/bootstrap/system/known-p) spydez/bootstrap/system/known-p) ; know this system
+             (bound-and-true-p 'spydez/bootstrap/system/known-p) ; know this system
              (file-exists-p spydez/dir/dev/system-this)) ; system-this's folder exists
     (spydez/warning/message nil nil "  Update this system's bootstrap-this-early (expecting 'specific return (got '%s)): %s"
                             spydez/bootstrap/expected-complete
@@ -27,7 +27,7 @@
   ;;   - make this-comp dir
   ;;   - copy default bootstrap-this-early there?
   (when (and (eq spydez/bootstrap/expected-complete 'default) ; default bootstrap
-             (and (boundp 'spydez/bootstrap/system/known-p) spydez/bootstrap/system/known-p) ; know this system
+             (bound-and-true-p 'spydez/bootstrap/system/known-p) ; know this system
              (not (file-exists-p spydez/dir/dev/system-this))) ; no folder for this system
     ;; Create the dir, fail if no parent.
     ;; Parent is probably spydez/dir/emacs/personal and should exist manually.
@@ -49,7 +49,7 @@
   ;;------------------------------------------------------------------------------
   ;; The todos are: Setup up this system.
 
-  (unless (and (boundp 'spydez/bootstrap/system/known-p) spydez/bootstrap/system/known-p)
+  (unless (bound-and-true-p 'spydez/bootstrap/system/known-p)
     ;; Put point at end of (spydez/warning/message nil nil ...) then:
     ;;   C-x C-e to evaluate these sexprs.
     (spydez/warning/message nil nil "Hello there from *default* bootstrap-this-early.")

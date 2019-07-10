@@ -19,7 +19,7 @@
 
 (defun server-started-p ()
     "Return non-nil if this Emacs has a server started."
-    (and (boundp server-process) server-process))
+    (bound-and-true-p server-process))
 
 (unless (server-started-p)
   (spydez/debug/message-if nil "Starting server.")

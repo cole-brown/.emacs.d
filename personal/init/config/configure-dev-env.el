@@ -156,10 +156,10 @@
 ;;---
 
 ;; give a larger undo buffer
-(when (and (boundp 'spydez/undo-limit)
+(when (and (bound-and-true-p spydez/undo-limit)
            (> spydez/undo-limit undo-limit))
   (setq undo-limit spydez/undo-limit))
-(when (and (boundp 'spydez/undo-strong-limit)
+(when (and (bound-and-true-p spydez/undo-strong-limit)
            (> spydez/undo-strong-limit undo-strong-limit))
   (setq undo-strong-limit spydez/undo-strong-limit))
 

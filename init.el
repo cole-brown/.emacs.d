@@ -133,11 +133,9 @@
 ;;   - Cannot save some of the references I want publically in my repo as it is GPL'd.
 ;;     Minorly annoying wrench in the works.
 ;;
-;; TODO: Start: zzamboni init.el: https://github.com/zzamboni/dot-emacs/blob/master/init.org
 ;; Many neat things?: https://www.wisdomandwonder.com/wp-content/uploads/2014/03/C3F.html
 ;;   todo: see if I want more of them.
 ;;   todo: is this the same as C3F below? Update all old links to this if so... Also save a new one to references.
-;; TODO: https://www.gitignore.io/api/emacs
 ;; And of course my old setup: https://github.com/spydez/emacs
 ;; TODO: check this? https://github.com/kaushalmodi/.emacs.d/blob/master/init.el
 ;;    from: https://www.reddit.com/r/emacs/comments/2wzhxh/how_to_organize_initel/covmnl5
@@ -153,6 +151,9 @@
 ;; Maybe look at all the settings in here:
 ;; https://github.com/purcell/emacs.d/blob/master/lisp/init-editing-utils.el
 
+;; TODO: Turn `use-package' up to 11?
+;;   https://github.com/a13/emacs.d
+
 
 ;;---
 ;; TODOs and Misc.
@@ -162,8 +163,6 @@
 ;;   https://github.com/domtronn/all-the-icons.el
 ;; TODO: other stuff from here?: https://huytd.github.io/emacs/emacs-from-scratch.html
 
-;; TODO: change sanity checks and others over from (and (boundp var) var) to (bound-and-true-p var)
-
 ;; TODO: go through saved-off files of old.emacs in spydez/references/my-old-emacs
 
 ;; TODO: see if any settings from custom.el.my-old.todo file should go in this new one.
@@ -171,6 +170,7 @@
 
 ;; TODO: read this maybe https://sanctum.geek.nz/arabesque/series/unix-as-ide/
 
+;; TODO-HERE
 ;; TODO: change functions I've acquired (e.g. "xah-") over to "spydez/" prefix so there's one search for them.
 ;;   Note the old name in comment or docstring.
 
