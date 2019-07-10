@@ -5,9 +5,43 @@
 ;; Functions
 ;;------------------------------------------------------------------------------
 
+;; TODO: rename for namespace?
+;;   - spydez/path/dir-name
+;;   - spydez/path/windows-to-mingw
+;; Try using Projectile's replace? C-c p r
+
+
+;; TODO: deprecate, used path-to-*? Try using Projectile's replace? C-c p r
 (defun spydez/dir-name (name parent)
   "Expand name as child dir of parent in platform-agnostic manner."
   (file-name-as-directory (expand-file-name name parent)))
+;; (spydez/dir-name "personal" spydez/dir/home)
+
+
+(defun spydez/path/to-file (parent &rest path)
+  "Given a base dir, and a &rest of e.g. ('path/to' 'dir' 'with-file' 'file.txt),
+will return full path in platform-agnostic manner. Does not 'fix' any `path'
+components; they are expected to be valid."
+  ;; fully qualify base as start of return value
+  (let ((out-path (expand-file-name "" parent)))
+    (dolist (component path out-path)
+      ;; For each component of path supplied, concat it to the result.
+      ;; `concat' is correct; see manual entry "Directory Names":
+      ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Directory-Names.html#Directory-Names
+      (setq out-path (concat (file-name-as-directory out-path) ;; assume we had a dir all along?
+                             component)) ;; and add the next component on
+      )))
+;; (spydez/path/to-file spydez/dir/home "personal" "something.txt" "foo")
+
+
+(defun spydez/path/to-dir (parent &rest path)
+  "Given a base dir, and a &rest of e.g. ('path/to' 'dir' 'with-file' 'file.txt),
+will return full path in platform-agnostic manner. Does not 'fix' any `path'
+components; they are expected to be valid."
+  ;; fully qualify base as start of return value
+  (file-name-as-directory (apply #'spydez/path/to-file parent path)))
+;; (spydez/path/to-dir spydez/dir/home "personal" "something" "foo")
+
 
 ;; There are some existing packages for dealing with windows->unix or unix->windows paths...
 ;;   Windows emacs, Cygwin paths: https://www.emacswiki.org/emacs/cygwin-mount.el
