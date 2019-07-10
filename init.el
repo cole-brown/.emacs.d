@@ -34,8 +34,7 @@
 ;; say what versions you want, what os you expect, have ways for packages
 ;; to hook in so like gpg can be connected to EPA even if half windows, half MinGW environment.
 
-;; TODO: get recentf into find-files (C-x C-f)? and buffers (C-x C-b)?
-;; it's in `C-x b', which is nice.
+;; TODO: get recentf into find-files (C-x C-f)? It's in `C-x b', which is nice.
 
 
 ;;------------------------------------------------------------------------------
