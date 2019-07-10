@@ -136,7 +136,7 @@
    ;; projectile: empty file
    '((".projectile" . "")
      ;; notes.org: setup with org header snippet ready to go
-     ("_notes.org" . "<spy/header"))
+     ("_notes.org" . "<spy/header")))
 
   ;; (taskspace/dir/always-ignore ...) ;; may have to adjust soon?
 
