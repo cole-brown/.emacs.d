@@ -116,20 +116,28 @@
 
 
 ;;------------------------------------------------------------------------------
-;; TODOs
+;; Taskspace Manager
 ;;------------------------------------------------------------------------------
 
-
 (use-package taskspace
+  ;; My own personal package - do not package manager it.
   :ensure nil
 
+  ;;-------
   :custom
+  ;;-------
   (taskspace/datetime/format spydez/datetime/format/yyyy-mm-dd)
   ;; (taskspace/shell-fn #'shell) ;; leave as default
   (taskspace/dir (spydez/dir-name "workspace" spydez/dir/home))
 
   ;; (taskspace/dir/copy-files-src ...) ;; don't have any right now
-  ;; (taskspace/gen-files-alist ...) ;; defaults are fine
+
+  (taskspace/gen-files-alist
+   ;; projectile: empty file
+   '((".projectile" . "")
+     ;; notes.org: setup with org header snippet ready to go
+     ("_notes.org" . "<spy/header"))
+
   ;; (taskspace/dir/always-ignore ...) ;; may have to adjust soon?
 
   ;; (taskspace/dir-name/separator ...)

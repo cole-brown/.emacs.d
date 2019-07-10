@@ -104,6 +104,8 @@ First one of the correct length is used currently."
 ;;   - and then 0 is choose from /all/
 ;;   - and then -N is choose from ones N days ago
 
+;; TODO-DWIM: If in a taskspace file/folder, return that.
+
 (defun taskspace/task-name/dwim ()
   "Interactive. DWIM to clipboard and return today's task string (partial/final path)...
 Create if none. Return if just the one. Choose from multiple."
