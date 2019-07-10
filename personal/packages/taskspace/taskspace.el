@@ -100,10 +100,6 @@ First one of the correct length is used currently."
 ;;------------------------------------------------------------------------------
 
 
-;; TODO-DWIM: (interactive "p") ;; or "P"?
-;;   - and then 0 is choose from /all/
-;;   - and then -N is choose from ones N days ago
-
 ;; TODO-DWIM: If in a taskspace file/folder, return that.
 
 (defun taskspace/task-name/dwim ()
@@ -129,12 +125,12 @@ Create if none. Return if just the one. Choose from multiple."
 ;; M-x taskspace/task-name/dwim
 
 
-(defun taskspace/task-dir/dwim ()
+(defun taskspace/task-dir/dwim (arg)
   "Interactive. DWIM to clipboard and return today's task dir string (full path)...
 Create if none. Return if just the one. Choose from multiple."
-  (interactive)
+  (interactive "p") ;; numeric arg
 
-  (let* ((date (taskspace/get-date 'today))
+  (let* ((date (taskspace/get-date arg))
          (taskspaces (taskspace/list-date date))
          (length-ts (length taskspaces)))
 
@@ -316,8 +312,6 @@ Shell opened can be set by modifying `taskspace/shell-fn'."
 
 
 ;; TODO: dwim <date>'s task ? (is this a dupe of taskspace/task-dir/dwim?)
-;; TODO: optional/prefix arg for yesterday, day before, etc? Or use org-mode's
-;; calendar picker thing?
 
 
 ;;------------------------------------------------------------------------------
@@ -448,12 +442,40 @@ files not copied in alist: ((filepath . 'reason')...)"
 
 (defun taskspace/get-date (arg)
   "Returns a date in the correct string format.
-TODO: Use arg somehow for not-today dates?"
-  ;; TODO: if arg, not today. Else, today.
-  (format-time-string taskspace/datetime/format))
-;; Today: (taskspace/get-date nil)
-;; Also Today?: (taskspace/get-date 'today)
-;; TODO: Not Today?: (taskspace/get-date -1)
+`arg' must be nil or 'today (for today), or numberp.
+Returns date requested by arg, or nil."
+  (let ((day nil))
+    ;; check/convert input arg
+    (cond ((null arg)
+           ;; nil -> today -> 0
+           (setq day 0))
+
+          ((numberp arg)
+           ;; if arg numberp: 0 today, negative before, positive after
+           (setq day arg))
+
+          ((string= arg 'today)
+           ;; 'today -> 0
+           (setq day 0))
+
+          ;; error case(s): nil
+          (t
+           (setq day nil)))
+
+    (unless (eq day nil)
+      (let* ((now (current-time)) ;; right now
+             (now-adjust-secs (* day 24 60 60)) ;; day arg to seconds
+             (target (time-add now now-adjust-secs))) ;; actually when we want
+        ;; format to spec and return
+        (format-time-string taskspace/datetime/format target)))))
+;; Examples/Tests:
+;;                 Today: (taskspace/get-date nil)
+;;            Also Today: (taskspace/get-date 'today)
+;; Today Too... I guess?: (taskspace/get-date "today")
+;;             Not Today: (taskspace/get-date -1)
+;;             Not Today: (taskspace/get-date 1.9)
+;;                 Error: (taskspace/get-date "jeff")
+;;                 Error: (taskspace/get-date 'jeff)
 
 
 (defun taskspace/verify-description (name)
