@@ -12,11 +12,8 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Guide-Key
+;; Which-Key
 ;;------------------------------------------------------------------------------
-
-;; TODO: Switch to which-key. It's massively more popular and looks to have
-;; a nicer layout maybe?
 
 ;; Which Key:
 ;;   https://github.com/justbur/emacs-which-key
@@ -35,31 +32,7 @@
   ;;   which-key-idle-delay 0.05)
   (which-key-mode))
 
-;; ;; TODO: Doesn't work til turned off/back on. Need debugged?
-;; ;; It's hard to remember keyboard shortcuts. The guide-key package pops up help after a short delay. 
-;; ;;
-;; ;; Currently only set for:
-;; ;;   1) Rectangles    "C-x r"
-;; ;;   2) Window frames "C-x 4"
-;; ;;   3) Mode specific "C-c"
-;; (use-package guide-key
-;;   :delight guide-key-mode
-;;   :config
-;;   (progn
-;;     (setq guide-key/guide-key-sequence
-;;           '("C-x r"     ; rectangle editing - I use parts of it but not all
-;;             "C-x 4"     ; some window commands I never use
-;;             "C-c"       ; God only knows. Minor modes, user keys, the moon...
-;;             (projectile-mode "C-c p") ; Projectile's keymap
-;;             (vlf-mode "C-c C-v")))    ; VLF (Very Large Files) keymap
-;;     (guide-key-mode 1)))  ; Enable guide-key-mode
-;; ;; Trial: [2019-01-17]
-;; ;; TODO: any way to mark things what they are?
-;; ;;   Like `C-c C-v' are for VLF and "Prefix Command" isn't 100% useful.
-;; ;;   Also `C-c p' is Projectile, but shows up as "??" first then "Prefix Command".
-;; ;;   Meh.
-;; 
-;; ;; (Help) You know I need someone.
+;; (Help) You know I need someone.
 
 
 ;;------------------------------------------------------------------------------

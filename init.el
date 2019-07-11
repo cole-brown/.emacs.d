@@ -180,10 +180,6 @@
 ;; https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=org%20mode%20resume&=&=&oq=&gs_l=&pbx=1
 
 ;; TODO-HERE: todo/comment cleanup
-;; TODO: bind-key vs global-set-key vs define-key vs the 50 other ways... which one should we be using where?
-;; https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=bind-key%20vs%20global-set-key&=&=&oq=&gs_l=&pbx=1
-;;  - https://www.reddit.com/r/emacs/comments/6hbb22/when_do_you_use_definekey_vs_globalsetkey/
-
 ;; TODO: my current configure-<functionality> versus what most others seem to do: configure-<package>
 
 ;; TODO: defer load absolutely nothing? Seems to make for just random pauses for a while when you do something
@@ -240,6 +236,9 @@
 ;; Packages to consider trying out:
 ;;   - Treemacs: tree layout file explorer
 ;;     https://github.com/Alexander-Miller/treemacs
+
+;; Use `bind-key' and `use-package' as much as possible for configuration?
+;;   See for an example: https://github.com/a13/emacs.d
 
 ;;---
 ;; License, Licensing, and Limericks
@@ -591,12 +590,16 @@ For the transition, maybe a func for checking..."
 ;; Possibly move custom-file setting up, and loading down below loading of bootstrap-this-late overrides.
 (load custom-file t)
 
+;; TODO: Get rid of everything possible in custom.el?
+;;
 ;; Custom file is annoying, especially because it gathers everything into one
 ;; weird place. Also because it insists on having only one place (when it
 ;; saves). So some stuff I want early (so custom.el has to be arly), and other
 ;; stuff I want late (like gpg) and can't do much about.
 ;;
 ;; I'm hoping to find a way to relegate custom.el to just be package.el's vars...
+;;   - Actually use-package might work. See any of mine with a ':custom' section
+;;     and/or https://github.com/a13/emacs.d
 
 
 ;;---

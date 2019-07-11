@@ -18,16 +18,24 @@
 ;; Elisp
 ;;------------------------------------------------------------------------------
 
-;; Don't think I have settings in hook in old .emacs...
-;; Might not have any settings at all besides tab size...
-;; TODO: few to check here: https://www.emacswiki.org/emacs/EmacsLispMode
-(defun spydez/hook/emacs-lisp-mode ()
-  ;; TODO: more settings for elisp?
-  (setq tab-width spydez/dev-env/tab/min) ; lisp gets the smaller tab width
-  (define-key emacs-lisp-mode-map "\C-x\C-e" 'pp-eval-last-sexp) ; todo: bind-key instead?
-  )
+;; NOTE! This is pp, not anything generic like `emacs-lisp'.
+;; Could change to `emacs-lisp', and put an `:after pp'...
+;; TODO: If that, change bind-key to a `:bind' section.
+(use-package pp
 
-(add-hook 'emacs-lisp-mode-hook 'spydez/hook/emacs-lisp-mode)
+  :init
+  ;; Don't think I have settings in hook in old .emacs...
+  ;; Might not have any settings at all besides tab size...
+  ;; TODO: few to check here: https://www.emacswiki.org/emacs/EmacsLispMode
+
+  ;; Setup my elisp mode hook
+  (defun spydez/hook/emacs-lisp-mode ()
+    ;; TODO: more settings for elisp?
+    (setq tab-width spydez/dev-env/tab/min) ;; lisp gets the smaller tab width
+    (bind-key "C-x C-e" 'pp-eval-last-sexp emacs-lisp-mode-map))
+
+  :hook
+  (emacs-lisp-mode . spydez/hook/emacs-lisp-mode))
 
 
 ;;------------------------------------------------------------------------------

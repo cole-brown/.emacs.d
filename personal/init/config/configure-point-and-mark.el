@@ -41,11 +41,14 @@ point reaches the beginning or end of the buffer, stop there."
       (back-to-indentation))))
 
 ;; remap C-a to `smarter-move-beginning-of-line'
-(global-set-key [remap move-beginning-of-line]
-                'spydez/smarter-move-beginning-of-line)
+(bind-key [remap move-beginning-of-line]
+          'spydez/smarter-move-beginning-of-line)
 
-;; TODO: not liking C-a having unexpected effects. May want this undone.
-;;   Makes it hard to spam C-a.
+;; Wasn't liking C-a having unexpected effects. Was originally:
+;;   1) Go to first non-whitespace.
+;;   2) Else go to beginning of line.
+;; I've reversed those so one C-a works how my fingers expect but spamming
+;; is useful to remind me of the new functionality.
 
 
 ;;------------------------------------------------------------------------------

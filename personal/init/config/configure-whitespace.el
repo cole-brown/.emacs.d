@@ -4,8 +4,28 @@
 ;; Trailing whitespace.
 ;;------------------------------------------------------------------------------
 
+;; TODO: Trial this: ws-butler
+;; https://melpa.org/#/ws-butler
+;; Only removes whitespace from regions you've changed.
+
+;; Trial: [2019-07-11 Thu]
+;; https://batsov.com/articles/2011/11/25/emacs-tip-number-3-whitespace-cleanup/
+(add-hook 'before-save-hook 'whitespace-cleanup)
+
+;; TODO: Not sure I want all of whitespace or what even that means...
+;; ;; Has a lot more settings, but to start:
+;; (use-package whitespace
+;;   :ensure nil
+;;
+;;   :commands (whitespace-buffer
+;;              whitespace-cleanup
+;;              whitespace-mode)
+;;
+;;   :hook
+;;   (before-save-hook . whitespace-cleanup))
+
 ;; different way to ban whitespace at end of lines?
-;; ;; Delete trailing whitespace before save
+;; ;; Delete trailing whitespace before save?
 ;; (add-hook 'before-save-hook 'delete-trailing-whitespace)
 ;; Caveat: Same downside as below. Ducks up the blame.
 
@@ -26,6 +46,7 @@
 
 ;; haven't tried:
 ;;   https://github.com/itsjeyd/.emacs.d/blob/emacs24/init.el
+;;   https://github.com/jwiegley/use-package/issues/122#issuecomment-54634367
 ;; (use-package whitespace
 ;;   :commands whitespace-mode
 ;;   :config
@@ -37,6 +58,11 @@
 ;;   ;; Variables
 ;;   (setq whitespace-line-column nil)
 ;;   (setq whitespace-style '(face lines-tail)))
+;; and from above:
+;; ;; https://batsov.com/articles/2011/11/25/emacs-tip-number-3-whitespace-cleanup/
+;; (add-hook 'before-save-hook 'whitespace-cleanup)
+;; and also
+;;
 
 
 ;; This is pretty close:
@@ -62,7 +88,7 @@
 ;; ;;      (eval-after-load "whitespace"
 ;; ;;        '(delight 'whitespace-mode ""))))
 ;; ;; meh. No work?
-;; 
+;;
 ;; ;; TODO: have yet to find a good config. This is closest. I think everyone else maybe wants
 ;; ;;   just hilight colors and I want symbols or something. Most thing I've tried do nothing.
 ;; ;; TODO: Something like this? Maybe?
@@ -72,7 +98,7 @@
 ;; ;;  ;; Make whitespace-mode with very basic background coloring for whitespaces.
 ;; ;;   ;; http://ergoemacs.org/emacs/whitespace-mode.html
 ;; ;;   (setq whitespace-style (quote (face spaces tabs newline space-mark tab-mark newline-mark )))
-;; ;; 
+;; ;;
 ;; ;;   ;; Make whitespace-mode and whitespace-newline-mode use “¶” for end of line char and “▷” for tab.
 ;; ;;   (setq whitespace-display-mappings
 ;; ;;         ;; all numbers are unicode codepoint in decimal. e.g. (insert-char 182 1)

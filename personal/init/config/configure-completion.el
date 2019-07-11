@@ -82,7 +82,11 @@
 ;; Trial: [2019-01-23]
 (use-package helm-swoop
   :after helm
+
+  ;;-----
   :bind
+  ;;-----
+  ;; global keys first
   (("C-S-s" . helm-swoop)
    ("M-i" . helm-swoop)
    ("M-s s" . helm-swoop)
@@ -90,11 +94,19 @@
    ("M-I" . helm-swoop-back-to-last-point)
    ("C-c M-i" . helm-multi-swoop)
    ("C-x M-i" . helm-multi-swoop-all)
+
+   ;;---
+   :map isearch-mode-map
+   ;;---
+   ("M-i" . helm-swoop-from-isearch)
+
+   ;;---
+   :map helm-swoop-map
+   ;;---
+   ("M-i" . 'helm-multi-swoop-all-from-helm-swoop)
    )
-  :config
-  (progn
-    (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
-    (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop))
+
+  ;; :config
   )
 
 ;; Use C-S-s for search. Can go into "Edit Mode" with C-c C-e.
