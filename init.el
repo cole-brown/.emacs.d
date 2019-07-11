@@ -179,8 +179,8 @@
 ;; https://github.com/xiaohanyu/resume
 ;; https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=org%20mode%20resume&=&=&oq=&gs_l=&pbx=1
 
-;; TODO-HERE: todo/comment cleanup
-;; TODO: my current configure-<functionality> versus what most others seem to do: configure-<package>
+;; Consider: my current configure-<functionality> versus what most others seem to do: configure-<package>
+;;   - Sticking with this for now...
 
 ;; TODO: defer load absolutely nothing? Seems to make for just random pauses for a while when you do something
 ;; after loading emacs. An extra second or two at start might be less annoying?
@@ -188,7 +188,7 @@
 
 ;; TODO: check if missed any of old .emacs files
 
-;; TODO: reduce this down to as few lines as possible? 
+;; TODO: reduce this down to as few lines as possible?
 ;;  e.g. http://ergoemacs.org/emacs/organize_your_dot_emacs.html
 ;;  but I'd still need all the stuff setting up the paths, probably?
 
@@ -211,20 +211,25 @@
 ;;  like this for speeding up builds on windows?
 ;;    - https://github.com/Microsoft/WSL/issues/1932#issuecomment-294362848
 ;;      - https://support.microsoft.com/en-us/help/4028485/windows-10-add-an-exclusion-to-windows-security
-
-;; TODO: does a gen'd http://emacs-bootstrap.com/ have anything neat in it?
-;;   downloaded and unzipped to C:\home\cole\zzz_new-emacs\emacs.d
+;; I think just put them in the right/related file, or in a file in docs/...
 
 ;; TODO: any way to have emacs run a command (async) to get output from a remote server?
 ;; Right now: emacs and ssh don't talk to each other well.
 
 ;; TODO: focus.el? https://www.reddit.com/r/emacs/comments/b1vrar/lsp_support_for_focusel_using_lspmode/
 
+;; TODO-HERE: todo/comment cleanup
+;; TODO: SSH/Shell better?
+
+;; TODO: prettify my JSON(ish) logs?
+;;   Does a mode exist already? Do I want the whole buffer pretty or one line
+;;   expanded to pretty at a time?
+
 
 ;;---
 ;; Trials and Try-outs.
 ;;---
-;; Packages and experiments should be marked with something like... 
+;; Packages and experiments should be marked with something like...
 ;; Trial: [yyyy-mm-dd]
 ;;
 ;; TODO: change to some sort of elisp documentation or annotation?
@@ -547,7 +552,7 @@ For the transition, maybe a func for checking..."
 ;; This is setting priorities for overrides towards the front/head/car of
 ;; load-path (add-to-list does this for us).
 ;;
-;; Don't use .emacs.d. 
+;; Don't use .emacs.d.
 ;; https://stackoverflow.com/questions/24779041/disable-warning-about-emacs-d-in-load-path
 ;; (add-to-list 'load-path spydez/dir/emacs)
 (add-to-list 'load-path spydez/dir/packages/use-tool)
@@ -745,7 +750,7 @@ For the transition, maybe a func for checking..."
 (require 'bootstrap-keyboard)
 
 ;; todo:
-;; conditional use-package stuff? 
+;; conditional use-package stuff?
 ;; https://jwiegley.github.io/use-package/keywords/
 
 (require 'bootstrap-final)

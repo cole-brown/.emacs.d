@@ -36,6 +36,36 @@
 ;;   (defalias 'spydez/shell 'spydez/windows/shell)
 ;;   )
 
+;; [2019-07-11 Thu]
+;; Garble trash on the shell prompt:
+;;   ^[]0;MSYS:/c/home/user/.emacs.d^G
+;;   user@host MSYS ~/.emacs.d (master)
+;;   $
+;; https://emacs.stackexchange.com/questions/22049/git-bash-in-emacs-on-windows
+;;
+;; Need to setup a .bash_profile with check for:
+;;   $INSIDE_EMACS (helpfully set by emacs).
+;; Have a bash_profile.emacs in docs/ with an example.
+
+;; TODO-TODAY: Try this in if emacs part of .bash_profile?
+;; Error trying to ssh where password is required:
+;;   ssh_askpass: exec(/usr/lib/ssh/ssh-askpass): No such file or directory
+;; https://www.reddit.com/r/emacs/comments/8i04lr/git_from_shelleshell_on_windows/dyo4ga7?utm_source=share&utm_medium=web2x
+;;   "Either set env SSH_ASKPASS to the location of your askpass executable or
+;; go through the pageant/plink setup from your first link. It's been forever
+;; since I've been on windows, but I used pageant/plink with git/github without
+;; much problem."
+;;   - [deleted]
+;;
+;; But what to set it /to/?!
+;;   https://github.com/magit/magit/wiki/Pushing-with-Magit-from-Windows#openssh-passphrase-caching-via-ssh-agent
+;; Either:
+;;   (setenv "SSH_ASKPASS" "git-gui--askpass")
+;; Or:
+;;   Something similar in that `if INSIDE_EMACS' block in .bash_profile
+;; Those did not work:
+;;   ssh_askpass: exec(git-gui--askpass): No such file or directory
+
 ;; TODO: figure out how to integrate this into use-tool
 ;; Set shell command to use git bash.
 (when (use-tool-os-and-tool-p 'windows-nt "bash")
