@@ -15,7 +15,8 @@
 ;; General Settings
 ;;------------------------------------------------------------------------------
 
-(defconst spydez/dir/org-docs (spydez/dir-name "org" spydez/dir/common-doc-save))
+;; None?
+
 
 ;;------------------------------------------------------------------------------
 ;; Files

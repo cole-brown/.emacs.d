@@ -28,6 +28,10 @@
 ;;------------------------------------------------------------------------------
 ;; Shell: Git Bash for Windows?
 ;;------------------------------------------------------------------------------
+
+;; Keyboard shortcuts:
+;;   https://www.gnu.org/software/emacs/manual/html_node/emacs/Shell-Ring.html
+
 ;; (when (spydez/tools/os-and-tool-p 'windows-nt "bash")
 ;;   (defun spydez/windows/shell ()
 ;;     (interactive)
@@ -65,6 +69,9 @@
 ;;   Something similar in that `if INSIDE_EMACS' block in .bash_profile
 ;; Those did not work:
 ;;   ssh_askpass: exec(git-gui--askpass): No such file or directory
+
+;; TODO: Might be more to check out:
+;;   https://github.com/magit/magit/wiki/Pushing-with-Magit-from-Windows
 
 ;; TODO: figure out how to integrate this into use-tool
 ;; Set shell command to use git bash.

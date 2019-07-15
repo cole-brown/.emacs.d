@@ -402,11 +402,34 @@
 ;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/#keeping-a-journal
 ;; https://arenzana.org/2019/04/emacs-org-mode/#orgeaaf198
 ;; https://github.com/bastibe/org-journal
-;; (use-package org-journal
-;;   :after org
-;;   :custom
-;;   (org-journal-dir "~/Documents/logbook")
-;;   (org-journal-date-format "%A, %d %B %Y")) ;; or a better format, probably.
+(use-package org-journal
+  :after org
+
+  ;;-----
+  :custom
+  ;;-----
+
+  ;; top dir for org-journals
+  ;; TODO: put in secrets with "logbooks/<domain>/" or something if wanted?
+  (org-journal-dir (spydez/path/to-dir spydez/dir/org-docs "logbook"))
+
+  ;; tack day name onto our format
+  ;; TODO: put in date-and-time.el with other formats?
+  (org-journal-date-format (concat spydez/datetime/format/yyyy-mm-dd ", %A"))
+  ;; This can be a function if more is wanted. E.g. inserting new header text
+  ;; into empty files.
+  ;;  - https://github.com/bastibe/org-journal#journal-file-content
+
+  ;; A year per file. Could do monthly if too big. weekly and daily are also options.
+  ;; daily is the default.
+  (org-journal-file-type 'yearly)
+
+  ;; TODO:
+  ;; org-journal-file-format: Make it ISO-ish/searchable (yyyy-mm-dd) if not so already?
+
+  ;; TODO: encryption?
+  ;; https://github.com/bastibe/org-journal#encryption
+  )
 
 
 ;;------------------------------------------------------------------------------
