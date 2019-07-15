@@ -260,23 +260,24 @@
 ;;------------------------------------------------------------------------------
 
 ;; early-init.el:
-;;   TODO: update this now that I'm using it...
-;;   Not used right now.
-;;   Can do some even earlier stuff with early-init.el if needed...
-;;     https://www.reddit.com/r/emacs/comments/7yns85/emacs_adds_support_for_a_second_read_earlier_init/
-;;     https://git.savannah.gnu.org/cgit/emacs.git/commit/?id=24acb31c04b4048b85311d794e600ecd7ce60d3b
-
+;;   emacs 26:  Fakes loading it early by loading it ASAP when init.el is called.
+;;   emacs 27+: Loads during early-init step.
+;;
+;; Early, pre-init, setup includes mostly getting prepared for init by setting
+;; bare minimum load paths and spydez/* functions for loading the environment
+;; with domain- and device-specific overrides once init.el gets going.
+;;
+;; Can do some even earlier stuff with early-init.el if needed...
+;;   https://www.reddit.com/r/emacs/comments/7yns85/emacs_adds_support_for_a_second_read_earlier_init/
+;;   https://git.savannah.gnu.org/cgit/emacs.git/commit/?id=24acb31c04b4048b85311d794e600ecd7ce60d3b
 
 ;; init.el:
 ;;   First, emacs loads init.el.
 ;;   Our init.el will then load our files roughly in this order:
+;;     0) zeroth-*.el
 ;;     1) bootstrap-*.el
-;;     2) init-*.el
-;;     3) configure-*.el
-;; TODO: I moved from setup-*.el to configure-*.el because it seemed more apropros.
-;;   However now my ordering is not also alphabetical...
-;; TODO: bootstrap-*, configure-*, finalize-* maybe?
-
+;;     2) configure-*.el
+;;     3) finalize-*.el
 
 ;; I don't want a megalithic emacs init file. So how best to break it up?
 ;;
