@@ -1,6 +1,111 @@
-;; -*- mode: emacs-lisp; lexical-binding: t -*-
+;; taskspace.el --- Extremely Simple Taskspace/Workspace management -*- mode: emacs-lisp; lexical-binding: t -*-
 
-;; TODO-PKG: header format and other package stuff (autoload magic comment)
+;; Copyright (C) 2019  Cole Brown
+;; License: MIT License
+;; Author: Cole Brown <git@spydez.com>
+;; Created: 2019-04-24
+;; Version: 0.3
+
+;; Package-Requires: ((emacs "26.1"))
+
+
+;;; Commentary:
+
+;; taskspace.el is an extremely KISS taskspace/workspace generator/manager.
+
+;; FAQ:
+;;   1) Can it do X?
+;;      - No... I really meant simple.
+
+;; It can make a folder based on a simple dating and numbering scheme, with a
+;; simple description tacked on for human usability.
+
+;; It can copy files into the new taskspace. It can generate files based on a
+;; static string or a function supplied in taskspace vars.
+
+;; It can copy the taskspace full path or name to the kill ring/clipboard.
+
+;; It can open the taskspace dir itself (or the taskspace parent dir)
+;; in a buffer.
+
+
+;;---------------
+;; Commands:
+;;---------------
+;;   DWIM commands:
+;;     - Accepts numeric prefix arg.
+;;       - 0 or no prefix: Today's date
+;;       - positive: Future date; N days from now.
+;;       - negative: Past date; N days back.
+;;     - DWIM means:
+;;       - If none for date: Create.
+;;       - If just one existing: Return it.
+;;       - If multiple: Choose from prompt of options.
+;;     `taskspace/task-dir/dwim'
+;;       - Fully qualified path to taskspace.
+;;         - e.g. "c:/home/user/taskspace/2019-01-01_2_some-task-name"
+;;     `taskspace/task-name/dwim'
+;;       - Taskspace directory name only.
+;;         - e.g. "2019-01-01_2_some-task-name"
+;;
+;;   DWIM derived:
+;;     - Use `taskspace/task-dir/dwim' to determine which taskspace is
+;;       intended from the context.
+;;     `taskspace/dired'
+;;       - Opens the directory of a task in emacs
+;;         (uses find-file, so defaults to dired-mode buffer).
+;;     `taskspace/shell'
+;;       - Opens the directory of all tasks in emacs (aka `taskspace/dir')
+;;         (uses find-file, so defaults to dired-mode buffer).
+;;
+;;   Other Commands:
+;;     `taskspace/create'
+;;       - Create a new taskspace. Will prompt for the short description.
+;;         - e.g. description of "2019-01-01_2_some-task-name" is "some-task-name".
+;;     `taskspace/parent-dired'
+;;       - Opens the directory of all tasks in emacs (aka `taskspace/dir')
+;;         (uses find-file, so defaults to dired-mode buffer).
+
+
+;;---------------
+;; Settings:
+;;---------------
+;; See 'General Settings' header and all the `defcustom' defined vars for
+;; taskspace to find out what all can be customized right now.
+;;
+;; Or see Customize help for `taskspace' (M-x customize-group RET taskspace)
+
+
+;;---------------
+;; Configuration:
+;;---------------
+;; Simple to set up with use-package.
+;;
+;; use-package example:
+;;  (use-package taskspace
+;;    :custom
+;;    (taskspace/datetime/format "%Y-%m-%d")
+;;    ;; (taskspace/shell-fn #'shell) ;; leave as default
+;;    (taskspace/dir "~/workspace")
+;;
+;;    (taskspace/gen-files-alist
+;;     ;; projectile: empty file
+;;     '((".projectile" . "")
+;;       ;; notes.org: setup with my org header snippet ready to go
+;;       ("_notes.org" . "<org/header")))
+;;
+;;    ;; others to consider:
+;;    ;; (taskspace/dir/copy-files-src ...)
+;;    ;; (taskspace/dir/always-ignore ...)
+;;    ;; (taskspace/dir-name/separator ...)
+;;    ;; (taskspace/dir-name/parts-alists ...)
+;;    ;; (taskspace/dir-name/valid-desc-regexp ...)
+;;    )
+
+
+
+;;; Code:
+
 
 ;;---------------------------------taskspace------------------------------------
 ;;--                   Simple Taskspace / Task Management                     --
@@ -102,6 +207,7 @@ First one of the correct length is used currently."
 
 ;; TODO-DWIM: If in a taskspace file/folder, return that.
 
+;;;###autoload
 (defun taskspace/task-name/dwim ()
   "Interactive. DWIM to clipboard and return today's task string (partial/final path)...
 Create if none. Return if just the one. Choose from multiple."
@@ -125,6 +231,7 @@ Create if none. Return if just the one. Choose from multiple."
 ;; M-x taskspace/task-name/dwim
 
 
+;;;###autoload
 (defun taskspace/task-dir/dwim (arg)
   "Interactive. DWIM to clipboard and return today's task dir string (full path)...
 Create if none. Return if just the one. Choose from multiple."
@@ -176,6 +283,7 @@ Create if none. Return if just the one. Choose from multiple."
 ;; (taskspace/task-dir/dwim)
 
 
+;;;###autoload
 (defun taskspace/create (arg)
   "Interactive. Creates a new taskspace for today with the description supplied."
   (interactive "sNew Task Short Description: ")
@@ -242,6 +350,7 @@ Create if none. Return if just the one. Choose from multiple."
 ;; (taskspace/create "testing-create")
 
 
+;;;###autoload
 (defun taskspace/dired ()
   "Interactive. Opens the current taskspace's top dir in emacs."
   (interactive)
@@ -264,6 +373,7 @@ Create if none. Return if just the one. Choose from multiple."
 ;; M-x taskspace/dired
 
 
+;;;###autoload
 (defun taskspace/parent-dired ()
   "Interactive. Opens the taskspace's overall top dir in emacs."
   (interactive)
@@ -285,6 +395,7 @@ Create if none. Return if just the one. Choose from multiple."
 
 ;; TODO: Need to get my shell better. MSYS/Git-Bash shell and emacs
 ;; don't like each other all that much by default.
+;;;###autoload
 (defun taskspace/shell ()
   "Interactive. Opens the current taskspace's top dir in an emacs shell buffer.
 Shell opened can be set by modifying `taskspace/shell-fn'."
@@ -691,3 +802,4 @@ Returns nil or a string in `taskspaces'."
 ;; The End.
 ;;------------------------------------------------------------------------------
 (provide 'taskspace)
+;;; taskspace.el ends here
