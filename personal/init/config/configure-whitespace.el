@@ -1,5 +1,27 @@
 ;; -*- emacs-lisp -*-
 
+
+;;------------------------------------------------------------------------------
+;; Tab Settings
+;;------------------------------------------------------------------------------
+;; https://www.emacswiki.org/emacs/NoTabs
+;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Just-Spaces.html
+;; https://www.emacswiki.org/emacs/TabsAreEvil
+;; https://www.emacswiki.org/emacs/SmartTabs
+
+;; always replace tabs with spaces
+(setq-default indent-tabs-mode nil)
+;; set default tab width for all buffers
+(setq-default tab-width spydez/dev-env/tab/normal)
+
+;; TODO: do I need a tab-stop-list? What's it used in? Not prog-modes...
+;; https://www.emacswiki.org/emacs/TabStopList
+;; (setq tab-stop-list (spydez/range 0 120 spydez/tab-width))
+;; TODO: range function is in lisp/misc-functions... load them earlier?
+
+;; NOTE: M-x tabify and M-x untabify exist and work on regions.
+
+
 ;;------------------------------------------------------------------------------
 ;; Trailing Whitespace.
 ;;------------------------------------------------------------------------------

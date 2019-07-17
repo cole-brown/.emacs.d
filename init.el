@@ -863,32 +863,6 @@ For the transition, maybe a func for checking..."
 ;; key-chords, hydra, some helper functions
 (require 'configure-hydra)
 
-
-;; TODO: move this to proper place
-;; e.g. configure-tabs, configure-dev-env, configure-text...
-;;------------------------------------------------------------------------------
-;; Tab Settings
-;;------------------------------------------------------------------------------
-;; Winging this in here for now - belongs in text or dev-env or something.
-;; https://www.emacswiki.org/emacs/NoTabs
-;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Just-Spaces.html
-;; https://www.emacswiki.org/emacs/TabsAreEvil
-;; https://www.emacswiki.org/emacs/SmartTabs
-
-;; always replace tabs with spaces
-(setq-default indent-tabs-mode nil)
-;; set default tab width for all buffers
-(setq-default tab-width spydez/dev-env/tab/normal)
-;; https://www.emacswiki.org/emacs/TabStopList
-;; (setq tab-stop-list (spydez/range 0 120 spydez/tab-width))
-;; TODO: range function is in lisp/misc-functions... load them earlier?
-
-;; NOTE: M-x tabify and M-x untabify exist and work on regions.
-;;------
-;; END Tab Settings
-;;------
-
-
 ;; For moving around in and messing with text via or at point and/or mark.
 ;; Hi Mark.
 ;; Obviously this and configure-text and configure-dev-env
