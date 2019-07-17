@@ -926,6 +926,9 @@ For the transition, maybe a func for checking..."
 ;;   Getting annoying when writing elisp and I don't really use them right now...
 (require 'configure-templates)
 
+;; What to do with all that whitespace?
+(require 'configure-whitespace)
+
 ;; Programming Modes
 (require 'configure-csharp)
 ;; todo: configure code modes

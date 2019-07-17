@@ -1,114 +1,118 @@
 ;; -*- emacs-lisp -*-
 
 ;;------------------------------------------------------------------------------
-;; Trailing whitespace.
+;; Trailing Whitespace.
 ;;------------------------------------------------------------------------------
 
-;; TODO: Trial this: ws-butler
+;; TODO: Trial this: ws-butler (turn off whitespace-cleanup in
+;;   (use-package whitespace...))
 ;; https://melpa.org/#/ws-butler
 ;; Only removes whitespace from regions you've changed.
-
-;; Trial: [2019-07-11 Thu]
-;; https://batsov.com/articles/2011/11/25/emacs-tip-number-3-whitespace-cleanup/
-(add-hook 'before-save-hook 'whitespace-cleanup)
-
-;; TODO: Not sure I want all of whitespace or what even that means...
-;; ;; Has a lot more settings, but to start:
-;; (use-package whitespace
-;;   :ensure nil
-;;
-;;   :commands (whitespace-buffer
-;;              whitespace-cleanup
-;;              whitespace-mode)
-;;
-;;   :hook
-;;   (before-save-hook . whitespace-cleanup))
-
-;; different way to ban whitespace at end of lines?
-;; ;; Delete trailing whitespace before save?
-;; (add-hook 'before-save-hook 'delete-trailing-whitespace)
-;; Caveat: Same downside as below. Ducks up the blame.
-
-;; Ban whitespace at end of lines, globally.
-;; (add-hook 'write-file-hooks
-;;           '(lambda ()
-;;              (gcr/delete-trailing-whitespace)))
-;; Caveat: Banning has downside of fucking up code blame when you didn't really change anything.
-
-;; Or just show it?
-;; (setq show-trailing-whitespace t)
-;; TODO: Holding off on this in case a calmer whitespace display can be found.
 
 
 ;;------------------------------------------------------------------------------
 ;; Whitespace in General.
 ;;------------------------------------------------------------------------------
 
-;; haven't tried:
-;;   https://github.com/itsjeyd/.emacs.d/blob/emacs24/init.el
-;;   https://github.com/jwiegley/use-package/issues/122#issuecomment-54634367
-;; (use-package whitespace
-;;   :commands whitespace-mode
-;;   :config
-;;   (modeline-remove-lighter 'whitespace-mode)
-;;
-;;   ;; Hooks
-;;   (add-hook 'prog-mode-hook #'whitespace-mode)
-;;
-;;   ;; Variables
-;;   (setq whitespace-line-column nil)
-;;   (setq whitespace-style '(face lines-tail)))
-;; and from above:
-;; ;; https://batsov.com/articles/2011/11/25/emacs-tip-number-3-whitespace-cleanup/
-;; (add-hook 'before-save-hook 'whitespace-cleanup)
-;; and also
-;;
+;; Trial: [2019-07-16 Tue]
+;; ...Finally. Took long enough to figure out making things look ok.
+;; (set-face-attribute ...) kids. Helps a lot when your theme has
+;; defaults that you can just steal and tweak.
+(use-package whitespace
+  :ensure nil
+  :demand t
 
+;;   ;;----------
+;;   :hook
+;;   ;;----------
+;;   ;; This... Doesn't work here? Doesn't get called.
+;;   ;; Trial: [2019-07-11 Thu]
+;;   ;; https://batsov.com/articles/2011/11/25/emacs-tip-number-3-whitespace-cleanup/
+;;   (before-save-hook . whitespace-cleanup)
 
-;; This is pretty close:
-;; https://www.emacswiki.org/emacs/WhiteSpace
-;; (delete 'lines whitespace-style)
-;; whitespace-space face may could use minor adjusting (regular bg color?)
-;; probably don't want on global. Just for programming modes maybe.
-;;
-;; TODO: Possibly try this for whitspace fill-column indicator?
-;;   https://www.reddit.com/r/emacs/comments/also27/second_trial_for_a_weekly_tipstricksetc_thread/efzl7ft
-;;   (that comment and also child comment with code snippet to try)
+  ;;----------
+  :custom
+  ;;----------
+  (whitespace-style
+   (quote
+    ;; visualization via faces (see set-face-attribute below)
+    (face
+     ;; general/normal whitespace
+     tabs spaces newline
 
-;; ;; Whitespace
-;; ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Useless-Whitespace.html
-;; ;; (require 'whitespace)
-;; ;; (setq whitespace-style '(trailing lines tab-mark))
-;; ;; (setq whitespace-line-column 80)
-;; ;; (global-whitespace-mode 1)
-;; ;; (eval-after-load "delight"
-;; ;;   '(progn
-;; ;;      (eval-after-load "whitespace"
-;; ;;        '(delight 'global-whitespace-mode "ᗣ"))
-;; ;;      (eval-after-load "whitespace"
-;; ;;        '(delight 'whitespace-mode ""))))
-;; ;; meh. No work?
-;;
-;; ;; TODO: have yet to find a good config. This is closest. I think everyone else maybe wants
-;; ;;   just hilight colors and I want symbols or something. Most thing I've tried do nothing.
-;; ;; TODO: Something like this? Maybe?
-;; ;; This gets closer, but is a bit ugly. Need to tweak zenburn theme?
-;; ;; http://ergoemacs.org/emacs/whitespace-mode.html
-;; ;; (progn
-;; ;;  ;; Make whitespace-mode with very basic background coloring for whitespaces.
-;; ;;   ;; http://ergoemacs.org/emacs/whitespace-mode.html
-;; ;;   (setq whitespace-style (quote (face spaces tabs newline space-mark tab-mark newline-mark )))
-;; ;;
-;; ;;   ;; Make whitespace-mode and whitespace-newline-mode use “¶” for end of line char and “▷” for tab.
-;; ;;   (setq whitespace-display-mappings
-;; ;;         ;; all numbers are unicode codepoint in decimal. e.g. (insert-char 182 1)
-;; ;;         '(
-;; ;;           (space-mark 32 [183] [46]) ; SPACE 32 「 」, 183 MIDDLE DOT 「·」, 46 FULL STOP 「.」
-;; ;;           (newline-mark 10 [182 10]) ; LINE FEED,
-;; ;;           (tab-mark 9 [9655 9] [92 9]) ; tab
-;; ;;           )))
-;; ;;
-;; ;; https://www.emacswiki.org/emacs/WhiteSpace
+     ;; the bad kind
+     trailing space-before-tab space-after-tab
+     empty       ;; ...lines (...at beginning/end of buffer)
+     lines-tail  ;; `lines' would be whole line...
+     ;; lines-tail is just whatever's past fill-column
+
+     ;; not sure if want or bad or what.
+     indentation
+     ;; visualize these whitespaces with non-whitespace chars via display-table
+     space-mark tab-mark newline-mark)))
+
+  ;; (whitespace-style ;; minus `face'
+  ;; '(tabs spaces trailing lines space-before-tab newline
+  ;;                     indentation empty space-after-tab space-mark
+  ;;                     tab-mark newline-mark))
+
+  ;;----------
+  :config
+  ;;----------
+
+  ;; Why does this not work in :hook section? -_-
+  (add-hook 'before-save-hook 'whitespace-cleanup)
+
+  ;; TODO: A way to tell use-package to load after zenburn if zenburn is going to load?
+  (require 'with)
+  (with-feature 'zenburn-theme
+    ;; Change color/faces of whitespace attributes.
+    ;; Defaults are ugly/distracting/meh. Make 'em more backgroundy.
+    (zenburn-with-color-variables
+      ;; bg+3 looks good, I think, for "noticible but not in your face"
+      ;; bg+2 might be better after I get used to things...
+      (set-face-attribute 'whitespace-space nil
+                          :foreground zenburn-bg+2
+                          :background zenburn-bg)
+
+      (set-face-attribute 'whitespace-hspace nil
+                          :foreground zenburn-bg+2
+                          :background zenburn-bg)
+
+      (set-face-attribute 'whitespace-tab nil
+                          :foreground zenburn-bg+2
+                          :background zenburn-red-1)
+
+      ;; Don't think any of these are customized right now.
+      ;; (set-face-attribute 'whitespace-newline nil
+      ;;                     :foreground zenburn-bg+1)
+      ;;
+      ;; (set-face-attribute 'whitespace-trailing nil
+      ;;                     :foreground zenburn-bg+1
+      ;;                     :background zenburn-red)
+      ;;
+      ;; (set-face-attribute 'whitespace-line nil
+      ;;                     :foreground zenburn-magenta
+      ;;                     :background zenburn-bg)
+      ;;
+      ;; (set-face-attribute 'whitespace-space-before-tab nil
+      ;;                     :foreground zenburn-orange
+      ;;                     :background zenburn-orange)
+      ;;
+      ;; (set-face-attribute 'whitespace-indentation nil
+      ;;                     :foreground zenburn-red
+      ;;                     :background zenburn-yellow)
+      ;;
+      ;; (set-face-attribute 'whitespace-empty nil
+      ;;                     :background zenburn-yellow)
+      ;;
+      ;; (set-face-attribute 'whitespace-space-after-tab nil
+      ;;                     :foreground zenburn-red
+      ;;                     :background zenburn-yellow)
+      ))
+
+  (global-whitespace-mode 1) ;; positive: enable, other: disable
+  )
 
 
 ;;------------------------------------------------------------------------------
