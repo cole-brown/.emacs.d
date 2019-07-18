@@ -108,7 +108,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;     (spydez/key-chord/define-global "w" 'switch-window)
 ;;     (spydez/key-chord/define-global "j" 'spydez/hydra/join-lines/body)
 ;;     (spydez/key-chord/define-global "f" 'helm-find-files)
-;;     (spydez/key-chord/define-global "h" 'spydez/hydra/key-chord-commands/body)
+;;     (spydez/key-chord/define-global "h" 'spydez/hydra/misc/body)
 ;;     (spydez/key-chord/define-global "x" 'er/expand-region)
 ;;
 ;;     ;; TODO: Hold down spacebar to space something out 10 or 20 spaces or whatever...
@@ -138,7 +138,36 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;   mentioned:  http://nhoffman.github.io/.emacs.d/#org9119f86
 ;;   actual launcher hydra: http://nhoffman.github.io/.emacs.d/#org09d7a13
 
-;; TODO-SOON: A (spydez/hydra/defhydra ...) that includes the keybind/mode/etc for it.
+;; RTFM 0: Hubris: This was going to be a helper macro that included the
+;;   keybind/mode/etc for the hydra and then bound it... But defhydra already
+;;   does that with its `body' arg. Could still do this for bind-key's
+;;   describe-personal-keybindings, but it is less important now. I'm keeping
+;;   this because I'm thinking of using bind-key's full potential instead of
+;;   hydra's call to define-key with a map.
+;;
+;; RTFM 8: After, like, 8th R'ing of TFM... Actually not Hubris. Bad
+;;   expectations and unclear docs for the expectations. The `body' arg just
+;;   dumps all the hydra heads into the map/prefix you provide. Which is not
+;;   what I want - I want them as their own things. I want to summon a hydra and
+;;   deal with its heads, not deal with the heads of a hydra that - oh yeah, you
+;;   summoned it by cutting off one of its heads and also the hydra
+;;   is the castle.
+;;
+;; (defconst spydez/hydra/hydra-list '())
+;; (defmacro spydez/hydra/defhydra (name keybind &optional docstring &rest body)
+;;   (declare (indent defun) (doc-string 3))
+;;   ;; TODO: call defhydra w/ name, rest
+;;   (defhydra name docstring body)
+;;
+;;   (message "%s %s %s %s" name keybind docstring body)
+;;
+;;   ;; TODO: call bind-key w/ keybind if not nil
+;;   )
+;; (spydez/hydra/defhydra test-hydra "C--"
+;;   "testing?"
+;;   ("g" text-scale-increase "in")
+;;   ("l" text-scale-decrease "out"))
+
 
 ;; Trial: [2019-01-28]
 (use-package hydra
@@ -181,8 +210,8 @@ Repeated invocations toggle between the two most recently open buffers."
   ;;   ("p" spydez/org-show-active-projects "Active projects")
   ;;   ("a" (org-agenda nil "a") "Agenda"))
 
-  (defhydra spydez/hydra/key-chord-commands ()
-    "Main Hydra"
+  (defhydra spydez/hydra/misc ()
+    "Misc Unrelated Things"
     ("k" kill-sexp)
     ("b" helm-buffers-list :color blue)
     ("f" find-file :color blue)
@@ -221,7 +250,26 @@ Repeated invocations toggle between the two most recently open buffers."
     ("h" engine/search-github "github")
 
     ("m" engine/search-mail "mail")
-  ))
+    )
+
+  ;; What hydra body color? red, blue, teal, those other colors?
+  ;;   https://github.com/abo-abo/hydra/wiki/Hydra-Colors
+  ;;   I think blue or teal. Blue if I want this less mean/sticky.
+  (defhydra spydez/hydra/main (:color teal)
+    "Hydras"
+    ("w" spydez/hydra/window-movement/body "Window Movement")
+    ("j" spydez/hydra/join-lines/body "Join Lines")
+    ;; ("o" spydez/hydra/org/body "Org Mode")
+    ("m" spydez/hydra/misc/body "Misc")
+    ("e" spydez/hydra/engine-mode/body "Engines")
+    ("t" spydez/hydra/transpose/body "Transposes")
+    ("c" spydez/hydra/common-stuff "Common Stuff"))
+  ;; "C--" nukes one of the `negative-argument' keybinds but I've never used
+  ;; that before... But that is acting fucky, so...... "C-c -" maybe? Oh...
+  ;; Maybe my color is wrong. It's trying to stay in this hydra instead of
+  ;; recursing.
+  (bind-key "C--" 'spydez/hydra/main/body)
+  )
 
 ;; TODO: Consider C-t for a hydra entry point?
 ;; "Hmm, good point about C-t being more useful as a Hydra than as
