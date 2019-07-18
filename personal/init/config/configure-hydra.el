@@ -17,37 +17,15 @@
 ;;------------------------------------------------------------------------------
 ;; Emacs doesn't have enough weird keyboarding - let's add more.
 
-;; [2019-03-16 Sat] Commenting this func out to see if it makes key-chords
-;; more intuitive for me (will now accept transpose of defined
-;; (e.g. chord "eu" == "ue")
-;;   - NOTE: also see `fset' call below in key-chord
-;;
-;; ;; Why is this needed over normal key-chord-define?
-;; ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#key-chord
-;; ;; Is it just the "MODIFICATION" from the docstring?
-;; ;;   - yes.
-;; ;; TODO: delete this? Comment out? Use normal define and see if keychord is
-;; ;;   any more finger-intuitive...
-;; ;;   Honestly maybe it's my chiclet keyboard w/ key cover... I should get
-;; ;;   a mechanical keyboard for work already...
-;; (defun spydez/key-chord-define (keymap keys command)
-;;   "Define in KEYMAP, a key-chord of two keys in KEYS starting a COMMAND.
-;; \nKEYS can be a string or a vector of two elements. Currently only elements
-;; that corresponds to ascii codes in the range 32 to 126 can be used.
-;; \nCOMMAND can be an interactive function, a string, or nil.
-;; If COMMAND is nil, the key-chord is removed.
-;; 
-;; MODIFICATION: Do not define the transposed key chord.
-;; "
-;;   (if (/= 2 (length keys))
-;;       (error "Key-chord keys must have two elements"))
-;;   ;; Exotic chars in a string are >255 but define-key wants 128..255 for those
-;;   (let ((key1 (logand 255 (aref keys 0)))
-;;         (key2 (logand 255 (aref keys 1))))
-;;     (define-key keymap (vector 'key-chord key1 key2) command)))
-;; (fset 'key-chord-define 'spydez/key-chord-define)
-;; ;; TODO: why is this fset here and in use-package key-chord :init?
+;; Can't use this as key-chord only accepts printable ASCII characters
+;; for its chording.
+;; (defconst spydez/key-chord/prefix ?\C--
+;;   "'C--' (aka 'Ctrl+hyphen' is our common key-chord character.")
 
+;; Hyphen would be awesome except I like using it for little headers and
+;; separators and stuff in the code... And holding it down to generated
+;; those just goes into my "--" hydra instead. Or typing function names
+;; in lisp will catch some "-<letter>" hydra. Or in scripts or notes or...
 (defconst spydez/key-chord/prefix ?-
   "'-' is our common key-chord character.")
 
@@ -73,6 +51,7 @@
   ;; TODO: Error or warn if overwriting an existing chord.
   (key-chord-define-global (spydez/key-chord/chord key) function-symbol))
 
+;; TODO: Move to lisp/misc or somewhere better suited.
 ;; From https://emacsredux.com/blog/2013/04/28/switch-to-previous-buffer/
 (defun spydez/switch-to-previous-buffer ()
   "Switch to previously open buffer.
@@ -83,6 +62,9 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Setup key chords
 ;; TODO: prune the list to actually used stuff
 ;; Trial: [2019-01-28]
+;; Trial-Paused: [2019-07-18]
+;;   - Cannot figure out a useful, non-obtrusive, near-nil false positive way
+;;     getting useful, usable key-chords. >.<
 ;; TODO: Fucking key-chords god dammit 3.0... >.<
 ;;   - "-t" this time. And this 'alt-tab' bug I have to investigate...
 ;;     - Maybe just have "--" or something be the __ONLY__ key-chord,
@@ -97,53 +79,53 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;     while chain count > N. Set chain count to 0 when streak broken.
 ;;     Ignore a key-chord if count > N.
 ;; TODO-FIRST: are there more key-chord vars to help out other than one-key-delay?
-(use-package key-chord
-  :init
-  (progn
-    ;; (fset 'key-chord-define 'spydez/key-chord-define)
-    
-    ;; TODO: [2019-01-28] 0.16 one-key-delay feels off/fast/aweful fast. But leaving as when I
-    ;; do manage it, it feels like a separate action from normal typing.
-    ;; TODO: [2019-03-08] Still not using this enough and >50% of the time
-    ;;   I'm not doing the chord - just inserting letters into buffers...
-    (setq key-chord-one-key-delay 0.16)
-
-    (key-chord-mode 1)
-
-    ;; https://www.reddit.com/r/emacs/comments/22hzx7/what_are_your_keychord_abbreviations/
-    ;; https://github.com/Russell91/emacs/blob/master/key-chord.el has these and maybe others:
-    ;;    (spydez/key-chord/define c++-mode-map ";;"  "\C-e;")
-    ;;    (spydez/key-chord/define c++-mode-map "{}"  "{\n\n}\C-p\t")
-
-    ;; k can be bound too
-    ;; TRIAL [2019-01-28]: test all these cuz I'm not sure
-    (spydez/key-chord/define-global "m" 'spydez/hydra/common-stuff/body)
-
-    (spydez/key-chord/define-global "u" 'undo)
-    (spydez/key-chord/define-global "k" 'kill-whole-line)
-    (spydez/key-chord/define-global "j" 'spydez/switch-to-previous-buffer)
-    (spydez/key-chord/define-global "y" 'spydez/hydra/window-movement/body)
-    (spydez/key-chord/define-global "w" 'switch-window)
-    (spydez/key-chord/define-global "j" 'spydez/hydra/join-lines/body)
-    (spydez/key-chord/define-global "f" 'helm-find-files)
-    (spydez/key-chord/define-global "h" 'spydez/hydra/key-chord-commands/body)
-    (spydez/key-chord/define-global "x" 'er/expand-region)
-
-    ;; TODO: Hold down spacebar to space something out 10 or 20 spaces or whatever...
-    ;;   and this gets called a lot. I don't think I like space-space as a chord?..
-    ;;   M-/ might be enough for expanding. It was before this update/upgrade.
-    ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org656616c
-    ;; Trial: [2019-01-28]; Disabled: [2019-02-06]
-    ;;(spydez/key-chord/define-global "  " 'spydez/insert-space-or-expand)
-
-    ;; Not using avy right now. Similar to ace-jump or easymotion.
-    ;; https://github.com/abo-abo/avy
-    ;; (spydez/key-chord/define-global "jl" 'avy-goto-line)
-    ;; (spydez/key-chord/define-global "jj" 'avy-goto-word-1)
-
-    ;; Not using god-mode, but could consider. https://github.com/chrisdone/god-mode
-    ;; (spydez/key-chord/define-global "vv" 'god-mode-all)
-  ))
+;; (use-package key-chord
+;;   :init
+;;   (progn
+;;     ;; (fset 'key-chord-define 'spydez/key-chord-define)
+;;
+;;     ;; TODO: [2019-01-28] 0.16 one-key-delay feels off/fast/aweful fast. But leaving as when I
+;;     ;; do manage it, it feels like a separate action from normal typing.
+;;     ;; TODO: [2019-03-08] Still not using this enough and >50% of the time
+;;     ;;   I'm not doing the chord - just inserting letters into buffers...
+;;     (setq key-chord-one-key-delay 0.16)
+;;
+;;     (key-chord-mode 1)
+;;
+;;     ;; https://www.reddit.com/r/emacs/comments/22hzx7/what_are_your_keychord_abbreviations/
+;;     ;; https://github.com/Russell91/emacs/blob/master/key-chord.el has these and maybe others:
+;;     ;;    (spydez/key-chord/define c++-mode-map ";;"  "\C-e;")
+;;     ;;    (spydez/key-chord/define c++-mode-map "{}"  "{\n\n}\C-p\t")
+;;
+;;     ;; k can be bound too
+;;     ;; TRIAL [2019-01-28]: test all these cuz I'm not sure
+;;     (spydez/key-chord/define-global "m" 'spydez/hydra/common-stuff/body)
+;;
+;;     (spydez/key-chord/define-global "u" 'undo)
+;;     (spydez/key-chord/define-global "k" 'kill-whole-line)
+;;     (spydez/key-chord/define-global "j" 'spydez/switch-to-previous-buffer)
+;;     (spydez/key-chord/define-global "y" 'spydez/hydra/window-movement/body)
+;;     (spydez/key-chord/define-global "w" 'switch-window)
+;;     (spydez/key-chord/define-global "j" 'spydez/hydra/join-lines/body)
+;;     (spydez/key-chord/define-global "f" 'helm-find-files)
+;;     (spydez/key-chord/define-global "h" 'spydez/hydra/key-chord-commands/body)
+;;     (spydez/key-chord/define-global "x" 'er/expand-region)
+;;
+;;     ;; TODO: Hold down spacebar to space something out 10 or 20 spaces or whatever...
+;;     ;;   and this gets called a lot. I don't think I like space-space as a chord?..
+;;     ;;   M-/ might be enough for expanding. It was before this update/upgrade.
+;;     ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org656616c
+;;     ;; Trial: [2019-01-28]; Disabled: [2019-02-06]
+;;     ;;(spydez/key-chord/define-global "  " 'spydez/insert-space-or-expand)
+;;
+;;     ;; Not using avy right now. Similar to ace-jump or easymotion.
+;;     ;; https://github.com/abo-abo/avy
+;;     ;; (spydez/key-chord/define-global "jl" 'avy-goto-line)
+;;     ;; (spydez/key-chord/define-global "jj" 'avy-goto-word-1)
+;;
+;;     ;; Not using god-mode, but could consider. https://github.com/chrisdone/god-mode
+;;     ;; (spydez/key-chord/define-global "vv" 'god-mode-all)
+;;   ))
 
 
 ;;------------------------------------------------------------------------------
@@ -155,6 +137,8 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; I think yes. Sounds good. Maybe hydras and common random shit.
 ;;   mentioned:  http://nhoffman.github.io/.emacs.d/#org9119f86
 ;;   actual launcher hydra: http://nhoffman.github.io/.emacs.d/#org09d7a13
+
+;; TODO-SOON: A (spydez/hydra/defhydra ...) that includes the keybind/mode/etc for it.
 
 ;; Trial: [2019-01-28]
 (use-package hydra
@@ -213,7 +197,7 @@ Repeated invocations toggle between the two most recently open buffers."
     ;; TODO: if leave in, I need the "reset scale back to default" equivaluent of these two.
     ("+" text-scale-increase)
     ("-" text-scale-decrease)
-    ;; Not sure if I want any of these... 
+    ;; Not sure if I want any of these...
     ;; ("q" quantified-track :color blue)
     ;; ("h" spydez/org-jump :color blue)
     ;; ("x" spydez/org-finish-previous-task-and-clock-in-new-one "Finish and clock in" :color blue)
@@ -273,7 +257,7 @@ Repeated invocations toggle between the two most recently open buffers."
     (defengine stack-overflow "https://stackoverflow.com/search?q=%s")
     (defengine github "https://github.com/search?ref=simplesearch&q=%s")
 
-    ;; gmail - which google user will this use? 
+    ;; gmail - which google user will this use?
     (defengine mail "https://mail.google.com/mail/u/0/#search/%s" :keybinding "m")
 
     ;; google w/ hardcoded "site:example.comp"

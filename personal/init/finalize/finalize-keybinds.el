@@ -15,28 +15,26 @@
 ;; https://www.reddit.com/r/emacs/comments/22hzx7/what_are_your_keychord_abbreviations/
 
 ;; https://github.com/abo-abo/hydra/wiki/Emacs#Transpose
-(if (and (featurep 'key-chord) ;; TODO: with-features
-         (featurep 'hydra))
-    ;; then
-    (progn
-      (defhydra spydez/hydra/transpose (:color red)
-        "Transpose"
-        ("c" transpose-chars "characters")
-        ("w" transpose-words "words")
-        ("l" transpose-lines "lines")
-        ("s" transpose-sentences "sentences")
-        ("p" transpose-paragraphs "paragraphs")
-        ("x" transpose-sexps "sexprs")
-        ("o" org-transpose-words "Org mode words")
-        ("e" org-transpose-elements "Org mode elements")
-        ("t" org-table-transpose-table-at-point "Org mode table")
-        ("q" nil "cancel" :color blue))
-      ;; Not sure about key chord... "cg" maybe better?
-      ;; Going with 'tp' transpose and also 'p' is in the common-stuff hydra
-      (spydez/key-chord/define-global "t" 'spydez/hydra/transpose/body))
-  ;; else
-  (spydez/warning/message nil nil
-                          "Key-Chord or Hydra package not present. Cannot make spydez/hydra/transpose."))
+(require 'with)
+(with-all-features '(key-chord hydra)
+  (defhydra spydez/hydra/transpose (:color red)
+    "Transpose"
+    ("c" transpose-chars "characters")
+    ("w" transpose-words "words")
+    ("l" transpose-lines "lines")
+    ("s" transpose-sentences "sentences")
+    ("p" transpose-paragraphs "paragraphs")
+    ("x" transpose-sexps "sexprs")
+    ("o" org-transpose-words "Org mode words")
+    ("e" org-transpose-elements "Org mode elements")
+    ("t" org-table-transpose-table-at-point "Org mode table")
+    ("q" nil "cancel" :color blue))
+  ;; Not sure about key chord... "cg" maybe better?
+  ;; Going with 'tp' transpose and also 'p' is in the common-stuff hydra
+  (spydez/key-chord/define-global "t" 'spydez/hydra/transpose/body))
+;;  ;; else
+;;  (spydez/warning/message nil nil
+;;                          "Key-Chord or Hydra package not present. Cannot make spydez/hydra/transpose."))
 
 
 ;;------------------------------------------------------------------------------
@@ -66,7 +64,7 @@
 ;;                    (format "open %s" (file-name-nondirectory file))
 ;;                    )))))
         )
-      
+
       ;; "eu" is super convenient on Dvorak, but it's a bad combo for English words...
       ;; ".p" might work better... (one row up)
       ;; "-p"? Key chords that aren't English or Codelish are hard..ep.

@@ -12,6 +12,8 @@
 ;;--                Conditional Utility Functions for Elisp.                  --
 ;;------------------------------------------------------------------------------
 
+(require 'cl)
+
 ;;------------------------------------------------------------------------------
 ;; Feature/Function/Executable Wrappers
 ;;------------------------------------------------------------------------------
@@ -23,13 +25,32 @@
 ;;   e.g. (with-function-when #'spydez/foo/using-bar ...) -> when function is bound and returns true...
 ;;   e.g. (with-function-when #'spydez/foo/using-bar 'args ...) -> when function is bound and returns true when passed args?..
 
+;; TODO-SOON: Change from `when' to `if'. Add a required error message to all
+;;   withs. Add a const/custom for what function to call (default error).
+;;   Use `apply'? So as to get multiple args into there?
+;;     e.g. `error': format string, args.
+;;     e.g. `spydez/warning/message': (spydez/warning/message nil nil "string")
+
+
+;;---------
+;; Features
+;;---------
 (defmacro with-feature (feature &rest body)
   "If FEATURE is available, load it and evaluate BODY."
   (declare (indent defun))
   `(when (require ,feature nil :noerror)
      ,@body))
 
+(defmacro with-all-features (features &rest body)
+  "If all of FEATURES are available (via `require), evaluate BODY."
+  (declare (indent defun))
+  `(when (cl-every (lambda (x) (require x nil :noerror)) ,features)
+     ,@body))
 
+
+;;---------
+;; Functions
+;;---------
 (defmacro with-function (function &rest body)
   "If FUNCTION is available, evaluate BODY."
   (declare (indent defun))
@@ -37,12 +58,14 @@
      ,@body))
 
 
+;;---------
+;; Executables
+;;---------
 (defmacro with-executable (executable &rest body)
   "If EXECUTABLE is available in path, evaluate BODY."
   (declare (indent defun))
   `(when (executable-find (symbol-name ,executable))
      ,@body))
-
 
 (defmacro with-any-executable (executables &rest body)
   "If any of EXECUTABLES are available in the path, evaluate BODY."
@@ -51,17 +74,23 @@
      ,@body))
 
 
+;;---------
+;; Faces
+;;---------
 (defmacro with-face (str &rest properties)
   "Print STR using PROPERTIES."
   `(propertize ,str 'face (list ,@properties)))
+
 
 ;;------------------------------------------------------------------------------
 ;; TODOs
 ;;------------------------------------------------------------------------------
 
-;; Delete whole file if I don't end up actually using it.
-
-;; Get whole ";;;", "Commentary", "Code" header setup for all my elisp files?
+;; TODO: Get whole ";;;", "Commentary", "Code" header setup for all my
+;;   elisp files?
+;;   - Eh... maybe if I turn into another 'package' like taskspace
+;;      and use-tool...
+;; TODO: Turn into a package?
 
 
 ;;------------------------------------------------------------------------------
