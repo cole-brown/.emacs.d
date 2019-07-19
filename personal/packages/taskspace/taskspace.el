@@ -178,6 +178,8 @@ bug investigation, log munging, or whatever."
 ;; TODO: Turn these into regexes w/ capture groups, I think?..
 ;; Have make-name and split-name use the regexes to make/split.
 ;; http://ergoemacs.org/emacs/elisp_string_functions.html
+;; TODO: use this nice regex builder (elisp sexprs)?:
+;;   https://www.reddit.com/r/emacs/comments/cf8r83/easier_editing_of_elisp_regexps/eu84ob1/
 (defcustom taskspace/dir-name/parts-alists
   '(
     ;; Three part. Code does this all the time?
@@ -216,14 +218,14 @@ Create if none. Return if just the one. Choose from multiple."
   ;; Get task's full path, reduce to just task directory...
   (let* ((fullpath (call-interactively #'taskspace/task-dir/dwim))
          (taskname (file-name-nondirectory fullpath)))
-    
+
     ;; copy to clipboard
     (kill-new taskname)
-    
+
     ;; We'd need another return from task-dir/dwim to know what it did...
     ;; ;; say what we did
     ;; (message "Existing taskspace: %s" taskname)
-    
+
     ;; return it
     taskname
     ))
@@ -247,7 +249,7 @@ Create if none. Return if just the one. Choose from multiple."
 
      ;; if none, create one.
      ((null taskspaces)
-      ;; call-interactively will give user prompt for description, 
+      ;; call-interactively will give user prompt for description,
       ;; etc. as if they called themselves.
       (call-interactively #'taskspace/create))
 

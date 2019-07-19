@@ -17,7 +17,7 @@
 ;; General Keybinds?
 ;;------------------------------------------------------------------------------
 ;; TODO: a custom, more useful layout for the function keys? I use F3 and
-;; F4 currently for doing macros, but none of the rest. 
+;; F4 currently for doing macros, but none of the rest.
 ;; e.g.:
 ;; (global-set-key (kbd "<f1>") 'kmacro-start-macro)
 ;; (global-set-key (kbd "<f2>") 'kmacro-end-macro)
@@ -214,6 +214,34 @@
 ;; There were enough goodies in that link
 ;;   https://writequit.org/articles/working-with-logs-in-emacs.html
 ;; that I decided it deserved its own config file.
+
+
+
+;;------------------------------------------------------------------------------
+;; Unkillable Buffers
+;;------------------------------------------------------------------------------
+(use-package unkillable-scratch
+
+  ;;-----
+  :custom
+  ;;-----
+
+  ;; Add *Messages* and *Warnings* buffers to default (*scratch*).
+  (unkillable-buffers '("^\\*scratch\\*$"
+                        "^\\*Messages\\*$"
+                        "^\\*Warnings\\*$"))
+
+  ;; Don't reset scratch when killing (just bury).
+  (unkillable-scratch-do-not-reset-scratch-buffer t)
+
+  ;; unkillable-scratch-behavior defaults to 'bury, which is what I want.
+
+  ;;-----
+  :config
+  ;;-----
+
+  ;; Enabled unkillable-scratch-mode, except it's not called "-mode".
+  (unkillable-scratch t))
 
 
 ;;------------------------------------------------------------------------------

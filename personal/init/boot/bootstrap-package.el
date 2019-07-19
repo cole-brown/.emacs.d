@@ -42,8 +42,11 @@
 ;; Package Setup
 ;;------------------------------------------------------------------------------
 
+;; http -> https ?? Trying to get use-package and unkillable-scratch to work
+;; right now so going back to http after briefly trying https...
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 ;; Keep it down to just elpa and melpa for now.
+;;(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
 ;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 ;;(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 ;;

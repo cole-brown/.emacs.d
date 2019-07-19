@@ -10,11 +10,15 @@
      get checked in?
      - Maybe another command to convert them to impersonal/delete.
 
+
 * Next things?
 
-  - To Do: [3/15]
+  - To Do: [3/16]
     - [ ] kill buffer cmd w/ no-kill list
       - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eiv960e
+    - [ ] Elisp command to call shell with string (shell command(s)) and print
+      output. See: 2019-03_tasks.org
+      - For routine/simple checking up on servers without having to leave emacs.
     - [ ] Is there a command to list out applicable yasnippets?
     - [ ] csetq vs setq all the places? see zeroth-funcs
       - csetq vs setq vs jamming everything into (use-package ... :custom ...)
