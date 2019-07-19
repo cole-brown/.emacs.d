@@ -3,19 +3,21 @@
 #+EMAIL:     git@spydez.com
 #+DATE:      [2019-03-05 Tue]
 
-Next things?
-  - To Do: [0/15]
-    - [ ] org-mode stuff to look at:
-      - https://www.reddit.com/r/emacs/comments/b90xc5/orgmode_your_life/
-    - [ ] taskspace.el
-          feature?: temp/workspace dated/numbered dirs
-      - e.g. first/only dir of the day: 2019-04-05_0_<description>
-      - second: 2019-04-05_1_<2nd-description>
-      - '_' as date/num/desc separator
-      - '-' as date/word sep (space illegal/replaced)
-      - func to travel to/open in dired mode the directory
-        - and create it if non-existant
+* Soon™ things [0/1]
+
+ - [ ] commands/hydra for putting personalized markers down (TODO, "Left off here.", etc)
+   - hook into... save? magit? to check for,complain about markers so they hopefully don't
+     get checked in?
+     - Maybe another command to convert them to impersonal/delete.
+
+* Next things?
+
+  - To Do: [3/15]
+    - [ ] kill buffer cmd w/ no-kill list
+      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eiv960e
     - [ ] Is there a command to list out applicable yasnippets?
+    - [ ] csetq vs setq all the places? see zeroth-funcs
+      - csetq vs setq vs jamming everything into (use-package ... :custom ...)
     - [ ] have recentf ignore elpa dir?
     - [ ] ag, ack, gack, gawk, your mom, grep, something?
     - [ ] fill-*
@@ -37,16 +39,22 @@ Next things?
       - ref files were for files that were/are very useful on their own and so preserving them for
         a decade or whatever from now would be useful.
         - Some of my old .emacs is just references to dead web links... not useful.
-    - [ ] csetq vs setq all the places? see zeroth-funcs
-      - csetq vs setq vs jamming everything into (use-package ... :custom ...)
-    - [ ] this hydra looks useful maybe:
-      - https://github.com/abo-abo/hydra/wiki/Emacs#Transpose
-    - [ ] kill buffer cmd w/ no-kill list
-      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eiv960e
     - [ ] default-directory var for pretending a file is elsewhere
       - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eivtuo4
     - [ ] A command for searching explainshell.com with a string
       - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eiv75b8
+    - [X] this hydra looks useful maybe:
+      - https://github.com/abo-abo/hydra/wiki/Emacs#Transpose
+    - [X] org-mode stuff to look at:
+      - https://www.reddit.com/r/emacs/comments/b90xc5/orgmode_your_life/
+    - [X] taskspace.el
+          feature?: temp/workspace dated/numbered dirs
+      - e.g. first/only dir of the day: 2019-04-05_0_<description>
+      - second: 2019-04-05_1_<2nd-description>
+      - '_' as date/num/desc separator
+      - '-' as date/word sep (space illegal/replaced)
+      - func to travel to/open in dired mode the directory
+        - and create it if non-existant
 
 
 Tabs:
@@ -71,16 +79,17 @@ Tabs:
 
 
 Soon™ things?
-  - To Do: [0/3]
+  - To Do: [0/2]
     - [ ] make treemacs issue report?
     - [ ] make no-littering issue or fix w/ pull request?
-    - [ ] commands/hydra for putting personalized markers down (TODO, "Left off here.", etc)
-      - hook into... save? magit? to check for,complain about markers so they hopefully don't
-        get checked in?
-        - Maybe another command to convert them to impersonal/delete.
     - https://github.com/dzop/emacs-zmq
 
-Current things?
+* DONE A list of things that are done now
+CLOSED: [2019-07-18 Thu 17:28]
+:LOGBOOK:
+- State "DONE"       from              [2019-07-18 Thu 17:28]
+:END:
+
   - More things to do: [14/14]
     - [X] rename spy/<datestamp> funcs? or delete?
       - have:

@@ -261,7 +261,7 @@ Repeated invocations toggle between the two most recently open buffers."
     ("j" spydez/hydra/join-lines/body "Join Lines")
     ;; ("o" spydez/hydra/org/body "Org Mode")
     ("m" spydez/hydra/misc/body "Misc")
-    ("e" spydez/hydra/engine-mode/body "Engines")
+    ("e" spydez/hydra/engine-mode/body "Search Engines")
     ("t" spydez/hydra/transpose/body "Transposes")
     ("c" spydez/hydra/common-stuff "Common Stuff"))
   ;; "C--" nukes one of the `negative-argument' keybinds but I've never used
@@ -270,13 +270,6 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; recursing.
   (bind-key "C--" 'spydez/hydra/main/body)
   )
-
-;; TODO: Consider C-t for a hydra entry point?
-;; "Hmm, good point about C-t being more useful as a Hydra than as
-;; transpose-char. It turns out I actually do use C-t a fair bit, but I can
-;; always add it back as an option."
-;;   - http://pages.sachachua.com/.emacs.d/Sacha.html#key-chord
-;; (bind-key "C-t" 'my/key-chord-commands/body)
 
 
 ;;------------------------------------------------------------------------------
@@ -352,7 +345,8 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;     (switch-to-buffer-other-window "*Org Agenda*"))
 ;;    (t (org-agenda nil "a"))))
 
-;; Not sure what this does exactly.
+;; Not sure what this does exactly. Think I know. It should maybe be in
+;; configure-org-mode.el.
 ;; (defun spydez/org-insert-link ()
 ;;   (interactive)
 ;;   (when (org-in-regexp org-bracket-link-regexp 1)

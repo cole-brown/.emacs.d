@@ -224,6 +224,10 @@
 ;;   Does a mode exist already? Do I want the whole buffer pretty or one line
 ;;   expanded to pretty at a time?
 
+;; TODO: desktop-save-mode but not really? Something that saves sessions, but
+;;   doesn't restore automatically. Can manually restore (possibly choosing the
+;;   buffers wanted out of the saved session)?
+
 
 ;;---
 ;; Trials and Try-outs.
