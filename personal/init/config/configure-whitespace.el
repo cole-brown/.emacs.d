@@ -57,20 +57,37 @@
   ;;----------
   (whitespace-style
    (quote
+    ;;---
     ;; visualization via faces (see set-face-attribute below)
+    ;;---
     (face
+
+     ;;---
      ;; general/normal whitespace
+     ;;---
      tabs spaces newline
 
+     ;;---
      ;; the bad kind
+     ;;---
      trailing space-before-tab space-after-tab
-     empty       ;; ...lines (...at beginning/end of buffer)
+
+     ;; `empty' lines were annoying as emacs or whitespace is bad at cleaning up
+     ;; the visualization when the line is no longer matching this whitespace
+     ;; warning type.
+     ;;empty       ;; ...lines (...at beginning/end of buffer)
+
      lines-tail  ;; `lines' would be whole line...
      ;; lines-tail is just whatever's past fill-column
 
+     ;;---
      ;; not sure if want or bad or what.
+     ;;---
      indentation
+
+     ;;---
      ;; visualize these whitespaces with non-whitespace chars via display-table
+     ;;---
      space-mark tab-mark newline-mark)))
 
   ;; (whitespace-style ;; minus `face'
@@ -84,8 +101,10 @@
 
   ;; Why does this not work in :hook section? -_-
   (add-hook 'before-save-hook 'whitespace-cleanup)
+  ;; May want ws-butler for less greedy cleanup, especially on work source repos
 
-  ;; TODO: A way to tell use-package to load after zenburn if zenburn is going to load?
+  ;; TODO: A way to tell use-package to load after zenburn if
+  ;; zenburn is going to load? (eval-after-load ...)?
   (require 'with)
   (with-feature 'zenburn-theme
     ;; Change color/faces of whitespace attributes.
@@ -101,17 +120,35 @@
                           :foreground zenburn-bg+2
                           :background zenburn-bg)
 
+      ;; Red bg was a bit too poppy-outty. Set to something a bit tamer.
       (set-face-attribute 'whitespace-tab nil
-                          :foreground zenburn-bg+2
-                          :background zenburn-red-1)
+                          ;; orange works about the same as red+2
+                          ;; :foreground zenburn-orange
+                          :foreground zenburn-red+2
+                          :background zenburn-bg)
+                          ;; Original:
+                          ;; :foreground zenburn-bg+2
+                          ;; :background zenburn-red-1)
+
+      ;; Red bg was a bit too poppy-outty. Set to something a bit tamer.
+      (set-face-attribute 'whitespace-trailing nil
+                          ;; orange works about the same as red+2
+                          ;; :foreground zenburn-orange
+                          :foreground zenburn-red+2
+                          :background zenburn-bg)
+                          ;; Original:
+                          ;; :foreground zenburn-bg+1
+                          ;; :background zenburn-red)
+
+      ;; This is too bright, and annoying. Tone down if added back into
+      ;; `whitespace-style'.
+      ;; (set-face-attribute 'whitespace-space-after-tab nil
+      ;;                     :foreground zenburn-red
+      ;;                     :background zenburn-yellow)
 
       ;; Don't think any of these are customized right now.
       ;; (set-face-attribute 'whitespace-newline nil
       ;;                     :foreground zenburn-bg+1)
-      ;;
-      ;; (set-face-attribute 'whitespace-trailing nil
-      ;;                     :foreground zenburn-bg+1
-      ;;                     :background zenburn-red)
       ;;
       ;; (set-face-attribute 'whitespace-line nil
       ;;                     :foreground zenburn-magenta
@@ -128,9 +165,6 @@
       ;; (set-face-attribute 'whitespace-empty nil
       ;;                     :background zenburn-yellow)
       ;;
-      ;; (set-face-attribute 'whitespace-space-after-tab nil
-      ;;                     :foreground zenburn-red
-      ;;                     :background zenburn-yellow)
       ))
 
   (global-whitespace-mode 1) ;; positive: enable, other: disable
