@@ -13,12 +13,17 @@
 
 * Next things?
 
-  - To Do: [3/16]
-    - [ ] kill buffer cmd w/ no-kill list
-      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eiv960e
-    - [ ] Elisp command to call shell with string (shell command(s)) and print
+  - To Do: [4/17]
+    - [-] Have my taskspace write this somewhere:
+          "mkdir <00-my-remote-temp-dir>/2019-07-22_0_<task-desc>"
+      - Add to the notes.org? Well, but it needs generated from name.
+    - [-] Elisp command to call shell with string (shell command(s)) and print
       output. See: 2019-03_tasks.org
       - For routine/simple checking up on servers without having to leave emacs.
+      - [X] Figure out command/elisp.
+        - See: 2019-03_tasks.org
+      - [ ] Make an interactive (spydez/... or (spydez/domain/work...
+            or whatever command.
     - [ ] Is there a command to list out applicable yasnippets?
     - [ ] csetq vs setq all the places? see zeroth-funcs
       - csetq vs setq vs jamming everything into (use-package ... :custom ...)
@@ -47,6 +52,8 @@
       - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eivtuo4
     - [ ] A command for searching explainshell.com with a string
       - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eiv75b8
+    - [X] kill buffer cmd w/ no-kill list
+      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eiv960e
     - [X] this hydra looks useful maybe:
       - https://github.com/abo-abo/hydra/wiki/Emacs#Transpose
     - [X] org-mode stuff to look at:
