@@ -237,9 +237,14 @@ Create if none. Return if just the one. Choose from multiple."
 (defun taskspace/task-dir/dwim (arg)
   "Interactive. DWIM to clipboard and return today's task dir string (full path)...
 Create if none. Return if just the one. Choose from multiple."
-  (interactive "p") ;; numeric arg
+  ;; Numeric arg but don't let lower case "p" auto-magic nothing (no prefix arg)
+  ;; into 1. Nothing/0/nil is today. 1 is tomorrow.
+  (interactive "P")
 
-  (let* ((date (taskspace/get-date arg))
+  ;; Default to "today" if arg isn't parsable string,
+  ;; then get date, taskspaces, etc. for that numerical relative day.
+  (let* ((arg (string-to-number (if (and arg (stringp arg)) arg "0")))
+         (date (taskspace/get-date arg))
          (taskspaces (taskspace/list-date date))
          (length-ts (length taskspaces)))
 
@@ -285,6 +290,7 @@ Create if none. Return if just the one. Choose from multiple."
 ;; (taskspace/task-dir/dwim)
 
 
+;; TODO: support creating for non-today dates
 ;;;###autoload
 (defun taskspace/create (arg)
   "Interactive. Creates a new taskspace for today with the description supplied."
