@@ -47,7 +47,8 @@
       (defhydra spydez/hydra/common-stuff (:color blue)
         "Common Actions/Files"
 
-        ("w" spydez/engine-mode-hydra/body "web search" :exit t)
+        ;; this already has its own hydra
+;;        ("w" spydez/hydra/engine-mode/body "web search" :exit t)
 
 ;;         (if (bound-and-true-p spydez/file/auto-open-list)
 ;;             (let (;;(file-list spydez/file/auto-open-list)

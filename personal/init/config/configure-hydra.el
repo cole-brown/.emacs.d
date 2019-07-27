@@ -210,33 +210,31 @@ Repeated invocations toggle between the two most recently open buffers."
   ;;   ("p" spydez/org-show-active-projects "Active projects")
   ;;   ("a" (org-agenda nil "a") "Agenda"))
 
-  (defhydra spydez/hydra/misc ()
-    "Misc Unrelated Things"
-    ("k" kill-sexp)
-    ("b" helm-buffers-list :color blue)
-    ("f" find-file :color blue)
-    ("." repeat)
-    ("C-t" transpose-chars)
-    ("m" imenu :color blue)
-    ;; org-mode stuff ;; todo: do I want? these?
-    ("l" org-insert-last-stored-link)
-    ("c" (call-interactively 'org-capture) "capture" :color blue)
-    ("t" (org-capture nil "T") "Capture task")
-    ;; TODO: leave in or try to nuke from emacs entirely?
-    ;; TODO: if leave in, I need the "reset scale back to default" equivaluent of these two.
-    ("+" text-scale-increase)
-    ("-" text-scale-decrease)
-    ;; Not sure if I want any of these...
-    ;; ("q" quantified-track :color blue)
-    ;; ("h" spydez/org-jump :color blue)
-    ;; ("x" spydez/org-finish-previous-task-and-clock-in-new-one "Finish and clock in" :color blue)
-    ;; ("i" spydez/org-quick-clock-in-task "Clock in" :color blue)
-    ;; ("o" spydez/org-off-my-computer :color blue)
-    ("w" spydez/hydra/engine-mode/body "web" :exit t)
-    ;; ("a" spydez/org-check-agenda :color blue)
-    ;; ("r" spydez/describe-random-interactive-function)
-    ;; ("L" spydez/org-insert-link)
-    )
+  ;; (defhydra spydez/hydra/misc ()
+  ;;   "Misc Unrelated Things"
+  ;;   ("k" kill-sexp "Kill Sexp")
+  ;;   ("b" helm-buffers-list :color blue "Buffers")
+  ;;   ("f" find-file :color blue "Find File")
+  ;;   ;; ("." repeat "Repeat Last Cmd") ;; doesn't work like that, lol
+  ;;   ;; ("m" imenu :color blue)
+  ;;   ;; org-mode stuff ;; todo: do I want? these?
+  ;;   ("l" org-insert-last-stored-link "Org Insert Link")
+  ;;   ("c" (call-interactively 'org-capture) "Org-Capture Interactive" :color blue)
+  ;;   ("t" (org-capture nil "T") "Org-Capture task")
+  ;;   ;; TODO: leave in or try to nuke from emacs entirely?
+  ;;   ;; TODO: if leave in, I need the "reset scale back to default" equivaluent of these two.
+  ;;   ("+" text-scale-increase "Text++")
+  ;;   ("-" text-scale-decrease "Text--")
+  ;;   ;; Not sure if I want any of these...
+  ;;   ;; ("q" quantified-track :color blue)
+  ;;   ;; ("h" spydez/org-jump :color blue)
+  ;;   ;; ("x" spydez/org-finish-previous-task-and-clock-in-new-one "Finish and clock in" :color blue)
+  ;;   ;; ("i" spydez/org-quick-clock-in-task "Clock in" :color blue)
+  ;;   ;; ("o" spydez/org-off-my-computer :color blue)
+  ;;   ;; ("a" spydez/org-check-agenda :color blue)
+  ;;   ;; ("r" spydez/describe-random-interactive-function)
+  ;;   ;; ("L" spydez/org-insert-link)
+  ;;   )
 
   ;; TODO: define shortcut into this hydra?
   (defhydra spydez/hydra/engine-mode (:color blue)
@@ -257,13 +255,15 @@ Repeated invocations toggle between the two most recently open buffers."
   ;;   I think blue or teal. Blue if I want this less mean/sticky.
   (defhydra spydez/hydra/main (:color teal)
     "Hydras"
+    ("t" spydez/hydra/transpose/body "Transposes")
+    ("e" spydez/hydra/engine-mode/body "Search Engines")
+    ("c" spydez/hydra/common-stuff/body "Common Stuff")
     ("w" spydez/hydra/window-movement/body "Window Movement")
     ("j" spydez/hydra/join-lines/body "Join Lines")
     ;; ("o" spydez/hydra/org/body "Org Mode")
-    ("m" spydez/hydra/misc/body "Misc")
-    ("e" spydez/hydra/engine-mode/body "Search Engines")
-    ("t" spydez/hydra/transpose/body "Transposes")
-    ("c" spydez/hydra/common-stuff "Common Stuff"))
+    ;; ("m" spydez/hydra/misc/body "Misc")
+    )
+
   ;; "C--" nukes one of the `negative-argument' keybinds but I've never used
   ;; that before... But that is acting fucky, so...... "C-c -" maybe? Oh...
   ;; Maybe my color is wrong. It's trying to stay in this hydra instead of
