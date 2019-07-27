@@ -1,4 +1,4 @@
-;; -*- emacs-lisp -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
 
 ;; Just try helm-projectile:
@@ -91,7 +91,7 @@
     (setq projectile-completion-system 'default)
     ;; cache is good, right?
     (setq projectile-enable-caching t)
-    
+
     ;; Using Emacs Lisp for indexing files is really slow on Windows. To enable
     ;; external indexing, add this setting. The alien indexing method uses
     ;; external tools (e.g. git, find, etc) to speed up the indexing process.
@@ -123,6 +123,28 @@
   ;; My own personal package - do not package manager it.
   :ensure nil
 
+
+  ;;-------
+  :init
+  ;;-------
+
+  (defun spydez/taskspace/gen-org-notes (taskname taskpath)
+    "Could redef later for more work-specific details."
+    ;; Format:
+    ;; <spy/header
+    ;;
+    ;; taskname
+    ;; taskpath
+    ;;
+    ;; 'mkdir cmd'
+    (format (concat "%s\n\n" ;; header
+                    "%s\n"   ;; taskname
+                    "%s")    ;; taskpath
+            "<spy/header"
+            taskname
+            taskpath))
+
+
   ;;-------
   :custom
   ;;-------
@@ -136,7 +158,7 @@
    ;; projectile: empty file
    '((".projectile" . "")
      ;; notes.org: setup with org header snippet ready to go
-     ("_notes.org" . "<spy/header")))
+     ("_notes.org" . spydez/taskspace/gen-org-notes)))
 
   ;; (taskspace/dir/always-ignore ...) ;; may have to adjust soon?
 

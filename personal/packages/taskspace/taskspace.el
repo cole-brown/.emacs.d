@@ -23,7 +23,7 @@
 ;; It can copy files into the new taskspace. It can generate files based on a
 ;; static string or a function supplied in taskspace vars.
 
-;; It can copy the taskspace full path or name to the kill ring/clipboard.
+;; It can copy the taskspace's full path or name to the kill ring/clipboard.
 
 ;; It can open the taskspace dir itself (or the taskspace parent dir)
 ;; in a buffer.
@@ -146,12 +146,15 @@ bug investigation, log munging, or whatever."
   :group 'taskspace
   :type 'directory)
 
-;;(defun taskspace/test-gen () (format "%s" "testing the file gen func"))
+;;(defun taskspace/test-gen (taskname taskpath) (format "%s" "testing the file gen func"))
 (defcustom taskspace/gen-files-alist
   '((".projectile" . "") ;; empty file
     ("_notes.org" . "")) ;; also empty
   "Files to generate for new taskspaces. Expects an alist like:
-(('file1.name' . 'contents') ('file2.name' . #'your-gen-function))"
+'(('file1.name' . 'contents') ('file2.name' . your-gen-function))
+
+Note: `taskname' and `taskpath' are supplied as the args to the
+generator functions. Taskpath is the fully expanded file path."
   :group 'taskspace
   :type '(alist :key-type string
                 :value-type (choice string function)))
@@ -234,17 +237,19 @@ Create if none. Return if just the one. Choose from multiple."
 
 
 ;;;###autoload
-(defun taskspace/task-dir/dwim (arg)
+(defun taskspace/task-dir/dwim (date-input)
   "Interactive. DWIM to clipboard and return today's task dir string (full path)...
 Create if none. Return if just the one. Choose from multiple."
   ;; Numeric arg but don't let lower case "p" auto-magic nothing (no prefix arg)
   ;; into 1. Nothing/0/nil is today. 1 is tomorrow.
   (interactive "P")
 
-  ;; Default to "today" if arg isn't parsable string,
+  ;; Default to "today" if date-input isn't parsable string,
   ;; then get date, taskspaces, etc. for that numerical relative day.
-  (let* ((arg (string-to-number (if (and arg (stringp arg)) arg "0")))
-         (date (taskspace/get-date arg))
+  (let* ((date-input (string-to-number (if (and date-input (stringp date-input))
+                                           date-input
+                                         "0")))
+         (date (taskspace/get-date date-input))
          (taskspaces (taskspace/list-date date))
          (length-ts (length taskspaces)))
 
@@ -292,28 +297,28 @@ Create if none. Return if just the one. Choose from multiple."
 
 ;; TODO: support creating for non-today dates
 ;;;###autoload
-(defun taskspace/create (arg)
+(defun taskspace/create (desc)
   "Interactive. Creates a new taskspace for today with the description supplied."
-  (interactive "sNew Task Short Description: ")
   ;; Do we need a max len? Leaving out until I feel otherwise.
+  (interactive "sNew Task Short Description: ")
 
-  ;; is `arg' ok as desc part?
-  (if (not (taskspace/verify-description arg))
+  ;; is `desc' ok as description part?
+  (if (not (taskspace/verify-description desc))
       ;; fail w/ message and return nil?
       ;; (progn
-      ;;   (message "Invalid description: %s" arg)
+      ;;   (message "Invalid description: %s" desc)
       ;;   nil)
       ;; Trying out just erroring out instead.
       ;; We are up to the interactive level now.
-      (error "Invalid description: %s" arg)
+      (error "Invalid description: %s" desc)
 
     ;; else:
     ;; create the dir/project for today
-    (let ((taskpath (taskspace/create-dir arg 'today)))
+    (let ((taskpath (taskspace/create-dir desc 'today)))
       (if (null taskpath)
           ;; couldn't create it for some reason...
           ;; TODO: Better reasons if known. "already exists" would be nice for that case.
-          (error "Error creating taskspace directory for: %s" arg)
+          (error "Error creating taskspace directory for: %s" desc)
 
         ;; else:
         ;; copy files into new taskspace
@@ -335,7 +340,7 @@ Create if none. Return if just the one. Choose from multiple."
         (unless (not taskspace/gen-files-alist)
           (let ((gen-errors (taskspace/generate-files taskpath taskspace/gen-files-alist)))
             (when gen-errors
-              (message "Taskspace file generation errors: %s" gen-errors))))
+              (error "Taskspace file generation errors: %s" gen-errors))))
 
         ;; Either of those can put a projectile file into the taskspace.
         ;; Just name it: .projectile
@@ -403,6 +408,7 @@ Create if none. Return if just the one. Choose from multiple."
 
 ;; TODO: Need to get my shell better. MSYS/Git-Bash shell and emacs
 ;; don't like each other all that much by default.
+
 ;;;###autoload
 (defun taskspace/shell ()
   "Interactive. Opens the current taskspace's top dir in an emacs shell buffer.
@@ -446,22 +452,29 @@ Does not currently support directory structures/trees. Returns nil or error.
 Error is all files not generated in alist: ((filename . 'reason')...)"
 
   ;; let it just do nothing when empty list
-  (let (errors-alist) ;; empty return value alist
+  (let (errors-alist ;; empty return value alist
+        ;; Get taskname from path to supply to any file content gen funcs.
+        (taskname (file-name-nondirectory taskpath)))
     (dolist (entry file-alist errors-alist)
       (let* ((file (file-name-nondirectory (car entry)))
              (filepath (expand-file-name file taskpath))
              (str-or-func (cdr entry)))
+
         (cond
          ;; ERROR: already exists...
          ((file-exists-p filepath)
           (push `(,filepath . "file already exist") errors-alist))
+
 ;;         ;; ERROR: generator not bound
 ;;         ((not (boundp str-or-func))
 ;;          (push `(,filepath . "string/function not bound") errors-alist))
+
          ;; ERROR: unknown generator
          ((and (not (stringp str-or-func))
                (not (functionp str-or-func)))
-          (push `(,filepath . "generator is not string or function") errors-alist))
+          (push `(,filepath . ,(format "generator is not string or function: %s"
+                                       str-or-func))
+                errors-alist))
 
          ;; HAPPY!
          (t
@@ -469,7 +482,7 @@ Error is all files not generated in alist: ((filename . 'reason')...)"
           (with-temp-file filepath
             (if (stringp str-or-func)
                 (insert str-or-func)
-              (insert (funcall str-or-func)))))
+              (insert (funcall str-or-func taskname taskpath)))))
 
          ;; dolist returns the errors
          )))))
