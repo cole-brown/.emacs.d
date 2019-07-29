@@ -29,14 +29,10 @@
 ;;(spydez/info/message-if spydez/warning/current-type
 ;;                        "init.el... Intermission.")
 
-;; TODO: a pretty centered header or something here for to be pretty
-
 ;; TODO: use-tool package, like use-package, but for external tools like git,
 ;; gpg say what versions you want, what os you expect, have ways for packages to
 ;; hook in so like gpg can be connected to EPA even if half windows, half MinGW
 ;; environment.
-
-;; TODO: get recentf into find-files (C-x C-f)? It's in `C-x b', which is nice.
 
 
 ;;------------------------------------------------------------------------------
@@ -52,6 +48,7 @@
 ;;   me can knock it out of the park EZ.
 ;; TODO-TODAY: You were here yesterday(/in the faint and distant past) and
 ;;   thought you'd be back tomorrow.
+;; TODO-SECRETS: Something emacs dir vs secrets dir related.
 ;; TODO-HERE: Was doing clean up or something and left off there.
 ;; TODO: generic someday TODO
 
