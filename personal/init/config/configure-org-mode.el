@@ -249,7 +249,7 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Org-Mode Functions & Misc 
+;; Org-Mode Functions & Misc
 ;;------------------------------------------------------------------------------
 
 ;; TODO: set these to spydez/{dir,file}/org/something consts if defined
@@ -409,9 +409,11 @@
   :custom
   ;;-----
 
-  ;; top dir for org-journals
-  ;; TODO: put in secrets with "logbooks/<domain>/" or something if wanted?
-  (org-journal-dir (spydez/path/to-dir spydez/dir/org-docs "logbook"))
+  ;; Top dir for org-journals.
+  ;; NOTE: Placeholder! Should get overridden in <secrets>/finalize-domain.el
+  ;; or somewhere.
+  ;; TODO: a default for spydez/dir/org-docs? And spydez/dir-doc-save-common?
+  (org-journal-dir (spydez/path/to-dir spydez/dir/home "logbook"))
 
   ;; tack day name onto our format
   ;; TODO: put in date-and-time.el with other formats?
@@ -424,8 +426,10 @@
   ;; daily is the default.
   (org-journal-file-type 'yearly)
 
-  ;; TODO:
+  ;; TODO-EASY:
   ;; org-journal-file-format: Make it ISO-ish/searchable (yyyy-mm-dd) if not so already?
+  ;;   - currently:       yyyymmdd
+  ;;   - would be better: yyyy-mm-dd.org
 
   ;; TODO: encryption?
   ;; https://github.com/bastibe/org-journal#encryption
@@ -469,7 +473,7 @@
 ;; (today/this week/whatever) gcal appointments?
 
 ;; Synchronizing with Google Calendar
-;; 
+;;
 ;; (defun my/org-gcal-notify (title mes)
 ;;   (message "%s - %s" title mes))
 ;; (use-package org-gcal
@@ -520,7 +524,7 @@
 ;; Quick Links
 ;; (setq org-link-abbrev-alist
 ;;       '(("google" . "http://www.google.com/search?q=")
-;; 	("gmap" . "http://maps.google.com/maps?q=%s")))
+;;         ("gmap" . "http://maps.google.com/maps?q=%s")))
 
 ;;   "The following elisp function will take a link around the current point as
 ;; recognised by org-bracket-link-regexp, so either [[Link][Description]] or
