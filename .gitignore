@@ -53,19 +53,3 @@
 test.txt
 *.bat
 
-##---
-## Inspiration
-##---
-# Ignore almost everything right now...
-/personal/docs/references/*
-
-# But don't ignore the rest...
-#   (negate ignore pattern first for my dir)
-!/personal/docs/references/my-old-emacs/
-#   (now un-ignore desired refs (the files in my dir)
-!/personal/docs/references/my-old-emacs/*
-
-#...But do ignore these...
-/personal/docs/references/my-old-emacs/old-snippets/c++-mode/*
-
-# TODO: back to ignoring all reference folder?
