@@ -167,7 +167,7 @@
     ;;         moody-mode-line-buffer-identification "   " mode-line-position
     ;;         (vc-mode moody-vc-mode) "  " minions-mode-line-modes
     ;;         mode-line-misc-info mode-line-end-spaces)
-    ;;   
+    ;;
     ;;   mode-line-misc-info
     ;;     -> global-mode-string
     ;;        -> ("" display-time-string)
@@ -207,7 +207,7 @@
       '(:eval (moody-tab (spydez/moody/time-string) nil 'up)))
     (put 'spydez/moody/mode-line-misc-info 'risky-local-variable t)
     (make-variable-buffer-local 'spydez/moody/mode-line-misc-info)
-    
+
     ;; make it so
     (spydez/moody/replace-mode-line-misc-info)
 

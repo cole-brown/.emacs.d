@@ -1,7 +1,8 @@
 ;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
 
-
+;; NOTE: DEFAULTS file. Anything updated here may want to be mirrored into any
+;; specific finalize-domain.el files as well.
 
 
 
@@ -19,7 +20,7 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Files
+;; Auto-Open Files
 ;;------------------------------------------------------------------------------
 
 ;; auto-open this file list at end of emacs init/setup
@@ -34,12 +35,7 @@
    ;; Work Stuff
    ;;---
 
-   ;; top level work org-mode file for notes & such
-   (expand-file-name "2019-00_work.org" spydez/dir/org-docs)
-   ;; current milestone
-   (expand-file-name "2019-03_free-trial-mode.org" spydez/dir/org-docs)
-   ;; current todo list
-   (expand-file-name "2019-03_tasks.org" spydez/dir/org-docs)
+   ;; Leaving this to the work-specific finalize files.
 
    ;;---
    ;; Emacs Stuff
@@ -49,18 +45,13 @@
    (expand-file-name "init.el" spydez/dir/emacs)
    ))
 ;; TODO: check that these exist before opening. Complain (:warning level?) if not.
-;; TODO: potentially add to this from secrets file (maybe one with a cheaper password?)
 
 
-;;------------------------------------------------------------------------------
-;; Auto-Open Files
-;;------------------------------------------------------------------------------
 ;; This becomes pretty useless if I start using emacs desktop package...
 ;; Until then, an easy place to make files more sticky:
 
 ;; TODO: should put this in a common place instead of here
 ;; TODO: split frame, open these in other-window?
-;; TODO: move to a finalize probably
 (defun spydez/hook/auto-open-files ()
   (if (and window-system (bound-and-true-p spydez/file/auto-open-list))
       (dolist (file spydez/file/auto-open-list)

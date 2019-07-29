@@ -154,6 +154,8 @@
 ;; TODO: Turn `use-package' up to 11?
 ;;   https://github.com/a13/emacs.d
 
+;; TODO: Try `rx' for something regex related. Comes with emacs.
+
 
 ;;---
 ;; TODOs and Misc.
