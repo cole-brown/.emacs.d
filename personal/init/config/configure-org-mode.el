@@ -422,14 +422,14 @@
   ;; into empty files.
   ;;  - https://github.com/bastibe/org-journal#journal-file-content
 
-  ;; A year per file. Could do monthly if too big. weekly and daily are also options.
-  ;; daily is the default.
+  ;; A year per file. Could do monthly if too big. Weekly and daily are also
+  ;; options. Daily is the default.
   (org-journal-file-type 'yearly)
 
-  ;; TODO-EASY:
-  ;; org-journal-file-format: Make it ISO-ish/searchable (yyyy-mm-dd) if not so already?
-  ;;   - currently:       yyyymmdd
-  ;;   - would be better: yyyy-mm-dd.org
+  ;; org-journal-file-format: Make it a bit more ISO-ish (yyyy-mm-dd).
+  ;;   - default: yyyymmdd
+  ;;   - better:  yyyy-mm-dd.org
+  (org-journal-file-format (concat spydez/datetime/format/yyyy-mm-dd ".org"))
 
   ;; TODO: encryption?
   ;; https://github.com/bastibe/org-journal#encryption
