@@ -10,13 +10,9 @@
 ;; Constants
 ;;------------------------------------------------------------------------------
 
-(defconst spydez/dir/common-doc-save "d:/vault/documents/42"
-  "Place for auto-open files or secrets or something to be.")
-
-(defconst spydez/dir/dropbox "d:/Users/spydez/Dropbox"
-  "Dropbox's location on local disk...")
-
 ;; Stuff I don't quite want in my public repo will be in these somewhere...
+
+;; TODO-SECRETS: Change from spydez/.../secrets... to secrets/... ??
 
 (defconst spydez/dir/secrets (spydez/dir-name ".secrets.d" spydez/dir/home)
   "Location of secrets dir on this computer.")
