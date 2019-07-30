@@ -137,6 +137,37 @@
   ;; (so +strike+, /italic/, *bold* show font change, but hides the +/*)
   (setq org-hide-emphasis-markers t)
 
+  ;; Check box visual upgrade.
+  ;;   empty, indeterminate, marked: [ ], [-], [X] -> ☐, ▣, ☒
+  ;;     aka 'unchecked', 'mixed checked/unchecked children', 'checked'
+  ;; Could go in `:hook' section but I kinda just want it here in
+  ;; the pretty section with the rest of the pretty things.
+  ;; Trial: [2019-07-30 Tue]
+  ;;   - Con: This doesn't update until point has moved off the line... Possibly
+  ;;     interacting with my highlight row thing/mode?
+  ;; Nice lil search for symbols: http://www.unicode.org/charts/
+  (add-hook 'org-mode-hook
+            (lambda ()
+              "Beautify Org Checkbox Symbol"
+              (push '("[ ]" . "☐") prettify-symbols-alist)
+              ;; other options:
+              ;;   - ☐ - 2610 ballot box
+              ;;     https://www.unicode.org/charts/PDF/U2600.pdf
+              (push '("[X]" . "☒" ) prettify-symbols-alist)
+              ;; other options:
+              ;;   - ☒ - 2612 ballot box with X
+              ;;     https://www.unicode.org/charts/PDF/U2600.pdf
+              ;;   - ☑ - 2611 ballot box with check
+              (push '("[-]" . "▣" ) prettify-symbols-alist)
+              ;; other options:
+              ;;   - ▣ - 25A3 white square containing black small square
+              ;;     https://www.unicode.org/charts/PDF/U25A0.pdf
+              ;;   - ❍ - ...idk, what other people used at reddit thread.
+              ;;   - ▽ - 25BD white down-pointing triangle
+              ;;   - ◎ - 25CE bullseye
+              ;;   - ☯ - 262F yin-yang
+              (prettify-symbols-mode 1)))
+
   ;; Show list markers with a middle dot instead of the original character.
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
