@@ -1,4 +1,4 @@
-;; -*- emacs-lisp -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
 ;; custom.el - for custom-set-variables and custom-set-faces
 

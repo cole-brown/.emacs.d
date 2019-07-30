@@ -1,4 +1,4 @@
-;; -*- emacs-lisp -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
 
 ;; NOTE: shell and eshell are different things... apparently.

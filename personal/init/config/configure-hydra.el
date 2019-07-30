@@ -1,4 +1,4 @@
-;; -*- emacs-lisp -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
 
 ;; Dvorak layout, so these are probably optimized for that...

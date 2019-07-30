@@ -1,4 +1,4 @@
-;; -*- emacs-lisp -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
 ;; TODO: configure-text, configure-point-and-mark, configure-dev-env, configure-files-and-folders...
 ;; check to see if they've got the correct pieces

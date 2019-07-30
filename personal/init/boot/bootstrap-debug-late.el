@@ -1,4 +1,4 @@
-;; -*- emacs-lisp -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
 ;; benchmark-init from https://github.com/kaushalmodi/.emacs.d/blob/master/init.el
 ;; git repo: https://github.com/dholm/benchmark-init-el

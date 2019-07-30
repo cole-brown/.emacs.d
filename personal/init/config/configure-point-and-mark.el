@@ -1,4 +1,4 @@
-;; -*- emacs-lisp -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
 ;; TODO: anything from here?
 ;; https://www.masteringemacs.org/article/effective-editing-movement

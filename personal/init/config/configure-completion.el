@@ -1,4 +1,4 @@
-;; -*- emacs-lisp -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
 ;; helm-mini: C-c h
 ;;   - open buffers, recentf files, make new buffer
@@ -67,7 +67,7 @@
          ("C-x c Y" . helm-yas-create-snippet-on-region)
          ("C-x c SPC" . helm-all-mark-rings)
          ("C-x C-f" . helm-find-files) ; Use helm for finding instead of find-files
-	 ))
+   ))
 
 ;;---
 ;; Helm: Swoop
@@ -123,7 +123,7 @@
 ;; Trial [2019-03-01]
 (use-package helm-flx
   :after helm
-  
+
   :config
   ;; helm-flx
   (setq helm-flx-for-helm-find-files t
@@ -254,7 +254,7 @@
 ;;     (find-file (ido-completing-read "Project file: "
 ;;                          (tags-table-files)
 ;;                          nil t))))
-;; 
+;;
 ;; (global-set-key "\C-cf" 'spydez/ido/find-file-in-tag-files)
 
 

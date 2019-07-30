@@ -1,4 +1,4 @@
-;; -*- emacs-lisp -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
 ;; use-package git repo has helpful readme: https://github.com/jwiegley/use-package
 

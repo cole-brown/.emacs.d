@@ -1,4 +1,4 @@
-;; -*- emacs-lisp -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
 
 ;; TODO: This may be premature and I may not even use it but I wanted a place

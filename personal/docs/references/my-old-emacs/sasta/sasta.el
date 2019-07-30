@@ -1,4 +1,6 @@
-;; sasta-infix.el -- Convert a list of infix notation to prefix.
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
+
+;; sasta.el -- A long time ago in a galaxy right about here... I made this.
 
 ;; (c) 2008 Cole Brown
 

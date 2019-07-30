@@ -1,4 +1,4 @@
-;; -*- emacs-lisp -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
 
 ;; Sacha.org has tons, but I use, like, 1 percent of org mode right now...

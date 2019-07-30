@@ -69,10 +69,10 @@
   "GnuPG used by e.g. EasyPG in emacs."
   :exec-name
   "gpg"
-  
+
   :versions
   '("gpg (GnuPG) 2.2.11-unknown")
-  
+
   :used-by
   '(epa-file)
 
@@ -96,10 +96,10 @@
   "git. For Version Control."
   :exec-name
   "git"
-  
+
   :versions
   '("git version 2.20.1.windows.1")
-  
+
   :used-by
   '(magit)
   ))
@@ -110,10 +110,10 @@
   "For external diff."
   :exec-name
   "diff"
-  
+
   :versions
   '("diff (GNU diffutils) 3.6")
-  
+
   :used-by
   '(magit)
   ))
@@ -124,10 +124,10 @@
   "Bourne Again Shell."
   :exec-name
   "bash"
-  
+
   :versions
   '("GNU bash, version 4.4.23(1)-release (x86_64-pc-msys)")
-  
+
   :used-by
   '(shell)
   ))
@@ -167,13 +167,13 @@
 (use-tool-def-source (use-tool-struct-source--create :name 'git-for-windows
   :doc
   "Git for Windows is its own little MinGW eco-system."
-  
+
   :versions
   '("git version 2.20.1.windows.1")
-  
+
   ;; :get-version
   ;; (...)
-  
+
   :tools
   '(git gpg diff bash)
 
@@ -181,10 +181,10 @@
   ;; belongs in the source a wee bit more than in the tool, I think?
   ;; but also the tool needs to know what source it's in. Right now the first one registers with it and then
   ;; the next think emacs just knew. Use exec path or something?
-  
+
   :systems
   '(windows-nt)
-  
+
   :paths
    '((windows-nt "C:/Program Files/Git" "mingw64/bin" "usr/bin"))
    ))

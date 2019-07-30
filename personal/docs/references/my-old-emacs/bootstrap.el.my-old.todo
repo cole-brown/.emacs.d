@@ -1,3 +1,5 @@
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
+
 ;; these vars must be defined:
 ;;    kooru/emacs-personal
 
@@ -17,4 +19,4 @@
   (load-file (concat kooru/emacs-personal "emacs.el"))
   (load-init-if-exists domain machine "after")
   (setq bookmark-default-file
-	(bootstrap-file domain machine "emacs.bmk")))
+    (bootstrap-file domain machine "emacs.bmk")))

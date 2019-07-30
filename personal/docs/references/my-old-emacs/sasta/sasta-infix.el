@@ -1,3 +1,5 @@
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
+
 ;; sasta-infix.el -- Convert a list of infix notation to prefix.
 
 ;; (c) 2008 Cole Brown

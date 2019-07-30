@@ -64,7 +64,7 @@
             (use-tool-debug-message "use-tool-source `%s' not found. source: %s" name source)
             ;; return nil
             nil)
-        
+
         ;; success - have source
         (use-tool-debug-message "use-tool-source ok: %s %s" name args)
 
@@ -100,8 +100,8 @@
                                     source tool)
             ;; return nil
             nil)
-        
-        ;; success - have source, tool 
+
+        ;; success - have source, tool
         (use-tool-debug-message "use-tool `%s' ok. source: %s tool: %s"
                                 name
                                 (use-tool-struct-source-name source)
@@ -119,9 +119,9 @@
 
           ;; else, we do things ourself
           (use-tool-enable-tool source tool)
-          
+
           ;; ok, emacs should know about it now, if we've done correctly.
-          
+
           ;; TODOTODOTODO: if config to do, check again
           ;; if known now, do config
           ;;   i.e. get gpg working or whatever

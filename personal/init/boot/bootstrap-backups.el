@@ -1,4 +1,4 @@
-;; -*- emacs-lisp -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
 ;;------------------------------------------------------------------------------
 ;; Backups, auto-saves, etc.

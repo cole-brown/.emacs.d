@@ -1,4 +1,4 @@
-;; taskspace.el --- Extremely Simple Taskspace/Workspace management -*- mode: emacs-lisp; lexical-binding: t -*-
+;;; taskspace.el --- Extremely Simple Taskspace/Workspace management -*- mode: emacs-lisp; lexical-binding: t -*-
 
 ;; Copyright (C) 2019  Cole Brown
 ;; License: MIT License
