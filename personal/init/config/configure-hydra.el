@@ -236,7 +236,8 @@ Repeated invocations toggle between the two most recently open buffers."
   ;;   ;; ("L" spydez/org-insert-link)
   ;;   )
 
-  ;; TODO: define shortcut into this hydra?
+  ;; TODO: comment out this, trial Hercules package for engine-mode.
+  ;;   - https://gitlab.com/jjzmajic/hercules.el
   (defhydra spydez/hydra/engine-mode (:color blue)
     "Engine Mode"
     ("g" engine/search-google "google")
@@ -246,6 +247,9 @@ Repeated invocations toggle between the two most recently open buffers."
     ("#" engine/search-csharp "c#")
     ("s" engine/search-stack-overflow "stack overflow")
     ("h" engine/search-github "github")
+
+    ("s" engine/search-explain-shell "explain shell")
+    ("h" engine/search-man-page "man page")
 
     ("m" engine/search-mail "mail")
     )
@@ -284,29 +288,48 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; NOTE: Escape any % needed with another %. E.g. here: "c%%23" -> url: "c%23" -> search term: "c#"
   ;; NOTE: ones without keybind/hydra can be got at via engine/search-<engine>
   (progn
-    ;; general
-    (defengine google "http://google.com/search?ie=utf-8&oe=utf-8&q=%s" :keybinding "g")
-    (defengine emacswiki "http://google.com/search?q=site:emacswiki.org+%s" :keybinding "e")
+    ;;--------
+    ;; General
+    ;;--------
+    (defengine google "http://google.com/search?ie=utf-8&oe=utf-8&q=%s"
+      :keybinding "g")
+    (defengine emacswiki "http://google.com/search?q=site:emacswiki.org+%s"
+      :keybinding "e")
     (defengine wikipedia
       "http://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s"
       :keybinding "w"
       :docstring "Searchin' the wikis.")
 
-    ;; code
-    (defengine csharp "https://google.com/search?q=c%%23+%s" :keybinding "#")
+    ;;--------
+    ;; Code
+    ;;--------
+
+    ;; Languages
+    (defengine csharp "https://google.com/search?q=c%%23+%s"
+      :keybinding "#")
     ;; TODO: python, c++, c?, django?
     (defengine stack-overflow "https://stackoverflow.com/search?q=%s")
     (defengine github "https://github.com/search?ref=simplesearch&q=%s")
 
-    ;; gmail - which google user will this use?
-    (defengine mail "https://mail.google.com/mail/u/0/#search/%s" :keybinding "m")
+    ;; Bash/Shell
+    (defengine explain-shell "http://explainshell.com/explain?cmd=%s"
+      :keybinding "s")
+    (defengine man-page "https://google.com/search?q=man+%s"
+      :keybinding "h")
 
-    ;; google w/ hardcoded "site:example.comp"
+    ;; GMail - which google user will this use?
+    ;;   - 0th: 'primary' or 'first one you signed in on' or something.
+    (defengine mail "https://mail.google.com/mail/u/0/#search/%s"
+      :keybinding "m")
+
+    ;; Google w/ hardcoded "site:example.com"
     ;; (defengine emacswiki "http://google.com/search?q=site:example.com+%s" :keybinding "e")
 
-    ;; more here: https://github.com/hrs/engine-mode#engine-examples
+    ;; More here: https://github.com/hrs/engine-mode#engine-examples
+    ;; NOTE: ones without keybind/hydra can be got at via engine/search-<engine>
     (defengine amazon "http://www.amazon.com/s/ref=nb_sb_noss?field-keywords=%s")
-    (defengine duckduckgo "https://duckduckgo.com/?q=%s" :keybinding "d")
+    (defengine duckduckgo "https://duckduckgo.com/?q=%s"
+      :keybinding "d")
     (defengine google-images
       "http://www.google.com/images?hl=en&source=hp&biw=1440&bih=795&gbv=2&aq=f&aqi=&aql=&oq=&q=%s")
     (defengine google-maps
