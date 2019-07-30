@@ -58,6 +58,15 @@ components; they are expected to be valid."
 
 ;; TODO: spydez/dir/setup-blah, spydez/dir/setup/blah, spydez/setup/dir/blah, spydez/dir/blah....?
 
+;; Directory names:
+;;   In general:
+;;     spydez/dir/...
+;;     - In general, only have 1-2 dirs in name to keep length down.
+;;   Examples:
+;;     spydez/dir/path/...
+;;     spydez/dir/path/to/...
+;;     spydez/dir/to/folder/...
+
 ;;---
 ;; Base Dirs
 ;;---

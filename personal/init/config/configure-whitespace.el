@@ -26,10 +26,24 @@
 ;; Trailing Whitespace.
 ;;------------------------------------------------------------------------------
 
-;; TODO: Trial this: ws-butler (turn off whitespace-cleanup in
-;;   (use-package whitespace...))
 ;; https://melpa.org/#/ws-butler
 ;; Only removes whitespace from regions you've changed.
+;; Trial: [2019-07-30 Tue]
+(use-package ws-butler
+
+  ;;----------
+  :custom
+  ;;----------
+  (ws-butler-convert-leading-tabs-or-spaces t)
+
+  ;;----------
+  :config
+  ;;----------
+
+  ;; Turn on ws-butler globally.
+  ;; NOTE: if I want to exclude modes, can do via customizing of variable
+  ;;   `ws-butler-global-exempt-modes'.
+  (ws-butler-global-mode 1))
 
 
 ;;------------------------------------------------------------------------------
@@ -44,6 +58,7 @@
   :ensure nil
   :demand t
 
+;; ws-butler Trial: [2019-07-30 Tue]
 ;;   ;;----------
 ;;   :hook
 ;;   ;;----------
@@ -99,9 +114,10 @@
   :config
   ;;----------
 
-  ;; Why does this not work in :hook section? -_-
-  (add-hook 'before-save-hook 'whitespace-cleanup)
-  ;; May want ws-butler for less greedy cleanup, especially on work source repos
+  ;; ws-butler Trial: [2019-07-30 Tue]
+  ;; ;; Why does this not work in :hook section? -_-
+  ;; (add-hook 'before-save-hook 'whitespace-cleanup)
+  ;; ;; May want ws-butler for less greedy cleanup, especially on work source repos
 
   ;; TODO: A way to tell use-package to load after zenburn if
   ;; zenburn is going to load? (eval-after-load ...)?
