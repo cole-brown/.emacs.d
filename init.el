@@ -242,8 +242,7 @@
 ;;   Add advice to funcs? https://www.gnu.org/software/emacs/manual/html_node/elisp/Advising-Functions.html
 
 ;; Packages to consider trying out:
-;;   - Treemacs: tree layout file explorer
-;;     https://github.com/Alexander-Miller/treemacs
+;;   -
 
 ;; Use `bind-key' and `use-package' as much as possible for configuration?
 ;;   See for an example: https://github.com/a13/emacs.d
@@ -330,6 +329,9 @@
 ;; word joiner: -
 ;;   e.g.: spydez/hash-and-reduce, spydez/backup-files
 ;; TODO: Do I want anything for func vs var in name?
+;;   - e.g. spydez/f/... vs spydez/v/...
+;; TODO: Do I want anything for my provide/requires vs others in name?
+;;   - e.g. (require 'spydez-bootstrap-early) vs (require 'bootstrap-early)
 
 ;; Evolving vars seem to be emerging into these groups:
 ;;   - early-init: needed by all, used to figure out my system and specifics
@@ -342,7 +344,7 @@
 ;;       end off bootstrapping
 
 ;; defconst vs defvar vs setq
-;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Defining-Variables.html
+;;   https://www.gnu.org/software/emacs/manual/html_node/elisp/Defining-Variables.html
 ;; Looks like I can use defconst for desired functionality/hinting, while also
 ;; being allowed to ignore the const-ness and override via a setq in a later
 ;; init sub-file.
@@ -382,6 +384,7 @@
 ;; So say we're restricted to emacs 26+?
 (unless (>= emacs-major-version 26)
   (error "Emacs version 26 or higher is required"))
+;; TODO-EASY: Move to early-init file? Or have in both.
 ;;---
 
 

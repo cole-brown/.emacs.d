@@ -145,33 +145,39 @@
   ;; Trial: [2019-07-30 Tue]
   ;;   - Con: This doesn't update until point has moved off the line... Possibly
   ;;     interacting with my highlight row thing/mode?
+  ;;   - Con: This only works on some checkbox lists and I've wasted hours
+  ;;     trying to find out why. :(
   ;; Nice lil search for symbols: http://www.unicode.org/charts/
   (add-hook 'org-mode-hook
             (lambda ()
               "Beautify Org Checkbox Symbol"
-              (push '("[ ]" . "☐") prettify-symbols-alist)
-              ;; other options:
-              ;;   - ☐ - 2610 ballot box
-              ;;     https://www.unicode.org/charts/PDF/U2600.pdf
-              (push '("[X]" . "☒" ) prettify-symbols-alist)
-              ;; other options:
-              ;;   - ☒ - 2612 ballot box with X
-              ;;     https://www.unicode.org/charts/PDF/U2600.pdf
-              ;;   - ☑ - 2611 ballot box with check
-              (push '("[-]" . "▣" ) prettify-symbols-alist)
-              ;; other options:
-              ;;   - ▣ - 25A3 white square containing black small square
-              ;;     https://www.unicode.org/charts/PDF/U25A0.pdf
-              ;;   - ❍ - ...idk, what other people used at reddit thread.
-              ;;   - ▽ - 25BD white down-pointing triangle
-              ;;   - ◎ - 25CE bullseye
-              ;;   - ☯ - 262F yin-yang
+              (setq prettify-symbols-alist
+                    '(("[ ]" . "☐")
+                      ;; other options:
+                      ;;   - ☐ - 2610 ballot box
+                      ;;     https://www.unicode.org/charts/PDF/U2600.pdf
+                      ("[X]" . "☒")
+                      ;; other options:
+                      ;;   - ☒ - 2612 ballot box with X
+                      ;;     https://www.unicode.org/charts/PDF/U2600.pdf
+                      ;;   - ☑ - 2611 ballot box with check
+                      ("[-]" . "▣")
+                      ;; other options:
+                      ;;   - ▣ - 25A3 white square containing black small square
+                      ;;     https://www.unicode.org/charts/PDF/U25A0.pdf
+                      ;;   - ❍ - ...idk, what other people used at reddit thread.
+                      ;;   - ▽ - 25BD white down-pointing triangle
+                      ;;   - ◎ - 25CE bullseye
+                      ;;   - ☯ - 262F yin-yang
+                      ))
               (prettify-symbols-mode 1)))
 
   ;; Show list markers with a middle dot instead of the original character.
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+  ;; TODO: indent ankh shenanigans... would something like this work to
+  ;; change the face?
 
   ;; TODO: try this out?
   ;;   org custom id helpers
@@ -341,7 +347,20 @@
 
   ;; By default, org-indent-mode produces an indicator "Ind" in the modeline.
   ;; Use diminish to hide it.
-  :diminish)
+  :diminish
+
+  ;;   :custom
+  ;;   (org-indent-boundary-char ?☯))
+  ;; (deleted ankh char to debug fucking prettify dammit)
+  ;; May need this with 'font-lock-add-keywords' like hyphen -> bullets code...
+  ;; Said code:
+  ;;   ;; Show list markers with a middle dot instead of the original character.
+  ;;   (font-lock-add-keywords 'org-mode
+  ;;                           '(("^ *\\([-]\\) "
+  ;;                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+  ;;   ;; TODO: indent ankh shenanigans... would something like this work to
+  ;;   ;; change the face?
+  )
 
 ;; A function that reformats the current buffer by regenerating the text from
 ;; its internal parsed representation.

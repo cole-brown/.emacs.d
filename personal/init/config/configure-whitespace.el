@@ -128,6 +128,11 @@
     (zenburn-with-color-variables
       ;; bg+3 looks good, I think, for "noticible but not in your face"
       ;; bg+2 might be better after I get used to things...
+      ;;   Yeah.
+
+      ;;--------
+      ;; General
+      ;;--------
       (set-face-attribute 'whitespace-space nil
                           :foreground zenburn-bg+2
                           :background zenburn-bg)
@@ -155,6 +160,26 @@
                           ;; Original:
                           ;; :foreground zenburn-bg+1
                           ;; :background zenburn-red)
+
+      ;;---------
+      ;; Org-Mode
+      ;;---------
+
+      ;; org-indent-mode has a problem with a white foreground for the 'fake'
+      ;; whitespace it uses in front of indented notes beneath headers.
+
+      ;; This face, `org-indent', is not the problem. It's the indented area
+      ;; before the problem whitespace. *sigh* The problem is
+      ;; `org-indent-boundry-char', and I'm not sure how to hide it exactly.
+      (set-face-attribute 'org-indent nil
+                          :inherit 'org-hide
+                          :foreground zenburn-bg-05
+                          :background zenburn-bg-05)
+
+
+      ;;--------
+      ;; Not Set
+      ;;--------
 
       ;; This is too bright, and annoying. Tone down if added back into
       ;; `whitespace-style'.
