@@ -376,8 +376,83 @@
   ;;         (aset org-indent-strings i
   ;;               (org-add-props (make-string i ?x)
   ;;                   nil 'face 'org-indent))))
-  ;; (advice-add 'org-indent-initialize :after #'org-indent-use-stars-for-strings)
+  ;; (advice-add 'org-indent-initialize :after #'spydez/org-indent-initialize)
   ;;---
+
+  ;;--- FAIL
+  ;; Attempt #3371-a:
+  ;; Too much indent?
+  ;;   - No change. -_-
+  ;; :config
+  ;; ;; This does double the work on the org-indent-strings array, but meh.
+  ;; (require 'cl)
+  ;; (defun spydez/org-indent-initialize ()
+  ;;   "Initialize the indentation strings with stars instead of spaces."
+  ;;   (setq org-indent-strings (make-vector (1+ org-indent-max) nil))
+  ;;   (aset org-indent-strings 0 nil)
+  ;;   (loop for i from 1 to org-indent-max do
+  ;;         (aset org-indent-strings i
+  ;;               (org-add-props (make-string (+ 3 i) ?x)
+  ;;                   nil 'face 'org-indent))))
+  ;; (advice-add 'org-indent-initialize :after #'spydez/org-indent-initialize)
+  ;;---
+
+  ;;--- FAIL
+  ;; Attempt #3371-a-4:
+  ;; Too much indent and `:init' instead of `:config'?
+  ;; :init
+  ;; ;; This does double the work on the org-indent-strings array, but meh.
+  ;; (require 'cl)
+  ;; (defun spydez/org-indent-initialize ()
+  ;;   "Initialize the indentation strings with stars instead of spaces."
+  ;;   (setq org-indent-strings (make-vector (1+ org-indent-max) nil))
+  ;;   (aset org-indent-strings 0 nil)
+  ;;   (loop for i from 1 to org-indent-max do
+  ;;         (aset org-indent-strings i
+  ;;               (org-add-props (make-string (+ 3 i) ?x)
+  ;;                   nil 'face 'org-indent))))
+  ;; (advice-add 'org-indent-initialize :after #'spydez/org-indent-initialize)
+  ;;---
+
+  ;;--- SUCCESS
+  ;; Attempt #4188:
+  ;; 1) Actually look at source code, see how out of date google answers are.
+  ;; 2) Cry.
+  ;; 3) Wonder who the fuck decided the change to not set any face
+  ;;    on `org-indent-boundary-char' was a smart change.
+  :config
+  ;; This does double the work on the org-indent-strings array, but meh.
+  (require 'cl-lib)
+  (defun spydez/org-indent-prefix-munger ()
+    "Initialize the indentation strings so the motherfucking
+`org-indent-boundary-char' is set with a proper face you god damn
+savages."
+  (setq org-indent--text-line-prefixes
+        (make-vector org-indent--deepest-level nil))
+  (dotimes (n org-indent--deepest-level)
+    (let ((indentation (if (<= n 1) 0
+       (* (1- org-indent-indentation-per-level)
+          (1- n)))))
+      ;; Text line prefixes.
+      (aset org-indent--text-line-prefixes
+            n
+            ;; spydez change: concat org-indent-boundary-char inside
+            ;;   of org-add-props, not outside.
+            (org-add-props (concat
+                            (make-string (+ n indentation) ?\s)
+                            (and (> n 0)
+                                 (char-to-string org-indent-boundary-char)))
+                nil 'face 'org-indent)
+            ))))
+  (advice-add 'org-indent--compute-prefixes
+              :after #'spydez/org-indent-prefix-munger)
+  ;; Thank the fuckin' Lord of Sarcasm and Brick Walls. Fuck.
+  ;;---
+
+  ;; TODO: Attempt #Next: Try changing org-indent-boundary-char to be a function
+  ;; that maybe returns a properly faced string of length 1?
+
+  ;; TODO-DOC: Document these failure shenanigans in an issue.org to get 'em outta here?
   )
 
 ;; A function that reformats the current buffer by regenerating the text from

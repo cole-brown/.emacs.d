@@ -171,6 +171,18 @@
       ;; This face, `org-indent', is not the problem. It's the indented area
       ;; before the problem whitespace. *sigh* The problem is
       ;; `org-indent-boundry-char', and I'm not sure how to hide it exactly.
+      ;;
+      ;; Note:
+      ;;   Fixed in:
+      ;;     GNU Emacs 26.1 (build 1, x86_64-w64-mingw32) of 2018-05-30
+      ;;     Org mode version 9.1.9 (release_9.1.9-65-g5e4542)
+      ;;   On:
+      ;;     [2019-07-31 Wed]
+      ;;
+      ;; `org-indent-boundry-char' was always being inserted into indent
+      ;; array as a separate, un-faced character so it didn't use this face.
+      ;; I have advised the function that creates the arrays, but it may
+      ;; crop up again in the next version(s).
       (set-face-attribute 'org-indent nil
                           :inherit 'org-hide
                           :foreground zenburn-bg-05
@@ -180,6 +192,13 @@
       ;;--------
       ;; Not Set
       ;;--------
+
+      ;; TODO: I'd love for foreground to be inherited, for highlighting and
+      ;; such, and for background to be a slightly magenta zenburn-bg. But that
+      ;; would probably bork up the row/line highlighter package/setting.
+      ;; (set-face-attribute 'whitespace-line nil
+      ;;                     :foreground zenburn-magenta
+      ;;                     :background zenburn-bg)
 
       ;; This is too bright, and annoying. Tone down if added back into
       ;; `whitespace-style'.
@@ -191,9 +210,6 @@
       ;; (set-face-attribute 'whitespace-newline nil
       ;;                     :foreground zenburn-bg+1)
       ;;
-      ;; (set-face-attribute 'whitespace-line nil
-      ;;                     :foreground zenburn-magenta
-      ;;                     :background zenburn-bg)
       ;;
       ;; (set-face-attribute 'whitespace-space-before-tab nil
       ;;                     :foreground zenburn-orange

@@ -12,6 +12,9 @@
 
 
 * Next things?
+:PROPERTIES:
+:VISIBILITY: all
+:END:
 
   - [-] To Do: [7/17]
     - [ ] A command for searching explainshell.com with a string

@@ -49,8 +49,9 @@
 ;; TODO-TODAY: You were here yesterday(/in the faint and distant past) and
 ;;   thought you'd be back tomorrow.
 ;; TODO-SECRETS: Something emacs dir vs secrets dir related.
+;; TODO-DOC: Make some documentation about this something here.
 ;; TODO-HERE: Was doing clean up or something and left off there.
-;; TODO: generic someday TODO
+;; TODO: Generic someday TODO
 
 
 ;;---
