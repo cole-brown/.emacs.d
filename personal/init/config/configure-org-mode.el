@@ -176,8 +176,6 @@
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-  ;; TODO: indent ankh shenanigans... would something like this work to
-  ;; change the face?
 
   ;; TODO: try this out?
   ;;   org custom id helpers
@@ -349,17 +347,17 @@
   ;; Use diminish to hide it.
   :diminish
 
-  ;;   :custom
-  ;;   (org-indent-boundary-char ?☯))
-  ;; (deleted ankh char to debug fucking prettify dammit)
-  ;; May need this with 'font-lock-add-keywords' like hyphen -> bullets code...
-  ;; Said code:
-  ;;   ;; Show list markers with a middle dot instead of the original character.
-  ;;   (font-lock-add-keywords 'org-mode
-  ;;                           '(("^ *\\([-]\\) "
-  ;;                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-  ;;   ;; TODO: indent ankh shenanigans... would something like this work to
-  ;;   ;; change the face?
+  ;; This changes indent boundary char, but then font-lock doesn't set its face.
+  ;; :custom
+  ;; (org-indent-boundary-char ?☥)
+  ;; ;; options:
+  ;; ;;   - ☥ - 2625 ankh
+  ;; ;;     https://www.unicode.org/charts/PDF/U2600.pdf
+  ;;
+  ;; :config
+  ;; ;; Change the face of `org-indent-boundary-char' to `org-indent'
+  ;; (font-lock-add-keywords 'org-mode '(("☥" . 'org-indent)))
+  ;; ;; This... does not get the indent ankh. Just any others existing in the file.
   )
 
 ;; A function that reformats the current buffer by regenerating the text from
