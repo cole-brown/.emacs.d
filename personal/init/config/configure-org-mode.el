@@ -347,6 +347,8 @@
   ;; Use diminish to hide it.
   :diminish
 
+  ;;--- FAIL
+  ;; Attempt #2984:
   ;; This changes indent boundary char, but then font-lock doesn't set its face.
   ;; :custom
   ;; (org-indent-boundary-char ?☥)
@@ -358,6 +360,24 @@
   ;; ;; Change the face of `org-indent-boundary-char' to `org-indent'
   ;; (font-lock-add-keywords 'org-mode '(("☥" . 'org-indent)))
   ;; ;; This... does not get the indent ankh. Just any others existing in the file.
+  ;;---
+
+  ;;--- FAIL
+  ;; Attempt #3371:
+  ;;   Redef org-indent-initialize maybe?!
+  ;; :config
+  ;; ;; This does double the work on the org-indent-strings array, but meh.
+  ;; (require 'cl)
+  ;; (defun spydez/org-indent-initialize ()
+  ;;   "Initialize the indentation strings with stars instead of spaces."
+  ;;   (setq org-indent-strings (make-vector (1+ org-indent-max) nil))
+  ;;   (aset org-indent-strings 0 nil)
+  ;;   (loop for i from 1 to org-indent-max do
+  ;;         (aset org-indent-strings i
+  ;;               (org-add-props (make-string i ?x)
+  ;;                   nil 'face 'org-indent))))
+  ;; (advice-add 'org-indent-initialize :after #'org-indent-use-stars-for-strings)
+  ;;---
   )
 
 ;; A function that reformats the current buffer by regenerating the text from
