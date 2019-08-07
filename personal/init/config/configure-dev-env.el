@@ -138,14 +138,15 @@
 ;; Defaults
 ;;------------------------------------------------------------------------------
 
+;; TODO: (use-package prog ...) for things used by all prog-modes? Like this:
+;;   TODO: prog-mode hook for making this a default?
+;;          ("C-c C-c" . comment-or-uncomment-region)
+
+
 ;;---
 ;; Tabs
 ;;---
-;; TODO: tabs as spaces setting? We added that somewhere. Maybe these settings
-;; don't belong in this file anymore.
-
-;; tab width
-(setq-default tab-width spydez/dev-env/tab/normal)
+;; See `configure-whitespace'. All default tab settings there now.
 
 ;; TODO: is this global or per-mode in old .emacs?
 ;; New lines are always indented

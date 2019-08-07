@@ -10,9 +10,11 @@
 ;; https://www.emacswiki.org/emacs/SmartTabs
 
 ;; always replace tabs with spaces
-(setq-default indent-tabs-mode nil)
+(customize-set-variable 'indent-tabs-mode nil
+			"Indent with spaces, never tabs.")
 ;; set default tab width for all buffers
-(setq-default tab-width spydez/dev-env/tab/normal)
+(customize-set-variable 'tab-width spydez/dev-env/tab/normal
+                        "Default tab-width to my normal (not min) width.")
 
 ;; TODO: do I need a tab-stop-list? What's it used in? Not prog-modes...
 ;; https://www.emacswiki.org/emacs/TabStopList
@@ -20,6 +22,11 @@
 ;; TODO: range function is in lisp/misc-functions... load them earlier?
 
 ;; NOTE: M-x tabify and M-x untabify exist and work on regions.
+
+;; TODO: this is not a tab thing... if start using put in right section.
+  ;; TODO: is this global or per-mode in old .emacs?
+  ;; New lines are always indented
+  ;;(global-set-key (kbd "RET") 'newline-and-indent)
 
 
 ;;------------------------------------------------------------------------------

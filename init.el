@@ -114,7 +114,8 @@
 ;; It doesn't help when you just totally space on something though.
 
 ;; Which Key is What Function:
-;; command -> keybind:     C-h w <cmd>   :: helm-descbind
+;; command -> keybind:     C-h f <cmd>   :: describe-function (mentions keybind)
+;; command -> keybind:     C-h w <cmd>   :: helm-descbind (nice fuzzy search)
 ;; keybind -> command:     C-h k <keys>  :: describe-key
 ;; help for function name: C-h f <cmd>   :: describe-function
 ;; function help search:   C-h a <fuzzy> :: helm-apropos

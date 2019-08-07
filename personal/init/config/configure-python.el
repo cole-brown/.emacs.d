@@ -17,20 +17,42 @@
 ;; TODO: python-mode vs elpy...?
 ;; https://github.com/jorgenschaefer/elpy
 
-;; I know I have settings in hook in old .emacs
-;; but for now, just... leave all this commented out until I get to it.
-(defun spydez/hook/python-mode ()
-  ;; (setq tab-width ...
-  ;;       py-indent-offset ...
-  ;;       py-smart-indentation ...)
-  ;; TODO: I probably want most or all of these, or some competing package/feature
-  ;; (these from still-barebones csharp)
-;  (paredit-mode 1)
-;  (omnisharp-mode 1)
-;  (my/disable-paredit-spaces-before-paren)
-;  (company-mode 1)
-;  (yas-minor-mode 1)
-;  (flycheck-mode 1)
+(use-package python
+  :mode ("\\.py\\'" . python-mode)
+  :interpreter ("python" . python-mode)
+
+  ;; Don't need hook right now as I'm using my default tab-width.
+  ;; :init
+  ;; ;; define my hook
+  ;; (defun spydez/hook/python-mode ()
+  ;;   (setq tab-width spydez/dev-env/tab/normal))
+  ;;
+  ;; :hook spydez/hook/python-mode
+
+  :bind
+  (;; No global binds for python ATM.
+   :map python-mode-map
+        ("C-c C-c" . comment-or-uncomment-region)
+        ;; TODO: A better key for compile, if needed?
+        ;; `C-c C-c' is comment-region in cpp-mode and I like that...
+        ;;("C-c C-c" . compile)
+        ;; "C-c p c" is projectile compile project...
+        )
+
+  :custom
+  ;; Set this undocumented thingy to same as tab-width so complaints stop?
+  ;;   - "Can't guess" complaint didn't stop.
+  (python-indent-offset spydez/dev-env/tab/normal "Set indent to tab-width.")
+
+  ;; TODO: Do I want any of these things? If so, do I need to turn on or are
+  ;;   they global/prog-mode already?
+  ;; :config
+  ;; (paredit-mode 1)
+  ;; (omnisharp-mode 1)
+  ;; (my/disable-paredit-spaces-before-paren)
+  ;; (company-mode 1)
+  ;; (yas-minor-mode 1)
+  ;; (flycheck-mode 1)
   )
 
 ;; python-mode itself comes with emacs now.
