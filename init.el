@@ -3,18 +3,25 @@
 
 ;; Initialize the emacs.
 
-;; Current Shortcomings:
-;;   - No tracking of desired packages, so dropping one for another (e.g. let go
-;;     of guide-key for which-key) can result in dead weight.
-;;   - Bit over-engineered, probably. My last .emacs was not intuitive to
-;;     tweak/fix when getting set up on a new device, so I probably went
-;;     overboard with warnings/messages and overridability this time around...
-;; TODO: is this commentary or notes? I think notes? but then...
-;; what is commentary even?
+;; 1) use-package is quite central.
 
-;; TODO (still): better commentary.
+;; 2) zenburn is The One True Theme.
+;;    - Can switch to others (without issues I think?), but tweaks have been
+;;      made. They should all be fenced in by '(with-feature zenburn-theme ...)'
+;;      sexpr blocks.
+
+;; 3) Some of my own 'packages' in personal/packages or personal/lisp.
+;;    - ala `taskspace' or `with'
+
+;; 4) Excellent replacement/override.
+;;    - Per-file/feature replacement by just having the source (provide
+;;      'foo) be in the (add-to-list 'load-path ...) later in the sequence.
+;;    - Can do more surgical overriding or futzing in `finalize-domains' or some
+;;      similar thing.
 
 ;;; Code:
+
+
 
 ;;------                                                                ------;;
 ;;----                                                                    ----;;
@@ -28,6 +35,7 @@
 (setq spydez/warning/current-type '(spydez interstitial-prose))
 ;;(spydez/info/message-if spydez/warning/current-type
 ;;                        "init.el... Intermission.")
+;; TODO: emacs 27: Turn back on.
 
 ;; TODO: use-tool package, like use-package, but for external tools like git,
 ;; gpg say what versions you want, what os you expect, have ways for packages to
@@ -40,6 +48,19 @@
 ;;------------------------------------------------------------------------------
 ;; TODO: rename all these "TODOs" in my section headers so I can search for
 ;; 'TODO' without dozens of false alarms...
+
+;;---
+;; Current Shortcomings:
+;;---
+;; - No tracking of desired packages, so dropping one for another (e.g. let go
+;;   of guide-key for which-key) can result in dead weight.
+;;   - TODO: direct custom file to /dev/null (will that work on windows)?
+;;     - That might cause too much churn when following melpa for almost all...
+;; - Bit over-engineered, probably. My last .emacs was not intuitive to
+;;   tweak/fix when getting set up on a new device, so I probably went
+;;   overboard with warnings/messages and overridability this time around...
+;;   - Tiny bit.
+
 
 ;;---
 ;; The Many Faces of TODO
@@ -92,11 +113,11 @@
 ;;---
 ;; It doesn't help when you just totally space on something though.
 
-;; which key is what function
-;; command -> keybind: C-h w <cmd>
-;; keybind -> command: C-h k <keys>
-;; C-h f <cmd> -> help for function name
-;; C-h a -> helm-apropos: Helm-driven function search, kinda
+;; Which Key is What Function:
+;; command -> keybind:     C-h w <cmd>   :: helm-descbind
+;; keybind -> command:     C-h k <keys>  :: describe-key
+;; help for function name: C-h f <cmd>   :: describe-function
+;; function help search:   C-h a <fuzzy> :: helm-apropos
 
 ;; Flatten a list for some function that takes &rest instead:
 ;;   You're looking for `apply'. And you (apply #'func ...).
