@@ -286,6 +286,7 @@ Repeated invocations toggle between the two most recently open buffers."
   :config
   ;; NOTE: keep synced with spydez/hydra/engine-mode?
   ;; NOTE: Escape any % needed with another %. E.g. here: "c%%23" -> url: "c%23" -> search term: "c#"
+  ;;   - better note: (url-encode-url ...) is a function and you can use it.
   ;; NOTE: ones without keybind/hydra can be got at via engine/search-<engine>
   (progn
     ;;--------

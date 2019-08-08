@@ -26,20 +26,30 @@
 ;; So just muck it on our own and we're like a hacky onion. In muck.
 (let ((spydez/hack/ugly-hacky-gpg-dir
        (concat (spydez/dir/windows-to-mingw spydez/dir/home) ".gnupg/")))
-  ;; TODO: what the fuck to do with these... I don't really want these in
+  ;; What the fuck to do with these... I don't really want these in
   ;; custom file...
-  ;; (custom-set-variables
-  ;;  '(epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
-  ;;  '(epg-gpg-program (executable-find "gpg"))               ; windowsy
-  ;;  '(epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy
-  ;;  )
+  ;;(custom-set-variables
+  ;; '(epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
+  ;; '(epg-gpg-program (executable-find "gpg"))               ; windowsy
+  ;; '(epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy
+  ;; )
   ;; [2019-03-13]
   ;; The fuck is going on - why did this suddenly start complaining?
   ;; "Error setting epg-gpg-home-directory: (void-variable spydez/hack/ugly-hacky-gpg-dir)"
   ;; Does this work any worse?
-  (csetq epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
-  (csetq epg-gpg-program (executable-find "gpg"))               ; windowsy
-  (csetq epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy
+  ;;(csetq epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
+  ;;(csetq epg-gpg-program (executable-find "gpg"))               ; windowsy
+  ;;(csetq epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy
+
+  ;; [2019-08-08]
+  ;; Moved custom.el out of source control, back to this as we don't care about
+  ;; custom var spam in custom.el anymore.
+  ;; TODO: Update our gpg issue org doc.
+  (custom-set-variables
+   '(epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
+   '(epg-gpg-program (executable-find "gpg"))               ; windowsy
+   '(epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy
+   )
   )
 ;; TODO: get gpg more cross-computery via use-tool
 

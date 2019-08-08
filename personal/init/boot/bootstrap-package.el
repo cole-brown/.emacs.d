@@ -147,6 +147,53 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Custom File
+;;------------------------------------------------------------------------------
+;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Saving-Customizations.html
+
+;; Custom file is annoying, especially because it gathers everything into one
+;; weird place. Also because it insists on having only one place (when it
+;; saves). So some stuff I want early (so custom.el has to be early), and other
+;; stuff I want late (like gpg) and can't do much about.
+;;
+;; I'm hoping this will relegate custom.el to sorta just be package.el's vars
+;; (basically ignorable totally as far as I care) by using:
+;;   1) use-package's ':custom' section
+;;      e.g. https://github.com/a13/emacs.d
+;;   2) (custom-set-variables ((var ...) (var ...) ...)
+;;   3) (customize-set-variable var ...)
+;;
+;; So this is a try at that. Have no-littering squirrel it away somewhere I
+;; don't care and hope weird settings don't creep in and mess things up without
+;; me noticing.
+(setq custom-file (no-littering-expand-etc-file-name "custom.el"))
+(load custom-file 'noerror)
+
+;; No-Littering note:
+;;   They have a suggestion for storing custom file in a no-littering dir, but I
+;; think I need no-littering loaded first, which means this must be after
+;; everything that comes before that.
+;;
+;;   Previously, custom.el was always in my source control. I think this is
+;; better now as the only settings I had in it as saved were
+;; `package-selected-packages' and `custom-safe-themes'.
+
+;;---
+;; Old Way
+;;   - Was just below `(require 'bootstrap-debug-early)' in init.el.
+;;---
+;; ;; Some packages want to write to our custom file, so set that up first. An
+;; ;; unadorned filename (just "custom.el") wasn't getting picked up as the custom
+;; ;; file, so expanded:
+;; (setq custom-file (expand-file-name "custom.el" spydez/dir/emacs/personal))
+;; ;; May need a better setter if custom-file needs adjusted per computer...
+;; ;;
+;; ;; Possibly move custom-file setting up, and loading down below loading of
+;; ;; bootstrap-this-late overrides.
+;; (load custom-file t)
+
+
+;;------------------------------------------------------------------------------
 ;; Update/Upgrade Packages Process
 ;;------------------------------------------------------------------------------
 

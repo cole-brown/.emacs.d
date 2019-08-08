@@ -637,37 +637,6 @@ For the transition, maybe a func for checking..."
 
 
 ;;---
-;; Custom file
-;;---
-;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Saving-Customizations.html
-
-;; no-littering note:
-;; They have a suggestion for storing in a no-littering dir, but I want to keep
-;; custom.el notably under my control so it goes into my personal always.
-;;
-;; Some packages want to write to our custom file, so set that up first. An
-;; unadorned filename (just "custom.el") wasn't getting picked up as the custom
-;; file, so expanded:
-(setq custom-file (expand-file-name "custom.el" spydez/dir/emacs/personal))
-;; May need a better setter if custom-file needs adjusted per computer...
-;;
-;; Possibly move custom-file setting up, and loading down below loading of
-;; bootstrap-this-late overrides.
-(load custom-file t)
-
-;; TODO: Get rid of everything possible in custom.el?
-;;
-;; Custom file is annoying, especially because it gathers everything into one
-;; weird place. Also because it insists on having only one place (when it
-;; saves). So some stuff I want early (so custom.el has to be arly), and other
-;; stuff I want late (like gpg) and can't do much about.
-;;
-;; I'm hoping to find a way to relegate custom.el to just be package.el's vars...
-;;   - Actually use-package might work. See any of mine with a ':custom' section
-;;     and/or https://github.com/a13/emacs.d
-
-
-;;---
 ;; Misc Stuff
 ;;---
 ;; TODO: just delete? configure-crypt does not care about this anymore, I don't think...
@@ -785,6 +754,8 @@ For the transition, maybe a func for checking..."
       "TODO: figure out how early-init affects call to package-initialize"))
 
 ;; Init use-package so we can use use-package for the rest of the packages we use.
+;;   - no-littering required here
+;;   - custom file: location set & contents loaded here
 (require 'bootstrap-package)
 
 ;; ASAP after use-package is available (debug prints, init load timings)

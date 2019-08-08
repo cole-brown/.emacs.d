@@ -16,11 +16,16 @@
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [7/17]
-    - [ ] A command for searching explainshell.com with a string
-      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eiv75b8
-    - [ ] csetq vs setq all the places? see zeroth-funcs
+  - [-] To Do: [8/17]
+    - [-] csetq vs setq all the places? see zeroth-funcs
       - csetq vs setq vs jamming everything into (use-package ... :custom ...)
+      - I think this:
+        - (use-package ...) is great if not too much trouble.
+        - customize-set-variable for single custom vars
+        - custom-set-variables for multiple custom vars
+      - [X] move custom.el so those three options work without us caring about custom.el spam.
+      - [ ] remove all csetq
+      - [ ] remove csetq defun
     - [ ] Is there a command to list out applicable yasnippets?
     - [ ] ag, ack, gack, gawk, your mom, grep, something?
     - [ ] fill-*
@@ -44,6 +49,9 @@
         - Some of my old .emacs is just references to dead web links... not useful.
     - [ ] default-directory var for pretending a file is elsewhere
       - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eivtuo4
+    - [X] A command for searching explainshell.com with a string
+      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eiv75b8
+      - Uh... already have this. Apparently.
     - [X] have recentf ignore elpa dir?
       - [X] It's not actually been a problem in a long time so I'm doing:
         - [X] Meh.

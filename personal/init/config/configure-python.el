@@ -53,6 +53,9 @@
   ;; (company-mode 1)
   ;; (yas-minor-mode 1)
   ;; (flycheck-mode 1)
+
+  ;; TODO: set up autopep8 for checking code formatting (works on 2.7)?
+  ;;   - https://nhoffman.github.io/.emacs.d/#orgaa724de
   )
 
 ;; python-mode itself comes with emacs now.
