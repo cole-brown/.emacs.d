@@ -238,17 +238,29 @@
 ;;---
 ;; Rainbow Delimiters
 ;;---
-;; [2019-03-14] Trying out in emacs-lisp-mode. See configure-elisp for now.
-;;
-;; TODO: Trial this... Does it slows things down a little.
-;; http://pages.sachachua.com/.emacs.d/Sacha.html#org36b0308
-;; (use-package rainbow-delimiters
-;;   :disabled t)
+;; [2019-03-14] Was in configure-elisp. Tried out rainbow-delimiters for emacs
+;;   lisp mode; could expand to all prog-mode if super useful.
+;; [2019-08-09] Moved back to configure-dev-env as I like it in elisp. Trying in
+;;   org and all prog modes.
+
+;; Does this package slows things down? Sacha said she thought so but probably
+;; outdated... (~4 years old blame as of [2019-08-09])
+;;   http://pages.sachachua.com/.emacs.d/Sacha.html#org36b0308
+;; So yeah, combined with this I think it's fine...:
+;;     "Great care has been taken to make this mode fast. You shouldn't see any
+;;   change in scrolling or editing speed when it's on even when working in
+;;   delimiter-rich languages like Clojure or Emacs Lisp. It can be used with
+;;   any language."
+;;     - https://github.com/Fanael/rainbow-delimiters
+
 ;; https://github.com/itsjeyd/.emacs.d/blob/emacs24/init.el
-;; (use-package rainbow-delimiters
-;;   :config
-;;   (add-hook 'org-mode-hook #'rainbow-delimiters-mode)
-;;   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+;; https://github.com/Fanael/rainbow-delimiters
+(use-package rainbow-delimiters
+  :hook
+  ((prog-mode . rainbow-delimiters-mode)
+   (org-mode . rainbow-delimiters-mode)))
+
+
 
 
 ;;------------------------------------------------------------------------------
@@ -304,8 +316,8 @@
   :defer t
   :bind
   ("C-=" . er/expand-region)
-  ("C-<prior>" . er/expand-region)
-  ("C-<next>" . er/contract-region)
+  ("C-<prior>" . er/expand-region)  ;; PageUp
+  ("C-<next>" . er/contract-region) ;; PageDown
   )
 ;; See readme on GitHub for info on improving in certain modes.
 
@@ -320,7 +332,7 @@
 ;; Few different ways to do it out there - this one in my tiny test gave the 
 ;; best formatting to the commented region and its new copy.
 ;;   https://stackoverflow.com/a/23588908
-(defun spydez/copy-and-comment-region (beg end &optional arg)
+(defun spydez/region/copy-and-comment (beg end &optional arg)
   "Duplicate the region and comment-out the copied text.
 See `comment-region' for behavior of a prefix arg."
   (interactive "r\nP")
@@ -329,9 +341,13 @@ See `comment-region' for behavior of a prefix arg."
   (yank)
   (comment-region beg end arg))
 
+;; TODO: Make a spydez/region/duplicate function?
+;;   - Copy region, add newline, insert after...
+;; TODO: region hydra with the spydez/region/* cmds and maybe fill cmds/hydra?
+
 
 ;;------------------------------------------------------------------------------
-;; Unfill Paragraph
+;; Unfill Paragraph, Fill/Unfill Hydra
 ;;------------------------------------------------------------------------------
 ;; from: nhoffman http://nhoffman.github.io/.emacs.d/#org40b27e4
 ;;   which is from: http://defindit.com/readme_files/emacs_hints_tricks.html
@@ -340,12 +356,42 @@ See `comment-region' for behavior of a prefix arg."
 ;;
 ;; This is actually the inverse of fill-paragraph. Takes a multi-line paragraph
 ;; and makes it into a single line of text.
-(defun spydez/unfill-paragraph ()
+(defun spydez/fill/unfill-paragraph ()
   (interactive)
   (let ((fill-column (point-max)))
-  (fill-paragraph nil)))
+    (fill-paragraph nil)))
 
-;; TODO: if that is any use, there's a package...
+(require 'with)
+(with-feature 'hydra
+  (defhydra spydez/hydra/fill ()
+    "Fill Commands"
+
+    ;; region...ish?
+    ("r" fill-region "region (selected)") ;; ole faithful
+    ("a" fill-region-as-paragraph "region as paragraph")
+
+    ;; paragraph
+    ("i" fill-individual-paragraphs "individual paragraphs")
+    ("n" fill-nonuniform-paragraphs "non-uniform paragraphs")
+    ("p" fill-paragraph "paragraph") ;; the standard
+    ("o" org-fill-paragraph "paragraph (org-mode)")
+
+    ;; unfill
+    ("u" spydez/fill/unfill-paragraph "unfill")
+
+    ;; fill-paragraph for specific modes (bound over `fill-paragraph'
+    ;; in those modes). Ignore until I think I need 'em?
+    ;; c-fill-paragraph
+    ;; lisp-fill-paragraph
+    ;; python-fill-paragraph
+    ;; message-fill-paragraph
+    )
+
+  ;; Well the first try was "C-i", but that is (by definition) TAB, and really
+  ;; hairy to split those two keys because history... So let's try "C-'"?
+  (bind-key "C-'" 'spydez/hydra/fill/body))
+
+;; TODO: if spydez/fill/unfill-paragraph is any use, there's a package...
 ;;   "Add “unfill” commands to parallel the “fill” ones, bind A-q to
 ;; unfill-paragraph and rebind M-q to the unfill-toggle command, which
 ;; fills/unfills paragraphs alternatively."
