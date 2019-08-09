@@ -3,35 +3,27 @@
 #+EMAIL:     git@spydez.com
 #+DATE:      [2019-03-05 Tue]
 
-* Soon™ things [0/1]
+* Soon™ things [0/2]
 
  - [ ] commands/hydra for putting personalized markers down (TODO, "Left off here.", etc)
    - hook into... save? magit? to check for,complain about markers so they hopefully don't
      get checked in?
      - Maybe another command to convert them to impersonal/delete.
-
+ - [ ] Try evil mode?
+   - This will take... years?... to try properly maybe I think?
 
 * Next things?
 :PROPERTIES:
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [8/17]
-    - [-] csetq vs setq all the places? see zeroth-funcs
-      - csetq vs setq vs jamming everything into (use-package ... :custom ...)
-      - I think this:
-        - (use-package ...) is great if not too much trouble.
-        - customize-set-variable for single custom vars
-        - custom-set-variables for multiple custom vars
-      - [X] move custom.el so those three options work without us caring about custom.el spam.
-      - [ ] remove all csetq
-      - [ ] remove csetq defun
-    - [ ] Is there a command to list out applicable yasnippets?
-    - [ ] ag, ack, gack, gawk, your mom, grep, something?
+  - [ ] To Do: [0/8]
     - [ ] fill-*
       - fill-paragraph to a better keybind than M-q?
       - fill-region to a keybind?
       - key-chord hydra for fill-* commands?
+    - [ ] Is there a command to list out applicable yasnippets?
+    - [ ] ag, ack, gack, gawk, your mom, grep, something?
     - [ ] org-journal - try it out?
       - https://github.com/bastibe/org-journal
       - try w/ encryption (fix gpg again again... again... -_-)
@@ -49,6 +41,52 @@
         - Some of my old .emacs is just references to dead web links... not useful.
     - [ ] default-directory var for pretending a file is elsewhere
       - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eivtuo4
+
+
+Tabs:
+  [[https://melpa.org/#/?q=pager&sort=downloads&asc=false][MELPA]]
+    [[https://jwiegley.github.io/use-package/keywords/#preface-init-config][use-package keywords]]
+    [[https://github.com/dholm/dotemacs/blob/master/.emacs.d/lisp/modes/csharp.el][C# stuff]]
+      https://github.com/OmniSharp/omnisharp-emacs
+      https://github.com/dholm/dotemacs/tree/master/.emacs.d/lisp
+    https://github.com/purcell/emacs.d/blob/master/init.el
+      http://www.flycheck.org/en/latest/
+    https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
+    [[https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=emacs%20cedet&=&=&oq=&gs_l=&pbx=1][CEDET stuff]]
+      http://cedet.sourceforge.net/languagesupport.shtml
+      http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+      https://www.emacswiki.org/emacs/CEDET_Quickstart
+      https://www.logilab.org/blogentry/173886
+    https://github.com/daedreth/UncleDavesEmacs#user-content-ido-and-why-i-started-using-helm
+      https://github.com/PythonNut/emacs-config
+      https://www.masteringemacs.org/
+    https://github.com/emacs-tw/awesome-emacs
+    https://www.reddit.com/r/emacs/comments/b0na5p/unfamous_great_emacs_package/
+
+
+Soon™ things?
+  - To Do: [0/2]
+    - [ ] make treemacs issue report?
+    - [ ] make no-littering issue or fix w/ pull request?
+    - https://github.com/dzop/emacs-zmq
+
+* DONE [2019-08-09] A list of things that are done now
+CLOSED: [2019-08-09 Fri 10:45]
+:LOGBOOK:
+- State "DONE"       from              [2019-08-09 Fri 10:45]
+:END:
+
+  - [X] To Do: [9/9]
+    - [X] csetq vs setq all the places? see zeroth-funcs
+      - csetq vs setq vs jamming everything into (use-package ... :custom ...)
+      - I think this:
+        - (use-package ...) is great if not too much trouble.
+        - customize-set-variable for single custom vars
+        - custom-set-variables for multiple custom vars
+      - [X] move custom.el so those three options work without us caring about custom.el spam.
+      - [X] remove csetq defun
+      - [X] remove all csetq
+      - [X] remove any custom-set-variables? Change to customize-set-variable.
     - [X] A command for searching explainshell.com with a string
       - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eiv75b8
       - Uh... already have this. Apparently.
@@ -82,34 +120,7 @@
         - and create it if non-existant
 
 
-Tabs:
-  [[https://melpa.org/#/?q=pager&sort=downloads&asc=false][MELPA]]
-    [[https://jwiegley.github.io/use-package/keywords/#preface-init-config][use-package keywords]]
-    [[https://github.com/dholm/dotemacs/blob/master/.emacs.d/lisp/modes/csharp.el][C# stuff]]
-      https://github.com/OmniSharp/omnisharp-emacs
-      https://github.com/dholm/dotemacs/tree/master/.emacs.d/lisp
-    https://github.com/purcell/emacs.d/blob/master/init.el
-      http://www.flycheck.org/en/latest/
-    https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
-    [[https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=emacs%20cedet&=&=&oq=&gs_l=&pbx=1][CEDET stuff]]
-      http://cedet.sourceforge.net/languagesupport.shtml
-      http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
-      https://www.emacswiki.org/emacs/CEDET_Quickstart
-      https://www.logilab.org/blogentry/173886
-    https://github.com/daedreth/UncleDavesEmacs#user-content-ido-and-why-i-started-using-helm
-      https://github.com/PythonNut/emacs-config
-      https://www.masteringemacs.org/
-    https://github.com/emacs-tw/awesome-emacs
-    https://www.reddit.com/r/emacs/comments/b0na5p/unfamous_great_emacs_package/
-
-
-Soon™ things?
-  - To Do: [0/2]
-    - [ ] make treemacs issue report?
-    - [ ] make no-littering issue or fix w/ pull request?
-    - https://github.com/dzop/emacs-zmq
-
-* DONE A list of things that are done now
+* DONE [2019-07-18] A list of things that are done now
 CLOSED: [2019-07-18 Thu 17:28]
 :LOGBOOK:
 - State "DONE"       from              [2019-07-18 Thu 17:28]

@@ -17,7 +17,8 @@
 ;; So much went wrong setting this up... see `spydez/dir/docs/issues' for
 ;; notes and solution.
 
-;; This finally works. I can see my key; I can decrypt/encrypt my test file.
+;; TODO: [2019-08-09] Is this working again?
+;; [2019-02-15] This finally works. I can see my key; I can decrypt/encrypt my test file.
 ;; TODO: use vars and set 'em in an overridable manner.
 ;; TODO: figure out how to integrate this into use-tool
 (require 'epa-file)
@@ -26,30 +27,21 @@
 ;; So just muck it on our own and we're like a hacky onion. In muck.
 (let ((spydez/hack/ugly-hacky-gpg-dir
        (concat (spydez/dir/windows-to-mingw spydez/dir/home) ".gnupg/")))
-  ;; What the fuck to do with these... I don't really want these in
-  ;; custom file...
-  ;;(custom-set-variables
-  ;; '(epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
-  ;; '(epg-gpg-program (executable-find "gpg"))               ; windowsy
-  ;; '(epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy
-  ;; )
-  ;; [2019-03-13]
-  ;; The fuck is going on - why did this suddenly start complaining?
-  ;; "Error setting epg-gpg-home-directory: (void-variable spydez/hack/ugly-hacky-gpg-dir)"
-  ;; Does this work any worse?
-  ;;(csetq epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
-  ;;(csetq epg-gpg-program (executable-find "gpg"))               ; windowsy
-  ;;(csetq epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy
-
   ;; [2019-08-08]
   ;; Moved custom.el out of source control, back to this as we don't care about
   ;; custom var spam in custom.el anymore.
-  ;; TODO: Update our gpg issue org doc.
-  (custom-set-variables
-   '(epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
-   '(epg-gpg-program (executable-find "gpg"))               ; windowsy
-   '(epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy
-   )
+  (customize-set-variable 'epg-gpg-home-directory
+                          ;; unixy path instead of windowsy
+                          spydez/hack/ugly-hacky-gpg-dir
+                          "Hacks for Windows Emacs to play at all with MinGW.")
+  (customize-set-variable 'epg-gpg-program
+                          ;; windowsy
+                          (executable-find "gpg")
+                          "Hacks for Windows Emacs to play at all with MinGW.")
+  (customize-set-variable 'epg-gpgconf-program
+                          ;; windowsy
+                          (executable-find "gpgconf")
+                          "Hacks for Windows Emacs to play at all with MinGW.")
   )
 ;; TODO: get gpg more cross-computery via use-tool
 

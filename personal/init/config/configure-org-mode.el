@@ -548,6 +548,10 @@ savages."
 (use-package org-journal
   :after org
 
+  ;; TODO: C-c C-j is the default for `org-journal-new-entry', but that seems
+  ;; popular. Org-mode and python-mode both bind it to something else.
+  ;; Change to another key.
+
   ;;-----
   :custom
   ;;-----

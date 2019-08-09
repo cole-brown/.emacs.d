@@ -160,8 +160,10 @@
 ;; (basically ignorable totally as far as I care) by using:
 ;;   1) use-package's ':custom' section
 ;;      e.g. https://github.com/a13/emacs.d
-;;   2) (custom-set-variables ((var ...) (var ...) ...)
-;;   3) (customize-set-variable var ...)
+;;   2) (customize-set-variable var ...)
+;;
+;;   X) NOTE: Do /not/ use (custom-set-variables ...). I've tried and it hasn't
+;;      worked well yet...
 ;;
 ;; So this is a try at that. Have no-littering squirrel it away somewhere I
 ;; don't care and hope weird settings don't creep in and mess things up without
@@ -175,8 +177,8 @@
 ;; everything that comes before that.
 ;;
 ;;   Previously, custom.el was always in my source control. I think this is
-;; better now as the only settings I had in it as saved were
-;; `package-selected-packages' and `custom-safe-themes'.
+;; better now as the only settings I had in it as saved (that I didn't init
+;; myself) were `package-selected-packages' and `custom-safe-themes'.
 
 ;;---
 ;; Old Way
