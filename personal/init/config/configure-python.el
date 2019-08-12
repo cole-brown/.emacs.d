@@ -29,19 +29,18 @@
   (python-mode . lsp-deferred)
 
 
-  ;; [2019-08-12] - moved `comment-or-uncomment-region' to configure-dev-env.el
-  ;;   and upgraded to prog-mode-map.
-  ;; ;;-----
-  ;; :bind
-  ;; ;;-----
-  ;; (;; No global binds for python ATM.
-  ;;  :map python-mode-map
-  ;;       ("C-c C-c" . comment-or-uncomment-region)
-  ;;       ;; TODO: A better key for compile, if needed?
-  ;;       ;; `C-c C-c' is comment-region in cpp-mode and I like that...
-  ;;       ;;("C-c C-c" . compile)
-  ;;       ;; "C-c p c" is projectile compile project...
-  ;;       )
+  ;;-----
+  :bind
+  ;;-----
+  ;; [2019-08-12]
+  ;;   - moved `comment-or-uncomment-region' to configure-dev-env.el
+  ;;     and upgraded to prog-mode-map.
+  ;;   - Found out that isn't enough and I have to also map it here to overwrite
+  ;;     `python-shell-send-buffer' keybind.
+  (;; No global binds for python ATM.
+   :map python-mode-map
+        ("C-c C-c" . comment-or-uncomment-region)
+        )
 
 
   ;;-----
