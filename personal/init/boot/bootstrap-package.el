@@ -204,6 +204,8 @@
 ;; If you get an error like this on installing a new package:
 ;;   Error (use-package): Failed to install magit: http://melpa.org/packages/magit-20190113.1949.tar: Not found
 ;;   Error (use-package): Cannot load magit
+;; Or this:
+;;   Debugger entered--Lisp error: (file-error "http://melpa.org/packages/markdown-mode-20190305.319.el" "Not found")
 ;; Just evalulate this again: (package-refresh-contents)
 
 

@@ -11,6 +11,9 @@
 ;; pretty ok format & ISO standard
 (setq spydez/datetime/format/ISO-8601 "%Y-%m-%dT%T%z")
 
+;; other
+(setq spydez/datetime/format/yyyymmdd "%Y%m%d")
+
 ;; pretty much worst format
 (setq spydez/datetime/format/dd-mon-yy "%d %b %y")
 

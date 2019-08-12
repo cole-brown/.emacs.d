@@ -898,6 +898,10 @@ For the transition, maybe a func for checking..."
 ;; But they may not be used if company or cedet or something is used.
 ;; Gnu Global for tags? https://stackoverflow.com/questions/1598351/emacs-etags-and-using-emacs-as-an-ide
 
+;; Language Server Protocol
+;; Language-agnostic protocol for on-the-fly syntax, auto-complete, go-to
+;; definitions, etc.
+(require 'configure-lsp)
 
 ;; TODO: configure IDE?
 ;;------------------------------------------------------------------------------

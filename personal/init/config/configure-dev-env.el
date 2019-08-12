@@ -5,6 +5,24 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Keybinds
+;;------------------------------------------------------------------------------
+
+;; Comment/Uncomment
+(bind-keys
+ ;;-----
+ ;; Global Keybinds
+ ;;-----
+ ;; no global dev-env keybinds
+
+ ;;-----
+ ;; Grandpa Programming Mode
+ :map prog-mode-map
+ ;;-----
+ ("C-c C-c" . comment-or-uncomment-region))
+
+
+;;------------------------------------------------------------------------------
 ;; Logs
 ;;------------------------------------------------------------------------------
 ;; See `configure-logs.el'
@@ -14,18 +32,21 @@
 ;; Client for Language Server Protocol
 ;;------------------------------------------------------------------------------
 
-;; Don't need/can't use this right now, but eventually maybe I'll join the
-;; futuristic 2015+ technology train?
-
-;; https://www.reddit.com/r/emacs/comments/ahzrg0/announcement_lspmode_60_released/
-;; Emacs packages:
-;;   https://github.com/emacs-lsp/lsp-mode
-;;   https://github.com/emacs-lsp/lsp-ui
-;;   https://github.com/emacs-lsp/dap-mode
-
-;; Though... OmniSharp does have a C# server...
-;;   https://langserver.org/
-;;   https://github.com/Microsoft/language-server-protocol
+;; [2019-08-12 Mon]
+;;   Trying out LSP in its own file: configure-lsp.el
+;;
+;; ;; Don't need/can't use this right now, but eventually maybe I'll join the
+;; ;; futuristic 2015+ technology train?
+;;
+;; ;; https://www.reddit.com/r/emacs/comments/ahzrg0/announcement_lspmode_60_released/
+;; ;; Emacs packages:
+;; ;;   https://github.com/emacs-lsp/lsp-mode
+;; ;;   https://github.com/emacs-lsp/lsp-ui
+;; ;;   https://github.com/emacs-lsp/dap-mode
+;;
+;; ;; Though... OmniSharp does have a C# server...
+;; ;;   https://langserver.org/
+;; ;;   https://github.com/Microsoft/language-server-protocol
 
 
 ;;------------------------------------------------------------------------------
@@ -76,20 +97,20 @@
 ;;   "Set up compile command for Visual Studio"
 ;;   (interactive)
 ;;   (let ((vsvars (shell-quote-argument "C:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\Common7\\Tools\\vsvars32.bat"));; C:\\Program Files (x86)\\Microsoft Visual Studio 11.0\\Common7\\Tools\\vsvars32.bat"))
-;; 	      (solution-file (shell-quote-argument
-;; 			                  ;; awesomely, locate-dominating-file returns the directory for the file
-;; 			                  ;; so when you use a pattern to find a file, you need to run it again in
-;; 			                  ;; the directory itself to get the file name. Who knew.
-;; 			                  (car (directory-files
-;; 			                        (locate-dominating-file default-directory
-;; 						                                          (lambda (dir)
-;; 							                                          (directory-files dir
-;; 									                                                       nil
-;; 									                                                       ".*\\.sln$"
-;; 									                                                       t)))
-;; 			                        t
-;; 			                        ".*\\.sln$"))))
-;; 	      (build-config "Debug"))
+;;           (solution-file (shell-quote-argument
+;;                               ;; awesomely, locate-dominating-file returns the directory for the file
+;;                               ;; so when you use a pattern to find a file, you need to run it again in
+;;                               ;; the directory itself to get the file name. Who knew.
+;;                               (car (directory-files
+;;                                     (locate-dominating-file default-directory
+;;                                                                   (lambda (dir)
+;;                                                                       (directory-files dir
+;;                                                                                            nil
+;;                                                                                            ".*\\.sln$"
+;;                                                                                            t)))
+;;                                     t
+;;                                     ".*\\.sln$"))))
+;;           (build-config "Debug"))
 ;;     (message (concat "sln: " solution-file " @ Config: " build-config))
 ;;     (setq compile-command (concat "call " vsvars " && devenv " solution-file " /Build " build-config))))
 ;;
