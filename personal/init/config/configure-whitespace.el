@@ -11,7 +11,7 @@
 
 ;; always replace tabs with spaces
 (customize-set-variable 'indent-tabs-mode nil
-			"Indent with spaces, never tabs.")
+                        "Indent with spaces, never tabs.")
 ;; set default tab width for all buffers
 (customize-set-variable 'tab-width spydez/dev-env/tab/normal
                         "Default tab-width to my normal (not min) width.")

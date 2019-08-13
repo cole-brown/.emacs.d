@@ -228,6 +228,24 @@
 
 
   ;;----------------------------------------------------------------------------
+  ;; Org-Mode Custom Settings
+  ;;----------------------------------------------------------------------------
+  :custom
+  ;; Leave headings to figure out if they want a newline or not.
+  ;; But change plain-list-item to not try to be clever - it's annoying more
+  ;; than it's helpful.
+  (org-blank-before-new-entry '((heading . auto) (plain-list-item . nil))
+                              "No auto newline in plain list items.")
+
+  ;; TODO: move many settings into this custom section.
+  ;; Like all the setq in init.
+
+  ;;------------------
+  ;; /':custom' section.
+  ;;------------------
+
+
+  ;;----------------------------------------------------------------------------
   ;; Org-Mode Keybinds
   ;;----------------------------------------------------------------------------
   ;; NOTE: THESE ARE ORG-MODE ONLY! And that is intended.
@@ -574,9 +592,13 @@ savages."
   (org-journal-file-type 'yearly)
 
   ;; org-journal-file-format: Make it a bit more ISO-ish (yyyy-mm-dd).
-  ;;   - default: yyyymmdd
-  ;;   - better:  yyyy-mm-dd.org
-  (org-journal-file-format (concat spydez/datetime/format/yyyy-mm-dd ".org"))
+  ;;   - default:   yyyymmdd
+  ;;   - better:    yyyy-mm-dd.org
+  ;; But those both are difficult to switch to when various other buffers open,
+  ;; so we'll go to this:
+  ;;   - betterer:  yyyy-mm-dd.journal.org
+  (org-journal-file-format (concat spydez/datetime/format/yyyy-mm-dd
+                                   ".journal.org"))
 
   ;; TODO: encryption?
   ;; https://github.com/bastibe/org-journal#encryption

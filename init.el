@@ -521,6 +521,13 @@ For the transition, maybe a func for checking..."
   ;; TODO: also t if in spydez/dir/personal?
   )
 
+;;--------------------------------------------------
+;;--------------------------------------------------
+;;--------------------------------------------------
+;;--------------------------------------------------
+;; TODO: make sure these don't escape no-littering's management...
+;;--------------------------------------------------
+
 ;; folders for auto-save files and backup-files (#*# and *~)
 ;; TODO: remove if I like no-littering?
 (defconst spydez/dir/backup-files
@@ -533,6 +540,14 @@ For the transition, maybe a func for checking..."
 (defconst spydez/file/save-history
   (expand-file-name "savehist" spydez/dir/emacs)
   "History of commands, etc.")
+
+;;--------------------------------------------------
+;; END-TODO: make sure these don't escape no-littering's management...
+;;--------------------------------------------------
+;;--------------------------------------------------
+;;--------------------------------------------------
+;;--------------------------------------------------
+;;--------------------------------------------------
 
 (defconst spydez/dir/yasnippets
   (expand-file-name "snippets" spydez/dir/emacs/personal)
