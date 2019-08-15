@@ -12,6 +12,32 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Anzu - Show Number of Matches in Mode-Line While Searching
+;;------------------------------------------------------------------------------
+(use-package anzu
+  ;; Force load cuz ':bind' wants to defer til one of those is called.
+  ;; But I want it loaded for normal searchs too (M-s, etc).
+  :demand t
+
+  ;; TODO: mess with colors?
+
+  ;; TODO: give it a tab or something in moody?
+
+  ;;---
+  :bind
+  ;;---
+  ;; Rebind to Anzu versions.
+  (([remap query-replace] . anzu-query-replace)
+   ([remap query-replace-regexp] . anzu-query-replace-regexp))
+
+  ;;---
+  :config
+  ;;---
+  ;; and enable
+  (global-anzu-mode))
+
+
+;;------------------------------------------------------------------------------
 ;; Occur DWIM (Do What I Mean)
 ;;------------------------------------------------------------------------------
 ;; https://oremacs.com/2015/01/26/occur-dwim/

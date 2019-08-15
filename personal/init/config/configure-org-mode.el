@@ -314,8 +314,7 @@
 ;; Display the titles with nice unicode bullets instead of the text ones.
 (use-package org-bullets
   :after org
-  :hook
-  (org-mode . (lambda () (org-bullets-mode 1))))
+  :hook (org-mode . org-bullets-mode))
 
 
 ;;------------------------------------------------------------------------------
@@ -856,6 +855,15 @@ savages."
 ;; Kitchen Sink
 ;;------------------------------------------------------------------------------
 
+
+;;------------------------------------------------------------------------------
+;; TODOs
+;;------------------------------------------------------------------------------
+
+;; Org-Bullets works well.
+;; The prettifying of checkboxes, and the prettifying/bulleting of simple lists
+;; ...doesn't work well. Steal from Org-Bullets mode? Patch and send upstream
+;; if hunky dory?
 
 ;;------------------------------------------------------------------------------
 ;; Provide this.
