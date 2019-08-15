@@ -424,9 +424,11 @@ See `comment-region' for behavior of a prefix arg."
     ;; message-fill-paragraph
     )
 
-  ;; Well the first try was "C-i", but that is (by definition) TAB, and really
-  ;; hairy to split those two keys because history... So let's try "C-'"?
-  (bind-key "C-'" 'spydez/hydra/fill/body))
+  ;; 1) The first try was "C-i", but that is (by definition) TAB, and really
+  ;;    hairy to split those two keys because history... So let's try "C-'"?
+  ;; 2) `bind-key*' instead of `bind-key' lets this have its keybind in org-mode
+  ;;    over some org-agenda thing.
+  (bind-key* "C-'" 'spydez/hydra/fill/body))
 
 ;; TODO: if spydez/fill/unfill-paragraph is any use, there's a package...
 ;;   "Add “unfill” commands to parallel the “fill” ones, bind A-q to
