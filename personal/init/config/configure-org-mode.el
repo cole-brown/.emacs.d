@@ -278,9 +278,26 @@
   ;;----------------------------------------------------------------------------
   ;; Org-Mode Config (Post-Load)
   ;;----------------------------------------------------------------------------
-  ;;:config ;; can do multiple forms until next keyword
+  :config
 
-  ;; (anything?) *crickets*
+  ;; Change some colors.
+  (require 'with)
+  (with-feature 'zenburn-theme
+    (zenburn-with-color-variables
+      ;; I don't like green in these as it confuses me with the "DONE" etc
+      ;; flags, and I apparently like having my level 2 headings set to DONE and
+      ;; it was exactly the same color as far as my eyes could tell.
+      (set-face-foreground 'org-level-1 zenburn-orange)
+      (set-face-foreground 'org-level-2 zenburn-blue-1)
+      (set-face-foreground 'org-level-3 zenburn-yellow-2)
+      (set-face-foreground 'org-level-4 zenburn-cyan)
+      (set-face-foreground 'org-level-5 zenburn-red-4)
+      (set-face-foreground 'org-level-6 zenburn-blue-4)
+      ;; these get a bit weird but we're really super deeper than I've been
+      (set-face-foreground 'org-level-7 zenburn-cyan)
+      (set-face-foreground 'org-level-8 zenburn-yellow-2)
+      ;; and after 8 it repeats from 1
+      ))
 
   ;;------------------------------------
   ;; /':config' section - nothing after.
@@ -559,16 +576,34 @@ savages."
 ;;------------------------------------------------------------------------------
 ;; Org Journal
 ;;------------------------------------------------------------------------------
-;; TODO: try out org-journal?
 ;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/#keeping-a-journal
 ;; https://arenzana.org/2019/04/emacs-org-mode/#orgeaaf198
 ;; https://github.com/bastibe/org-journal
+;; Trial: [2019-08-07]
 (use-package org-journal
   :after org
 
-  ;; TODO: C-c C-j is the default for `org-journal-new-entry', but that seems
+  ;;-----
+  :init
+  ;;-----
+
+  (defhydra spydez/hydra/journal ()
+    "Org-Journal"
+    ("n" org-journal-new-entry "new entry")
+    ("v" (funcall org-journal-find-file (org-journal-get-entry-path)) "visit journal")
+    )
+
+
+  ;;-----
+  :bind*
+  ;;-----
+  ;; Force some bindings. ':bind*' overrides minor mode binds.
+  ("C-," . spydez/hydra/journal/body)
+
+  ;; Note: C-c C-j is the default for `org-journal-new-entry', but that seems
   ;; popular. Org-mode and python-mode both bind it to something else.
-  ;; Change to another key.
+  ;; Trying this binding/hydra out instead.
+
 
   ;;-----
   :custom

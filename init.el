@@ -848,6 +848,10 @@ For the transition, maybe a func for checking..."
 ;; log or large file stuff
 (require 'configure-logs)
 
+;; key-chords, hydra, some helper functions
+;;   - probably high enough in the order now...
+(require 'configure-hydra)
+
 ;; Helm/ido/etc
 (require 'configure-completion)
 
@@ -872,11 +876,6 @@ For the transition, maybe a func for checking..."
 ;; TODO-maybe-as-well: multiple git users (work, personal) for magit/github
 ;;   good instructions so it's easy to setup in order to download .emacs.d from
 ;;   github repo next time.
-
-;; TODO: Reorder? hydra might depend on later stuff maybe?
-;;   - hydra might should go higher...
-;; key-chords, hydra, some helper functions
-(require 'configure-hydra)
 
 ;; For moving around in and messing with text via or at point and/or mark.
 ;; Hi Mark.
