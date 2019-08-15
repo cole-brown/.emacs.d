@@ -8,7 +8,12 @@
 ;; Keybinds
 ;;------------------------------------------------------------------------------
 
-;; Comment/Uncomment
+;; Bind -> Politely asks for a keybind
+;; Bind* -> Overrides Other (Minor Mode) Binds
+
+;; Want to insist on "C-c C-c" being `comment-or-uncomment-region' in /all/ prog
+;; modes, but still use bind-keys... Which seems un-possible to do bere in one
+;; spot because python-mode-map steals it but doesn't exist yet.
 (bind-keys
  ;;-----
  ;; Global Keybinds
@@ -19,7 +24,18 @@
  ;; Grandpa Programming Mode
  :map prog-mode-map
  ;;-----
- ("C-c C-c" . comment-or-uncomment-region))
+ ;; Comment/Uncomment
+ ("C-c C-c" . comment-or-uncomment-region)
+
+ ;; NOTE: Can't bind here as python-mode-map is undefined. So... Callback?
+ ;; Meh. Want to try to conform to use-package, so this is awkward. In two
+ ;; places for now.
+ ;; ;;-----
+ ;; ;; Python Programming Mode
+ ;; :map python-mode-map
+ ;; ;;-----
+ ;; ("C-c C-c" . comment-or-uncomment-region)
+ )
 
 
 ;;------------------------------------------------------------------------------

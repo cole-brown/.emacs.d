@@ -18,15 +18,26 @@
 ;; https://github.com/jorgenschaefer/elpy
 
 (use-package python
-  :after (lsp-mode projectile)
   :mode ("\\.py\\'" . python-mode)
   :interpreter ("python" . python-mode)
 
+  ;;---
+  ;; Language Server Protocol for Python (LSP
+  ;;---
+  ;; Not quite ready for Language Server yet...
+  ;; Was preventing this use-package from firing at all somehow?
+  ;; :after (lsp-mode projectile)
+  ;; :demand t
 
-  ;;-----
-  :hook
-  ;;-----
-  (python-mode . lsp-deferred)
+
+  ;; ;;-----
+  ;; :hook
+  ;; ;;-----
+  ;;---
+  ;; Language Server Protocol for Python (LSP
+  ;;---
+  ;; Not quite ready for Language Server yet.
+  ;; (python-mode . lsp-deferred)
 
 
   ;;-----
@@ -41,6 +52,7 @@
    :map python-mode-map
         ("C-c C-c" . comment-or-uncomment-region)
         )
+  ;; `python-shell-send-buffer' still sounds useful, but not on "C-c C-c"
 
 
   ;;-----
@@ -55,22 +67,20 @@
   :config
   ;;-----
 
-  ;; Language Server Protocol for Python
-  (add-to-list 'lsp-language-id-configuration '(python-mode . "python"))
-  (lsp-register-client
-   (make-lsp-client :new-connection (lsp-stdio-connection "pyls")
-                    :major-modes '(python-mode)
-                    :server-id 'pyls))
+  ;;---
+  ;; Language Server Protocol for Python (LSP
+  ;;---
+  ;; (add-to-list 'lsp-language-id-configuration '(python-mode . "python"))
+  ;; (lsp-register-client
+  ;;  (make-lsp-client :new-connection (lsp-stdio-connection "pyls")
+  ;;                   :major-modes '(python-mode)
+  ;;                   :server-id 'pyls))
+  ;;
+  ;; (setq lsp-auto-guess-root t       ; Detect project root
+  ;;       lsp-prefer-flymake nil      ; Use lsp-ui and flycheck
+  ;;       flymake-fringe-indicator-position 'right-fringe)
+  ;;---
 
-  (setq lsp-auto-guess-root t       ; Detect project root
-        lsp-prefer-flymake nil      ; Use lsp-ui and flycheck
-        flymake-fringe-indicator-position 'right-fringe)
-
-  ;; ;; make sure this is activated when python-mode is activated
-  ;; ;; lsp-python-enable is created by macro above
-  ;; (add-hook 'python-mode-hook
-  ;;           (lambda ()
-  ;;             (lsp-python-enable)))
 
   ;; TODO: Do I want any of these things? If so, do I need to turn on or are
   ;;   they global/prog-mode already?
@@ -106,16 +116,6 @@
 ;; https://code.djangoproject.com/wiki/Emacs
 ;;   - i.e. the python, the html, the css,
 ;;     the templates w/ html and template language interwoven
-
-
-;;------------------------------------------------------------------------------
-;; Compilation
-;;------------------------------------------------------------------------------
-;; ;; TODO: Is this key the usual for compiling? Do I need to compile?
-;; ;; Is there a better key? `C-c C-c' is/was comment-region in cpp-mode and
-;; ;; I like that command...
-;; (eval-after-load 'python-mode
-;;   '(bind-key "C-c C-c" 'compile python-mode-map))
 
 
 ;;------------------------------------------------------------------------------
