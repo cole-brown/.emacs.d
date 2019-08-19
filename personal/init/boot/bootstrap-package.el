@@ -32,6 +32,11 @@
 ;; Everyone seems to always use this anyways. Ensure packages are installed if missing.
 (setq use-package-always-ensure t)
 
+;; TODO: Always demand everything?
+;; (setq use-package-always-demand t)
+;; Always demand everything if daemon???
+;; (setq use-package-always-demand (daemonp))
+
 ;; This will set defer to default true for packages to not load on startup.
 ;; Would make for a faster init time but slower random actions until everything
 ;; happens to be auto-loaded.

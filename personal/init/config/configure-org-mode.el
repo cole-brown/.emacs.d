@@ -32,41 +32,107 @@
   ;; specify ':ensure nil' so that use-package doesn’t try to install it,
   ;; and just loads and configures it.
   :ensure nil
+  :demand t
 
 
   ;;----------------------------------------------------------------------------
-  ;; Org-Mode Init & General Settings
+  ;; Org-Mode Init
   ;;----------------------------------------------------------------------------
   :init ;; can do multiple forms until next keyword
 
+  ;; Put .org.txt into the mode list for org-mode
+  (add-to-list 'auto-mode-alist '("\\.org.txt$" . org-mode))
+
+  ;; Check box visual upgrade.
+  ;;   empty, indeterminate, marked: [ ], [-], [X] -> ☐, ▣, ☒
+  ;;     aka 'unchecked', 'mixed checked/unchecked children', 'checked'
+  ;; Trial: [2019-07-30 Tue]
+  ;;   - Con: This doesn't update until point has moved off the line... Possibly
+  ;;     interacting with my highlight row thing/mode?
+  ;; Nice lil search for symbols: http://www.unicode.org/charts/
+  (defun spydez/hook/org-mode/checkboxes ()
+    "Beautify Org Checkbox Symbol"
+    (setq prettify-symbols-alist
+          '(("[ ]" . "☐")
+            ;; other options:
+            ;;   - ☐ - 2610 ballot box
+            ;;     https://www.unicode.org/charts/PDF/U2600.pdf
+            ("[X]" . "☒")
+            ;; other options:
+            ;;   - ☒ - 2612 ballot box with X
+            ;;     https://www.unicode.org/charts/PDF/U2600.pdf
+            ;;   - ☑ - 2611 ballot box with check
+            ("[-]" . "▣")
+            ;; other options:
+            ;;   - ▣ - 25A3 white square containing black small square
+            ;;     https://www.unicode.org/charts/PDF/U25A0.pdf
+            ;;   - ❍ - ...idk, what other people used at reddit thread.
+            ;;   - ▽ - 25BD white down-pointing triangle
+            ;;   - ◎ - 25CE bullseye
+            ;;   - ☯ - 262F yin-yang
+            ))
+    (prettify-symbols-mode 1))
+
+  ;; Show list markers with a middle dot instead of the
+  ;; original character.
+  (defun spydez/hook/org-mode/simple-list ()
+    "Nice up simple lists - replacing hypen with a unicode middle dot."
+    (font-lock-add-keywords
+     nil ;; 'org-mode - some org-mode stuff (e.g. org-journal) is a derived
+         ;; major mode and thus needed either more than just `org-mode', or to
+         ;; be `nil' and put in the org-mode hook.
+     '(("^ *\\([-]\\) "
+        (0 (prog1 () (compose-region (match-beginning 1)
+                                     (match-end 1) "•"))))))
+    )
+
+  ;;   "Enable Speed Keys, which allows quick single-key commands when the
+  ;; cursor is placed on a heading. Usually the cursor needs to be at the
+  ;; beginning of a headline line, but defining it with this function makes them
+  ;; active on any of the asterisks at the beginning of the line (useful with
+  ;; the font highlighting I use, as all but the last asterisk are sometimes not
+  ;; visible)."
+  ;;   https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+  ;; Manual:
+  ;;   https://orgmode.org/manual/Speed-keys.html
+  (defun spydez/custom/org-mode/speed-commands-p ()
+    "Allow speed keys when at any headline *, not just beginning of line."
+    (and (looking-at org-outline-regexp) (looking-back "^\**")))
+
+  ;;------------------
+  ;; /':init' section.
+  ;;------------------
+
+
+  ;;----------------------------------------------------------------------------
+  ;; Org-Mode Hooks
+  ;;----------------------------------------------------------------------------
+  :hook
+  ((org-mode . spydez/hook/org-mode/checkboxes)
+   (org-mode . spydez/hook/org-mode/simple-list))
   ;;-----------------
-  ;; General Settings
+  ;; /':hook' section
   ;;-----------------
 
-  ;; auto-timestamp when TODOs are turned to DONE state
-  (setq org-log-done t)
 
-  ;; let's see how default of 2 is before changing
-  ;; (setq org-edit-src-content-indentation 0) ; # of spaces added to src indent
+  ;;----------------------------------------------------------------------------
+  ;; Org-Mode Custom Settings
+  ;;----------------------------------------------------------------------------
+  :custom
 
-  ;; Don't know about soft word wrap. But we could do it in a hook for
-  ;; org-mode if desired.
-  ;; Wait... it's already on in org-mode. Well if we want to turn it off...
-  ;; (visual-line-mode 1)
+  (org-log-done t "auto-timestamp when TODOs are turned to DONE state")
+
+  ;; Leave headings to figure out if they want a newline or not.
+  ;; But change plain-list-item to not try to be clever - it's annoying more
+  ;; than it's helpful.
+  (org-blank-before-new-entry '((heading . auto) (plain-list-item . nil))
+                              "No auto newline in plain list items.")
 
   ;; Well structured indentation. Freehand notes/text stay indented to
   ;; headline level.
-  (setq org-startup-indented t)
+  (org-startup-indented t "I'm starting to like this. Leave globally on.")
   ;; Note 1: This changes how it /looks/, not how the raw text is formatted.
   ;; Note 2: This also hides leading stars for headlines.
-
-  ;; Not 100% sold on these this time around... Keeping for now.
-  ;; TODO: maybe disabling these... and make a new work.org at the same
-  ;;   time? My work.org is getting annoying - I may have to find a better
-  ;;   format for notes than whatever structure and monolithic file I'm
-  ;;   trying to do now. Also could go to new todo sequence and logbook.
-  ;;(setq org-hide-leading-stars t) ; make outline a bit cleaner
-  ;;(setq org-odd-levels-only t)    ; make outline a bit cleaner
 
   ;; TODO sequence to pop up shortcuts to on running `C-c C-t' on a headline
   ;;   (n) - n key will be shortcut into this state
@@ -74,29 +140,32 @@
   ;;    !  - prompt for note w/ timestamp on enter
   ;;   /!  - prompt for note w/ timestamp on exit if none for next state
   ;;    |  - separates "need action" states from "finished" states
-  (setq org-todo-keywords
-        '((sequence "TODO(t)"
-                    "STARTED(s!)"
-                    "WAITING(w@/!)"
-                    "|"
-                    "DONE(d!)"
-                    "CANCELLED(c@)")))
+  (org-todo-keywords
+   '((sequence "TODO(t)"
+               "STARTED(s!)"
+               "WAITING(w@/!)"
+               "|"
+               "DONE(d!)"
+               "CANCELLED(c@)"))
+   "Custom sequence of keywords & actions.")
 
-  ;; `Drawer' to log to. (Property/subheading thing). "LOGBOOK" is default if this
-  ;; is set to `t'. This is for the place org-mode puts those todo timestamps,
-  ;; state change notes, and user notes just under the headline.
-  (setq org-log-into-drawer "LOGBOOK")
-
-  ;; Put .org.txt into the mode list for org-mode
-  (add-to-list 'auto-mode-alist '("\\.org.txt$" . org-mode))
+  ;; `Drawer' to log to. (Property/subheading thing). "LOGBOOK" is default if
+  ;; this is set to `t'. This is for the place org-mode puts those todo
+  ;; timestamps, state change notes, and user notes just under the headline.
+  (org-log-into-drawer "LOGBOOK"
+                       "See my comment or emacs help for more details.")
 
   ;; Don't allow accidental edits of invisible regions in org files.
   ;; https://yiufung.net/post/org-mode-hidden-gems-pt1/
-  (setq org-catch-invisible-edits 'show-and-error)
+  (org-catch-invisible-edits 'show-and-error
+                             "Never allow edits of invisible regions.")
 
-  ;; Hide extra newlines between (sub)trees
+  ;; Hide extra newlines between (sub)trees.
   ;; https://yiufung.net/post/org-mode-hidden-gems-pt1/
-  (setq org-cycle-separator-lines 0)
+  ;; Really useful because I tend to like the bonus whitespace for visually
+  ;; separating one tree from the next...
+  (org-cycle-separator-lines 0
+                             "Hide extra newlines between (sub)trees")
 
   ;; [[link:tag]] becomes something else.
   ;; e.g.: [[google:test]] becomes link:
@@ -104,88 +173,109 @@
   ;;   - '%s' in link-alist replaced with link's 'tag'
   ;;   - '%h' in link-alist replaced with link's (html encoded) 'tag'
   ;; https://yiufung.net/post/org-mode-hidden-gems-pt4/
-  (setq org-link-abbrev-alist
-        '(("google" . "https://www.google.com/search?q=%h")
-          ("map" . "https://maps.google.com/maps?q=%h")
-          ))
+  (org-link-abbrev-alist
+   '(("google" . "https://www.google.com/search?q=%h")
+     ("map" . "https://maps.google.com/maps?q=%h"))
+   "Shortcuts for links. Translates [[link:tag]] (and [[link:tag][desc]]).")
 
-  ;;   "Enable Speed Keys, which allows quick single-key commands when the cursor
-  ;; is placed on a heading. Usually the cursor needs to be at the beginning of a
-  ;; headline line, but defining it with this function makes them active on any of
-  ;; the asterisks at the beginning of the line (useful with the font highlighting
-  ;; I use, as all but the last asterisk are sometimes not visible)."
-  ;;   https://zzamboni.org/post/my-emacs-configuration-with-commentary/
-  ;; Manual:
-  ;;   https://orgmode.org/manual/Speed-keys.html
-  (setq org-use-speed-commands
-        (lambda () (and (looking-at org-outline-regexp) (looking-back "^\**"))))
-  ;; Not exactly a hook, but kinda...
-  ;; TODO: I'd rather have that function where I can comment it and name it
-  ;; and stuff but I need to figure out how to elisp for "You want a variable?
-  ;; Well here's a function to run instead." You know... lambda things.
-
-  ;;-----------------
-  ;; /General Settings
-  ;;-----------------
-
-
-  ;;-----------------
-  ;; Making It Pretty
-  ;;-----------------
+  ;; Enable Speed Keys as per my speed-commands predicate function.
+  (org-use-speed-commands
+   #'spydez/custom/org-mode/speed-commands-p
+   "Allow speed keys when at any headline *, not just beginning of line.")
 
   ;; Set org-hid-emphasis-markers so that the markup indicators are not shown.
   ;; (so +strike+, /italic/, *bold* show font change, but hides the +/*)
-  (setq org-hide-emphasis-markers t)
+  (org-hide-emphasis-markers t
+   "Hide the ASCII font change markers, show the font change.")
 
-  ;; Check box visual upgrade.
-  ;;   empty, indeterminate, marked: [ ], [-], [X] -> ☐, ▣, ☒
-  ;;     aka 'unchecked', 'mixed checked/unchecked children', 'checked'
-  ;; Could go in `:hook' section but I kinda just want it here in
-  ;; the pretty section with the rest of the pretty things.
-  ;; Trial: [2019-07-30 Tue]
-  ;;   - Con: This doesn't update until point has moved off the line... Possibly
-  ;;     interacting with my highlight row thing/mode?
-  ;;   - Con: This only works on some checkbox lists and I've wasted hours
-  ;;     trying to find out why. :(
-  ;; Nice lil search for symbols: http://www.unicode.org/charts/
-  (add-hook 'org-mode-hook
-            (lambda ()
-              "Beautify Org Checkbox Symbol"
-              (setq prettify-symbols-alist
-                    '(("[ ]" . "☐")
-                      ;; other options:
-                      ;;   - ☐ - 2610 ballot box
-                      ;;     https://www.unicode.org/charts/PDF/U2600.pdf
-                      ("[X]" . "☒")
-                      ;; other options:
-                      ;;   - ☒ - 2612 ballot box with X
-                      ;;     https://www.unicode.org/charts/PDF/U2600.pdf
-                      ;;   - ☑ - 2611 ballot box with check
-                      ("[-]" . "▣")
-                      ;; other options:
-                      ;;   - ▣ - 25A3 white square containing black small square
-                      ;;     https://www.unicode.org/charts/PDF/U25A0.pdf
-                      ;;   - ❍ - ...idk, what other people used at reddit thread.
-                      ;;   - ▽ - 25BD white down-pointing triangle
-                      ;;   - ◎ - 25CE bullseye
-                      ;;   - ☯ - 262F yin-yang
-                      ))
-              (prettify-symbols-mode 1)
+  ;; Org Source Code Blocks: Fontify by their native mode.
+  (org-src-fontify-natively t
+   "Fontify code block by their native mode? Yes please.")
 
-              ;; Show list markers with a middle dot instead of the
-              ;; original character.
-              (font-lock-add-keywords
-               nil ;; 'org-mode - some org-mode stuff (e.g. org-journal) is a
-                   ;; derived major mode and thus needed either more than just
-                   ;; `org-mode', or to be `nil' and put in this hook.
-               '(("^ *\\([-]\\) "
-                  (0 (prog1 () (compose-region (match-beginning 1)
-                                               (match-end 1) "•"))))))
-              ))
+  ;; Org Source Code Blocks: Tab behavior.
+  ;;   "In principle this makes it so that indentation in src blocks works as in
+  ;; their native mode, but in my experience it does not always work reliably.
+  ;; For full proper indentation, always edit the code in a native buffer by
+  ;; pressing "C-c '"."
+  ;;   - https://zzamboni.org/post/my-emacs-configuration-with-commentary/#literate-programming-using-org-babel
+  (org-src-tab-acts-natively t
+   "Tab (tries to) act like the prog-mode in code blocks.")
+
+  ;;---
+  ;; "Not Sure About These Yet" sub-section of ':custom' section.
+  ;;---
+
+  ;; let's see how default of 2 is before changing
+  ;; (org-edit-src-content-indentation 0 "# of spaces added to src indent")
+
+  ;; NOTE: These are overshadowed by `org-startup-indented', and
+  ;; org-startup-indented does a much nicer, cleaner job, I think.
+  ;; ;; Not 100% sold on these this time around... Keeping for now.
+  ;; ;;(setq org-hide-leading-stars t) ; make outline a bit cleaner
+  ;; ;;(setq org-odd-levels-only t)    ; make outline a bit cleaner
 
   ;; TODO: try this out?
   ;;   org custom id helpers
   ;;   https://writequit.org/articles/emacs-org-mode-generate-ids.html#the-solution
+
+  ;;------------------
+  ;; /':custom' section.
+  ;;------------------
+
+
+  ;;----------------------------------------------------------------------------
+  ;; Org-Mode Keybinds
+  ;;----------------------------------------------------------------------------
+  ;; NOTE: THESE ARE ORG-MODE ONLY! And that is intended.
+
+  :bind (:map org-mode-map
+              ;; 'C-c <tab>' to show headings only (no top parent notes, no
+              ;; children notes, just headings). Org-Mode had 'C-c <tab>' as
+              ;; outline-show-children, which only shows direct children
+              ;; headings, not all descendants' headings.
+              ;; https://yiufung.net/post/org-mode-hidden-gems-pt1/
+              ("C-c <tab>" . #'org-kill-note-or-show-branches))
+
+  ;;-----------------
+  ;; /':bind' section
+  ;;-----------------
+
+
+  ;;----------------------------------------------------------------------------
+  ;; Org-Mode Config (Post-Load)
+  ;;----------------------------------------------------------------------------
+  :config
+
+  ;; There is a `:custom-face' section of use-packge, but I don't think I can do
+  ;; the zenburn feature check or the `zenburn-with-color-variables' call.
+  ;;
+  ;; Change some headline colors.
+  (require 'with)
+  (with-feature 'zenburn-theme
+    (zenburn-with-color-variables
+      ;; I don't like green in these as it confuses me with the "DONE" etc
+      ;; flags, and I apparently like having my level 2 headings set to DONE and
+      ;; it was exactly the same color as far as my eyes could tell.
+      (set-face-foreground 'org-level-1 zenburn-orange)
+      (set-face-foreground 'org-level-2 zenburn-blue-1)
+      (set-face-foreground 'org-level-3 zenburn-yellow-2)
+      (set-face-foreground 'org-level-4 zenburn-cyan)
+      (set-face-foreground 'org-level-5 zenburn-red-4)
+      (set-face-foreground 'org-level-6 zenburn-blue-4)
+      ;; these get a bit weird but we're really super deeper than I've been
+      (set-face-foreground 'org-level-7 zenburn-cyan)
+      (set-face-foreground 'org-level-8 zenburn-yellow-2)
+      ;; and after 8 it repeats from 1
+      ))
+
+  ;;---
+  ;; "Not Sure About These Yet" sub-section of ':config' section.
+  ;;---
+
+  ;; Don't know about soft word wrap. But we could do it in a hook for
+  ;; org-mode if desired.
+  ;; Wait... it's already on in org-mode. Well if we want to turn it off...
+  ;; (visual-line-mode 1)
 
   ;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/#beautifying-org-mode
   ;; More font stuff:
@@ -224,102 +314,20 @@
   ;; current one is Inconsolata.
   ;; (fixed-pitch ((t (:family "Inconsolata"))))
 
-  ;;-----------------
-  ;; /Making It Pretty
-  ;;-----------------
-
-  ;;------------------
-  ;; /':init' section.
-  ;;------------------
-
-
-  ;;----------------------------------------------------------------------------
-  ;; Org-Mode Custom Settings
-  ;;----------------------------------------------------------------------------
-  :custom
-  ;; Leave headings to figure out if they want a newline or not.
-  ;; But change plain-list-item to not try to be clever - it's annoying more
-  ;; than it's helpful.
-  (org-blank-before-new-entry '((heading . auto) (plain-list-item . nil))
-                              "No auto newline in plain list items.")
-
-  ;; TODO: move many settings into this custom section.
-  ;; Like all the setq in init.
-
-  ;;------------------
-  ;; /':custom' section.
-  ;;------------------
-
-
-  ;;----------------------------------------------------------------------------
-  ;; Org-Mode Keybinds
-  ;;----------------------------------------------------------------------------
-  ;; NOTE: THESE ARE ORG-MODE ONLY! And that is intended.
-
-  :bind (:map org-mode-map
-              ;; 'C-c <tab>' to show headings only (no top parent notes, no
-              ;; children notes, just headings). Org-Mode had 'C-c <tab>' as
-              ;; outline-show-children, which only shows direct children
-              ;; headings, not all descendants' headings.
-              ;; https://yiufung.net/post/org-mode-hidden-gems-pt1/
-              ("C-c <tab>" . #'org-kill-note-or-show-branches))
-
-  ;;-----------------
-  ;; /':bind' section
-  ;;-----------------
-
-
-  ;;----------------------------------------------------------------------------
-  ;; Org-Mode Hooks
-  ;;----------------------------------------------------------------------------
-  ;;:hook
-
-  ;; Thought I had two but I don't actually have any at all right now...
-
-  ;;-----------------
-  ;; /':hook' section
-  ;;-----------------
-
-
-  ;;----------------------------------------------------------------------------
-  ;; Org-Mode Config (Post-Load)
-  ;;----------------------------------------------------------------------------
-  :config
-
-  ;; Change some colors.
-  (require 'with)
-  (with-feature 'zenburn-theme
-    (zenburn-with-color-variables
-      ;; I don't like green in these as it confuses me with the "DONE" etc
-      ;; flags, and I apparently like having my level 2 headings set to DONE and
-      ;; it was exactly the same color as far as my eyes could tell.
-      (set-face-foreground 'org-level-1 zenburn-orange)
-      (set-face-foreground 'org-level-2 zenburn-blue-1)
-      (set-face-foreground 'org-level-3 zenburn-yellow-2)
-      (set-face-foreground 'org-level-4 zenburn-cyan)
-      (set-face-foreground 'org-level-5 zenburn-red-4)
-      (set-face-foreground 'org-level-6 zenburn-blue-4)
-      ;; these get a bit weird but we're really super deeper than I've been
-      (set-face-foreground 'org-level-7 zenburn-cyan)
-      (set-face-foreground 'org-level-8 zenburn-yellow-2)
-      ;; and after 8 it repeats from 1
-      ))
-
   ;;------------------------------------
   ;; /':config' section - nothing after.
   ;;------------------------------------
   )
 
 
-;; TODO: rest of these into the use-package as appropriate.
-
 ;;------------------------------------------------------------------------------
-;; Making org-mode pretty
+;; Org-Mode Headline Bullets: (Making Org-Mode Pretty)
 ;;------------------------------------------------------------------------------
 
 ;; Display the titles with nice unicode bullets instead of the text ones.
 (use-package org-bullets
   :after org
+  :demand t
   :hook (org-mode . org-bullets-mode)
 
   :custom
@@ -334,63 +342,14 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Org-Mode Functions & Misc
+;; Org-Mode Indent: (Making Org-Mode Pretty)
 ;;------------------------------------------------------------------------------
-
-;; TODO: set these to spydez/{dir,file}/org/something consts if defined
-;; (setq org-directory "~/personal")
-;; (setq org-default-notes-file "~/personal/organizer.org") ;; work.org file?
-
-;; This makes it easier to add links from outside
-;; (e.g. clipboard from browser, C-l, copy/paste).
-;; Trial [2019-01-30]
-(defun spydez/yank-more ()
-  (interactive)
-  (insert "[[")
-  (yank)
-  (insert "][more]]"))
-;; Do I want a key bound for this?
-;;(global-set-key (kbd "<f6>") 'spydez/yank-more)
-
-
-;; Editing the Org tree
-;;   "I often cut and paste subtrees. This makes it easier to cut something and
-;; paste it elsewhere in the hierarchy."
-;;   - Sacha, probably.
-;; TODO: trial this
-;; (with-eval-after-load 'org
-;;      (bind-key "C-c k" 'org-cut-subtree org-mode-map)
-;;      (setq org-yank-adjusted-subtrees t))
-
-
-;; Strike through DONE headlines?
-;; http://pages.sachachua.com/.emacs.d/Sacha.html#orga092ba0
-;; TODO: try it out? Hopefully with a zenburn face?
-;;
-;; I wanted a quick way to visually distinguish DONE tasks from tasks I still need to do. This handy snippet from the Emacs Org-mode mailing list does the trick by striking through the headlines for DONE tasks.
-;;
-;; (setq org-fontify-done-headline t)
-;; (custom-set-faces
-;;  '(org-done ((t (:foreground "PaleGreen"
-;;                  :weight normal
-;;                  :strike-through t))))
-;;  '(org-headline-done
-;;             ((((class color) (min-colors 16) (background dark))
-;;                (:foreground "LightSalmon" :strike-through t)))))
-
-
-;; send to bottom of list?
-;; http://pages.sachachua.com/.emacs.d/Sacha.html#org28359a7
-
-
-;; encryption
-;; http://pages.sachachua.com/.emacs.d/Sacha.html#org712e999
-;; org-crypt
 
 ;; Enable org-indent-mode for a cleaner outline view.
 ;; https://orgmode.org/manual/Clean-view.html
 (use-package org-indent
   :ensure nil
+  :demand t
   :after org
 
   ;; By default, org-indent-mode produces an indicator "Ind" in the modeline.
@@ -473,29 +432,29 @@
   :config
   ;; This does double the work on the org-indent-strings array, but meh.
   (require 'cl-lib)
-  (defun spydez/org-indent-prefix-munger ()
+  (defun spydez/advice/org-indent/prefix-munger ()
     "Initialize the indentation strings so the motherfucking
 `org-indent-boundary-char' is set with a proper face you god damn
 savages."
-  (setq org-indent--text-line-prefixes
-        (make-vector org-indent--deepest-level nil))
-  (dotimes (n org-indent--deepest-level)
-    (let ((indentation (if (<= n 1) 0
-       (* (1- org-indent-indentation-per-level)
-          (1- n)))))
-      ;; Text line prefixes.
-      (aset org-indent--text-line-prefixes
-            n
-            ;; spydez change: concat org-indent-boundary-char inside
-            ;;   of org-add-props, not outside.
-            (org-add-props (concat
-                            (make-string (+ n indentation) ?\s)
-                            (and (> n 0)
-                                 (char-to-string org-indent-boundary-char)))
-                nil 'face 'org-indent)
-            ))))
+    (setq org-indent--text-line-prefixes
+          (make-vector org-indent--deepest-level nil))
+    (dotimes (n org-indent--deepest-level)
+      (let ((indentation (if (<= n 1) 0
+                           (* (1- org-indent-indentation-per-level)
+                              (1- n)))))
+        ;; Text line prefixes.
+        (aset org-indent--text-line-prefixes
+              n
+              ;; spydez change: concat org-indent-boundary-char inside
+              ;;   of org-add-props, not outside.
+              (org-add-props (concat
+                              (make-string (+ n indentation) ?\s)
+                              (and (> n 0)
+                                   (char-to-string org-indent-boundary-char)))
+                  nil 'face 'org-indent)
+              ))))
   (advice-add 'org-indent--compute-prefixes
-              :after #'spydez/org-indent-prefix-munger)
+              :after #'spydez/advice/org-indent/prefix-munger)
   ;; Thank the fuckin' Lord of Sarcasm and Brick Walls. Fuck.
   ;;---
 
@@ -504,6 +463,62 @@ savages."
 
   ;; TODO-DOC: Document these failure shenanigans in an issue.org to get 'em outta here?
   )
+
+
+
+;;------------------------------------------------------------------------------
+;; Org-Mode Functions & Misc
+;;------------------------------------------------------------------------------
+
+;; TODO: set these to spydez/{dir,file}/org/something consts if defined
+;; (setq org-directory "~/personal")
+;; (setq org-default-notes-file "~/personal/organizer.org") ;; work.org file?
+
+;; This makes it easier to add links from outside
+;; (e.g. clipboard from browser, C-l, copy/paste).
+;; Trial [2019-01-30]
+(defun spydez/yank-more ()
+  (interactive)
+  (insert "[[")
+  (yank)
+  (insert "][more]]"))
+;; Do I want a key bound for this?
+;;(global-set-key (kbd "<f6>") 'spydez/yank-more)
+
+
+;; Editing the Org tree
+;;   "I often cut and paste subtrees. This makes it easier to cut something and
+;; paste it elsewhere in the hierarchy."
+;;   - Sacha, probably.
+;; TODO: trial this
+;; (with-eval-after-load 'org
+;;      (bind-key "C-c k" 'org-cut-subtree org-mode-map)
+;;      (setq org-yank-adjusted-subtrees t))
+
+
+;; Strike through DONE headlines?
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#orga092ba0
+;; TODO: try it out? Hopefully with a zenburn face?
+;;
+;; I wanted a quick way to visually distinguish DONE tasks from tasks I still need to do. This handy snippet from the Emacs Org-mode mailing list does the trick by striking through the headlines for DONE tasks.
+;;
+;; (setq org-fontify-done-headline t)
+;; (custom-set-faces
+;;  '(org-done ((t (:foreground "PaleGreen"
+;;                  :weight normal
+;;                  :strike-through t))))
+;;  '(org-headline-done
+;;             ((((class color) (min-colors 16) (background dark))
+;;                (:foreground "LightSalmon" :strike-through t)))))
+
+
+;; send to bottom of list?
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org28359a7
+
+
+;; encryption
+;; http://pages.sachachua.com/.emacs.d/Sacha.html#org712e999
+;; org-crypt
 
 ;; A function that reformats the current buffer by regenerating the text from
 ;; its internal parsed representation.
@@ -562,21 +577,10 @@ savages."
 ;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/#literate-programming-using-org-babel
 ;;   - Also has some UML stuff.
 
-;; Fontify code block by their native mode? Yes please.
-(setq org-src-fontify-natively t)
-
-;;   "In principle this makes it so that indentation in src blocks works as in
-;; their native mode, but in my experience it does not always work reliably. For
-;; full proper indentation, always edit the code in a native buffer by pressing
-;; "C-c '"."
-;;   - https://zzamboni.org/post/my-emacs-configuration-with-commentary/#literate-programming-using-org-babel
-(setq org-src-tab-acts-natively t)
-
 ;; Automatically runs org-babel-tangle upon saving any org-mode buffer, which
 ;; means the resulting files will be automatically kept up to date.
 ;; (org-mode . (lambda () (add-hook 'after-save-hook 'org-babel-tangle
 ;;                                  'run-at-end 'only-in-org-mode)))
-;; Need to translate out of use-package format.
 
 ;; Also add hooks to measure and report how long the tangling took.
 ;; (org-babel-pre-tangle  . (lambda ()
@@ -585,7 +589,6 @@ savages."
 ;;                            (message "org-babel-tangle took %s"
 ;;                                            (format "%.2f seconds"
 ;;                                                    (float-time (time-since zz/pre-tangle-time))))))
-;; Need to translate out of use-package format.
 
 
 ;;------------------------------------------------------------------------------
@@ -595,8 +598,11 @@ savages."
 ;; https://arenzana.org/2019/04/emacs-org-mode/#orgeaaf198
 ;; https://github.com/bastibe/org-journal
 ;; Trial: [2019-08-07]
+;;   - [2019-08-19]: Working out pretty well for vague summary/todo of
+;;     day's tasks.
 (use-package org-journal
   :after org
+  :demand t
 
   ;;-----
   :init
@@ -627,11 +633,12 @@ savages."
   ;; Top dir for org-journals.
   ;; NOTE: Placeholder! Should get overridden in <secrets>/finalize-domain.el
   ;; or somewhere.
-  ;; TODO: a default for spydez/dir/org-docs? And spydez/dir-doc-save-common?
+  ;; TODO: a default for spydez/dir/org-docs? And spydez/dir/doc-save-common?
   (org-journal-dir (spydez/path/to-dir spydez/dir/home "logbook"))
 
-  ;; tack day name onto our format
-  ;; TODO: put in date-and-time.el with other formats?
+  ;; Tack day name onto our format for the org-journal headline.
+  ;; Could put in date-and-time.el with other formats, but I don't think it's a
+  ;; common enough thing for that right now...
   (org-journal-date-format (concat spydez/datetime/format/yyyy-mm-dd ", %A"))
   ;; This can be a function if more is wanted. E.g. inserting new header text
   ;; into empty files.
@@ -661,6 +668,8 @@ savages."
 ;; Org has a whole bunch of optional modules.
 ;; These are the ones I'm currently experimenting with.
 ;; Or, well, if I was, they would be here...
+;; Or, well, if I was, I would move this into the 'use-package org-mode' and
+;; they would be there.
 ;; (setq org-modules '(org-bbdb
 ;;                     org-gnus
 ;;                     org-drill
@@ -701,7 +710,7 @@ savages."
 
 
 ;;------------------------------------------------------------------------------
-;; Publishing
+;; Publishing / Exporting
 ;;------------------------------------------------------------------------------
 ;; Maybe I'll need some of this in the future...
 ;; But I'm definitely not a horder.
@@ -727,7 +736,9 @@ savages."
 ;;
 ;; This snippet turns - [X] into ☑ and - [ ] into ☐, but leaves [-] alone.
 ;;   - wish it set [-]...
-;; TODO: make that wish come true.
+;; TODO: If I start exporting to HTML, will my pretty unicode checkboxes
+;; persist, or do I need to do something similar to this? If something similar,
+;; set one up for translating '[-]' to the boxed-box thing.
 ;;
 ;; (setq org-html-checkbox-type 'unicode)
 ;; (setq org-html-checkbox-types
@@ -740,11 +751,6 @@ savages."
 ;; Org-Mode & Links
 ;;------------------------------------------------------------------------------
 
-;; Quick Links
-;; (setq org-link-abbrev-alist
-;;       '(("google" . "http://www.google.com/search?q=")
-;;         ("gmap" . "http://maps.google.com/maps?q=%s")))
-
 ;;   "The following elisp function will take a link around the current point as
 ;; recognised by org-bracket-link-regexp, so either [[Link][Description]] or
 ;; [[Link]], and replace it by Description in the first case or Link in the
@@ -752,7 +758,8 @@ savages."
 ;; From https://emacs.stackexchange.com/a/10714/11843
 ;; original name: afs/org-replace-link-by-link-description
 (defun spydez/org-replace-link-by-link-description ()
-  "Replace an org link by its description or if empty its address"
+  "Replace an org link by its description or if empty its address.
+AKA 'unlink this plz'."
   (interactive)
   (if (org-in-regexp org-bracket-link-regexp 1)
       (let ((remove (list (match-beginning 0) (match-end 0)))
@@ -880,6 +887,8 @@ savages."
 ;; The prettifying of checkboxes, and the prettifying/bulleting of simple lists
 ;; ...doesn't work well. Steal from Org-Bullets mode? Patch and send upstream
 ;; if hunky dory?
+;;   - [2019-08-19] - Think I made the pretty shenanigans reliable... I hope.
+
 
 ;;------------------------------------------------------------------------------
 ;; Provide this.
