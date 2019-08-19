@@ -177,34 +177,30 @@
 ;;     (jump-to-register :magit-fullscreen)))
 
 (use-package magit
+
+  ;;-----
+  :custom
+  ;;-----
+
+  ;; Show word differences, not just "line has changed".
+  ;; https://emacs.stackexchange.com/questions/43643/magit-how-to-show-differences-within-lines
+  (magit-diff-refine-hunk 'all
+                          "Show word differences, not just 'line has changed'.")
+
+  ;;-----
   :config
-  ;;---
-  ;; git setup
-  ;;---
+  ;;-----
+
   ;; NOTE: See spydez/tools/external for current git/diff check.
   ;;; If on windows and don't currently know where git is, check spydez/exe/git-path.
   ;;; It may be the answer, or maybe we just complain.
   ;;; todo: Change to check this (executable-find "git")
   ;;;   - in finalize-sanity (also sanity for "diff")
   ;; (when (and (equal system-type 'windows-nt)
-  ;; 	     (not (boundp 'magit-git-executable)))
+  ;;         (not (boundp 'magit-git-executable)))
   ;;   (if (boundp 'spydez/exe/git-path)
-  ;; 	(setq magit-git-executable spydez/exe/git-path)
+  ;;    (setq magit-git-executable spydez/exe/git-path)
   ;;     (error "init/configure-version-control:: use-package magit: no git path known?")))
-
-  ;;---
-  ;; Diff options
-  ;;---
-
-  ;; TODO: not working currently. Does my external `diff` not know inline diffing?
-  ;; Show word differences, not just "line has changed".
-  ;; https://emacs.stackexchange.com/questions/43643/magit-how-to-show-differences-within-lines
-  (setq magit-diff-refine-hunk 'all
-	      magit-diff-section-arguments '("--ignore-space-change"))
-  ;; but for that to work I need it to find the diff exe...
-  ;;(executable-find "diff")
-  ;;(executable-find "git")
-  ;; So we set that up in the spydez/tools/external bootstrap.
 
   ;; TODO: Consider this. But the performance warnings seem a bit... dire.
   ;; "Function: magit-after-save-refresh-status
@@ -217,11 +213,13 @@
   ;; function to that hook."
   ;;   - https://magit.vc/manual/magit/Automatic-Refreshing-of-Magit-Buffers.html
 
+  ;;-----
   :bind
+  ;;-----
   ;; some defaults: https://www.emacswiki.org/emacs/VersionControl
   ;; I want to overwrite some of those, I think? magit-status is superior to vc-directory.
   ;; Or should git be the VC, and magit be its own special thing? Going with overwrite for now.
-  ;; todo: consider "C-x g" for magit-status? 
+  ;; todo: consider "C-x g" for magit-status?
   (("C-x v d" . magit-status)
    ("C-x v p" . magit-push)
    ;; ("C-x v C-d" . my/magit-status-in-directory)
@@ -235,25 +233,27 @@
   ;; Disabled: [2019-02-15]
   ;;   A brand new magit version dropped magit-popup and created Transient.
   ;;   https://www.reddit.com/r/emacs/comments/aqp6jc/transient_released_magitpopup_successor/
-  ;; TODO: wait a bit, update, re-enable?
+
+  ;; Wait a bit, update, re-enable?
+  ;;   - Well I don't really need this yet for anything, so... just wait.
   )
 
-;; From http://pages.sachachua.com/.emacs.d/Sacha.html#magit
-;; From http://endlessparentheses.com/merging-github-pull-requests-from-emacs.html
-(defun endless/load-gh-pulls-mode ()
-  "Start `magit-gh-pulls-mode' only after a manual request."
-  (interactive)
-  (require 'magit-gh-pulls)
-  (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls)
-  (magit-gh-pulls-mode 1)
-  (magit-gh-pulls-reload))
+;; ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#magit
+;; ;; From http://endlessparentheses.com/merging-github-pull-requests-from-emacs.html
+;; (defun endless/load-gh-pulls-mode ()
+;;   "Start `magit-gh-pulls-mode' only after a manual request."
+;;   (interactive)
+;;   (require 'magit-gh-pulls)
+;;   (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls)
+;;   (magit-gh-pulls-mode 1)
+;;   (magit-gh-pulls-reload))
 
 
 ;;------------------------------------------------------------------------------
-;; subversion? I do still use this...
+;; Subversion? I do still use this...
 ;;------------------------------------------------------------------------------
 
-;; todo: which should take precedence if in a svn repo that I also made a git repo.
+;; TODO: which should take precedence if in a svn repo that I also made a git repo.
 
 ;; magit's `git svn' extension:
 ;; https://github.com/magit/magit-svn
