@@ -17,30 +17,39 @@
 :VISIBILITY: all
 :END:
 
-  - [ ] To Do: [0/8]
-    - [ ] fill-*
-      - fill-paragraph to a better keybind than M-q?
-      - fill-region to a keybind?
-      - key-chord hydra for fill-* commands?
+  - [-] To Do: [4/10]
+    - [ ] TODO: move most of org-mode stuff to :config or :hook as appropriate
+      - [ ] Put hook into :init as its own defun
     - [ ] Is there a command to list out applicable yasnippets?
     - [ ] ag, ack, gack, gawk, your mom, grep, something?
-    - [ ] org-journal - try it out?
-      - https://github.com/bastibe/org-journal
-      - try w/ encryption (fix gpg again again... again... -_-)
-        - https://arenzana.org/2019/04/emacs-org-mode/
     - [ ] a per-device way of saying "off", "minimum", or "full" for features?
       - e.g. want full C# dev env at work, but minimum at home? Set it that way and
         language server, other external tools won't bother - just code hilighting maybe.
       - e.g.2. want rust or w/e flavor of the month catches my eye at home but
         none of it at work
     - [ ] configure-crypt needs babying... again... (again... (again?..))
-    - [ ] remove references/?
+      - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
+        - https://arenzana.org/2019/04/emacs-org-mode/
+    - [ ] default-directory var for pretending a file is elsewhere
+      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eivtuo4
+    - [X] org-mode: Does the pretty boxes thing only work on this because it only
+      works on the 1st org-mode file/buffer?
+      - was a derived major mode thing
+      - [X] pretty boxes
+      - [X] Same for the pretty bullets... why so inconsistent?
+      - [X] Try the font-lock thing for bullets in the hook function maybe if
+           :config doesn't work?
+    - [X] org-journal - try it out?
+      - https://github.com/bastibe/org-journal
+    - [X] remove references/?
       - Or put those files in repo... useless files now when not on whatever comp I downloaded em on.
       - ref files were for files that were/are very useful on their own and so preserving them for
         a decade or whatever from now would be useful.
         - Some of my old .emacs is just references to dead web links... not useful.
-    - [ ] default-directory var for pretending a file is elsewhere
-      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eivtuo4
+    - [X] fill-*
+      - fill-paragraph to a better keybind than M-q?
+      - fill-region to a keybind?
+      - [X] key-chord hydra for fill-* commands?
 
 
 Tabs:

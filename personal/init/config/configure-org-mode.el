@@ -170,12 +170,18 @@
                       ;;   - ◎ - 25CE bullseye
                       ;;   - ☯ - 262F yin-yang
                       ))
-              (prettify-symbols-mode 1)))
+              (prettify-symbols-mode 1)
 
-  ;; Show list markers with a middle dot instead of the original character.
-  (font-lock-add-keywords 'org-mode
-                          '(("^ *\\([-]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+              ;; Show list markers with a middle dot instead of the
+              ;; original character.
+              (font-lock-add-keywords
+               nil ;; 'org-mode - some org-mode stuff (e.g. org-journal) is a
+                   ;; derived major mode and thus needed either more than just
+                   ;; `org-mode', or to be `nil' and put in this hook.
+               '(("^ *\\([-]\\) "
+                  (0 (prog1 () (compose-region (match-beginning 1)
+                                               (match-end 1) "•"))))))
+              ))
 
   ;; TODO: try this out?
   ;;   org custom id helpers
@@ -314,7 +320,17 @@
 ;; Display the titles with nice unicode bullets instead of the text ones.
 (use-package org-bullets
   :after org
-  :hook (org-mode . org-bullets-mode))
+  :hook (org-mode . org-bullets-mode)
+
+  :custom
+  (org-bullets-bullet-list
+   ;; default: '("◉" "○" "✸" "✿")
+   '("◆" "♦" "●" "○")
+    ;; ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
+    ;;; Small
+    ;; ► • ★ ▸
+    )
+  )
 
 
 ;;------------------------------------------------------------------------------
