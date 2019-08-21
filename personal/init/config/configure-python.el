@@ -62,6 +62,8 @@
   ;;   - "Can't guess" complaint didn't stop.
   (python-indent-offset spydez/dev-env/tab/normal "Set indent to tab-width.")
 
+  (python-fill-docstring-style 'symmetric)
+
 
   ;;-----
   :config
@@ -111,6 +113,7 @@
 
 ;; python-mode itself comes with emacs now.
 ;; (setq python-fill-docstring-style 'django)
+;; (setq python-fill-docstring-style 'symmetric)
 
 ;; Django has several modes for different parts:
 ;; https://code.djangoproject.com/wiki/Emacs

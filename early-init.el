@@ -60,21 +60,22 @@
 
 ;; Funcs, vars for my debugging/warning messages.
 (require 'zeroth-debug)
+;; debug helpers now loaded - including `spydez/info/require'
 
 ;; Funcs, vars for some very early strings/hashing.
-(require 'zeroth-funcs)
+(spydez/info/require 'zeroth-funcs)
 
 
 ;;------------------------------------------------------------------------------
 ;; Step... 0.5? Domains, Master List, Per Computer Stuff.
 ;;------------------------------------------------------------------------------
 ;; Need to know something about my boots so I can pull the right straps.
-(spydez/info/message-if spydez/warning/current-type "early-init.el... Zeroth step.")
+(spydez/info/init-message "early-init.el... Zeroth step.")
 
 ;;---
 ;; Domain & System Setup
 ;;---
-(require 'zeroth-domains)
+(spydez/info/require 'zeroth-domains)
 
 
 ;;---
@@ -82,13 +83,13 @@
 ;;---
 
 ;; not in zeroth directory - in dev instead 
-(require 'master-list)
+(spydez/info/require 'master-list)
 
 
 ;;---
 ;; Directories
 ;;---
-(require 'zeroth-directories)
+(spydez/info/require 'zeroth-directories)
 
 ;;---
 ;; Load Path: The Basics

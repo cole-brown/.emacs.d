@@ -18,10 +18,18 @@
 :VISIBILITY: all
 :END:
 
-  - [ ] To Do: [0/9]
-    - [ ] Magit - don't ignore whitespace in commit/diff
+  - [-] To Do: [1/11]
+    - [ ] different whitespace-style list for org-mode
+      - [ ] First stab failed. Try again.
     - [ ] wsbutler - ignore line at point completely
+      - Something fucky is happening and my advice function only works if
+        there's a message to slow it down...?
+    - [ ] null/temp custom.el
+      - Will package-selected-packages like this?
+      - [[https://www.reddit.com/r/emacs/comments/9rrhy8/emacsers_with_beautiful_initel_files_what_about/e8jaxxs?utm_source=share&utm_medium=web2x][temp file for custom]]
     - [ ] ag, ack, gack, gawk, your mom, grep, something?
+      - ripgrep https://github.com/BurntSushi/ripgrep
+        - w/ deadgrep? https://github.com/Wilfred/deadgrep
     - [ ] Is there a command to list out applicable yasnippets?
     - [ ] configure-crypt needs babying... again... (again... (again?..))
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
@@ -37,6 +45,7 @@
         language server, other external tools won't bother - just code hilighting maybe.
       - e.g.2. want rust or w/e flavor of the month catches my eye at home but
         none of it at work
+    - [X] Magit - don't ignore whitespace in commit/diff
 
 
 Tabs:

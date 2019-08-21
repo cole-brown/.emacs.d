@@ -76,6 +76,11 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Warning-Basics.html#Wa
 (defconst spydez/debug/current-type '(spydez debug general))
 (defconst spydez/info/current-type '(spydez info))
 
+;; just more pretty
+(defconst spydez/info/current-indent 0)
+(defconst spydez/info/init-indent 1)
+(defconst spydez/info/require-indent 2)
+
 ;; TODO: all these types... I'm not using them much.
 ;; Should I make them take a symbol or list, then append that to their (current) defaults?
 
@@ -102,6 +107,34 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Warning-Basics.html#Wa
     (when (spydez/debugging-p) (apply #'spydez/debug/message-always type message args))))
 ;;(spydez/info/message-if nil "My spydez/info/message-if test: %s %s" '(testing list) 'test-symbol)
 
+;;-----
+;; Init Sequence Messages.
+;;-----
+;; These are a bit special as they are considered info, but default to the /warning/ type list, as
+;; that is kept clean and up to date through our init.
+
+(defun spydez/info/init-sequence (indent type message &rest args)
+  "Print helpful debug message (if spydez/debugging-p) with init sequence formatting."
+  (when (spydez/debugging-p)
+    (let* ((indent (or indent spydez/info/current-indent))
+           (indent-str (make-string indent ?-))
+           (inject-message (format "%s> %s: %s" indent-str spydez/warning/current-type message)))
+      (apply 'message inject-message args))))
+;; (spydez/info/init-sequence nil nil "My spydez/info/message-if test: %s %s" '(testing list) 'test-symbol)
+;; (spydez/info/init-sequence 4 nil "My spydez/info/message-if test: %s %s" '(testing list) 'test-symbol)
+
+(defun spydez/info/init-message (message &rest args)
+  "Print helpful spydez/info/init-sequence message (if spydez/debugging-p) at init-indent."
+  (apply #'spydez/info/init-sequence spydez/info/init-indent nil message args))
+;; (spydez/info/init-message "start init: %s %s" '(testing list) 'test-symbol)
+
+(defun spydez/info/require (symbol &optional filename noerror)
+  "Print helpful spydez/info/init-sequence message (if spydez/debugging-p) at
+require-indent. And then (require 'symbol)."
+  (spydez/info/init-sequence spydez/info/require-indent nil "(require '%s)" symbol)
+  (require symbol filename noerror))
+;; (spydez/info/require 'asdf nil 'noerror)
+;; (spydez/info/require 'cl)
 
 ;;------------------------------------------------------------------------------
 ;; TODOs
