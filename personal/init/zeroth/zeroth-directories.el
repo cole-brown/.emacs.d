@@ -31,7 +31,7 @@ components; they are expected to be valid."
       (setq out-path (concat (file-name-as-directory out-path) ;; assume we had a dir all along?
                              component)) ;; and add the next component on
       )))
-;; (spydez/path/to-file spydez/dir/home "personal" "something.txt" "foo")
+;; (spydez/path/to-file spydez/dir/home "personal" "something.exe" "foo.txt")
 
 
 (defun spydez/path/to-dir (parent &rest path)
