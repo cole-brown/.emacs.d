@@ -37,6 +37,7 @@
 ;; Only removes whitespace from regions you've changed.
 ;; Trial: [2019-07-30 Tue]
 (use-package ws-butler
+  :demand t
 
   ;;----------
   :custom
@@ -64,6 +65,22 @@
 (use-package whitespace
   :ensure nil
   :demand t
+
+  ;;----------
+  :init
+  ;;----------
+  (defun spydez/hook/whitespace-mode/org-mode ()
+    "I like some whitespace-mode stuff in org-mode, but want less
+than other modes."
+    ;; make a local copy of whitespace-style we can modify and...
+    (set (make-local-variable 'whitespace-style)
+         ;; ...set it as old one with removed 'too-long line' highlighting
+         (remove 'lines-tail whitespace-style)))
+
+  ;;----------
+  :hook
+  ;;----------
+  (org-mode . spydez/hook/whitespace-mode/org-mode)
 
 ;; ws-butler Trial: [2019-07-30 Tue]
 ;;   ;;----------
