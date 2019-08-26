@@ -36,6 +36,22 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Helpful - "A better Emacs *help* buffer"
+;;------------------------------------------------------------------------------
+(use-package helpful
+  ;; replace emacs' default help bindings with helpful's
+  :bind
+  (("C-h f" . helpful-callable)
+   ("C-h v" . helpful-variable)
+   ("C-h k" . helpful-key)
+   ("C-h o" . helpful-symbol)
+   ;; replaces `finder-by-keyword' but I've never used that...
+   ("C-h p" . helpful-at-point)
+   ;; replaces `describe-coding-system' but I've never used that...
+   ("C-h C" . helpful-command)))
+
+
+;;------------------------------------------------------------------------------
 ;; Helpful Hydras
 ;;------------------------------------------------------------------------------
 

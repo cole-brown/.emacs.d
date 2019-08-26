@@ -4,6 +4,36 @@
 #+DATE:      [2019-03-05 Tue]
 
 
+* Packages to Check Out Maybe
+
+Eval In REPL:
+  - https://github.com/kaz-yos/eval-in-repl
+  - elisp, python, shell, buch of languages I don't know...
+
+Save/switch between window configs.
+  - kind of a tiling window manager
+  - "Eyebrowse"
+  - https://github.com/wasamasa/eyebrowse
+
+Auto-balance window width/layout:
+  - "Zoom"
+  - https://github.com/cyrus-and/zoom
+
+Stripe Buffer:
+  - different background colors for even and odd lines
+  - Can have 3rd color for current line when combined w/ hl-line-mode
+  - https://github.com/sabof/stripe-buffer
+  - Looks good for dired-mode.
+
+Page Break Lines:
+  - https://github.com/purcell/page-break-lines
+  - Don't think I see page breaks all that often/at all.
+    - But it does look nicer.
+
+Company-Jedi:
+  - python auto-complete package Jedi for Company package users.
+  - https://github.com/syohex/emacs-company-jedi
+
 * Soon™ things [0/2]
 
  - [ ] commands/hydra for putting personalized markers down (TODO, "Left off here.", etc)
@@ -18,15 +48,14 @@
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [1/11]
-    - [ ] different whitespace-style list for org-mode
-      - [ ] First stab failed. Try again.
+  - [-] To Do: [4/13]
+    - [ ] something subtler than magenta for the too-long lines from whitespace-mode?
+      - Something that works well with comments (green) and normal (white)
     - [ ] wsbutler - ignore line at point completely
       - Something fucky is happening and my advice function only works if
         there's a message to slow it down...?
-    - [ ] null/temp custom.el
-      - Will package-selected-packages like this?
-      - [[https://www.reddit.com/r/emacs/comments/9rrhy8/emacsers_with_beautiful_initel_files_what_about/e8jaxxs?utm_source=share&utm_medium=web2x][temp file for custom]]
+      - Complicated. See [[file:issues/whitespace-and-butler/bug-info.el::;;%20-*-%20mode:%20emacs-lisp;%20lexical-binding:%20t%20-*-][issue]] and [[file:~/.emacs.d/personal/init/config/configure-whitespace.el::;;%20Error%20seems%20a%20layer%20deeper%20in%20applying%20`buffer-display-table'%20to%20buffer...][config]]
+      - I could just have it skip over any EOL whitespace checking on point's line if point's in the whitespace maybe? That sounds complicated...
     - [ ] ag, ack, gack, gawk, your mom, grep, something?
       - ripgrep https://github.com/BurntSushi/ripgrep
         - w/ deadgrep? https://github.com/Wilfred/deadgrep
@@ -45,7 +74,15 @@
         language server, other external tools won't bother - just code hilighting maybe.
       - e.g.2. want rust or w/e flavor of the month catches my eye at home but
         none of it at work
+    - [X] use-package helpful
+    - [X] null/temp custom.el
+      - Will package-selected-packages like this?
+      - [[https://www.reddit.com/r/emacs/comments/9rrhy8/emacsers_with_beautiful_initel_files_what_about/e8jaxxs?utm_source=share&utm_medium=web2x][temp file for custom]]
+        - No. Trying `null-device' instead.
+          - https://www.reddit.com/r/emacs/comments/9rrhy8/emacsers_with_beautiful_initel_files_what_about/e8juc8v
     - [X] Magit - don't ignore whitespace in commit/diff
+    - [X] different whitespace-style list for org-mode
+      - [X] First stab failed. Try again.
 
 
 Tabs:
@@ -74,6 +111,20 @@ Soon™ things?
     - [ ] make treemacs issue report?
     - [ ] make no-littering issue or fix w/ pull request?
     - https://github.com/dzop/emacs-zmq
+
+* Packages to Consider, but I Don't Need Them Now
+
+** C++
+
+Reddit text post where OP has good info/screenshots on a good
+C++ dev environment with:
+  - LSP
+  - LSP UI
+  - Company LSP
+  - CCLS
+  - CMAKE
+  - Google C Style
+https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
 
 * DONE [2019-08-19] A list of things that are done now
 CLOSED: [2019-08-19 Mon 12:34]
@@ -225,7 +276,7 @@ https://www.reddit.com/r/emacs/comments/3kqt6e/2_easy_little_known_steps_to_spee
 https://www.emacswiki.org/emacs/OptimizingEmacsStartup
 https://www.emacswiki.org/emacs/ProfileDotEmacs
 
-* packages to consider
+* (old) packages to consider
 
 ** Dashboard
 
@@ -270,9 +321,3 @@ https://oremacs.com/2015/01/17/setting-up-ediff/
 (use-package helm-ag)
 
 (use-package helm-git-grep)
-
-** page break line
-
-https://github.com/purcell/page-break-lines
-
-Don't think I see page breaks all that often/at all.

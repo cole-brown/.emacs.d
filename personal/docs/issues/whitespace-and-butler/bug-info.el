@@ -103,3 +103,60 @@
 ;;   :ensure nil
 ;;   :demand t
 ;;   (global-whitespace-mode 1))
+
+
+;;------------------------------------------------------------------------------
+;; Review of whitespace.el
+;;------------------------------------------------------------------------------
+;; ;; only called by `whitespace-turn-on'
+;; (defun whitespace-display-char-on ()
+;;   "Turn on character display mapping."
+;;   (when (and whitespace-display-mappings
+;;              (whitespace-style-mark-p))
+;;     (let (vecs vec)
+;;       ;; Remember whether a buffer has a local display table.
+;;       (unless whitespace-display-table-was-local
+;;         (setq whitespace-display-table-was-local t)
+;;         (unless (or whitespace-mode global-whitespace-mode)
+;;           (setq whitespace-display-table
+;;                 (copy-sequence buffer-display-table)))
+;;         ;; Assure `buffer-display-table' is unique
+;;         ;; when two or more windows are visible.
+;;         (setq buffer-display-table
+;;               (copy-sequence buffer-display-table)))
+;;       (unless buffer-display-table
+;;         (setq buffer-display-table (make-display-table)))
+;;       (dolist (entry whitespace-display-mappings)
+;;         ;; check if it is to display this mark
+;;         (when (memq (car entry) whitespace-style)
+;;           ;; Get a displayable mapping.
+;;           (setq vecs (cddr entry))
+;;           (while (and vecs
+;;                       (not (whitespace-display-vector-p (car vecs))))
+;;             (setq vecs (cdr vecs)))
+;;           ;; Display a valid mapping.
+;;           (when vecs
+;;             (setq vec (copy-sequence (car vecs)))
+;;             ;;;; at this point, `vec' is one vec with a char or 2 chars for
+;;             ;;;; whatever is being replaced
+;;             ;; NEWLINE char
+;;             (when (and (eq (cadr entry) ?\n) ;;;; looking at a newline replacement and...
+;;                        (memq 'newline whitespace-active-style)) ;;;; want to replace it?
+;;               ;; Only insert face bits on NEWLINE char mapping to avoid
+;;               ;; obstruction of other faces like TABs and (HARD) SPACEs
+;;               ;; faces, font-lock faces, etc.
+;;               ;;;; ...do this twice... (only newlines still) because vec for newline is 2 chars
+;;               (dotimes (i (length vec))
+;;                 (or (eq (aref vec i) ?\n) ;;;; don't do a thing if looking at \n char in `vec'
+;;                     ;;;; if we are looking at the non-`\n` char, set it to a new... "glyph-code".
+;;                     (aset vec i
+;;                           ;;;; turns the normal '$' char into a glyph code of '$' in `whitespace-newline face.
+;;                           (make-glyph-code (aref vec i)
+;;                                            whitespace-newline)))))
+;;             ;; Display mapping
+;;             ;;;; now `vec' is [glyph ?\n] for newline
+;;             ;;;; this sets index ?\n (which is int 10) to the [glyph ?\n]
+;;             ;;;; so... this does nothing to actually replace shit, and the bug
+;;             ;;;; is in emacs elsewhere?
+;;             ;;;;   buffer-display-table application to the buffer code somewhere
+;;             (aset buffer-display-table (cadr entry) vec)))))))

@@ -156,6 +156,24 @@
 ;;------------------------------------------------------------------------------
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Saving-Customizations.html
 
+;; TODO: Move these custom-file methods to an issue org file and out of my init.
+
+;;---Method 3: Set custom-file Name But Never Load?..
+;; https://www.reddit.com/r/emacs/comments/9rrhy8/emacsers_with_beautiful_initel_files_what_about/e8juc8v
+;; Move all the customizations to a file that is never loaded.
+
+;; This would be nice, but unfortunately emacs doesn't like it...
+;;   custom-initialize-reset: Renaming: Invalid argument, \
+;;     c:/path/to/tmpasnG58, c:/path/to/NUL
+;; (setq custom-file null-device)
+
+;; Use no-littering (so we at least know where it is) and just don't load it.
+(setq custom-file (no-littering-expand-etc-file-name "custom.ignored.el"))
+;; DO NOT LOAD.
+;;---/Method 3
+
+
+;;---Method 2: Use It But Try To Ignore It
 ;; Custom file is annoying, especially because it gathers everything into one
 ;; weird place. Also because it insists on having only one place (when it
 ;; saves). So some stuff I want early (so custom.el has to be early), and other
@@ -173,8 +191,11 @@
 ;; So this is a try at that. Have no-littering squirrel it away somewhere I
 ;; don't care and hope weird settings don't creep in and mess things up without
 ;; me noticing.
-(setq custom-file (no-littering-expand-etc-file-name "custom.el"))
-(load custom-file 'noerror)
+;; (setq custom-file (no-littering-expand-etc-file-name "custom.el"))
+;; ;; Avoiding this, as it will 'hide' custom.el more than putting it in
+;; ;; no-littering's etc folder...
+;; ;; (setq custom-file (make-temp-file "custom.el"))
+;; (load custom-file 'noerror)
 
 ;; No-Littering note:
 ;;   They have a suggestion for storing custom file in a no-littering dir, but I
@@ -184,7 +205,10 @@
 ;;   Previously, custom.el was always in my source control. I think this is
 ;; better now as the only settings I had in it as saved (that I didn't init
 ;; myself) were `package-selected-packages' and `custom-safe-themes'.
+;;---/Method 2
 
+
+;;---Method 1: Try To Control It.
 ;;---
 ;; Old Way
 ;;   - Was just below `(require 'bootstrap-debug-early)' in init.el.
@@ -198,7 +222,7 @@
 ;; ;; Possibly move custom-file setting up, and loading down below loading of
 ;; ;; bootstrap-this-late overrides.
 ;; (load custom-file t)
-
+;;---/Method 1
 
 ;;------------------------------------------------------------------------------
 ;; Update/Upgrade Packages Process

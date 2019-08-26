@@ -1,0 +1,728 @@
+#+TITLE:       Move-To-Column Bug
+#+DESCRIPTION: Bug Hunt!
+#+AUTHOR:      Cole Brown
+#+EMAIL:       git@spydez.com
+#+DATE:        [2019-08-26 Mon]
+
+
+* Initial hunt & fails
+
+Tracked down to ws-butler cleaning up current-line and then trying to restore point.
+When whitespace-mode is on, this malfunctions a bit in many circumstances.
+
+Circumstances: a line with only spaces and a newline (cannot be last line in buffer as the newline will be cleared out).
+
+** FAIL 1
+
+  ;;---FAIL 1
+  ;;-----It works if the first long message is there, so I don't know what fuckery is going on.
+  ;; ;; So... ws-butler is just losing a space when trying to do its
+  ;; ;; `ws-butler-keep-whitespace-before-point' thing. One single space. I don't
+  ;; ;; think it's ws-butler. Pretty much any call to (move-to-column N t) where N
+  ;; ;; is > current line's column count (so that spaces should be inserted) will
+  ;; ;; cause it. It's probably due to some stupid setting(s) I didn't set right?
+  ;; ;; Or something that one of the many packages changed? IDK.
+  ;; (defun spydez/advice/ws-butler/keep-whitespace-fix ()
+  ;;   "Un-lose the one single space that's being lost sometimes."
+  ;;   ;; (message "advice exists... (%s %s)? %s, (%s %s)? %s"
+  ;;   ;;          ws-butler-keep-whitespace-before-point
+  ;;   ;;          ws-butler-presave-coord
+  ;;   ;;          (and ws-butler-keep-whitespace-before-point
+  ;;   ;;               ws-butler-presave-coord)
+  ;;   ;;          (cadr ws-butler-presave-coord)
+  ;;   ;;          (current-column)
+  ;;   ;;          (not (= (cadr ws-butler-presave-coord) (current-column))))
+
+  ;;   (when (and ws-butler-keep-whitespace-before-point
+  ;;              ws-butler-presave-coord)
+  ;;     (let ((saved-column (cadr ws-butler-presave-coord))
+  ;;           (now-column (current-column)))
+  ;;       (message "advice 2... %s == %s? %s... cur:%s, line:'%s'"
+  ;;                now-column
+  ;;                saved-column
+  ;;                (= now-column saved-column)
+  ;;                (current-column)
+  ;;                (thing-at-point 'line t))
+
+  ;;       (when (not (= now-column saved-column))
+
+  ;;         ;; I think it's only an off-by-one bug, so this is the
+  ;;         ;; fix for right now.
+  ;;         (move-to-column (1+ saved-column) t)
+
+  ;;         ;; (message "advice says you're at wrong column. at:%s -> want:%s -> advice shenanigans:%s"
+  ;;         ;;          now-column
+  ;;         ;;          saved-column
+  ;;         ;;          (current-column))
+
+  ;;         ;; and clear out the 'buffer modified' flag (again).
+  ;;         (set-buffer-modified-p nil)
+  ;;         ))))
+  ;; ;; And now add our shenanigan for after the after-the-save function...
+  ;; (advice-add 'ws-butler-after-save
+  ;;             :after #'spydez/advice/ws-butler/keep-whitespace-fix)
+  ;; ;; And now wonder why the fuck I need this...
+  ;;---/FAIL 1
+
+** FAIL 2
+
+  ;;---FAIL 2
+  ;; BUG:
+  ;; whitespace-mode's newline marker character deletes a real, accessable space if line ends in spaces(?).
+  ;;
+  ;; So whatever uses `whitespace-display-mappings' to replace stuff is a bit too... helpful?
+  ;; Also these?
+  ;; (defvar whitespace-point (point)
+  ;;   "Used to save locally current point value.
+  ;; Used by function `whitespace-trailing-regexp' (which see).")
+  ;; (defvar-local whitespace-point--used nil
+  ;;   "Region whose highlighting depends on `whitespace-point'.")
+  ;;
+  ;; NOTE: Have started an issue/bug at:
+  ;;   (spydez/path/to-file spydez/dir/docs/issues "whitespace-and-butler" "bug-info.el")
+  ;;   also:
+  ;;    https://www.reddit.com/r/emacs/comments/ctlxxp/whitespacemode_and_wsbutler_bug_help/
+  ;;---
+  ;; (defun spydez/advice/move-to-column/force-fix (column &optional force)
+  ;;   "Un-lose the one single space that's being lost sometimes."
+  ;;   (message "move-to-column: %s %s (cur:%s) // wsb-coord:%s, ws-pt:%s (curpt:%s)\nwcp:%s"
+  ;;            column force (current-column)
+  ;;            ws-butler-presave-coord
+  ;;            whitespace-point (point)
+  ;;            (what-cursor-position))
+  ;;   )
+  ;; ;; And now add our shenanigan for after the after-the-save function...
+  ;; (advice-add 'move-to-column
+  ;;             :after #'spydez/advice/move-to-column/force-fix)
+  ;;---/FAIL 2
+
+** DAY 3
+
+  ;;---DAY 3
+  ;; Reviewed some whitespace.el code...
+  ;; Error seems a layer deeper in applying `buffer-display-table' to buffer...
+  ;;---/DAY 3
+
+
+* Got stuck
+
+Decided to create a nice bug explanation and repro steps and versions and all.
+
+Turned out to be too much.
+
+* WAITING Reddit r/emacs call for help
+:LOGBOOK:
+- State "WAITING"    from "TODO"       [2019-08-26 Mon 11:26] \\
+  waiting on final reply from alphapapa
+:END:
+
+https://www.reddit.com/r/emacs/comments/ctlxxp/whitespacemode_and_wsbutler_bug_help/exu2nu4/?context=8&depth=9
+
+** Contents:
+
+whitespace-mode and ws-butler bug help?
+
+I've been reworking my emacs init and I like whitespace-mode and ws-butler, but together they're dropping end-of-line spaces on save, which becomes really annoying when python suddenly starts complaining about indentation when a function goes from 4 to 3 spaces in the middle for no reason.
+
+I've tried a few things but it seems beyond my ken to find and fix...
+
+Bug details & repro, use this code/info:
+
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
+
+
+;; BUG:
+
+;; - whitespace-mode's newline marker character deletes a real, accessable
+
+;; space if line ends in spaces(?), and replaces it with its newline marker
+
+;; (I think?).
+
+;; - ws-butler tries to: delete useless whitespace, save file, put you back
+
+;; where you where (if you were indented in 'useless' whitespace at the
+
+;; time).
+
+;; Result:
+
+;; - You lose a space in your indent.
+
+
+;; Set flag for easier testing:
+
+;; --no-init-file
+
+
+;; quicker startup for playing with this:
+
+;; M-x eval-buffer
+
+;; M-x ws-bug-helper
+
+
+;;------------------------------------------------------------------------------
+
+;; BUG:
+
+;; Eval this move-to-column, point should be at column 66 after (ready
+
+;; to insert next char in between 'v' and '^'). But with
+
+;; whitespace-mode on, it will be at 65 instead.
+
+;;
+
+;; But first eval these:
+
+;; (setq indent-tabs-mode nil)
+
+;; (whitespace-mode 'toggle)
+
+;;----------------------------------------------------------------v
+
+;; (move-to-column 66 t)
+
+;; (move-to-column 66 t)
+
+;; (move-to-column 66 t)
+
+;;----------------------------------------------------------------^
+
+;; Note: line needs to be clean/clear after for bug to show up (i.e.
+
+;; move-to-column needs to be forced to insert those forced spaces).
+
+;;
+
+;; This is where ws-butler comes in: if on an indented line, thinking about
+
+;; code, hitting the save combo out of pure muscle memory, you will lose a space
+
+;; of your indent when you save as:
+
+;; 0) save requested
+
+;; 1) ws-butler (temporarily) deletes your current indented line's whitespace
+
+;; 2) ws-butler allows save
+
+;; 3) ws-butler restores point to previous spot in line with \move-to-column'`
+
+;; 4) whitespace notices new chunk of spaces and deletes a 'useless' one to
+
+;; make room for its newline marker?
+
+;;------------------------------------------------------------------------------
+
+
+;; RESULTS of Forced move-to-column Bug:
+
+;; '|' represents point position after move-to-column.
+
+;;----------------------------------------------------------------v
+
+;; Expected behavior (and actual result with whitespace-mode off):
+
+;; (move-to-column 66 t) |
+
+;; Bug behavior with whitespace-mode on:
+
+;; (move-to-column 66 t) |
+
+;;----------------------------------------------------------------^
+
+
+
+;;-
+
+;;--
+
+;;---
+
+;; QUESTION:
+
+;; How to fix?
+
+;;---
+
+;;--
+
+;;-
+
+
+;; helpful helper
+
+(defun ws-bug-helper ()
+
+(interactive)
+
+(setq indent-tabs-mode nil)
+
+(whitespace-mode 'toggle)
+
+(column-number-mode t)
+
+(line-number-mode t)
+
+(goto-char 1038))
+
+
+
+;;---
+
+;; info
+
+;;---
+
+;; (emacs-version t) GNU Emacs 26.1 (build 1, x86_64-w64-mingw32) of 2018-05-30
+
+;; whitespace-mode.el version: 13.2.2
+
+;; ws-butler version: 20170111.2334
+
+
+;;---
+
+;; my condensed use-packages:
+
+;;---
+
+;; (use-package ws-butler
+
+;; :demand t
+
+;; :config
+
+;; (defun move-to-column--info (column &optional force)
+
+;; (message "move-to-column: %s %s (cur:%s) // wsb-coord:%s, ws-pt:%s (curpt:%s)\nwcp:%s"
+
+;; column force (current-column)
+
+;; ws-butler-presave-coord
+
+;; whitespace-point (point)
+
+;; (what-cursor-position)))
+
+;; (advice-add 'move-to-column
+
+;; :after #'move-to-column--info)
+
+;;
+
+;; (ws-butler-global-mode 1))
+
+;;
+
+;;
+
+;; (use-package whitespace
+
+;; :ensure nil
+
+;; :demand t
+
+;; (global-whitespace-mode 1))
+
+*** Person 1
+
+I’m pretty sure whitespace-mode only visualizes whitespace so it probably is not the problem. Try setting ws-butler-keep-whitespace-before-point. Otherwise I dunno.
+
+**** ME
+
+Yeah, that's what I thought at first too... But I finally got the reproduction down to only whitespace-mode.
+
+ws-butler just exacerbates it infinitely by causing the bug's trigger all the time.
+
+I don't even think it's whitespace-mode necessarily after a bit more poking. That just sets up a display map or table that something else does something with. But I've gotten out of my elisp/emacs depth now.
+
+I guess worst case I can warp ws-butler into skipping the current line, maybe. Hm...
+
+***** Person 2
+
+Try using the package bug-hunter to isolate the part of your config causing the problem.
+
+****** ME
+
+Will that help now that I've isolated it out of my own config entirely?
+
+I passed in --no-init-file and could make it happen or not happen just by toggling default settings whitespace-mode.
+
+All you need to reproduce is no-init emacs and then eval these one by one:
+
+(setq indent-tabs-mode nil)
+
+(whitespace-mode 'toggle)
+
+ ;;----------------------------------------------------------------v
+
+(move-to-column 66 t)
+
+******* Person 2
+
+I don't understand what the problem is. You said it involved ws-butler, but now you say it doesn't. whitespace-mode only visualizes spaces, it doesn't modify the buffer.
+
+Your original explanation is long, confusing, and doesn't use correct syntax for formatting code.
+
+If you need help, write a clearer explanation, something like:
+
+    Setup (using emacs -q).
+
+    Actions taken.
+
+    Expected result.
+
+    Actual result.
+
+Keep it simple and concise. You're asking for people to wade through your text and try to fix your problem. Make it easy for them.
+
+******** ME
+
+Sorry; you're right but I'm scarred from too many bugs with over simple "repro steps" that only God can successfully follow so I tend to overdo my detail...
+
+    Start emacs with `emacs --no-init`
+
+    Paste into scratch buffer:
+
+(progn
+
+(setq indent-tabs-mode nil)
+
+(column-number-mode t)
+
+(line-number-mode t))
+
+
+;;MOVE-1----------------------v
+
+(move-to-column 30 t)
+
+
+(whitespace-mode 'toggle)
+
+
+;;MOVE-2----------------------v
+
+(move-to-column 30 t)
+
+;;MOVE-3-to-N-----------------v
+
+(move-to-column 30 t)
+
+(move-to-column 30 t)
+
+(move-to-column 30 t)
+
+    Eval progn.
+
+    Eval 1st move-to-column.
+
+    Eval whitespace-mode toggle.
+
+    Eval 2nd move-to-column.
+
+    Eval as many more moves as you want... Apparently my repro is only ~95% dependable. Once it didn't show up until move 3.
+
+Expected Result:
+
+All move-to-column calls result in point on same column 30.
+
+Actual Result:
+
+1st is on 30; 2nd and onward on 29.
+
+********* Person 2
+
+I don't think move-to-column is a very good way to demonstrate the issue. Instead, show buffer contents before/after doing whatever command causes the contents to change undesirably.
+
+From a quick test, it appears that the whitespace at the end of a line is removed by pressing RET, which is bound to newline, i.e. C-h k RET:
+
+newline is an interactive compiled Lisp function in ‘simple.el’.
+
+(newline &optional ARG INTERACTIVE)
+
+Insert a newline, and move to left margin of the new line if it’s blank.
+If option ‘use-hard-newlines’ is non-nil, the newline is marked with the
+text-property ‘hard’.
+With ARG, insert that many newlines.
+
+If ‘electric-indent-mode’ is enabled, this indents the final new line
+that it adds, and reindents the preceding line.  To just insert
+a newline, use M-x electric-indent-just-newline.
+
+So, e.g. if you add whitespace to the end of the last line and then press C-q C-j, the whitespace is not removed.
+
+So as we've said, whitespace-mode only makes the issue visible, it does not cause any changes in behavior.
+
+In general, Emacs makes issues like these pretty easy to diagnose. What you need to do is, generally:
+
+    Make a minimal reproducible test case.
+
+    Find the step that actually causes the problem.
+
+    If it's caused by a command keypress, use C-h k to find what command the keypress is bound to, then read the documentation for the command. In this case, the command's docstring explains what's happening, and it's not a bug.
+
+********** ME
+1 point ·
+2 days ago
+· edited 2 days ago
+
+I never press RET in my repro. Only `C-y` for pasting, and then `C-x C-e` for invoking.
+
+move-to-column is the demo because it is the bug behavior. As it's just end-of-line whitespace, it's hard to "show my work" in this case. I did show my work in OP, but I tried to trim all the fat out for you.
+
+whitespace-mode does not just make it visible. It does not happen with it off and it does happen with it on. I turn on line/column mode to make it visible in the modeline as otherwise I think I'm going crazy.
+
+I have given the minimal test case. It is not a command keypress; it is the call to move-to-column (which ws-butler invokes every in save hook).
+
+This might lose all the end of line whitespace because HTML or input sanitizing or markdown but... here's my scratch buffer after doing my repro steps:
+
+
+EDIT: Yeah; no go. See my sibling comment with the imgur link.
+>>> Here's some pixels of the problem.
+>>> https://imgur.com/XWM7yak
+
+*********** Person 2
+
+Back up from the problem and observe it from a higher perspective. Why are you using move-to-column? Is that a command you use while editing text? Or do you type some text and then hit RET to insert a newline?
+
+To put it another way, it doesn't matter what happens with move-to-column, because unless you're using that command yourself, it's an implementation detail.
+
+One more time: describe the problem you're having as you would encounter it in actual usage.
+
+    Setup.
+
+    Actions.
+
+    Expected result.
+
+    Actual result.
+
+If you can't or won't do that, we can't or won't help you.
+
+************ ME
+
+Setup:
+
+    Start emacs with `emacs --no-init`
+
+    Paste the code at the bottom into the scratch buffer.
+
+    M-x eval-buffer
+
+    Restore code formatting lost by reddit, e.g.: C-x h <TAB>
+
+    Save the scratch buffer somewhere (these repro steps need a post-save hook to run).
+
+    Go to example (C-s bug-behavoir)
+
+    Be on the blank line inside the function defun and indent (<TAB>). Your whitespace only line should be: <space><space><newline>
+
+Actions:
+
+    Save <C-x C-s>
+
+Expected result:
+
+    Point remains in place - indented 2 spaces and indicating column 2 in the modeline.
+
+    Line's contents remain as 2 spaces and a newline.
+
+Actual result:
+
+    Point jumps backwards one space - indented 1 space and indicating column 1 in the modeline.
+
+    Line's contents change to 1 space and a newline.
+
+Answers to your questions:
+
+    Q: Why are you using `move-to-column`?
+
+    A: ws-butler uses it to restore the point after cleaning up the whitespace. If `ws-butler-keep-whitespace-before-point` is set, it uses `move-to-column` to accomplish that in it's post-save hook. So `whitespace-mode` causes the bug and `ws-butler` triggers the bug (due to how often I'm on an indent and save while thinking).
+
+    Q: Or do you type some text and then hit RET to insert a newline?
+
+    A: No typing; no RET. It happens on certain save-buffer (C-x C-s).
+
+Code:
+
+;;---
+
+;; Setup
+
+;;---
+
+(require 'package)
+
+
+(setq use-package-verbose t)
+
+(setq use-package-compute-statistics t)
+
+(setq use-package-minimum-reported-time 0)
+
+
+(setq package-enable-at-startup nil)
+
+(setq use-package-always-ensure t)
+
+
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+
+
+(package-initialize)
+
+
+(unless (package-installed-p 'use-package)
+
+(package-refresh-contents)
+
+(package-install 'use-package))
+
+
+(eval-when-compile
+
+(require 'use-package))
+
+
+
+;;---
+
+;; Min packages for high frequency bug triggering:
+
+;; 1) ws-butler
+
+;; 2) whitespace-mode
+
+;;---
+
+(use-package ws-butler
+
+:demand t
+
+:config
+
+
+(defun move-to-column--info (column &optional force)
+
+(message "move-to-column: %s %s (cur:%s) // wsb-coord:%s, ws-pt:%s (curpt:%s)\nwcp:%s"
+
+column force (current-column)
+
+ws-butler-presave-coord
+
+whitespace-point (point)
+
+(what-cursor-position)))
+
+(advice-add 'move-to-column
+
+:after #'move-to-column--info)
+
+;; t is default so not needed but here just to be explicit
+
+(setq ws-butler-keep-whitespace-before-point t)
+
+(ws-butler-global-mode 1))
+
+
+(use-package whitespace
+
+:ensure nil
+
+:demand t
+
+:config
+
+(global-whitespace-mode 1))
+
+
+;;---
+
+;; Misc setup
+
+;---
+
+(progn
+
+;; tabs hide behavoir - need spaces.
+
+(setq indent-tabs-mode nil)
+
+;; column number allows easier checking
+
+(column-number-mode t)
+
+;; line number to make modeline line,col more familiar to me.
+
+(line-number-mode t))
+
+
+
+;;---
+
+;; example
+
+;;---
+
+(defun bug-behavoir ()
+
+"Bug occurs when saving on indented line. e.g. the next line:"
+
+(message (concat "Just indent <TAB>, then save <C-x C-s>. "
+
+"You should go from 2 indent characters before "
+
+"save to 1 after it."))
+
+)
+
+
+
+;;---
+
+;; EXPECTED OUTCOME
+
+;;---
+
+;;(defun bug-behavoir ()
+
+;; "Bug occurs when saving on indented line. e.g. the next line:"
+
+;; _<-point should be flashing here (col 4).
+
+;; (message (concat "Just indent <TAB>, then save <C-x C-s>. "
+
+;; "You should go from 2 indent characters before "
+
+;; "save to 1 after it."))
+
+;; )
+
+
+;;---
+
+;; ACTUAL OUTCOME
+
+;;---
+
+;;(defun bug-behavoir ()
+
+;; "Bug occurs when saving on indented line. e.g. the next line:"
+
+;; _<-point is one short (col 3).
+
+;; (message (concat "Just indent <TAB>, then save <C-x C-s>. "
+
+;; "You should go from 2 indent characters before "
+
+;; "save to 1 after it."))
+
+;; )
+
+* TODO 2nd r/emacs post?
+
+Maybe try again with the simplest, shortest code? He had a point about that...
