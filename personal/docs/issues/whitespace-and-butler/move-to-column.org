@@ -133,14 +133,18 @@ Lessons (Hopefully) Learned?
   - Too much expectations.
     - No one's going to `emacs --no-init` and eval code for you unless you hook them first?
 
-* WAITING Reddit r/emacs call for help
+* DONE Reddit r/emacs call for help
+CLOSED: [2019-08-28 Wed 11:25]
 :LOGBOOK:
+- State "DONE"       from "WAITING"    [2019-08-28 Wed 11:25]
 - State "WAITING"    from "STARTED"    [2019-08-27 Tue 12:24] \\
   waiting for more replies from reddit thread
 - State "STARTED"    from "WAITING"    [2019-08-27 Tue 12:23]
 - State "WAITING"    from "TODO"       [2019-08-26 Mon 11:26] \\
   waiting on final reply from Person 2
 :END:
+
+Closed this headline unless more replies to reddit thread.
 
 https://www.reddit.com/r/emacs/comments/ctlxxp/whitespacemode_and_wsbutler_bug_help/exu2nu4/?context=8&depth=9
 

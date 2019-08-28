@@ -262,17 +262,20 @@ than other modes."
                           :foreground zenburn-bg-05
                           :background zenburn-bg-05)
 
+      ;; TRIAL: [2019-08-28]
+      ;; Trying out my custom zenburn-magenta-bg. Magenta FG was just too
+      ;; eye-stabby. Could go to -1 or -2 if not obvious enough.
+      (set-face-attribute 'whitespace-line nil
+                          :foreground nil ;; use whatever other things want (comments, code)
+                          :background spydez/theme/color/zenburn-magenta-bg)
+                          ;; originally:
+                          ;; :foreground zenburn-magenta
+                          ;; :background zenburn-bg)
+
 
       ;;--------
       ;; Not Set
       ;;--------
-
-      ;; TODO: I'd love for foreground to be inherited, for highlighting and
-      ;; such, and for background to be a slightly magenta zenburn-bg. But that
-      ;; would probably bork up the row/line highlighter package/setting.
-      ;; (set-face-attribute 'whitespace-line nil
-      ;;                     :foreground zenburn-magenta
-      ;;                     :background zenburn-bg)
 
       ;; This is too bright, and annoying. Tone down if added back into
       ;; `whitespace-style'.

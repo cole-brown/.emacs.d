@@ -48,16 +48,10 @@ Company-Jedi:
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [4/14]
+  - [-] To Do: [6/14]
     - [ ] Fancy checkboxes (<- like that) lose fancy boxyness when buffer has mismatched quotations or something
       - double quote def work. Take out one of these and see. ""
-    - [ ] something subtler than magenta for the too-long lines from whitespace-mode?
-      - Something that works well with comments (green) and normal (white)
-    - [ ] wsbutler - ignore line at point completely
-      - Something fucky is happening and my advice function only works if
-        there's a message to slow it down...?
-      - Complicated. See [[file:issues/whitespace-and-butler/bug-info.el::;;%20-*-%20mode:%20emacs-lisp;%20lexical-binding:%20t%20-*-][issue]] and [[file:~/.emacs.d/personal/init/config/configure-whitespace.el::;;%20Error%20seems%20a%20layer%20deeper%20in%20applying%20`buffer-display-table'%20to%20buffer...][config]]
-      - I could just have it skip over any EOL whitespace checking on point's line if point's in the whitespace maybe? That sounds complicated...
+      - Started issue at (find-file (spydez/path/to-file spydez/dir/docs/issues "org-mode" "prettify-symbols.org"))
     - [ ] ag, ack, gack, gawk, your mom, grep, something?
       - ripgrep https://github.com/BurntSushi/ripgrep
         - w/ deadgrep? https://github.com/Wilfred/deadgrep
@@ -76,6 +70,13 @@ Company-Jedi:
         language server, other external tools won't bother - just code hilighting maybe.
       - e.g.2. want rust or w/e flavor of the month catches my eye at home but
         none of it at work
+    - [X] wsbutler - ignore line at point completely
+      - Something fucky is happening and my advice function only works if
+        there's a message to slow it down...?
+      - Complicated. See [[file:issues/whitespace-and-butler/bug-info.el::;;%20-*-%20mode:%20emacs-lisp;%20lexical-binding:%20t%20-*-][issue]] and [[file:~/.emacs.d/personal/init/config/configure-whitespace.el::;;%20Error%20seems%20a%20layer%20deeper%20in%20applying%20`buffer-display-table'%20to%20buffer...][config]]
+      - I could just have it skip over any EOL whitespace checking on point's line if point's in the whitespace maybe? That sounds complicated...
+    - [X] something subtler than magenta for the too-long lines from whitespace-mode?
+      - Something that works well with comments (green) and normal (white)
     - [X] use-package helpful
     - [X] null/temp custom.el
       - Will package-selected-packages like this?

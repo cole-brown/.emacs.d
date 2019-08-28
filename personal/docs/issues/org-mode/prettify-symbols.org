@@ -1,0 +1,71 @@
+#+TITLE:       Prettify-Symbols Bug?
+#+DESCRIPTION: Sometimes prettify works, sometimes not...
+#+AUTHOR:      Cole Brown
+#+EMAIL:       git@spydez.com
+#+DATE:        [2019-08-28 Wed]
+
+* Test Case
+
+This checklist should be prettified:
+  - [-] half filled
+    - [X] checked
+    - [ ] unchecked
+
+This should cause the issue:
+  "
+
+This checklist should not - it should be standard org-mode checkbox ASCII brackets:
+  - [-] half filled
+    - [X] checked
+    - [ ] unchecked
+
+* Starting point
+
+#+BEGIN_SRC emacs-lisp
+;; (in org-mode's use-package)
+;; ...
+;; :init
+;; ...
+  (defun spydez/hook/org-mode/checkboxes ()
+    "Beautify Org Checkbox Symbol"
+    (setq prettify-symbols-alist
+          '(("[ ]" . "☐")
+            ;; other options:
+            ;;   - ☐ - 2610 ballot box
+            ;;     https://www.unicode.org/charts/PDF/U2600.pdf
+            ("[X]" . "☒")
+            ;; other options:
+            ;;   - ☒ - 2612 ballot box with X
+            ;;     https://www.unicode.org/charts/PDF/U2600.pdf
+            ;;   - ☑ - 2611 ballot box with check
+            ("[-]" . "▣")
+            ;; other options:
+            ;;   - ▣ - 25A3 white square containing black small square
+            ;;     https://www.unicode.org/charts/PDF/U25A0.pdf
+            ;;   - ❍ - ...idk, what other people used at reddit thread.
+            ;;   - ▽ - 25BD white down-pointing triangle
+            ;;   - ◎ - 25CE bullseye
+            ;;   - ☯ - 262F yin-yang
+            ))
+    (prettify-symbols-mode 1))
+
+;; ...
+;; :hook
+  ((org-mode . spydez/hook/org-mode/checkboxes)
+   (org-mode . spydez/hook/org-mode/simple-list))
+;; ...
+#+END_SRC
+
+* Description
+
+In some org files [ ] doesn't get converted to unicode character "☐" by prettify-symbols-mode.
+
+In others it does.
+
+It seems to be the case that an unbalanced number of double quotes will throw off prettify-symbols-mode.
+  - See [[Test Case]] heading
+
+I do not know where to even start right now on this...
+
+Go here to poke around:
+  (find-file (spydez/path/to-file spydez/dir/init/config "configure-org-mode.el"))
