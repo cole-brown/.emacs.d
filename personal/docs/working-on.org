@@ -48,7 +48,9 @@ Company-Jedi:
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [4/13]
+  - [-] To Do: [4/14]
+    - [ ] Fancy checkboxes (<- like that) lose fancy boxyness when buffer has mismatched quotations or something
+      - double quote def work. Take out one of these and see. ""
     - [ ] something subtler than magenta for the too-long lines from whitespace-mode?
       - Something that works well with comments (green) and normal (white)
     - [ ] wsbutler - ignore line at point completely

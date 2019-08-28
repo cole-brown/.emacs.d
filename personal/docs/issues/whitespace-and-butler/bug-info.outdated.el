@@ -1,5 +1,8 @@
 ;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
+;; NOTE: Outdated and not the best minimalized/simplified explanation.
+;; See org file for better info and code.
+
 ;; BUG:
 ;;   - whitespace-mode's newline marker character deletes a real, accessable
 ;;     space if line ends in spaces(?), and replaces it with its newline marker

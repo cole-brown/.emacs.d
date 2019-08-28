@@ -48,6 +48,54 @@
   :config
   ;;----------
 
+  (defun spydez/advice/move-to-column/force-fix (args)
+    "Un-lose the one single space that's being lost sometimes."
+    (let ((column (nth 0 args))
+          (force (nth 1 args)))
+      ;; (message "move-to-column: %s %s (cur:%s) // wsb-coord:%s, ws-pt:%s (curpt:%s)\nwcp:%s"
+      ;;          column force (current-column)
+      ;;          ws-butler-presave-coord
+      ;;          whitespace-point (point)
+      ;;          (what-cursor-position))
+
+      ;; bug conditions:
+      ;;   1. whitespace-mode is on
+      ;;   2. move-to-column is called with 'force' set true.
+      ;;   3. ws-butler-keep-whitespace-before-point is on
+      ;; Number 3 isn't actually necessary but it's the only time I've
+      ;; noticed this bug (aside from contriving it in bug hunts/repros).
+      (when (and (or global-whitespace-mode whitespace-mode)
+                 force
+                 ;; Not needed but ws-butler is what triggers this all the time
+                 ;; so I'll contain my brute force fix to only work if ws-butler
+                 ;; is setup to expect move-to-column to restore point.
+                 ws-butler-keep-whitespace-before-point)
+        ;; Possibly a bugged move-to-column... Let's figure out how far we
+        ;; have to go.
+        (save-excursion
+          (let ((at-last-line (> (forward-line 1) 0)))
+            (unless at-last-line (forward-line -1))
+            (move-end-of-line nil)
+            (when (and (> column (current-column))
+                       (not at-last-line))
+              ;; We're in bug territory, and we want past current EOL, and this
+              ;; line has a '\n' in it, so I think we have a bugged
+              ;; move-to-column case. Up by one to offset for move-to-column's
+              ;; off-by-one-in-this-instance bug.
+              (setq column (1+ column))
+              ;; (message "column++? eol: %s, desire: %s, new: %s"
+              ;;          (current-column)
+              ;;          (nth 0 args)
+              ;;          column)
+              ))))
+      ;; return list of (fixed or ignored) inputs
+      ;; (message "args: %s, ret: %s" args (list column force))
+      (list column force)))
+  ;; And now add our shenanigan for after the after-the-save function...
+  (advice-add 'move-to-column
+              :filter-args #'spydez/advice/move-to-column/force-fix)
+  ;;(advice-remove 'move-to-column #'spydez/advice/move-to-column/force-fix)
+
   ;; Turn on ws-butler globally.
   ;; NOTE: if I want to exclude modes, can do via customizing of variable
   ;;   `ws-butler-global-exempt-modes'.
