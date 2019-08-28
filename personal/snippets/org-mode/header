@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # contributor: Cole Brown <git@spydez.com>
-# name: org file header
+# name: <SPY: "file.org" header
 # key: <spy/header
 # notes: Double time stamps were being inserted. Found reason:
 #   "This happens because org-insert-time-stamp inserts a time stamp (like the

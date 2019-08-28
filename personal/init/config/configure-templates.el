@@ -19,7 +19,15 @@
 ;; https://joaotavora.github.io/yasnippet/snippet-expansion.html
 (use-package yasnippet
   :delight yas-minor-mode
-  
+
+  :init
+  (defun spydez/yas/list ()
+    "Calls yas-insert-snippet to show list of possible snippets.
+Cuz I can't remember what to call so `spydez/yas` and wait for
+auto-complete to have pity is my game."
+    (interactive)
+    (call-interactively #'yas-insert-snippet nil))
+
   :config
   (progn
     ;; This modifies how yas looks for matching keys to expand into templates.
@@ -37,42 +45,22 @@
 
     ;; The documentation says words, which my brain parsed into empty strings...
     ;; (setq yas-expand-only-for-last-commands nil)
-    
+
     ;; todo: do I want TAB bound for yas? (yes??) Do I want it bound to hippie-expand?..
     ;; ...let's find out.
     (bind-key "\t" 'hippie-expand yas-minor-mode-map)
-    (add-to-list 'yas-prompt-functions 'spydez/yas/helm-prompt)
 
     ;; yas turn on now maybe?
     (yas-global-mode 1)
     ;; yeah.
     ))
 
-
-;;------------------------------------------------------------------------------
-;; Helm/Yasnippets
-;;------------------------------------------------------------------------------
-;; http://pages.sachachua.com/.emacs.d/Sacha.html#org656616c
-;; Orig: shk-yas/helm-prompt
-(defun spydez/yas/helm-prompt (prompt choices &optional display-fn)
-  "Use helm to select a snippet. Put this into `yas-prompt-functions.'"
-  (interactive)
-  (setq display-fn (or display-fn 'identity))
-  (if (require 'helm-config)
-      (let (tmpsource cands result rmap)
-        (setq cands (mapcar (lambda (x) (funcall display-fn x)) choices))
-        (setq rmap (mapcar (lambda (x) (cons (funcall display-fn x) x)) choices))
-        (setq tmpsource
-              (list
-               (cons 'name prompt)
-               (cons 'candidates cands)
-               '(action . (("Expand" . (lambda (selection) selection))))
-               ))
-        (setq result (helm-other-buffer '(tmpsource) "*helm-select-yasnippet"))
-        (if (null result)
-            (signal 'quit "user quit!")
-          (cdr (assoc result rmap))))
-    nil))
+;; Should I try this? I am not actually quite sure what it does but it has a lot
+;; of installs on MELPA and it may or may not be a helm/yasnippet integration
+;; package...
+;;   - helm-c-yasnippet
+;;   - https://github.com/emacs-jp/helm-c-yasnippet/
+;;     - "helm source for yasnippet.el" Thank you. Very useful info.
 
 
 ;;------------------------------------------------------------------------------
@@ -92,7 +80,7 @@
 ;;------------------------------------------------------------------------------
 ;; (setq spydez/default-cursor-color "gray")
 ;; (setq spydez/yasnippet-can-fire-cursor-color "purple")
-;; 
+;;
 ;; ;; It will test whether it can expand, if yes, cursor color -> can-fire-cursor-color.
 ;; (defun spydez/yasnippet-can-fire-p (&optional field)
 ;;   (interactive)
@@ -107,14 +95,14 @@
 ;;                                     (yas--templates-for-key-at-point))
 ;;                                 (yas--templates-for-key-at-point))))
 ;;     (and templates-and-pos (first templates-and-pos))))
-;; 
+;;
 ;; (defun spydez/change-cursor-color-when-can-expand (&optional field)
 ;;   (interactive)
 ;;   (when (eq last-command 'self-insert-command)
 ;;     (set-cursor-color (if (spydez/can-expand)
 ;;                           spydez/yasnippet-can-fire-cursor-color
 ;;                         spydez/default-cursor-color))))
-;; 
+;;
 ;; (defun spydez/can-expand ()
 ;;   "Return true if right after an expandable thing."
 ;;   (or (abbrev--before-point) (spydez/yasnippet-can-fire-p)))

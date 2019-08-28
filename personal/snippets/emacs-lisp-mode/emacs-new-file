@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # contributor: Cole Brown <git@spydez.com>
-# name: new emacs config file
+# name: <SPY: "file.el" header/structure
 # key: <spy/emacs
 # --
 ;; -*- mode: emacs-lisp; lexical-binding: t -*-
