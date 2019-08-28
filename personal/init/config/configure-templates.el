@@ -29,31 +29,30 @@ auto-complete to have pity is my game."
     (call-interactively #'yas-insert-snippet nil))
 
   :config
-  (progn
-    ;; This modifies how yas looks for matching keys to expand into templates.
-    ;;   - https://emacs.stackexchange.com/a/35603
-    ;;   - Also check out its documentation at: C-h v yas-key-syntaxes
-    ;; So if I have keys that don't feel like they're getting triggered right
-    ;; from wherever my cursor is when I try, we can adjust this.
-    ;; Don't see a need right now, though.
-    ;; (setq yas-key-syntaxes '("w_" "w_." "^ "))
+  ;; This modifies how yas looks for matching keys to expand into templates.
+  ;;   - https://emacs.stackexchange.com/a/35603
+  ;;   - Also check out its documentation at: C-h v yas-key-syntaxes
+  ;; So if I have keys that don't feel like they're getting triggered right
+  ;; from wherever my cursor is when I try, we can adjust this.
+  ;; Don't see a need right now, though.
+  ;; (setq yas-key-syntaxes '("w_" "w_." "^ "))
 
-    ;; Want my snippets at the front of the list (ahead of yasnippet-snippets')
-    ;; Currently this goes:
-    ;;   mine, yasnippet's snippets dir, yasnippet-snippets' dir.
-    (add-to-list 'yas-snippet-dirs spydez/dir/yasnippets)
+  ;; Want my snippets at the front of the list (ahead of yasnippet-snippets')
+  ;; Currently this goes:
+  ;;   mine, yasnippet's snippets dir, yasnippet-snippets' dir.
+  (add-to-list 'yas-snippet-dirs spydez/dir/yasnippets)
 
-    ;; The documentation says words, which my brain parsed into empty strings...
-    ;; (setq yas-expand-only-for-last-commands nil)
+  ;; The documentation says words, which my brain parsed into empty strings...
+  ;; (setq yas-expand-only-for-last-commands nil)
 
-    ;; todo: do I want TAB bound for yas? (yes??) Do I want it bound to hippie-expand?..
-    ;; ...let's find out.
-    (bind-key "\t" 'hippie-expand yas-minor-mode-map)
+  ;; todo: do I want TAB bound for yas? (yes??) Do I want it bound to hippie-expand?..
+  ;; ...let's find out.
+  (bind-key "\t" 'hippie-expand yas-minor-mode-map)
 
-    ;; yas turn on now maybe?
-    (yas-global-mode 1)
-    ;; yeah.
-    ))
+  ;; yas turn on now maybe?
+  (yas-global-mode 1)
+  ;; yeah.
+  )
 
 ;; Should I try this? I am not actually quite sure what it does but it has a lot
 ;; of installs on MELPA and it may or may not be a helm/yasnippet integration
