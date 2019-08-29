@@ -48,15 +48,13 @@
   :config
   ;;----------
 
+  ;; For a bug.
+  ;;  Path: (spydez/help/issue/path "whitespace-and-butler" "move-to-column.org")
+  ;;  File: (spydez/help/issue/visit "whitespace-and-butler" "move-to-column.org")
   (defun spydez/advice/move-to-column/force-fix (args)
     "Un-lose the one single space that's being lost sometimes."
     (let ((column (nth 0 args))
           (force (nth 1 args)))
-      ;; (message "move-to-column: %s %s (cur:%s) // wsb-coord:%s, ws-pt:%s (curpt:%s)\nwcp:%s"
-      ;;          column force (current-column)
-      ;;          ws-butler-presave-coord
-      ;;          whitespace-point (point)
-      ;;          (what-cursor-position))
 
       ;; bug conditions:
       ;;   1. whitespace-mode is on
@@ -82,16 +80,10 @@
               ;; line has a '\n' in it, so I think we have a bugged
               ;; move-to-column case. Up by one to offset for move-to-column's
               ;; off-by-one-in-this-instance bug.
-              (setq column (1+ column))
-              ;; (message "column++? eol: %s, desire: %s, new: %s"
-              ;;          (current-column)
-              ;;          (nth 0 args)
-              ;;          column)
-              ))))
+              (setq column (1+ column))))))
       ;; return list of (fixed or ignored) inputs
-      ;; (message "args: %s, ret: %s" args (list column force))
       (list column force)))
-  ;; And now add our shenanigan for after the after-the-save function...
+  ;; And now add our shenanigan to the function...
   (advice-add 'move-to-column
               :filter-args #'spydez/advice/move-to-column/force-fix)
   ;;(advice-remove 'move-to-column #'spydez/advice/move-to-column/force-fix)

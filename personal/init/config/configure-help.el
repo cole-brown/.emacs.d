@@ -12,6 +12,42 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Custom Helpful Helpers
+;;------------------------------------------------------------------------------
+
+;; It'd be nice to have one that could do both when eval'd, but I need to think
+;; about how to do that correctly...
+;; Idea 1:
+;;   (spydez/help/issue "whitespace-and-butler" "move-to-column.org")
+;;   - be at end
+;;     -     `C-x C-e' -> calls spydez/help/issue/path
+;;     - `C-u C-x C-e' -> calls spydez/help/issue/visit
+;; Idea 2:
+;;   - Some sort of specially formatted link text, like system org-mode has in
+;;     place. But that gets out of the relm of 'KISS' I wanted to stay in...
+
+(defun spydez/help/issue/path (issue-dir file-name &optional quiet)
+  "Returns a string which is fully expanded path to issue file.
+Also copies it to the clipboard and puts it in *Messages*, unless
+quiet arg is non-nil."
+  (let ((path (spydez/path/to-file spydez/dir/docs/issues issue-dir file-name)))
+    (unless quiet
+      (with-temp-buffer
+        (insert path)
+        (clipboard-kill-region (point-min) (point-max)))
+      (message "%s" path))
+    path))
+
+(defun spydez/help/issue/visit (issue-dir file-name)
+  "Visits the issue file."
+  (find-file (spydez/help/issue/path issue-dir file-name 'quiet)))
+
+;; (spydez/help/issue/path "whitespace-and-butler" "move-to-column.org")
+;; (spydez/help/issue/path "whitespace-and-butler" "move-to-column.org" t)
+;; (spydez/help/issue/visit "whitespace-and-butler" "move-to-column.org")
+
+
+;;------------------------------------------------------------------------------
 ;; Which-Key
 ;;------------------------------------------------------------------------------
 
