@@ -6,6 +6,9 @@
 
 * Packages to Check Out Maybe
 
+Aggressive Indent Mode:
+  - https://github.com/Malabarba/aggressive-indent-mode
+
 Eval In REPL:
   - https://github.com/kaz-yos/eval-in-repl
   - elisp, python, shell, buch of languages I don't know...
@@ -48,7 +51,7 @@ Company-Jedi:
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [7/14]
+  - [ ] To Do: [0/7]
     - [ ] ag, ack, gack, gawk, your mom, grep, something?
       - ripgrep https://github.com/BurntSushi/ripgrep
         - w/ deadgrep? https://github.com/Wilfred/deadgrep
@@ -69,27 +72,6 @@ Company-Jedi:
         language server, other external tools won't bother - just code hilighting maybe.
       - e.g.2. want rust or w/e flavor of the month catches my eye at home but
         none of it at work
-    - [X] Is there a command to list out applicable yasnippets?
-      - M-x yas-insert-snippet
-        - aka `C-c & C-s'
-      - Also made spydez/yas/list for calling that.
-        - But my snippets don't show up sometimes - order is weird. Search for '<spy'.
-    - [X] wsbutler - ignore line at point completely
-      - Something fucky is happening and my advice function only works if
-        there's a message to slow it down...?
-      - Complicated. See [[file:issues/whitespace-and-butler/bug-info.el::;;%20-*-%20mode:%20emacs-lisp;%20lexical-binding:%20t%20-*-][issue]] and [[file:~/.emacs.d/personal/init/config/configure-whitespace.el::;;%20Error%20seems%20a%20layer%20deeper%20in%20applying%20`buffer-display-table'%20to%20buffer...][config]]
-      - I could just have it skip over any EOL whitespace checking on point's line if point's in the whitespace maybe? That sounds complicated...
-    - [X] something subtler than magenta for the too-long lines from whitespace-mode?
-      - Something that works well with comments (green) and normal (white)
-    - [X] use-package helpful
-    - [X] null/temp custom.el
-      - Will package-selected-packages like this?
-      - [[https://www.reddit.com/r/emacs/comments/9rrhy8/emacsers_with_beautiful_initel_files_what_about/e8jaxxs?utm_source=share&utm_medium=web2x][temp file for custom]]
-        - No. Trying `null-device' instead.
-          - https://www.reddit.com/r/emacs/comments/9rrhy8/emacsers_with_beautiful_initel_files_what_about/e8juc8v
-    - [X] Magit - don't ignore whitespace in commit/diff
-    - [X] different whitespace-style list for org-mode
-      - [X] First stab failed. Try again.
 
 
 Tabs:
@@ -132,6 +114,35 @@ C++ dev environment with:
   - CMAKE
   - Google C Style
 https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
+
+* DONE [2019-08-29] A list of things that are done now
+CLOSED: [2019-08-29 Thu 12:05]
+:LOGBOOK:
+- State "DONE"       from              [2019-08-29 Thu 12:05]
+:END:
+
+  - [X] To Do: [7/7]
+    - [X] Is there a command to list out applicable yasnippets?
+      - M-x yas-insert-snippet
+        - aka `C-c & C-s'
+      - Also made spydez/yas/list for calling that.
+        - But my snippets don't show up sometimes - order is weird. Search for '<spy'.
+    - [X] wsbutler - ignore line at point completely
+      - Something fucky is happening and my advice function only works if
+        there's a message to slow it down...?
+      - Complicated. See [[file:issues/whitespace-and-butler/bug-info.el::;;%20-*-%20mode:%20emacs-lisp;%20lexical-binding:%20t%20-*-][issue]] and [[file:~/.emacs.d/personal/init/config/configure-whitespace.el::;;%20Error%20seems%20a%20layer%20deeper%20in%20applying%20`buffer-display-table'%20to%20buffer...][config]]
+      - I could just have it skip over any EOL whitespace checking on point's line if point's in the whitespace maybe? That sounds complicated...
+    - [X] something subtler than magenta for the too-long lines from whitespace-mode?
+      - Something that works well with comments (green) and normal (white)
+    - [X] use-package helpful
+    - [X] null/temp custom.el
+      - Will package-selected-packages like this?
+      - [[https://www.reddit.com/r/emacs/comments/9rrhy8/emacsers_with_beautiful_initel_files_what_about/e8jaxxs?utm_source=share&utm_medium=web2x][temp file for custom]]
+        - No. Trying `null-device' instead.
+          - https://www.reddit.com/r/emacs/comments/9rrhy8/emacsers_with_beautiful_initel_files_what_about/e8juc8v
+    - [X] Magit - don't ignore whitespace in commit/diff
+    - [X] different whitespace-style list for org-mode
+      - [X] First stab failed. Try again.
 
 * DONE [2019-08-19] A list of things that are done now
 CLOSED: [2019-08-19 Mon 12:34]

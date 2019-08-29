@@ -765,6 +765,178 @@ But I expected the buffer contents to be:
 
 https://gist.github.com/spydez/9dfd745126239d922d41d21a1d8546b7
 
+***************** Person 2
+
+I'm getting more confused.
+
+  1. What is whitespace-alfred? I don't think you've mentioned that before. Why are you defining this function? Where did it come from? Why are you using it? Do you realize that you keep adding more variables to this problem? This problem you're describing keeps changing. It's a moving target.
+
+  2. Why did the indentation change between the first and second buffer contents examples?
+
+  3. Why is the code not indented properly in the first place? Why are there hanging parens? Why are there blank lines in the middle of the functions?
+
+  4. Why are you showing examples of reformatting Lisp code? I thought you said that the problem was that Python code was being broken.
+
+  5. I can't detect a difference between the second and third buffer examples.
+
+So you said that you are leaving ws-butler out, but now you're using your own "alfred" function to do the same thing? So now you're reporting a bug in your own code?
+
+I don't know if I can help you. I've certainly tried, though.
+
+****************** ME
+
+1: Alfred:
+
+  > What is whitespace-alfred? I don't think you've mentioned that before. Why are you defining this function? Where did it come from? Why are you using it? Do you realize that you keep adding more variables to this problem? This problem you're describing keeps changing. It's a moving target.
+
+whitespace-alfred is an ultra-minimized ws-butler that is useful in giving a 100% reproduction of the bug without using ws-butler. It is also a way of proving ws-butler is not at fault. It is also a way of demonstrating what ws-butler does to whitespace specifically on the point's current line.
+
+I banged it out myself in a few minutes just to have something small and hopefully grokkable.
+
+Each reply I do with each new bug info dump and each new repro steps is self-contained. You can take the code from any of them and do the bug. I don't know how to try to adjust myself to meet your requests without changing information so yes... Variables get added. But the slate was also wiped clean so only the variables in the reply you're looking at should matter.
+
+
+2: Reddit Formatting:
+
+  > Why did the indentation change between the first and second buffer contents examples?
+
+No idea. The gists are fine, so the code was fine. I guess either the emacs text buffer I used to compose the post, or reddit's WYSIWIG editor messed up the indentation. My money's on the WYSIWYG.
+
+
+3: Code Formatting:
+
+  > Why is the code not indented properly in the first place? Why are there hanging parens? Why are there blank lines in the middle of the functions?
+
+It's a bug with whitespace cleanup. I have a function called dirty-whitespace-code... I fucked up the formatting on purpose to try to emphasize that it's bad, dirty code and you'd see the bad dirty whitespace get cleaned up on the repro step when bad dirty whitespace should get cleaned up. Otherwise whitespace-alfred doesn't do anything visually, really (besides eating one single space).
+
+I mean... I could make some beautiful lisp that needs no whitespace cleanup, and then invoke Alfred, and then nothing will happen.
+
+
+4: Lisp/Python:
+
+  > Why are you showing examples of reformatting Lisp code? I thought you said that the problem was that Python code was being broken.
+
+Ok... A. you've been fine with lisp all along until now and B. whitespace cleanup works on all prog-mode derivatives, not just python. Python is bad and drove me to post here because it actually physically fails to compile/run when the indentation gets fucked by a missing space. Other languages just get complaints in code reviews.
+
+
+5: Whitespace:
+
+  > I can't detect a difference between the second and third buffer examples.
+
+It's... it's whitespace. It's always been whitespace; the whole entire thing is about one space being or not being there when it should be. The whole, entire difference in those two examples is the one single missing space on the blank line in hello-world.
+
+
+6: Conclusions:
+
+Another commenter helped me out and figured out move-to-column in emacs' C source code is ignoring the display table. whitespace-mode sets up a display table entry to translate "\n" into "$\n" and this is where the off-by-one error is introduced.
+
+ws-butler is innocent, as is whitespace-alfred.
+
+I've "solved" the bug by creating a ':filter-args' advice for move-to-column for the short term. Need to submit a bug to emacs against move-to-column for the longer term/actual solution.
+
+Between you and him I did finally manage to get this resolved, so thanks a lot for sticking with it and trying to help. Cuz you did, even if it doesn't feel it. It doesn't help that we were throwing a lot of text at each other trying to get our points understood, and it was frustrating for me sometimes. I hope I didn't frustrate you too much... My bug is fixed now, so thanks again.
+
+But next time, please maybe consider trying to repro yourself - I wasted a lot of time on those repro steps.
+
+And please do not try to learn [the Whitespace] language.
+
+******************* Person 2
+
+I'm glad you got it figured out.
+
+  > whitespace-alfred is an ultra-minimized ws-butler that is useful in giving a 100% reproduction of the bug without using ws-butler.
+
+"A rose by any other name..." If you copy the code from ws-butler and put it in a function by another name, you're still using ws-butler. If you do that without explaining what you're doing, it makes it very difficult to help you.
+
+  > No idea. The gists are fine, so the code was fine. I guess either the emacs text buffer I used to compose the post, or reddit's WYSIWIG editor messed up the indentation. My money's on the WYSIWYG.
+
+That's why you should review your comment after posting it, to make sure the formatting worked properly. Leaving it for me to find and wonder about makes it hard for me to help you.
+
+  > But next time, please maybe consider trying to repro yourself - I wasted a lot of time on those repro steps.
+
+As far as I could tell, there was nothing for me to try to reproduce, because you didn't clearly describe the problem or how to reproduce it. That's what I was trying to help you do.
+
+Let me suggest a pattern for reporting similar issues in the future. In this case, since it was originally about Python, I would suggest reporting steps that are something like this (can't use numbers because Reddit can't handle blank lines in lists or starting at a number other than 1):
+
+  * Open a new Python buffer and insert the following code:
+
+    def my_function(arg):
+        print "Hello"
+
+        print "World"
+
+  * Evaluate the buffer in an inferior Python process and call the function. Note that it works properly, printing both Hello and World.
+
+  * Execute command M-x something-that-breaks-indentation RET.
+
+  * Evaluate the buffer and call the function again. Note that the Python function doesn't work properly anymore.
+
+Reproducing the bug, if there is one, ought to be nearly that simple. From there, those who are helping you can begin to investigate.
+
+By the way, I've had this in my prog-mode-hook for years, and I've never had any problems with whitespace in Python or any other languages. Maybe it will work for you better than ws-butler.
+
+(add-hook 'before-save-hook 'delete-trailing-whitespace nil t)
+
+I also use aggressive-indent-mode, which works well.
+
+******************** ME
+
+  > "A rose by any other name..." If you copy the code from ws-butler and put it in a function by another name, you're still using ws-butler.
+
+It was a clean-room implementation more than a copy, and 9 lines instead of 300+, so I thought it was useful given the "minimal, complete example" directive.
+
+  > That's why you should review your comment after posting it.
+
+You're right, my after-posting reviews should have been as thorough as my before-posting reviews, and I missed something important. In my defense, I had the gists there in case there was any formatting confusion as Github Gists are designed for code and Reddit posts are not.
+
+  > (add-hook 'before-save-hook 'delete-trailing-whitespace nil t)
+
+I used whitespace-cleanup for a brief bit but I can't be that aggressive. I've got a big legacy mess of code and also some coworkers who don't like lines changing needlessly. So ws-butler is better because it only cleans up lines in regions of the buffer that have changed.
+
+  > I also use aggressive-indent-mode, which works well.
+
+aggressive-indent-mode looks cool but might be a nightmare for me, depending. I like to abandon default formatting to get things to actually line up sometimes. I'll put it on my list of packages to check out though, thanks.
+
+  > As far as I could tell, there was nothing for me to try to reproduce, because you didn't clearly describe the problem or how to reproduce it. That's what I was trying to help you do.
+
+I really did try. I don't know why we never got on the same page. Maybe we had the XY Problem.
+
+
+Hm...
+
+The pythonic repro would probably be...
+
+  1. Do the emacs -q step.
+
+  2. Do the whitespace-alfred copy/paste/eval-buffer step.
+
+  3. Your goal is to output "Hello, World" in Python 2.7 - the latest and greatest in mid 90's Python.
+
+Start with this in your python buffer:
+
+def foo():
+  print "Hello, ",
+
+  pass
+
+It runs but is not complete.
+
+You are distracted by lunch, or a coworker, or something. So while indented on the line below "Hello", do the following in order to take a break:
+
+  - M-x whitespace-alfred
+  - C-x C-s
+
+Now continue where you left off and finish your function. You will get this:
+
+def foo():
+  print "Hello, ",
+ print "World."
+  pass
+
+********************* Person 2
+
+Now that's a much better example that clearly demonstrates the problem. :)
+
 *************** Person 3
 
 Regarding your initial attempt at a MRE, people need to get to the point in fewer characters. I'd say the verbosity problem is as much an existential threat as climate change.
