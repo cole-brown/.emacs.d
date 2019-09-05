@@ -51,13 +51,11 @@ Company-Jedi:
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [1/8]
-    - [ ] ag, ack, gack, gawk, your mom, grep, something?
-      - ripgrep https://github.com/BurntSushi/ripgrep
-        - w/ deadgrep? https://github.com/Wilfred/deadgrep
-    - [ ] Fancy checkboxes (<- like that) lose fancy boxyness when buffer has mismatched quotations or something
-      - double quote def work. Take out one of these and see. ""
-      - Started issue at (find-file (spydez/path/to-file spydez/dir/docs/issues "org-mode" "prettify-symbols.org"))
+  - [-] To Do: [2/8]
+    - [-] Fancy checkboxes (<- like that) lose fancy boxyness when buffer has mismatched quotations or something
+      - [X] double quote def work. Take out one of these and see. ""
+      - [X] Started issue at (spydez/help/issue/visit "org-mode" "prettify-symbols.org")
+      - [ ] Turn off for now?
     - [ ] configure-crypt needs babying... again... (again... (again?..))
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
         - https://arenzana.org/2019/04/emacs-org-mode/
@@ -72,6 +70,11 @@ Company-Jedi:
         language server, other external tools won't bother - just code hilighting maybe.
       - e.g.2. want rust or w/e flavor of the month catches my eye at home but
         none of it at work
+    - [X] ag, ack, gack, gawk, your mom, grep, something?
+      - [X] ripgrep https://github.com/BurntSushi/ripgrep
+        - Added ripgrep to Windows' PATH env var. Want it on bash cmd line too...
+      - [X] w/ deadgrep? https://github.com/Wilfred/deadgrep
+      - [X] Restart emacs and test.
     - [X] interactive function for code->issue doc linkage
       - M-x whatever -> prints/returns expanded filename
       - C-u M-x whatever -> visits file

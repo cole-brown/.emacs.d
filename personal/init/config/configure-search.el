@@ -12,6 +12,53 @@
 
 
 ;;------------------------------------------------------------------------------
+;; ripgrep & deadgrep - grep faster
+;;------------------------------------------------------------------------------
+
+;;-----
+;; ripgrep
+;;-----
+;; https://github.com/BurntSushi/ripgrep
+;; Installed:
+;;   binary: ripgrep-11.0.2-x86_64-pc-windows-gnu
+;;   date:   [2019-08-30]
+;; Installed GNU version as MSVC version needs DLLs or something so meh.
+
+;;   "ripgrep is a line-oriented search tool that recursively searches your
+;; current directory for a regex pattern. By default, ripgrep will respect your
+;; .gitignore and automatically skip hidden files/directories and binary files.
+;; ripgrep has first class support on Windows, macOS and Linux, with binary
+;; downloads available for every release. ripgrep is similar to other popular
+;; search tools like The Silver Searcher, ack and grep."
+
+;; TODO: Add a use-tool here for making sure that ripgrep is installed?
+;;   sub-TODO: see what happens for deadgrep when it has no ripgrep?
+
+
+;;-----
+;; deadgrep
+;;-----
+;; https://github.com/Wilfred/deadgrep
+;; "Deadgrep is the fast, beautiful text search that your Emacs deserves."
+;; Trial: [2019-08-30]
+(use-package deadgrep
+  :bind
+  ;; Try binding to F5?
+  ;; Maybe replace projectile search or something if don't like F5?
+  (("<f5>" . #'deadgrep)
+
+   ;; TRIAL: [2019-08-27]
+   ;; kill buffer instead of quit?
+   :map deadgrep-mode-map
+   ("q" . kill-this-buffer)
+
+   ;; Also map into the projectile search group
+   ;; (projectile-grep, projectile-deadgrep, et al):
+   :map projectile-command-map
+         ("s d" . deadgrep)))
+
+
+;;------------------------------------------------------------------------------
 ;; Anzu - Show Number of Matches in Mode-Line While Searching
 ;;------------------------------------------------------------------------------
 (use-package anzu
@@ -35,36 +82,6 @@
   ;;---
   ;; and enable
   (global-anzu-mode))
-
-
-;;------------------------------------------------------------------------------
-;; Occur DWIM (Do What I Mean)
-;;------------------------------------------------------------------------------
-;; https://oremacs.com/2015/01/26/occur-dwim/
-;; It will offer as the default candidate:
-;;   - the current region, if it's active
-;;   - the current symbol, otherwise
-(defun occur-dwim ()
-  "Call `occur' with a sane default."
-  (interactive)
-  (push (if (region-active-p)
-            (buffer-substring-no-properties
-             (region-beginning)
-             (region-end))
-          (let ((sym (thing-at-point 'symbol)))
-            (when (stringp sym)
-              (regexp-quote sym))))
-        regexp-history)
-  (call-interactively 'occur))
-
-;; A Hydra that goes nicely with occur:
-;;   Since occur, like some other functions (grep, rgrep, compile), works with
-;; next-error, it's possible to use this Hydra to navigate the occur matches:
-;; (hydra-create "M-g"
-;;   '(("h" first-error "first")
-;;     ("j" next-error "next")
-;;     ("k" previous-error "prev")))
-;; TODO: use this for occur and grep and such?
 
 
 ;;------------------------------------------------------------------------------

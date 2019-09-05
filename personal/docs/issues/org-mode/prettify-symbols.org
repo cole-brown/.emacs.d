@@ -21,6 +21,12 @@ This checklist should not - it should be standard org-mode checkbox ASCII bracke
 
 * Starting point
 
+  - [-] half filled
+    - [X] checked
+    - [ ] unchecked
+
+So apparently it does have something to do with org-mode, as they are fine in the source block below?
+
 #+BEGIN_SRC emacs-lisp
 ;; (in org-mode's use-package)
 ;; ...
@@ -56,6 +62,11 @@ This checklist should not - it should be standard org-mode checkbox ASCII bracke
 ;; ...
 #+END_SRC
 
+  - [-] half filled
+    - [X] checked
+    - [ ] unchecked
+
+
 * Description
 
 In some org files [ ] doesn't get converted to unicode character "☐" by prettify-symbols-mode.
@@ -69,3 +80,7 @@ I do not know where to even start right now on this...
 
 Go here to poke around:
   (find-file (spydez/path/to-file spydez/dir/init/config "configure-org-mode.el"))
+* Find offender?
+
+- emacs --no-init & manual hunt?
+- bug-hunt package?
