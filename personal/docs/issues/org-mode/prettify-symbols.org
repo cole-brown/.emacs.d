@@ -4,6 +4,7 @@
 #+EMAIL:       git@spydez.com
 #+DATE:        [2019-08-28 Wed]
 
+
 * Test Case
 
 This checklist should be prettified:
@@ -84,3 +85,28 @@ Go here to poke around:
 
 - emacs --no-init & manual hunt?
 - bug-hunt package?
+* Bug 2: rainbow-delimiters
+
+Prettified boxes are picking up the coloring of unmatched rainbow-delimiters...
+
+** Test Case
+
+Add or remove double quotes until next checklist looks correct.
+"
+
+This checklist should be prettified:
+  - [-] half filled
+    - [X] checked
+    - [ ] unchecked
+
+This should cause the issue:
+  (
+
+This checklist should have boxes of incorrect color.
+  - [-] half filled
+    - [X] checked
+    - [ ] unchecked
+{
+  - [ ] This has color 2; next will have color 3: [
+    - [X] checked
+    - [ ] unchecked

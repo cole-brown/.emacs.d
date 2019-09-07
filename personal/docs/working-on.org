@@ -4,7 +4,39 @@
 #+DATE:      [2019-03-05 Tue]
 
 
+* Things I Want, Non-Emacs-Related
+
+** pretty output library helper
+
+features:
+  - indentation levels
+  - easy columns
+  - easy left/right/center alignment
+  - Easy "ensure we have N empty lines above what's about to print"
+  - easy line decorators ("-----", etc) of static or dynamic widths
+    - based on what's above, or below...
+      - Maybe "decorate this like so: (above, below, bracket), style, size"
+
+Would want it in... python, C#, elisp, every other language I do...
+
+*** Names?
+
+polh
+  - pretty output library helper
+
+mis
+  - make it so
+
+* Win 10 App to Check Out Maybe
+
+FancyZones:
+  - Tiling window manager. Save/restore layouts?
+  - https://github.com/microsoft/PowerToys/tree/master/src/modules/fancyzones
+
 * Packages to Check Out Maybe
+
+CamelCase <-> snake_case:
+  - https://github.com/akicho8/string-inflection
 
 Aggressive Indent Mode:
   - https://github.com/Malabarba/aggressive-indent-mode
