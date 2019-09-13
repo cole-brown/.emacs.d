@@ -260,7 +260,7 @@ than other modes."
       ;; eye-stabby. Could go to -1 or -2 if not obvious enough.
       (set-face-attribute 'whitespace-line nil
                           :foreground nil ;; use whatever other things want (comments, code)
-                          :background spydez/theme/color/zenburn-magenta-bg)
+                          :background spydez/theme/color/zenburn-magenta-bg-1)
                           ;; originally:
                           ;; :foreground zenburn-magenta
                           ;; :background zenburn-bg)

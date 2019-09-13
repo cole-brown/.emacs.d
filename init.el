@@ -177,6 +177,12 @@
 
 
 ;;---
+;; Links
+;;---
+;; Nice browsable unicode table:
+;;   https://unicode-table.com/en/blocks/miscellaneous-symbols/
+
+;;---
 ;; TODOs and Misc.
 ;;---
 
@@ -491,6 +497,15 @@
 ;;------------------------------------------------------------------------------
 
 ;; TODO: shift even more out into bootstrap-* files/steps?
+
+;; Defining this early so we don't have to worry about it existing when we get
+;; bootstrap & configuration rolling for real.
+;; Just a convenient group to chuck all my defcustoms into.
+(defgroup spydez/group nil
+  "General group namespace for the defcustoms in my emacs init."
+  :prefix "spydez/"
+  ;; not really sure where to stick it
+  :group 'convenience)
 
 ;;---
 ;; Setup some very basics, so we can get moving...
@@ -844,6 +859,9 @@ For the transition, maybe a func for checking..."
 
 ;; log or large file stuff
 (spydez/info/require 'configure-logs)
+
+;; inserting, searching for my own 'signatures' in notes, code.
+(spydez/info/require 'configure-signatures)
 
 ;; key-chords, hydra, some helper functions
 ;;   - probably high enough in the order now...

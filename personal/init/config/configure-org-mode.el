@@ -99,6 +99,18 @@
     "Allow speed keys when at any headline *, not just beginning of line."
     (and (looking-at org-outline-regexp) (looking-back "^\**")))
 
+  ;; This may get away from "Org-Mode" and into "Random Shit"...
+  (defhydra spydez/hydra/org-mode (:color blue)
+    "Org-Mode"
+    ("s" (spydez/signature/insert spydez/signature/short-pre) "insert sig")
+    ("-" (spydez/signature/insert spydez/signature/name-post) "insert -name")
+    ("t" (spydez/signature/insert spydez/signature/todo) "insert todo")
+
+    ("n" org-journal-new-entry "new journal entry")
+    ("v" (funcall org-journal-find-file
+                  (org-journal-get-entry-path)) "visit journal")
+    )
+
   ;;------------------
   ;; /':init' section.
   ;;------------------
@@ -226,15 +238,25 @@
   ;;----------------------------------------------------------------------------
   ;; Org-Mode Keybinds
   ;;----------------------------------------------------------------------------
-  ;; NOTE: THESE ARE ORG-MODE ONLY! And that is intended.
 
-  :bind (:map org-mode-map
-              ;; 'C-c <tab>' to show headings only (no top parent notes, no
-              ;; children notes, just headings). Org-Mode had 'C-c <tab>' as
-              ;; outline-show-children, which only shows direct children
-              ;; headings, not all descendants' headings.
-              ;; https://yiufung.net/post/org-mode-hidden-gems-pt1/
-              ("C-c <tab>" . #'org-kill-note-or-show-branches))
+  :bind
+  (;;---
+   ;; :map global
+   ;;---
+   ("C-," . spydez/hydra/org-mode/body)
+
+
+   ;;---
+   :map org-mode-map
+   ;;---
+   ;; NOTE: THESE ARE ORG-MODE ONLY! And that is intended.
+
+   ;; 'C-c <tab>' to show headings only (no top parent notes, no
+   ;; children notes, just headings). Org-Mode had 'C-c <tab>' as
+   ;; outline-show-children, which only shows direct children
+   ;; headings, not all descendants' headings.
+   ;; https://yiufung.net/post/org-mode-hidden-gems-pt1/
+   ("C-c <tab>" . #'org-kill-note-or-show-branches))
 
   ;;-----------------
   ;; /':bind' section
@@ -604,26 +626,29 @@ savages."
   :after org
   :demand t
 
-  ;;-----
-  :init
-  ;;-----
+  ;; Trial: [2019-09-13]
+  ;; Moved these entries to a more general 'org-mode' hydra that can take on
+  ;; more org-related stuff.
+  ;; TODO: Delete this and its bind if it works out there.
+  ;; ;;-----
+  ;; :init
+  ;; ;;-----
+  ;; (defhydra spydez/hydra/journal ()
+  ;;   "Org-Journal"
+  ;;   ("n" org-journal-new-entry "new entry")
+  ;;   ("v" (funcall org-journal-find-file (org-journal-get-entry-path)) "visit journal")
+  ;;   )
 
-  (defhydra spydez/hydra/journal ()
-    "Org-Journal"
-    ("n" org-journal-new-entry "new entry")
-    ("v" (funcall org-journal-find-file (org-journal-get-entry-path)) "visit journal")
-    )
 
+  ;; ;;-----
+  ;; :bind*
+  ;; ;;-----
+  ;; ;; Force some bindings. ':bind*' overrides minor mode binds.
+  ;; ("C-," . spydez/hydra/journal/body)
 
-  ;;-----
-  :bind*
-  ;;-----
-  ;; Force some bindings. ':bind*' overrides minor mode binds.
-  ("C-," . spydez/hydra/journal/body)
-
-  ;; Note: C-c C-j is the default for `org-journal-new-entry', but that seems
-  ;; popular. Org-mode and python-mode both bind it to something else.
-  ;; Trying this binding/hydra out instead.
+  ;; ;; Note: C-c C-j is the default for `org-journal-new-entry', but that seems
+  ;; ;; popular. Org-mode and python-mode both bind it to something else.
+  ;; ;; Trying this binding/hydra out instead.
 
 
   ;;-----

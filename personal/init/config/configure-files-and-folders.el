@@ -18,6 +18,9 @@ non-nil. Asks before killing each buffer if it is modified,
 unless NO-ASK is non-nil."
   (interactive "sKill buffers matching regex: ")
 
+  ;; TODO: find all matching buffers and do a "does this look about right?"
+  ;; prompt?
+
   (let ((killed-names ()))
     ;; for all open buffers...
     (dolist (buffer (buffer-list))
