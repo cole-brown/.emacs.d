@@ -3,6 +3,90 @@
 ;; TODO: configure-text, configure-point-and-mark, configure-dev-env, configure-files-and-folders...
 ;; check to see if they've got the correct pieces
 
+
+;;------------------------------------------------------------------------------
+;; Better Kill-Matching-Buffer
+;;------------------------------------------------------------------------------
+
+;; I could just grub my meaty hooks into kill-matching-buffers, but... eh.
+;; I'd probably just forget the function that way.
+(defun spydez/buffer/kill-matching (regexp &optional internal-too no-ask)
+  "Kill buffers whose name matches the specified REGEXP.
+Ignores buffers whose name starts with a space (internal
+buffers), unless optional prefix argument INTERNAL-TOO is
+non-nil. Asks before killing each buffer if it is modified,
+unless NO-ASK is non-nil."
+  (interactive "sKill buffers matching regex: ")
+
+  (let ((killed-names ()))
+    ;; for all open buffers...
+    (dolist (buffer (buffer-list))
+      (let ((name (buffer-name buffer)))
+        ;; (message "kill-match plz name:%s e?%s it?%s regex?%s ok?%s"
+        ;;          ;; has a name
+        ;;          name
+        ;;          ;; not empty
+        ;;          (not (string-equal name ""))
+        ;;          ;; internal-too or not internal
+        ;;          (or internal-too (/= (aref name 0) ?\s))
+        ;;          ;; matches regex
+        ;;          (string-match regexp name)
+        ;;          ;; total
+        ;;          (and name (not (string-equal name ""))
+        ;;               (or internal-too (/= (aref name 0) ?\s))
+        ;;               (string-match regexp name)))
+
+        ;; check name obeys `internal-too' type restriction and matches regex
+        (when (and name (not (string-equal name ""))
+                   (or internal-too (/= (aref name 0) ?\s))
+                   (string-match regexp name))
+          ;; and kill it maybe
+          (if no-ask
+              ;; either just kill it...
+              (kill-buffer buffer)
+            ;; ...or probably kill it? Save the name if so.
+            (let ((maybe-kill-name (spydez/buffer/kill-ask buffer)))
+              (unless (null maybe-kill-name)
+                (push maybe-kill-name killed-names)))))))
+    ;; And finally, give some goddamn output (looking at you,
+    ;; kill-matching-buffers).
+    (cond
+     ((null killed-names)
+      (message "No buffers killed matching '%s'."
+               regexp))
+     ((>= (length killed-names) 10)
+      (message "Killed %s buffers matching '%s'."
+               (length killed-names)
+               regexp))
+     (t
+      (message "Killed %s buffers matching '%s': %s"
+               (length killed-names)
+               regexp
+               killed-names)))))
+
+
+;; Like `kill-buffer-ask' but no confirmation for unmodified buffers.
+(defun spydez/buffer/kill-ask (buffer)
+  "Kill BUFFER if confirmed. No confirm given for unmodified
+buffers; just kill.
+
+Returns buffer-name on kill, nil on no kill."
+  ;; so... kill?
+  (if (or
+         ;; just kill it if not modified
+         (not (buffer-modified-p buffer))
+         ;; or ask first if modded
+         (yes-or-no-p (format "Buffer '%s' HAS BEEN EDITED.  Kill? "
+                                 (buffer-name buffer))))
+    ;; ok - kill
+    (prog1
+        ;; return name when killed
+        (buffer-name buffer)
+      (kill-buffer buffer))
+    ;; ret nil when no kill
+    nil))
+
+
 ;;------------------------------------------------------------------------------
 ;; Dired
 ;;------------------------------------------------------------------------------

@@ -42,6 +42,8 @@
 ;; "Deadgrep is the fast, beautiful text search that your Emacs deserves."
 ;; Trial: [2019-08-30]
 (use-package deadgrep
+  :demand t
+
   :bind
   ;; Try binding to F5?
   ;; Maybe replace projectile search or something if don't like F5?
