@@ -50,6 +50,10 @@
   ;; lsp sub-packages
   ;;-----
   (use-package lsp-ui
+    ;; [2019-09-17] DISABLING FOR NOW
+    ;; Just to see how non-ui looks/acts...
+    :disabled
+
     :commands lsp-ui-mode
 
     :hook

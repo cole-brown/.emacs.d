@@ -238,20 +238,48 @@
 ;; Just evalulate this again: (package-refresh-contents)
 
 
-;; TODO: make this into a help command I can call that'll do the pop open
-;;   thing a help function does?
-;; There are automated ways to upgrade, but I'm thinking manual for now...
+;; MANUAL UPGRADE PROCESS!
 ;;   M-x list-packages
 ;;   'U' to mark upgrades
 ;;   'x' to upgrade?
 ;; After it's all done, maybe run:
 ;;   M-x package-autoremove
-;;
-;; Almost what I want in a function?:
-;;   https://emacs.stackexchange.com/questions/16398/noninteractively-upgrade-all-packages
+
+;; Less manual. Upgrade all packages without showing *Packages* buffer.
+;; https://emacs.stackexchange.com/questions/16398/noninteractively-upgrade-all-packages
+(defun spydez/package/upgrade-all ()
+  "Upgrade all packages automatically without showing *Packages* buffer."
+  (interactive)
+  (package-refresh-contents)
+  (let (upgrades)
+    (cl-flet ((get-version (name where)
+                (let ((pkg (cadr (assq name where))))
+                  (when pkg
+                    (package-desc-version pkg)))))
+      (dolist (package (mapcar #'car package-alist))
+        (let ((in-archive (get-version package package-archive-contents)))
+          (when (and in-archive
+                     (version-list-< (get-version package package-alist)
+                                     in-archive))
+            (push (cadr (assq package package-archive-contents))
+                  upgrades)))))
+    (if upgrades
+        (when (yes-or-no-p
+               (message "Upgrade %d package%s (%s)? "
+                        (length upgrades)
+                        (if (= (length upgrades) 1) "" "s")
+                        (mapconcat #'package-desc-full-name upgrades ", ")))
+          (save-window-excursion
+            (dolist (package-desc upgrades)
+              (let ((old-package (cadr (assq (package-desc-name package-desc)
+                                             package-alist))))
+                (package-install package-desc)
+                (package-delete  old-package)))))
+      (message "All packages are up to date."))))
 
 ;; Options for auto-update, or packages for helping update:
 ;;   https://emacs.stackexchange.com/questions/31872/how-to-update-packages-installed-with-use-package
+;;     https://github.com/rranelli/auto-package-update.el
 ;;   https://github.com/Malabarba/paradox
 
 ;; http://nhoffman.github.io/.emacs.d/#orgf46780c

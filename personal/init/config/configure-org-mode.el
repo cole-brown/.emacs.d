@@ -629,19 +629,6 @@ savages."
   :after org
   :demand t
 
-  ;; Trial: [2019-09-13]
-  ;; Moved these entries to a more general 'org-mode' hydra that can take on
-  ;; more org-related stuff.
-  ;; TODO: Delete this and its bind if it works out there.
-  ;; ;;-----
-  ;; :init
-  ;; ;;-----
-  ;; (defhydra spydez/hydra/journal ()
-  ;;   "Org-Journal"
-  ;;   ("n" org-journal-new-entry "new entry")
-  ;;   ("v" (funcall org-journal-find-file (org-journal-get-entry-path)) "visit journal")
-  ;;   )
-
 
   ;; ;;-----
   ;; :bind*
@@ -684,6 +671,14 @@ savages."
   ;;   - betterer:  yyyy-mm-dd.journal.org
   (org-journal-file-format (concat spydez/datetime/format/yyyy-mm-dd
                                    ".journal.org"))
+
+
+  ;;-----
+  :config
+  ;;-----
+  ;; move cache to no-littering's /var
+  (setq org-journal-cache-file
+        (no-littering-expand-var-file-name "org-journal.cache"))
 
   ;; TODO: encryption?
   ;; https://github.com/bastibe/org-journal#encryption

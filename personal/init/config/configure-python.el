@@ -22,22 +22,19 @@
   :interpreter ("python" . python-mode)
 
   ;;---
-  ;; Language Server Protocol for Python (LSP
+  ;; Language Server Protocol for Python (LSP)
   ;;---
-  ;; Not quite ready for Language Server yet...
-  ;; Was preventing this use-package from firing at all somehow?
-  ;; :after (lsp-mode projectile)
-  ;; :demand t
+  :after (lsp-mode projectile)
+  :demand t
 
 
-  ;; ;;-----
-  ;; :hook
-  ;; ;;-----
+  ;;-----
+  :hook
+  ;;-----
   ;;---
-  ;; Language Server Protocol for Python (LSP
+  ;; Language Server Protocol for Python (LSP)
   ;;---
-  ;; Not quite ready for Language Server yet.
-  ;; (python-mode . lsp-deferred)
+  (python-mode . lsp-deferred)
 
 
   ;;-----
@@ -70,17 +67,17 @@
   ;;-----
 
   ;;---
-  ;; Language Server Protocol for Python (LSP
+  ;; Language Server Protocol for Python (LSP)
   ;;---
-  ;; (add-to-list 'lsp-language-id-configuration '(python-mode . "python"))
-  ;; (lsp-register-client
-  ;;  (make-lsp-client :new-connection (lsp-stdio-connection "pyls")
-  ;;                   :major-modes '(python-mode)
-  ;;                   :server-id 'pyls))
-  ;;
-  ;; (setq lsp-auto-guess-root t       ; Detect project root
-  ;;       lsp-prefer-flymake nil      ; Use lsp-ui and flycheck
-  ;;       flymake-fringe-indicator-position 'right-fringe)
+  (add-to-list 'lsp-language-id-configuration '(python-mode . "python"))
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection "pyls")
+                    :major-modes '(python-mode)
+                    :server-id 'pyls))
+
+  (setq lsp-auto-guess-root t       ; Detect project root
+        lsp-prefer-flymake nil      ; Use lsp-ui and flycheck
+        flymake-fringe-indicator-position 'right-fringe)
   ;;---
 
 
@@ -110,10 +107,6 @@
 
   ;; (add-hook 'lsp-after-initialize-hook 'lsp-set-cfg)
   )
-
-;; python-mode itself comes with emacs now.
-;; (setq python-fill-docstring-style 'django)
-;; (setq python-fill-docstring-style 'symmetric)
 
 ;; Django has several modes for different parts:
 ;; https://code.djangoproject.com/wiki/Emacs

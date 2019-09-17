@@ -339,22 +339,12 @@ Version 2017-09-01"
 (use-package treemacs
   :defer t
 
-
   ;;:bind
   ;; bind some keys so you can get into treemacs?
   ;; M-x treemacs?
   ;; M-x treemacs-find-file?
 
-
-  :config
-  ;; Bit of a snafu right now between treemacs and no-littering.
-  ;; See `spydez/dir/docs/issues' for notes and more.
-  ;; This is the dirty fix I can do on my end:
-  (setq treemacs--last-error-persist-file (no-littering-expand-var-file-name
-                                           "treemacs-persist-at-last-error.org"))
-  ;; A nicer fix will need treemacs and/or no-littering updates.
-  ;;Hm... That didn't work on Win10 other comp... In :init maybe?
-
+  ;;:custom
   ;; many settings that can be set can be set here
 
   ;;   "The default width and height of the icons is 22 pixels. If you are

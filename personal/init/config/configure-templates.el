@@ -18,6 +18,7 @@
 ;; https://www.emacswiki.org/emacs/Yasnippet
 ;; https://joaotavora.github.io/yasnippet/snippet-expansion.html
 (use-package yasnippet
+  :demand t
   :delight yas-minor-mode
 
   :init
@@ -71,7 +72,9 @@ auto-complete to have pity is my game."
 ;;   Looks like no real setup - just make sure my snippets are ahead of these
 ;;   in the list `yas-snippet-dirs'.
 ;; Some people have this inside of (use-package yasnippet)
-(use-package yasnippet-snippets)
+(use-package yasnippet-snippets
+  :after yasnippet
+  :demand t)
 
 
 ;;------------------------------------------------------------------------------
