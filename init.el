@@ -82,22 +82,27 @@
 ;;-
 ;; `ripgrep/deadgrep': It's a lot better than `find'. A lot a lot.
 ;;-
-  ;; <F5> search term <RET>
+;; <F5> search term <RET>
+
+;;-
+;; Projectile:
+;;-
+;; find/replace with: Projectile's `C-c p r'
 
 ;;-
 ;; `find':                                            (knights who say...: '  ')
 ;;-
-  ;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni "zort"
+;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni "zort"
 
-  ;; (w/ no-littering):
-  ;; just org:
-  ;; find . -path "./elpa" -prune -o -path "./etc" -prune -o -path "./var" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni "zort"
-  ;;
-  ;; org and el:
-  ;; find . -path "./elpa" -prune -o -path "./etc" -prune -o -path "./var" -prune -o -iname "*.el" -o -iname "*.org" -print0 | xargs -0 grep -ni "zort"
+;; (w/ no-littering):
+;; just org:
+;; find . -path "./elpa" -prune -o -path "./etc" -prune -o -path "./var" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni "zort"
+;;
+;; org and el:
+;; find . -path "./elpa" -prune -o -path "./etc" -prune -o -path "./var" -prune -o -iname "*.el" -o -iname "*.org" -print0 | xargs -0 grep -ni "zort"
 
-  ;; Those are getting complicted and not working right...
-  ;; find . -iname "*.el" -o -iname "*.org" | grep -v "/var/" | grep -v "/pre-no-littering/" | grep -v "/manual-package-archive/" | grep -v "/elpa/" | xargs grep -i "zort"
+;; Those are getting complicted and not working right...
+;; find . -iname "*.el" -o -iname "*.org" | grep -v "/var/" | grep -v "/pre-no-littering/" | grep -v "/manual-package-archive/" | grep -v "/elpa/" | xargs grep -i "zort"
 
 
 ;;---

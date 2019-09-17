@@ -5,10 +5,6 @@
 ;; Functions
 ;;------------------------------------------------------------------------------
 
-;; TODO: rename for namespace?
-;;   - spydez/path/windows-to-mingw
-;; Try using Projectile's replace? C-c p r
-
 
 (defun spydez/path/to-file (parent &rest path)
   "Given a base dir, and a &rest of e.g. ('path/to' 'dir' 'with-file' 'file.txt),

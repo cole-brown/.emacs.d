@@ -266,7 +266,27 @@
 ;; Trial [2019-02-06]
 (use-package company
   :delight
+
+  ;;---
+  :custom
+  ;;---
+  (company-dabbrev-downcase nil
+   "Don't downcase candidates from dabbrev backend.")
+  (company-dabbrev-ignore-case t
+   (concat "Ignore case for completion candidates and ignore "
+           "typed text for completion insertions."))
+
+  (company-dabbrev-code-everywhere t
+   "Completion in comments and strings.")
+  (company-dabbrev-code-ignore-case t
+   (concat "Ignore case for completion candidates and ignore "
+           "typed text for completion insertions."))
+  ;; May need to update `company-dabbrev-code-modes' some day, but it's got
+  ;; prog-mode so it seems ok right now.
+
+  ;;---
   :config
+  ;;---
   ;; Enable Company-Mode in any programming mode.
   (add-hook 'prog-mode-hook 'company-mode))
 
@@ -275,8 +295,18 @@
 ;; Search through the completions with C-s, C-r and C-o. Press M-(digit) to
 ;; quickly complete with one of the first 10 candidates.
 
+
 ;; https://melpa.org/#/helm-company
-;; TODO: use-package helm-company?
+;; https://github.com/Sodel-the-Vociferous/helm-company
+;; Trial [2019-09-17]
+(use-package helm-company
+  :delight
+
+  :bind
+  (:map company-mode-map
+        ("C-;" . helm-company)
+   :map company-active-map
+        ("C-;" . helm-company)))
 
 ;; Maybe `company-box' for some pretty icons?
 ;; https://github.com/sebastiencs/company-box
