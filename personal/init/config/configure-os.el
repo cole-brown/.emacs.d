@@ -15,6 +15,16 @@
 (when (eq system-type 'windows-nt)
 
   ;;---
+  ;; Font
+  ;;---
+  ;; Default font (Courier New) has height issues between regular/bold and
+  ;; italic, which makes things shift around by a pixel annoyingly. Trying
+  ;; Consolas instead.
+  ;; Note: "Courier New" height was 98
+  (set-face-attribute 'default nil
+                      :family "Consolas" :height 100)
+
+  ;;---
   ;; PATH
   ;;---
   ;; Do I need to add anything specifically for windows here?
