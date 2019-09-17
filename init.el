@@ -14,8 +14,9 @@
 ;;    - ala `taskspace' or `with'
 
 ;; 4) Excellent replacement/override.
-;;    - Per-file/feature replacement by just having the source (provide
-;;      'foo) be in the (add-to-list 'load-path ...) later in the sequence.
+;;    - Per-file/feature replacement by just having the source
+;;      (provide 'zort) be in the (add-to-list 'load-path ...)
+;;      later in the sequence.
 ;;    - Can do more surgical overriding or futzing in `finalize-domains' or some
 ;;      similar thing.
 
@@ -75,23 +76,28 @@
 
 
 ;;---
-;; Search...                                             (knights who say...)
+;; Search...
 ;;---
-;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni "provide"
-;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni "
 
-;; (w/ no-littering):
-;; just org:
-;; find . -path "./elpa" -prune -o -path "./etc" -prune -o -path "./var" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni ""
-;;
-;; org and el:
-;; find . -path "./elpa" -prune -o -path "./etc" -prune -o -path "./var" -prune -o -iname "*.el" -o -iname "*.org" -print0 | xargs -0 grep -ni ""
+;;-
+;; `ripgrep/deadgrep': It's a lot better than `find'. A lot a lot.
+;;-
+  ;; <F5> search term <RET>
 
-;; Those are getting complicted and not working right...
-;; find . -iname "*.el" -o -iname "*.org" | grep -v "/var/" | grep -v "/pre-no-littering/" | grep -v "/manual-package-archive/" | grep -v "/elpa/" | xargs grep -i "foobar"
+;;-
+;; `find':                                            (knights who say...: '  ')
+;;-
+  ;; find . -path "./elpa" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni "zort"
 
-;; TODO: a search in my .emacs.d project that is, like... emacs.
-;; Seems silly to be upgrading emacs so much and still use bash for that...
+  ;; (w/ no-littering):
+  ;; just org:
+  ;; find . -path "./elpa" -prune -o -path "./etc" -prune -o -path "./var" -prune -o -iname "*.el" -print0 | xargs -0 grep -ni "zort"
+  ;;
+  ;; org and el:
+  ;; find . -path "./elpa" -prune -o -path "./etc" -prune -o -path "./var" -prune -o -iname "*.el" -o -iname "*.org" -print0 | xargs -0 grep -ni "zort"
+
+  ;; Those are getting complicted and not working right...
+  ;; find . -iname "*.el" -o -iname "*.org" | grep -v "/var/" | grep -v "/pre-no-littering/" | grep -v "/manual-package-archive/" | grep -v "/elpa/" | xargs grep -i "zort"
 
 
 ;;---

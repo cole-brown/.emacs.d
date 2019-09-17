@@ -65,7 +65,7 @@
                             (eval (cons '+ (cadr element))) ; sum dice roll
                           (string-to-number (car element)))))))) ; else try to convert key to number
 
-(sasta/sum-roll '(("1d6" (3)) ("-" nil) ("d100" (26)) ("+" nil) ("5d3" (3 3 1 3 1)) ("*" nil) ("foo" nil) ("+" nil) ("4" nil)))
+(sasta/sum-roll '(("1d6" (3)) ("-" nil) ("d100" (26)) ("+" nil) ("5d3" (3 3 1 3 1)) ("*" nil) ("zort" nil) ("+" nil) ("4" nil)))
 (+ 3 0 26 3 3 1 3 1 0 0 0 4)
 
 (defun sasta/dice (words-list)
@@ -83,8 +83,8 @@
             " = "
             (number-to-string (sasta/sum-roll roll-alist)))))
 
-(sasta/dice '("1d6" "-" "d100" "+" "5d3" "*" "foo" "+" "4")) 
-"1d6 - d100 + 5d3 * foo + 4: 4 - 32 + (3 2 2 3 1) * foo + 4 = 51" (+ 4 32 3 2 2 3 1 4)
+(sasta/dice '("1d6" "-" "d100" "+" "5d3" "*" "zort" "+" "4"))
+"1d6 - d100 + 5d3 * zort + 4: 4 - 32 + (3 2 2 3 1) * zort + 4 = 51" (+ 4 32 3 2 2 3 1 4)
 
 ;;------------------------------------------------------------------------------
 ;; ERC integration

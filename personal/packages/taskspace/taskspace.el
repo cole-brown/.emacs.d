@@ -567,9 +567,9 @@ files not copied in alist: ((filepath . 'reason')...)"
           )))
     ;; number is set at max, we return next in sequence
     (1+ number)))
-;; (taskspace/get-number '("foo/bar/2000_0_baz"))
+;; (taskspace/get-number '("zort/troz/2000_0_baz"))
 ;; (taskspace/get-number '())
-;; (taskspace/get-number '("foo/bar/2000_0_baz" "foo/bar/2000_qux" "foo/bar/2000_qux_jeff" "foo/bar/2000_8_quux"))
+;; (taskspace/get-number '("zort/troz/2000_0_baz" "zort/troz/2000_qux" "zort/troz/2000_qux_jeff" "zort/troz/2000_8_quux"))
 
 
 (defun taskspace/get-date (arg)
@@ -695,12 +695,12 @@ requested part. Part can be one of: '(date number description)."
         ;; then pull out the desired string (and return it)
         (nth (cdr (assoc part split-alist)) split-name)
         ))))
-;; (taskspace/split-name "2000_0_foo" 'date)
-;; (taskspace/split-name "2000_0_foo" nil)
-;; (taskspace/split-name "2000_0_foo" 'number)
-;; (taskspace/split-name "2000_foo" 'number)
+;; (taskspace/split-name "2000_0_zort" 'date)
+;; (taskspace/split-name "2000_0_zort" nil)
+;; (taskspace/split-name "2000_0_zort" 'number)
+;; (taskspace/split-name "2000_zort" 'number)
 ;; TODO: make work with 3+ where date is 1, number is 2, 3+ are all desc that had "_" in it...
-;; (taskspace/split-name "2000_0_foo_jeff" 'number)
+;; (taskspace/split-name "2000_0_zort_jeff" 'number)
 
 (defun taskspace/dir= (name dir part)
   "True if `name' is equal to the split-name `part' of `dir'.
@@ -717,7 +717,7 @@ Else nil."
         ;; check against input name
         (string= name dir-part)
         ))))
-;; (taskspace/dir= "2000" "c:/foo/bar/2000_0_testcase" 'date)
+;; (taskspace/dir= "2000" "c:/zort/troz/2000_0_testcase" 'date)
 
 
 ;; Get children directories of taskspace/dir, ignoring

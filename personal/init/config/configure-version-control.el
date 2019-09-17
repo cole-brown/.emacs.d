@@ -250,10 +250,58 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Git Merge Conflicts
+;;------------------------------------------------------------------------------
+
+;; smerge instead of ediff?
+
+;;   " If you visit a file with a conflict from a magit diff section it will
+;; automatically activate smerge for you.
+;;
+;;   "I have this in my config to have a nicer interface/keybindings."
+;; - https://www.reddit.com/r/emacs/comments/d3jf8o/git_merge_conflicts/f03qs34?utm_source=share&utm_medium=web2x
+;; TODO: Try this out when I have a merge conflict that needs fixing.
+;; (use-package smerge-mode
+;;   :hook (magit-diff-visit-file . (lambda ()
+;;                                    (when smerge-mode
+;;                                      (hydra-smerge/body))))
+;;   :config
+;;   (defhydra hydra-smerge
+;;     (:color pink :hint nil :post (smerge-auto-leave))
+;;     "
+;; ^Move^       ^Keep^               ^Diff^                 ^Other^
+;; ^^-----------^^-------------------^^---------------------^^-------
+;; _n_ext       _b_ase               _<_: upper/base        _C_ombine
+;; _p_rev       _u_pper              _=_: upper/lower       _r_esolve
+;; ^^           _l_ower              _>_: base/lower        _k_ill current
+;; ^^           _a_ll                _R_efine
+;; ^^           _RET_: current       _E_diff
+;; "
+;;     ("n" smerge-next)
+;;     ("p" smerge-prev)
+;;     ("b" smerge-keep-base)
+;;     ("u" smerge-keep-upper)
+;;     ("l" smerge-keep-lower)
+;;     ("a" smerge-keep-all)
+;;     ("RET" smerge-keep-current)
+;;     ("\C-m" smerge-keep-current)
+;;     ("<" smerge-diff-base-upper)
+;;     ("=" smerge-diff-upper-lower)
+;;     (">" smerge-diff-base-lower)
+;;     ("R" smerge-refine)
+;;     ("E" smerge-ediff)
+;;     ("C" smerge-combine-with-next)
+;;     ("r" smerge-resolve)
+;;     ("k" smerge-kill-current)
+;;     ("q" nil "cancel" :color blue)))
+
+
+;;------------------------------------------------------------------------------
 ;; Subversion? I do still use this...
 ;;------------------------------------------------------------------------------
 
-;; TODO: which should take precedence if in a svn repo that I also made a git repo.
+;; TODO: which should take precedence if in a svn repo that I also made a git
+;; repo. Probably SVN because this is a rare edge-case.
 
 ;; magit's `git svn' extension:
 ;; https://github.com/magit/magit-svn

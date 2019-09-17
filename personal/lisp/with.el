@@ -22,8 +22,10 @@
 ;; TODO?: with-{any,all}-functions?
 ;; TODO?: with-all-executables?
 ;; TODO?: with-___-when, with-___-unless, with-___-if
-;;   e.g. (with-function-when #'spydez/foo/using-bar ...) -> when function is bound and returns true...
-;;   e.g. (with-function-when #'spydez/foo/using-bar 'args ...) -> when function is bound and returns true when passed args?..
+;;   e.g. (with-function-when #'spydez/zort/using-bar ...)
+;;          -> when function is bound and returns true...
+;;   e.g. (with-function-when #'spydez/zort/using-bar 'args ...)
+;;          -> when function is bound and returns true when passed args?..
 
 ;; TODO-SOON: Change from `when' to `if'. Add a required error message to all
 ;;   withs. Add a const/custom for what function to call (default error).

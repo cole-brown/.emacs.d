@@ -239,10 +239,13 @@
   ;; Org-Mode Keybinds
   ;;----------------------------------------------------------------------------
 
-  :bind
+  ;; `:bind*' to force some bindings (overrides minor mode binds).
+  :bind*
   (;;---
    ;; :map global
    ;;---
+   ;; org-mode binds `org-cycle-agenda-files' to C-, and also C-', which seems
+   ;; stupid (especially with Dvorak). Stealing C-, back for myself.
    ("C-," . spydez/hydra/org-mode/body)
 
 
@@ -259,7 +262,7 @@
    ("C-c <tab>" . #'org-kill-note-or-show-branches))
 
   ;;-----------------
-  ;; /':bind' section
+  ;; /':bind*' section
   ;;-----------------
 
 

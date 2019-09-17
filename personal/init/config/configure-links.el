@@ -38,7 +38,7 @@
 ;;------------------------------------------------------------------------------
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html
 
-;; TODO: put these in a namespace i.e. spydez/foo -> spydez/url/foo
+;; TODO: put these in a namespace i.e. spydez/zort -> spydez/url/zort
 
 ;; a test url: (spydez/resolve-redirect "http://bit.ly/tdotco")
 ;; orig-name: kensanata/resolve-redirect

@@ -155,7 +155,7 @@
   ;;-------
   (taskspace/datetime/format spydez/datetime/format/yyyy-mm-dd)
   ;; (taskspace/shell-fn #'shell) ;; leave as default
-  (taskspace/dir (spydez/dir-name "workspace" spydez/dir/home))
+  (taskspace/dir (spydez/path/to-dir spydez/dir/home "taskspace"))
 
   ;; (taskspace/dir/copy-files-src ...) ;; don't have any right now
 

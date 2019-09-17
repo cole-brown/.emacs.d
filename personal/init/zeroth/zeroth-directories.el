@@ -31,7 +31,7 @@ components; they are expected to be valid."
       (setq out-path (concat (file-name-as-directory out-path) ;; assume we had a dir all along?
                              component)) ;; and add the next component on
       )))
-;; (spydez/path/to-file spydez/dir/home "personal" "something.exe" "foo.txt")
+;; (spydez/path/to-file spydez/dir/home "personal" "something.exe" "zort.txt")
 
 
 (defun spydez/path/to-dir (parent &rest path)
@@ -40,7 +40,7 @@ will return full path in platform-agnostic manner. Does not 'fix' any `path'
 components; they are expected to be valid."
   ;; fully qualify base as start of return value
   (file-name-as-directory (apply #'spydez/path/to-file parent path)))
-;; (spydez/path/to-dir spydez/dir/home "personal" "something" "foo")
+;; (spydez/path/to-dir spydez/dir/home "personal" "something" "zort")
 
 
 ;; There are some existing packages for dealing with windows->unix or unix->windows paths...
