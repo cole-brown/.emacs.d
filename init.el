@@ -556,7 +556,7 @@ For the transition, maybe a func for checking..."
   (spydez/path/to-dir spydez/dir/emacs "auto-save-list"))
 
 (defconst spydez/file/save-history
-  (expand-file-name "savehist" spydez/dir/emacs)
+  (spydez/path/to-file spydez/dir/emacs "savehist")
   "History of commands, etc.")
 
 ;;--------------------------------------------------
@@ -568,20 +568,20 @@ For the transition, maybe a func for checking..."
 ;;--------------------------------------------------
 
 (defconst spydez/dir/yasnippets
-  (expand-file-name "snippets" spydez/dir/emacs/personal)
+  (spydez/path/to-file spydez/dir/emacs/personal "snippets")
   "My Yasnippets directory.")
 ;; Could add an override of my own snippets if needed.
 
 (defconst spydez/dir/personal/packages
-  (expand-file-name "packages" spydez/dir/emacs/personal)
+  (spydez/path/to-file spydez/dir/emacs/personal "packages")
   "Custom/personal emacs 'packages' directory.")
 
 (defconst spydez/dir/packages/use-tool
-  (expand-file-name "use-tool" spydez/dir/personal/packages)
+  (spydez/path/to-file spydez/dir/personal/packages "use-tool")
   "use-tool directory.")
 
 (defconst spydez/dir/packages/taskspace
-  (expand-file-name "taskspace" spydez/dir/personal/packages)
+  (spydez/path/to-file spydez/dir/personal/packages "taskspace")
   "taskspace directory.")
 
 
@@ -676,7 +676,7 @@ For the transition, maybe a func for checking..."
 ;; TODO: move this to configure-crypt? And/or rejigger configure-crypt so some can happen soon enough for this to be happy actually loading a file.
 ;; Load sensitive information from outside of .emacs.d
 ;;(if (bound-and-true-p spydez/dir/doc-save-common)
-;;    (when (not (load (expand-file-name ".emacs.secrets" spydez/dir/doc-save-common) 'noerror))
+;;    (when (not (load (spydez/path/to-file spydez/dir/doc-save-common ".emacs.secrets") 'noerror))
 ;;      (spydez/warning/message nil :debug "No secrets to load."))
 ;;  (spydez/warning/message nil nil "No secrets loaded. Do not know where to look. '%s' undefined." 'spydez/dir/doc-save-common))
 

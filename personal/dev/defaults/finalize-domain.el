@@ -41,8 +41,8 @@
    ;; Emacs Stuff
    ;;---
    ;; Working on .emacs.d a lot right now so add these in.
-   (expand-file-name "working-on.org" spydez/dir/personal/docs)
-   (expand-file-name "init.el" spydez/dir/emacs)
+   (spydez/path/to-file spydez/dir/personal/docs "working-on.org")
+   (spydez/path/to-file spydez/dir/emacs "init.el")
    ))
 ;; TODO: check that these exist before opening. Complain (:warning level?) if not.
 

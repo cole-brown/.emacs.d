@@ -14,9 +14,11 @@
 
 ;; TODO-SECRETS: Change from spydez/.../secrets... to secrets/... ??
 
-(defconst spydez/dir/secrets (spydez/path/to-dir spydez/dir/home ".secrets.d")
+(defconst spydez/dir/secrets
+  (spydez/path/to-dir spydez/dir/home ".secrets.d")
   "Location of secrets dir on this computer.")
-(defconst spydez/file/secrets (expand-file-name "emacs.secrets.el.gpg" spydez/dir/secrets)
+(defconst spydez/file/secrets
+  (spydez/path/to-file spydez/dir/secrets "emacs.secrets.el.gpg")
   "Location of emacs' elisp secrets.")
 
 (defconst spydez/dir/secrets/dev

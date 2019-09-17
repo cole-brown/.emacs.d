@@ -36,8 +36,8 @@
     ;; Copy this default bootstrap-this-early into the specific dir.
     ;; init will still 'fail' as it is still a default bootstrap-this-early until you go tweak it.
     (let* ((filename spydez/file/bootstrap/local)
-	         (default-path (expand-file-name filename spydez/dir/dev/defaults))
-           (this-path (expand-file-name filename spydez/dir/dev/system-this)))
+           (default-path (spydez/path/to-file spydez/dir/dev/defaults filename))
+           (this-path (spydez/path/to-file spydez/dir/dev/system-this filename)))
       ;; TODO: copy an 'empty' or placeholder bootstrap-this-early.el instead of this one that does stuff
       (copy-file default-path this-path)
       (spydez/warning/message nil nil "  Copied %s to this system's folder: %s" filename this-path)
@@ -65,7 +65,7 @@
     (spydez/warning/message nil nil "  expecting 'specific' flag in %s (have '%s' in defaults): %s"
                             "bootstrap-this-early.el"
                             spydez/bootstrap/expected-complete
-                            (expand-file-name "bootstrap-this-early.el" spydez/dir/dev/system-this))
+                            (spydez/path/to-file spydez/dir/dev/system-this "bootstrap-this-early.el"))
 
     ;; TODO: Some messages for ading system-this to hash table/settings in early-init?
     )

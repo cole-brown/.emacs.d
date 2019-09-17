@@ -63,10 +63,10 @@ components; they are expected to be valid."
 ;; Base Dirs
 ;;---
 
-(defconst spydez/dir/home (expand-file-name "~")
+(defconst spydez/dir/home (spydez/path/to-dir "~")
   "User's $HOME directory. In native format (unix vs windows paths).")
 
-(defconst spydez/dir/emacs (expand-file-name user-emacs-directory)
+(defconst spydez/dir/emacs (spydez/path/to-dir user-emacs-directory)
   ;; user-init-file and user-emacs-directory can be helpful here
   "This should be a platform-agnostic way to find .emacs.d. Especially when I
 can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
