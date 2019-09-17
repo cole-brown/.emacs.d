@@ -549,11 +549,11 @@ For the transition, maybe a func for checking..."
 ;; folders for auto-save files and backup-files (#*# and *~)
 ;; TODO: remove if I like no-littering?
 (defconst spydez/dir/backup-files
-  (spydez/dir-name "backups" spydez/dir/emacs)
+  (spydez/path/to-dir spydez/dir/emacs "backups")
   "Full path before no-littering package.")
 
 (defconst spydez/dir/auto-save-files
-  (spydez/dir-name "auto-save-list" spydez/dir/emacs))
+  (spydez/path/to-dir spydez/dir/emacs "auto-save-list"))
 
 (defconst spydez/file/save-history
   (expand-file-name "savehist" spydez/dir/emacs)

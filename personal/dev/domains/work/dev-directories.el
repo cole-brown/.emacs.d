@@ -14,34 +14,37 @@
 
 ;; TODO-SECRETS: Change from spydez/.../secrets... to secrets/... ??
 
-(defconst spydez/dir/secrets (spydez/dir-name ".secrets.d" spydez/dir/home)
+(defconst spydez/dir/secrets (spydez/path/to-dir spydez/dir/home ".secrets.d")
   "Location of secrets dir on this computer.")
 (defconst spydez/file/secrets (expand-file-name "emacs.secrets.el.gpg" spydez/dir/secrets)
   "Location of emacs' elisp secrets.")
 
 (defconst spydez/dir/secrets/dev
-  (spydez/dir-name "dev" spydez/dir/secrets)
+  (spydez/path/to-dir spydez/dir/secrets "dev")
   "Dev config outside of .emacs.d.")
 
 (defconst spydez/dir/secrets/dev/defaults
-  (spydez/dir-name "defaults" spydez/dir/secrets/dev)
+  (spydez/path/to-dir spydez/dir/secrets/dev "defaults")
   "All of my optional/default setup elisp files...")
 
 (defconst spydez/dir/secrets/dev/domain-all
-  (spydez/dir-name "domains" spydez/dir/secrets/dev)
+  (spydez/path/to-dir spydez/dir/secrets/dev "domains")
   "Domains folder. For subdirs of work, home, etc.")
 
 (defconst spydez/dir/secrets/dev/domain-this
-  (spydez/dir-name spydez/setup/domain/name spydez/dir/secrets/dev/domain-all)
+  (spydez/path/to-dir spydez/dir/secrets/dev/domain-all
+                      spydez/setup/domain/name)
   "Anything that has to be domain specific. Tab widths or whatnot.")
 
 (defconst spydez/dir/secrets/dev/system-all
-  (spydez/dir-name "computers" spydez/dir/secrets/dev)
+  (spydez/path/to-dir spydez/dir/secrets/dev "computers")
   "Computers folder. For subdirs of different computers.")
 
 (defconst spydez/dir/secrets/dev/system-this
-  (spydez/dir-name spydez/setup/system/hash spydez/dir/secrets/dev/system-all)
-  "Anything that has to be computer specific. Overriding tab widths or whatnot.")
+  (spydez/path/to-dir spydez/dir/secrets/dev/system-all
+                      spydez/setup/system/hash)
+  "Anything that has to be computer specific.
+Overriding tab widths or whatnot.")
 
 
 ;;------------------------------------------------------------------------------
@@ -58,7 +61,8 @@
 (add-to-list 'load-path spydez/dir/secrets/dev/domain-all)
 (add-to-list 'load-path spydez/dir/secrets/dev/domain-this)
 (add-to-list 'load-path spydez/dir/secrets/dev/system-all)
-(add-to-list 'load-path spydez/dir/secrets/dev/system-this) ;; most specific to this computer last
+(add-to-list 'load-path spydez/dir/secrets/dev/system-this)
+;; Add highest-priority/most specific to this computer last.
 
 
 ;;------------------------------------------------------------------------------

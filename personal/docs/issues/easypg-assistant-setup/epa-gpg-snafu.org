@@ -4,6 +4,11 @@
 #+EMAIL:       git@spydez.com
 #+DATE:        [2019-03-06 Wed]
 
+NOTE:
+  Removed:
+    (spydez/dir-name (name parent))
+  Replaced With:
+    (spydez/path/to-dir (parent &rest path))
 
 * TODO Current "Solution" that I need to see if works
 
