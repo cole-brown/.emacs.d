@@ -26,7 +26,7 @@
 ;; Can't use expand-file-name with hacky unixy paths...
 ;; So just muck it on our own and we're like a hacky onion. In muck.
 (let ((spydez/hack/ugly-hacky-gpg-dir
-       (concat (spydez/dir/windows-to-mingw spydez/dir/home) ".gnupg/")))
+       (concat (spydez/path/windows-to-mingw spydez/dir/home) ".gnupg/")))
   ;; [2019-08-08]
   ;; Moved custom.el out of source control, back to this as we don't care about
   ;; custom var spam in custom.el anymore.

@@ -13,7 +13,7 @@ NOTE:
 * TODO Current "Solution" that I need to see if works
 
 (let ((spydez/hack/ugly-hacky-gpg-dir
-       (concat (spydez/dir/windows-to-mingw spydez/dir/home) ".gnupg/")))
+       (concat (spydez/path/windows-to-mingw spydez/dir/home) ".gnupg/")))
   ;; What the fuck to do with these... I don't really want these in
   ;; custom file...
   ;;(custom-set-variables
@@ -77,7 +77,7 @@ Solution Code:
 #+NAME: EPA/GPG Solution
 #+BEGIN_SRC emacs-lisp
 (let ((spydez/hack/ugly-hacky-gpg-dir
-       (concat (spydez/dir/windows-to-mingw spydez/dir/home) ".gnupg/")))
+       (concat (spydez/path/windows-to-mingw spydez/dir/home) ".gnupg/")))
   (custom-set-variables
    '(epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
    '(epg-gpg-program (executable-find "gpg"))               ; windowsy
@@ -231,7 +231,7 @@ So this one finally works. I can see my key; I can decrypt/encrypt my test file.
 Can't use expand-file-name with hacky unixy paths...
 So just muck it on our own and we're like a hacky onion. In muck.
 (let ((spydez/hack/ugly-hacky-gpg-dir
-       (concat (spydez/dir/windows-to-mingw spydez/dir/home) ".gnupg/")))
+       (concat (spydez/path/windows-to-mingw spydez/dir/home) ".gnupg/")))
   ;; (setq epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
   ;; (setq epg-gpg-program (executable-find "gpg"))               ; windowsy
   ;; (setq epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy
@@ -392,7 +392,7 @@ So just muck it on our own and we're like a hacky onion. In muck.
 ;; Can't use expand-file-name with hacky unixy paths...
 ;; So just muck it on our own and we're like a hacky onion. In muck.
 (let ((spydez/hack/ugly-hacky-gpg-dir
-       (concat (spydez/dir/windows-to-mingw spydez/dir/home) ".gnupg/")))
+       (concat (spydez/path/windows-to-mingw spydez/dir/home) ".gnupg/")))
   ;; (setq epg-gpg-home-directory spydez/hack/ugly-hacky-gpg-dir) ; unixy path instead of windowsy
   ;; (setq epg-gpg-program (executable-find "gpg"))               ; windowsy
   ;; (setq epg-gpgconf-program (executable-find "gpgconf"))       ; windowsy

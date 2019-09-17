@@ -39,7 +39,7 @@ components; they are expected to be valid."
 ;;   Windows emacs, Cygwin paths: https://www.emacswiki.org/emacs/cygwin-mount.el
 ;;   Cygwin/WSL emacs, win paths: https://github.com/victorhge/windows-path
 ;; but..: aren't on melpa, haven't been updated in years, etc.
-(defun spydez/dir/windows-to-mingw (dir)
+(defun spydez/path/windows-to-mingw (dir)
   "Bad hack. Absolute minimum to change from `c:/path/to/dir' to `/c/path/to/dir'"
   (concat "/" (replace-regexp-in-string ":" "" dir) "/"))
 
