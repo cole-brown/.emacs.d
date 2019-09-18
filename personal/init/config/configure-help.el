@@ -75,9 +75,13 @@ quiet arg is non-nil."
 ;; Helpful - "A better Emacs *help* buffer"
 ;;------------------------------------------------------------------------------
 (use-package helpful
+  :after helm
   ;; replace emacs' default help bindings with helpful's
-  :bind
-  ;; Global Map Binds
+
+
+  ;;---
+  :bind ;; global
+  ;;---
   (("C-h f" . helpful-callable)
    ("C-h v" . helpful-variable)
    ("C-h k" . helpful-key)
@@ -85,18 +89,26 @@ quiet arg is non-nil."
    ;; replaces `finder-by-keyword' but I've never used that...
    ("C-h p" . helpful-at-point)
    ;; replaces `describe-coding-system' but I've never used that...
-   ("C-h C" . helpful-command)
+   ("C-h C" . helpful-command))
 
-   ;; Helpful-Mode-Map Binds
-   :map helpful-mode-map
-   ;; TRIAL: [2019-08-27]
-   ;; kill buffer instead of quit?
-   ("q" . kill-this-buffer)
-   )
+  ;;---
+  :bind ;; helpful-mode-map
+  ;;---
+  (:map helpful-mode-map
+        ;; TRIAL: [2019-08-27]
+        ;; kill buffer instead of quit?
+        ("q" . kill-this-buffer))
 
+
+  ;;---
   :custom
-  (helpful-max-buffers 2 "If this or more, kill oldest when opening another.")
-  )
+  ;;---
+  (helpful-max-buffers 2
+    "If this or more, kill oldest when opening another.")
+  (helm-describe-function-function 'helpful-callable
+    "Have Helm use Helpful for e.g. helm-apropos.")
+  (helm-describe-variable-function 'helpful-variable
+    "Have Helm use Helpful for e.g. helm-apropos."))
 
 
 ;;------------------------------------------------------------------------------

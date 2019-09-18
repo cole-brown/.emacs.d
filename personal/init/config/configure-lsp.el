@@ -26,6 +26,23 @@
   :commands (lsp lsp-deferred)
 
   ;;-----
+  :init
+  ;;-----
+  (defun spydez/hook/lsp-generic (lsp-fn)
+    "LSP hook helper for both deferred and regular."
+    (lsp-fn)
+    (flycheck-mode))
+
+  (defun spydez/hook/lsp-deferred ()
+    "Generic LSP hook for any mode."
+    (spydez/hook/lsp-generic #'lsp-deferred))
+
+  (defun spydez/hook/lsp-immediate ()
+    "Generic LSP hook for any mode."
+    (spydez/hook/lsp-generic #'lsp))
+
+
+  ;;-----
   :hook
   ;;-----
   ;; make sure we have lsp-imenu everywhere we have LSP?
@@ -33,51 +50,93 @@
 
 
   ;;-----
-  :config
+  :custom
   ;;-----
+  (lsp-enable-indentation nil
+                          "This seemed to mangle & munge more than it helped.")
+  (lsp-auto-guess-root t
+                       "Try to detect project root automatically.")
+  (lsp-prefer-flymake nil
+                      "Use lsp-ui and flycheck instead.")
+  (flymake-fringe-indicator-position 'right-fringe
+                                     "Left fringe is busy with git stuff.")
+
+
+  ;; ;;-----
+  ;; :config
+  ;; ;;-----
 
   ;; Anything for generic LSP here? Specific languages should hold off for their
   ;; own config.
 
-  ;; Do I need this?
-  ;;(require 'lsp-clients)
-
-
-  ;; TODO: any lsp settings to set?
-  ;; TODO: any sub-package settings to set?
-
-  ;;-----
-  ;; lsp sub-packages
-  ;;-----
-  (use-package lsp-ui
-    ;; [2019-09-17] DISABLING FOR NOW
-    ;; Just to see how non-ui looks/acts...
-    ;; :disabled
-
-    :commands lsp-ui-mode
-
-    :hook
-    (lsp-mode-hook . lsp-ui-mode)
-
-    :config
-    (setq lsp-ui-sideline-ignore-duplicate t))
-
-  (use-package company-lsp
-    :after company
-    :commands company-lsp
-    :config
-    (push 'company-lsp company-backends))
-
-  (use-package helm-lsp
-    :after helm
-    :commands helm-lsp-workspace-symbol
-    )
-
-  (use-package lsp-treemacs
-    :after treemacs
-    :commands lsp-treemacs-errors-list
-    )
+  ;; [2019-09-18]: Moved sub-packages out.
   )
+
+
+;;------------------------------------------------------------------------------
+;; LSP Sub-Packages
+;;------------------------------------------------------------------------------
+
+(use-package lsp-ui
+;;  :after lsp-mode
+  :commands lsp-ui-mode
+
+  ;;---
+  :init
+  ;;---
+  ;; `xref-find-definitions' and `xref-find-references' are defaulted to:
+  ;; "M-?" and "M-.", which are not close to each other and hand-mangly for
+  ;; Dvorak. Remove their bindings then bind similar lsp-ui functions to
+  ;; better keys.
+
+  (unbind-key "M-.") ;; was xref-find-definitions
+  (unbind-key "M-?") ;; was xref-find-references
+
+
+  ;;---
+  :bind
+  ;;---
+   ;; Better bindings, hopefully, than the xref ones we undefined.
+  (:map lsp-ui-mode-map
+        ;; was/is count-words-region in global-map
+        ("M-=" . lsp-ui-peek-find-references)
+        ;; was/is delete-horizontal-space in global-map
+        ("M-\\" . lsp-ui-peek-find-definitions))
+
+  ;; TODO: Config?
+  ;; Check out what's in here?: M-x customize-group [RET] lsp-ui [RET]
+  )
+
+
+(use-package company-lsp
+;;  :after lsp-mode
+  :after (lsp-mode company)
+  :demand t
+  :commands company-lsp
+
+  ;;---
+  :init
+  ;;---
+  (push 'company-lsp company-backends)
+
+
+  ;;---
+  :config
+  ;;---
+  ;; TRIAL: [2019-09-18]
+  (company-lsp-cache-candidates 'auto
+    "Experimenting. Could switch back to default (never cache)."))
+
+
+(use-package helm-lsp
+;;  :after lsp-mode
+  :commands helm-lsp-workspace-symbol)
+
+
+(use-package lsp-treemacs
+;;  :after lsp-mode
+  :commands lsp-treemacs-errors-list)
+
 
 ;;------------------------------------------------------------------------------
 ;; TODOs

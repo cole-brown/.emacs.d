@@ -83,7 +83,15 @@ Company-Jedi:
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [3/8]
+  - [-] To Do: [3/10]
+    - [ ] use-package: Find all ":bind" and split into multiple ":bind" sections.
+      - One for global.
+      - One for each map.
+    - [ ] use-package: rm setq
+      - Find all setq, convert to ":custom" sections.
+    - [ ] use-package: whitespace & neatness.
+      - Two blank lines between keyword sections unless very simple.
+      - Sections should have ";;---" around their keywords unless very simple.
     - [-] Fancy checkboxes (<- like that) lose fancy boxyness when buffer has mismatched quotations or something
       - [X] double quote def work. Take out one of these and see. ""
       - [X] Started issue at (spydez/help/issue/visit "org-mode" "prettify-symbols.org")

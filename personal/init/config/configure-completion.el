@@ -38,36 +38,48 @@
 ;; Trial: [2019-01-18]
 (use-package helm
   :delight helm-mode
-  :init
-  (progn
-    (require 'helm-config)
-    (setq helm-candidate-number-limit 100)
-    ;; From https://gist.github.com/antifuchs/9238468
-    (setq helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
-          helm-input-idle-delay 0.01  ; this actually updates things reeeelatively quickly.
-          helm-yas-display-key-on-candidate t
-          helm-quick-update t
-          helm-M-x-requires-pattern nil
-          helm-ff-skip-boring-files t)
-    (helm-mode))
-  :bind (("C-x b" . helm-mini) ;; [2019-03-01]: swapped helm-buffers-list with this.
-         ("C-x C-b" . helm-mini) ;; [2019-05-01]: helm-mini is more useful than helm-buffers-list, IMO.
-         ("C-c h" . helm-buffers-list)
-         ("C-h a" . helm-apropos)
-         ("M-y" . helm-show-kill-ring)
+  :demand t
 
-         ("M-x" . helm-M-x)
-         ;; from my old emacs config, muscle memory and ultimately:
-         ;;   http://steve.yegge.googlepages.com/effective-emacs
-         ("C-x C-m" . helm-M-x) ; Invoke M-x w/o the Alt key. Useful for Dvorak.
+  ;;---
+  :custom
+  ;;---
+  (helm-candidate-number-limit 500
+    "Trying a larger limit. Default is 100. Bigger is slower.")
+  (helm-M-x-requires-pattern nil
+    "Let M-x start off with candidates.")
 
-         ("C-x c o" . helm-occur)
-         ("C-x c s" . helm-swoop)
-         ("C-x c y" . helm-yas-complete)
-         ("C-x c Y" . helm-yas-create-snippet-on-region)
-         ("C-x c SPC" . helm-all-mark-rings)
-         ("C-x C-f" . helm-find-files) ; Use helm for finding instead of find-files
-   ))
+  (helm-ff-skip-boring-files t
+    "Helm's 'Find files' ignores `helm-boring-file-regexp-list'.")
+
+  ;;---
+  :bind
+  ;;---
+  (
+   ;; [2019-03-01]: swapped helm-buffers-list with this.
+   ("C-x b"     . helm-mini)
+   ;; [2019-05-01]: helm-mini is more useful than helm-buffers-list, IMO.
+   ("C-x C-b"   . helm-mini)
+   ("C-c h"     . helm-buffers-list)
+   ("C-h a"     . helm-apropos)
+   ("M-y"       . helm-show-kill-ring)
+
+   ("M-x"       . helm-M-x)
+   ;; from my old emacs config, muscle memory and ultimately:
+   ;;   http://steve.yegge.googlepages.com/effective-emacs
+   ("C-x C-m"   . helm-M-x) ; Invoke M-x w/o the Alt key. Useful for Dvorak.
+
+   ("C-x c o"   . helm-occur)
+   ("C-x c s"   . helm-swoop)
+   ("C-x c y"   . helm-yas-complete)
+   ("C-x c Y"   . helm-yas-create-snippet-on-region)
+   ("C-x c SPC" . helm-all-mark-rings)
+   ("C-x C-f"   . helm-find-files) ; Use helm for finding instead of find-files
+   )
+
+  ;;---
+  :config
+  ;;---
+  (helm-mode))
 
 ;;---
 ;; Helm: Swoop
@@ -84,29 +96,29 @@
   :after helm
 
   ;;-----
-  :bind
+  :bind ;; global
   ;;-----
-  ;; global keys first
   (("C-S-s" . helm-swoop)
    ("M-i" . helm-swoop)
    ("M-s s" . helm-swoop)
    ("M-s M-s" . helm-swoop)
    ("M-I" . helm-swoop-back-to-last-point)
    ("C-c M-i" . helm-multi-swoop)
-   ("C-x M-i" . helm-multi-swoop-all)
+   ("C-x M-i" . helm-multi-swoop-all))
 
-   ;;---
-   :map isearch-mode-map
-   ;;---
-   ("M-i" . helm-swoop-from-isearch)
+  ;;-----
+  :bind ;; isearch-mode-map
+  ;;-----
+  (:map isearch-mode-map
+        ("M-i" . helm-swoop-from-isearch))
 
-   ;;---
-   :map helm-swoop-map
-   ;;---
-   ("M-i" . 'helm-multi-swoop-all-from-helm-swoop)
-   )
+  ;;-----
+  :bind ;; helm-swoop-map
+  ;;-----
+   (:map helm-swoop-map
+         ("M-i" . 'helm-multi-swoop-all-from-helm-swoop))
 
-  ;; :config
+  ;; :config?
   )
 
 ;; Use C-S-s for search. Can go into "Edit Mode" with C-c C-e.
@@ -266,6 +278,7 @@
 ;; Trial [2019-02-06]
 (use-package company
   :delight
+  :demand t
 
   ;;---
   :custom

@@ -25,7 +25,7 @@
   ;; Language Server Protocol for Python (LSP)
   ;;---
   :after (lsp-mode projectile)
-  :demand t
+  ;;:demand t
 
 
   ;;-----
@@ -34,7 +34,7 @@
   ;;---
   ;; Language Server Protocol for Python (LSP)
   ;;---
-  (python-mode . lsp-deferred)
+  (python-mode . spydez/hook/lsp-deferred)
 
 
   ;;-----
@@ -62,23 +62,18 @@
   (python-fill-docstring-style 'symmetric)
 
 
-  ;;-----
-  :config
-  ;;-----
+  ;; ;;-----
+  ;; :config
+  ;; ;;-----
 
-  ;;---
-  ;; Language Server Protocol for Python (LSP)
-  ;;---
-  (add-to-list 'lsp-language-id-configuration '(python-mode . "python"))
-  (lsp-register-client
-   (make-lsp-client :new-connection (lsp-stdio-connection "pyls")
-                    :major-modes '(python-mode)
-                    :server-id 'pyls))
-
-  (setq lsp-auto-guess-root t       ; Detect project root
-        lsp-prefer-flymake nil      ; Use lsp-ui and flycheck
-        flymake-fringe-indicator-position 'right-fringe)
-  ;;---
+  ;; ;; Language Server Protocol for Python (LSP)
+  ;; ;;---
+  ;; (add-to-list 'lsp-language-id-configuration '(python-mode . "python"))
+  ;; (lsp-register-client
+  ;;  (make-lsp-client :new-connection (lsp-stdio-connection "pyls")
+  ;;                   :major-modes '(python-mode)
+  ;;                   :server-id 'pyls))
+  ;; ;;---
 
 
   ;; TODO: Do I want any of these things? If so, do I need to turn on or are
