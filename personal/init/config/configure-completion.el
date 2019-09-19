@@ -366,14 +366,17 @@
 ;; That... is terrible. Who wants file names and repeating old lines of code
 ;; first, wtf?
 ;;
-;; Try this instead? Mainly moved dabbrev up to top.
-;; Thanks to Trey Jackson for having run into this first and telling everyone:
+;; This order instead. Mainly moved dabbrev up to top.
+;; Thanks to this guy for having run into this first and telling everyone:
 ;; http://trey-jackson.blogspot.com/2007/12/emacs-tip-5-hippie-expand.html
 (setq hippie-expand-try-functions-list
       ;; dabbrev first, as it is usually useful
       '(try-expand-dabbrev
         try-expand-dabbrev-all-buffers
         try-expand-dabbrev-from-kill
+
+        ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org84a9889
+        yas-hippie-try-expand
 
         ;; ...sure. All those filenames I need auto-completed.
         try-complete-file-name-partially
@@ -382,19 +385,17 @@
         ;; I have read the docstring and am only more clueless.
         try-expand-all-abbrevs
 
-        ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org84a9889
-        ;; Wild guess at putting yas here. Might go just belove dabbrev.
-        yas-hippie-try-expand
+        try-complete-lisp-symbol-partially
+        try-complete-lisp-symbol
 
         ;; What sane person needs these, and why don't they use functions
         ;; or something...
-        try-expand-list
-        try-expand-line
-        try-complete-lisp-symbol-partially
-        try-complete-lisp-symbol))
+        ;; try-expand-list
+        ;; try-expand-line
+        ))
 
-;; Do we leave hippie and M-/ as one thing, and company as a totally different thing?
-;; Think I'll try that for now.
+;; Do we leave hippie and M-/ as one thing, and company as a totally different
+;; thing? Think I'll try that for now.
 
 
 ;;------------------------------------------------------------------------------

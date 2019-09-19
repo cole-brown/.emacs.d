@@ -83,7 +83,7 @@ Company-Jedi:
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [3/10]
+  - [-] To Do: [4/12]
     - [ ] use-package: Find all ":bind" and split into multiple ":bind" sections.
       - One for global.
       - One for each map.
@@ -110,6 +110,7 @@ Company-Jedi:
         language server, other external tools won't bother - just code hilighting maybe.
       - e.g.2. want rust or w/e flavor of the month catches my eye at home but
         none of it at work
+    - [X] Get yasnippets off TAB... getting annoying with all its one letter expansions.
     - [X] Company complete (I think) - proper case completion?
     - [X] ag, ack, gack, gawk, your mom, grep, something?
       - [X] ripgrep https://github.com/BurntSushi/ripgrep

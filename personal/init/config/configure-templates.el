@@ -21,7 +21,9 @@
   :demand t
   :delight yas-minor-mode
 
+  ;;---
   :init
+  ;;---
   (defun spydez/yas/list ()
     "Calls yas-insert-snippet to show list of possible snippets.
 Cuz I can't remember what to call so `spydez/yas` and wait for
@@ -29,7 +31,10 @@ auto-complete to have pity is my game."
     (interactive)
     (call-interactively #'yas-insert-snippet nil))
 
+  ;;---
   :config
+  ;;---
+
   ;; This modifies how yas looks for matching keys to expand into templates.
   ;;   - https://emacs.stackexchange.com/a/35603
   ;;   - Also check out its documentation at: C-h v yas-key-syntaxes
@@ -43,17 +48,14 @@ auto-complete to have pity is my game."
   ;;   mine, yasnippet's snippets dir, yasnippet-snippets' dir.
   (add-to-list 'yas-snippet-dirs spydez/dir/yasnippets)
 
-  ;; The documentation says words, which my brain parsed into empty strings...
-  ;; (setq yas-expand-only-for-last-commands nil)
+  ;; Get rid of `yas-expand' binding on TAB. Cannot do this from the `:bind'
+  ;; section, annoyingly. And other annoyinglies as well. See:
+  ;;   (spydez/help/issue/visit "yasnippet" "unbind-tab.org")
+  ;; for more details.
+  (unbind-key "TAB" yas-minor-mode-map)
+  (unbind-key "<tab>" yas-minor-mode-map)
 
-  ;; todo: do I want TAB bound for yas? (yes??) Do I want it bound to hippie-expand?..
-  ;; ...let's find out.
-  (bind-key "\t" 'hippie-expand yas-minor-mode-map)
-
-  ;; yas turn on now maybe?
-  (yas-global-mode 1)
-  ;; yeah.
-  )
+  (yas-global-mode 1))
 
 ;; Should I try this? I am not actually quite sure what it does but it has a lot
 ;; of installs on MELPA and it may or may not be a helm/yasnippet integration
@@ -125,6 +127,8 @@ auto-complete to have pity is my game."
 ;; Yasnippet -> Hydra/Key-Chord/Hippie
 ;;------------------------------------------------------------------------------
 ;; Stuff Yasnippet into more things.
+
+;; TODO [2019-09-19]: not using these. Delete if this is still true.
 
 ;; used in config hydra
 (defun spydez/insert-space-or-expand ()

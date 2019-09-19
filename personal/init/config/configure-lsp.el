@@ -121,7 +121,7 @@
 
 
   ;;---
-  :config
+  :custom
   ;;---
   ;; TRIAL: [2019-09-18]
   (company-lsp-cache-candidates 'auto

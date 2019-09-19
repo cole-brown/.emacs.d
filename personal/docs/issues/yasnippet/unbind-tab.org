@@ -1,0 +1,96 @@
+#+TITLE:       Issue: The Unreasonably Difficult Unbinding of Tab
+#+DESCRIPTION: Tab really wanted to participate, man...
+#+AUTHOR:      Cole Brown
+#+EMAIL:       git@spydez.com
+#+DATE:        [2019-09-19 Thu]
+
+
+* Issue
+
+`yas-expand' bound to TAB was giving me too much grief by trying to expand whatever random letter I was on according to some single-letter template in yasnippet or yasnippet-snippets.
+
+On an 'm' in elisp? We'll give you the '(message ...)' function template expansion.
+On an 's' in python? Now it's a 'self'.
+etc.
+
+Could try to quell it but we have yas on hippie-expand and also have spydez/yas/list, so I wanted to nuke the tab bind.
+
+But other things were bound to it in other places, and I couldn't ":bind" to `nil' in `use-package', and other annoying things.
+
+Also there turns out to be more than one unique thing to Emacs that is actually the TAB key, and for some fucking reason yasnippet bound two of them.
+
+
+* Solution
+
+** Clean
+
+In the `:config' section of the `(use-package yasnippet' sexpr, do this:
+
+#+BEGIN_SRC elisp
+
+  ;; Get rid of `yas-expand' binding on TAB. Cannot do this from the `:bind'
+  ;; section, annoyingly. And other annoyinglies as well. See:
+  ;;   (spydez/help/issue/visit "yasnippet" "unbind-tab.org")
+  ;; for more details.
+  (unbind-key "TAB" yas-minor-mode-map)
+  (unbind-key "<tab>" yas-minor-mode-map)
+
+#+END_SRC
+
+** Final debug Version
+
+#+BEGIN_SRC elisp
+
+  ;; Get rid of `yas-expand' binding on TAB. Cannot do this from the `:bind'
+  ;; section, annoyingly. When trying to:
+  ;;   `:bind (:map yas-minor-mode-map (nil . "TAB")`
+  ;; I get backtrack of:
+  ;;   Debugger entered--Lisp error: (error "use-package: yasnippet wants
+  ;;   arguments acceptable to the `bind-keys' macro, or a list of such values")
+  ;;     signal(error ("use-package: yasnippet wants arguments acceptable to the
+  ;;     `bind-keys' macro, or a list of such values"))
+  ;;
+  ;; However, when evaluating the use-package sexpr after load, it all works
+  ;; fine. So I think it's trying to unbind before the package has set up its
+  ;; mode map.
+  (with-current-buffer (generate-new-buffer "diff.0.txt") (insert (pp yas-minor-mode-map)))
+  (unbind-key "TAB" yas-minor-mode-map)
+
+  ;; So... one unbind of TAB isn't enough? It does something, but tab is still
+  ;; bound. Ran:
+  ;;   (with-current-buffer (generate-new-buffer "diff.0.txt") (insert (pp yas-minor-mode-map)))
+  ;;   (unbind-key "TAB" yas-minor-mode-map)
+  ;;   (with-current-buffer (generate-new-buffer "diff.1.txt") (insert (pp yas-minor-mode-map)))
+  ;;
+  ;; And got this diff on `yas-minor-mode-map':
+  ;;   --- diff.0.txt 2019-09-19 13:10:25.847261100 -0700
+  ;;   +++ diff.1.txt 2019-09-19 13:10:16.232711100 -0700
+  ;;   @@ -421,5 +421,5 @@
+  ;;      (22 . yas-visit-snippet-file)
+  ;;      (14 . yas-new-snippet)
+  ;;      (19 . yas-insert-snippet)))
+  ;;   - (9 menu-item "" yas-expand :filter yas-maybe-expand-abbrev-key-filter)
+  ;;   + (9)
+  ;;     (tab menu-item "" yas-expand :filter yas-maybe-expand-abbrev-key-filter))
+
+  ;; Um... Unbind tab a second time maybe? Dunno...
+  ;; (unbind-key "TAB" yas-minor-mode-map)
+  ;; Nope. This SO post implies each tab is slightly different maybe?
+  ;; https://stackoverflow.com/questions/14066526/unset-tab-binding-for-yasnippet
+  ;; So......
+  (unbind-key "<tab>" yas-minor-mode-map)
+  (with-current-buffer (generate-new-buffer "diff.1.txt") (insert (pp yas-minor-mode-map)))
+
+  ;; Ok... Now diff is:
+  ;;   --- c:/home/cole/diff.0.txt	2019-09-19 14:39:30.737971300 -0700
+  ;;   +++ c:/home/cole/diff.1.txt	2019-09-19 14:39:23.971584300 -0700
+  ;;   @@ -421,5 +421,5 @@
+  ;;      (22 . yas-visit-snippet-file)
+  ;;      (14 . yas-new-snippet)
+  ;;      (19 . yas-insert-snippet)))
+  ;;   - (9 menu-item "" yas-expand :filter yas-maybe-expand-abbrev-key-filter)
+  ;;   - (tab menu-item "" yas-expand :filter yas-maybe-expand-abbrev-key-filter))
+  ;;   + (9)
+  ;;   + (tab))
+
+#+END_SRC

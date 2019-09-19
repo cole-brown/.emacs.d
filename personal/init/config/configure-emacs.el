@@ -14,7 +14,7 @@
   (delight 'emacs-lisp-mode "Elisp" :major))
 
 ;;------------------------------------------------------------------------------
-;; General Keybinds?
+;; General Keybinds
 ;;------------------------------------------------------------------------------
 ;; TODO: a custom, more useful layout for the function keys? I use F3 and
 ;; F4 currently for doing macros, but none of the rest.
@@ -40,6 +40,44 @@
 ;;   ("C-w" . backward-kill-word)
 ;;   ("C-c C-k" . kill-region)
 ;;   )
+
+
+;;---
+;; Keybinds I Don't Like
+;;---
+(defvar spydez/config/commands-to-unbind
+  '(
+    ;; text-scale-adjust:
+    ;;   - "C-x C-0", "C-x C-+", "C-x C--", "C-x C-="
+    ;;   - I accidentally thrash it sometimes and then can't figure out how
+    ;;     to revert my text size. Just unbind it.
+    text-scale-adjust)
+  "These commands will be unbound from keymaps (or just global? IDK.) on
+startup.")
+
+(require 'dash)
+;; TODO [2019-09-19]: Made this, but probably it's better just to use unbind-key?
+(defun spydez/config/unbind-commands (&rest commands)
+  "For each command, check for key bindings and then check if it
+is bound to that key. If so, unbind."
+  ;; Iterate over each of those commands.
+  (let (unbound)
+    (dolist (func (-flatten commands) unbound)
+      (push `(,func . "test") unbound)
+      ;; sanity check input
+      (if (not (functionp func))
+          (spydez/warning/message
+           nil :error
+           (format "Unbind-commands expects functions. '%s' is not." func))
+
+        ;; And unbind what where-is-internal gives us for their bound keys.
+        (dolist (key (where-is-internal func))
+          (when (eq (global-key-binding (eval key) t) func)
+            (unbind-key key)
+            (push `(,func . ,(key-description key)) unbound)))))))
+
+;; And now we can unbind our list of built in commands we hate.
+(spydez/config/unbind-commands spydez/config/commands-to-unbind)
 
 
 ;;------------------------------------------------------------------------------
