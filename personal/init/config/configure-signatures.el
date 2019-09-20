@@ -9,6 +9,7 @@
 ;;------------------------------------------------------------------------------
 ;; General Settings
 ;;------------------------------------------------------------------------------
+(require 'subr-x)
 
 
 ;; https://unicode-table.com/en/blocks/miscellaneous-symbols/
@@ -50,24 +51,136 @@
   :type 'string)
 
 
-(defvar spydez/signature/options
-  (list spydez/signature/short-pre
-        spydez/signature/name-post
-        spydez/signature/todo
-        spydez/signature/char
-        spydez/signature/name)
+(defvar spydez/signature/options/list
+  '(spydez/signature/short-pre
+    spydez/signature/name-post
+    spydez/signature/todo/comment
+    spydez/signature/todo
+    spydez/signature/char
+    spydez/signature/name)
   "Signatures to present to user in prompt of
-`spydez/signature/insert' and `spydez/signature/search'.")
-;; To update it, use eval-defun (C-M-x) like for when in the middle
-;; of a function.
+`spydez/signature/insert' and `spydez/signature/search'. Can be
+strings or functions. As the function results could change
+per-buffer, I will have to figure out buffer-local type things or
+erse just eval these every call.")
 
 
-(defvar spydez/signature/insert/history nil)
+(defun spydez/signature/options/add (signature)
+  "Figures out how to make signature a string and returns the string."
+  (cond
+   ;; Function? Use its output.
+   ((functionp signature)
+    (funcall signature))
+
+   ;; String? Use as is.
+   ((stringp signature)
+    signature)
+
+   ;; Dive deeper?
+   ((symbolp signature)
+    (spydez/signature/options/add (symbol-value signature)))
+
+   ;; Uh... Here there be dragons.
+   (t
+    (error "Unknown type of signature... '%s' is not: %s."
+             signature
+             "functionp or stringp"))))
+;; (spydez/signature/options/add "hi")
+;; (spydez/signature/options/add 'spydez/signature/todo/comment)
+;; (setq direct-var "hello there")
+;; (setq indirection-hah 'direct-var)
+;; (spydez/signature/options/add 'direct-var)
+;; (spydez/signature/options/add 'indirection-hah)
+
+
+(defun spydez/signature/options ()
+  "Build list of strings from `spydez/signature/options/list'."
+
+  ;; Translate each s/s/o/l item into a string via s/s/o/a, then add to output
+  ;; list if 'valid' (non-null ATM).
+  (let (signatures)
+    (dolist (sig-option spydez/signature/options/list signatures)
+      (let ((sig-str (spydez/signature/options/add sig-option)))
+        (unless (null sig-str)
+          (push sig-str signatures))))))
+;; (spydez/signature/options)
+
+
+(defvar spydez/signature/insert/history nil
+  "Just a bucket to hold history for sig commands to keep
+  segregated from general history.")
+
+
+;;------------------------------------------------------------------------------
+;; Utils - Things That Don't Belong Here?
+;;------------------------------------------------------------------------------
+;; TODO: move these utils to different file if use them more?
+
+;; TODO: move these utils to different file if use them more?
+;; http://ergoemacs.org/emacs/elisp_determine_cursor_inside_string_or_comment.html
+(defun spydez/point/inside-string-p ()
+  "Returns non-nil if inside string, else nil.
+Result depends on syntax table's string quote character."
+  (interactive)
+  (let ((result (nth 3 (syntax-ppss))))
+    (message "%s" result)
+    result))
+
+;; TODO: move these utils to different file if use them more?
+;; http://ergoemacs.org/emacs/elisp_determine_cursor_inside_string_or_comment.html
+(defun spydez/point/inside-comment-p ()
+  "Returns non-nil if inside comment, else nil.
+Result depends on syntax table's comment character."
+  (interactive)
+  (let ((result (nth 4 (syntax-ppss))))
+    (message "%s" result)
+    result))
+
+;; TODO: move these utils to different file if use them more?
+;; https://emacs.stackexchange.com/questions/16792/easiest-way-to-check-if-current-line-is-empty-ignoring-whitespace
+(defun spydez/point/current-line-empty-p ()
+  (save-excursion
+    (beginning-of-line)
+    (looking-at "[[:space:]]*$")))
 
 
 ;;------------------------------------------------------------------------------
 ;; Signatures - Insert, Search...
 ;;------------------------------------------------------------------------------
+
+
+(defun spydez/signature/todo/dwim ()
+  "Takes `spydez/signature/todo' and uses as-is, or adds comment
+characters to it, as appropriate."
+  (interactive)
+  (cond
+   ;; just sig str if in string
+   ((spydez/point/inside-string-p)
+    spydez/signature/todo)
+
+   ;; just sig str if in comment
+   ((spydez/point/inside-comment-p)
+    spydez/signature/todo)
+
+   ;; empty line? insert indented comment
+   ((spydez/point/current-line-empty-p)
+    (comment-indent)
+    (spydez/signature/todo/comment))
+
+   ;; Default... IDK. Just sig str?
+   (t
+    spydez/signature/todo)))
+
+
+(defun spydez/signature/todo/comment ()
+  "Turns spydez/signature/todo into a proper comment based on
+mode (uses `comment-*' emacs functions)."
+  (let* ((addon   (comment-add nil))
+         (prefix  (string-trim-right (comment-padright comment-start addon)))
+         (postfix (comment-padleft comment-end (comment-add addon)))
+         (sig     (concat spydez/signature/todo ":")))
+    (mapconcat 'identity (list prefix sig postfix) " ")))
+;; (spydez/signature/todo/comment)
 
 
 ;; Org-Mode Signature: For easy marking of "this here is my inserted note"
@@ -80,7 +193,7 @@
      "Insert Signature: "
 
      ;; Shown list.
-     spydez/signature/options
+     (spydez/signature/options)
 
      ;; No predicate to limit above (shown list).
      ;; TODO: limit to short/char if not at EOL?
@@ -104,7 +217,6 @@
     (insert signature)))
 
 
-(require 'subr-x)
 (defun spydez/signature/search (signature)
   "Choose a signature and then search for it via `isearch-forward'."
   (interactive (list
@@ -114,7 +226,7 @@
      "Search for Signature: "
 
      ;; Shown list.
-     spydez/signature/options
+     (spydez/signature/options)
 
      ;; No predicate to limit above (shown list).
      ;; TODO: limit to short/char if not at EOL?

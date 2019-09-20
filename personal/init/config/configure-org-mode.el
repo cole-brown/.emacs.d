@@ -99,17 +99,6 @@
     "Allow speed keys when at any headline *, not just beginning of line."
     (and (looking-at org-outline-regexp) (looking-back "^\**")))
 
-  ;; This may get away from "Org-Mode" and into "Random Shit"...
-  (defhydra spydez/hydra/org-mode (:color blue)
-    "Org-Mode"
-    ("s" (spydez/signature/insert spydez/signature/short-pre) "insert sig")
-    ("-" (spydez/signature/insert spydez/signature/name-post) "insert -name")
-    ("t" (spydez/signature/insert spydez/signature/todo) "insert todo")
-
-    ("n" org-journal-new-entry "new journal entry")
-    ("v" (funcall org-journal-find-file
-                  (org-journal-get-entry-path)) "visit journal")
-    )
 
   ;;------------------
   ;; /':init' section.
@@ -242,14 +231,6 @@
   ;; `:bind*' to force some bindings (overrides minor mode binds).
   :bind*
   (;;---
-   ;; :map global
-   ;;---
-   ;; org-mode binds `org-cycle-agenda-files' to C-, and also C-', which seems
-   ;; stupid (especially with Dvorak). Stealing C-, back for myself.
-   ("C-," . spydez/hydra/org-mode/body)
-
-
-   ;;---
    :map org-mode-map
    ;;---
    ;; NOTE: THESE ARE ORG-MODE ONLY! And that is intended.

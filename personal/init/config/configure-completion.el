@@ -51,6 +51,12 @@
   (helm-ff-skip-boring-files t
     "Helm's 'Find files' ignores `helm-boring-file-regexp-list'.")
 
+  (helm-buffer-max-length 30
+    (concat "Buffer names were clipped too often. "
+            "Especially special mode buffer names like "
+            "'*helpful variable: helm-buffer-max-length*'. "
+            "Default was 20. Upping to 30 to see how it goes."))
+
   ;;---
   :bind
   ;;---

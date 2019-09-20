@@ -16,10 +16,15 @@ features:
   - easy line decorators ("-----", etc) of static or dynamic widths
     - based on what's above, or below...
       - Maybe "decorate this like so: (above, below, bracket), style, size"
+  - auto figuring out of how much width a label should be
+    - padding available, obvs.
 
 Would want it in... python, C#, elisp, every other language I do...
 
 *** Names?
+
+neater
+  - cuz... made more orderly/tidy?
 
 polh
   - pretty output library helper
@@ -92,6 +97,9 @@ Company-Jedi:
     - [ ] use-package: whitespace & neatness.
       - Two blank lines between keyword sections unless very simple.
       - Sections should have ";;---" around their keywords unless very simple.
+    - [ ] feature request: changable helpful buffer name format
+      - (defun helpful--buffer (symbol callable-p)
+      - Or, perhaps, a fix and pull request?
     - [-] Fancy checkboxes (<- like that) lose fancy boxyness when buffer has mismatched quotations or something
       - [X] double quote def work. Take out one of these and see. ""
       - [X] Started issue at (spydez/help/issue/visit "org-mode" "prettify-symbols.org")
