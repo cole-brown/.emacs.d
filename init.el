@@ -1140,6 +1140,8 @@ For the transition, maybe a func for checking..."
 ;;   - sanity other things? emacs version complainer? platform complainer?
 (spydez/info/require 'finalize-sanity)
 
+(spydez/info/require 'finalize-boot-and-config)
+
 ;; TODO: define shortcuts to frequently used files?
 ;;   http://pages.sachachua.com/.emacs.d/Sacha.html#org9750649
 ;; todo: rename something better for its function here instead of what

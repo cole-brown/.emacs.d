@@ -6,8 +6,9 @@
 ;;------------------------------------------------------------------------------
 
 ;; small speed-up by nuking all the regexs in file-name-handler-alist
-(defvar spydez/file-name-handler-alist/orig file-name-handler-alist)
+(defvar spydez/file-name-handler-alist/orig (copy-alist file-name-handler-alist))
 (setq file-name-handler-alist nil)
+
 
 ;; but also set them back when emacs is done with startup
 ;; TODO: Complain if not nil when setting back? Or add orig to end of list?
@@ -17,12 +18,39 @@
 ;;   without this:   ~5.5 sec
 ;;   with:         -> 4.6 sec
 (defun spydez/file-name-handler-alist/revert ()
-  (unless (null file-name-handler-alist)
-    (spydez/warning/message nil nil
-                            "Resetting file-name-handler-alist to default but it is no longer null: %s"
-                             file-name-handler-alist))
-  (setq file-name-handler-alist spydez/file-name-handler-alist/orig))
-(add-hook 'emacs-startup-hook 'spydez/file-name-handler-alist/revert)
+  (cond
+   ;; both null - who cares
+   ((and (null file-name-handler-alist)
+         (null spydez/file-name-handler-alist/orig))
+    (ignore))
+
+   ;; null 'official' list right now, revert it to original value
+   ((null file-name-handler-alist)
+      (setq file-name-handler-alist spydez/file-name-handler-alist/orig))
+
+   ;; null 'saved off' of orig... eh? Whatever.
+   ((null spydez/file-name-handler-alist/orig)
+    (ignore))
+
+    ;; else, something in both... complain and merge
+   (t
+    ;; Complain...
+    (spydez/warning/message
+     nil nil
+     (concat "Merging `file-name-handler-alist' instead of reverting back "
+             "to default. It is no longer null: %s\n\norig: %s")
+     file-name-handler-alist
+     spydez/file-name-handler-alist/orig)
+
+    ;; ...and merge.
+    ;; TODO [2019-09-21]: Re-test this and see if it speeds up anything...
+    ;; Filename alist is tiny on home pc?
+    (seq-uniq (seq-concatenate 'list
+                               file-name-handler-alist
+                               spydez/file-name-handler-alist/orig)))))
+
+(add-hook 'spydez/hook/finalize/run-boot-and-config-hooks
+          'spydez/file-name-handler-alist/revert)
 
 
 ;;------------------------------------------------------------------------------
@@ -56,7 +84,7 @@
       ;; TODO: mess with gc-cons-percentage?
       )
   (setq gc-cons-threshold spydez/gc-cons-threshold/init)
-  (add-hook 'after-init-hook
+  (add-hook 'emacs-startup-hook
             (lambda ()  (setq gc-cons-threshold spydez/gc-cons-threshold/normal))))
 
 ;; Note that here:
