@@ -40,6 +40,10 @@ FancyZones:
 
 * Packages to Check Out Maybe
 
+leaf (use-package alternative):
+  - https://github.com/conao3/leaf.el
+  - https://melpa.org/#/leaf
+
 CamelCase <-> snake_case:
   - https://github.com/akicho8/string-inflection
 

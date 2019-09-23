@@ -38,6 +38,12 @@
 ;; Melpa uses this one, and it has different vars and setup.
 ;;   https://github.com/cadadr/elisp/blob/devel/forecast.el
 (use-package forecast
+  ;; Not working right now...
+  ;;   a) Needs configure-crypt fixed.
+  ;;   2) Not a great weather packages.
+  ;;   -  Makes a backtrace on init right now...
+  :disabled
+
   :commands forecast
   :config
   (load spydez/file/secrets)

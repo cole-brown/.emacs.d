@@ -24,8 +24,14 @@
   ;;---
   ;; Language Server Protocol for Python (LSP)
   ;;---
-  :after (lsp-mode projectile)
+  :after lsp-mode
   ;;:demand t
+
+
+  ;; ;;-----
+  ;; :init
+  ;; ;;-----
+  ;; (spydez/warning/message nil nil "Uh... hi? python:init")
 
 
   ;;-----
@@ -65,6 +71,7 @@
   ;; ;;-----
   ;; :config
   ;; ;;-----
+  ;; (spydez/warning/message nil nil "Uh... hi? python:config")
 
   ;; ;; Language Server Protocol for Python (LSP)
   ;; ;;---

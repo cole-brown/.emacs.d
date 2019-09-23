@@ -20,8 +20,9 @@
 
 ;; use-package options:
 
-;; verbose is useful when debugging startup. Might gain a bit of time disabling this when
-;; not debugging. (Maybe look into setting based on spydez/debugging-p?)
+;; Verbose is useful when debugging startup. Might gain a bit of time disabling
+;; this when not debugging. (Maybe look into setting based on
+;; spydez/debugging-p?)
 (setq use-package-verbose t)
 (setq use-package-compute-statistics t)
 (setq use-package-minimum-reported-time 0)
@@ -29,17 +30,29 @@
 ;; Not sure if we want this disabled...
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Package-Installation.html
 (setq package-enable-at-startup nil)
-;; Everyone seems to always use this anyways. Ensure packages are installed if missing.
+;; Everyone seems to always use this anyways. Ensure packages are installed if
+;; missing.
 (setq use-package-always-ensure t)
 
-;; TODO: Always demand everything?
+;; Brief TRIAL [2019-09-23]: Had a +50% to load time. Fixed my bug without it so
+;; disabled again. Maybe next time.
+;;
+;; Try out the "always demand" setting?
+;; ":demand t" seems to be showing up a lot in my code...
+;; Sometimes because weird use-package autoload shenanigans.
+;; e.g.: hooking lsp into itself makes it never really load:
+;;   :hook (lsp-after-open-hook . lsp-enable-imenu)
+;;
 ;; (setq use-package-always-demand t)
+;;
 ;; Always demand everything if daemon???
+;;   - I'm not daemon (ATM [2019-09-23]) - just server - so no.
 ;; (setq use-package-always-demand (daemonp))
 
+;; Or the opposite, which I 99% probably do not want:
 ;; This will set defer to default true for packages to not load on startup.
 ;; Would make for a faster init time but slower random actions until everything
-;; happens to be auto-loaded.
+;; happens to be auto-loaded. So no. Kinda the opposite of what I want.
 ;; (setq use-package-always-defer t)
 
 

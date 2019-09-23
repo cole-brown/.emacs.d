@@ -49,7 +49,6 @@
   `(when (cl-every (lambda (x) (require x nil :noerror)) ,features)
      ,@body))
 
-
 ;;---------
 ;; Functions
 ;;---------
@@ -58,7 +57,6 @@
   (declare (indent defun))
   `(when (functionp ,function)
      ,@body))
-
 
 ;;---------
 ;; Executables

@@ -22,24 +22,10 @@
 
 ;; Trial [2019-08-12]
 ;; https://github.com/emacs-lsp/lsp-mode
+(require 'with)
 (use-package lsp-mode
-  :commands (lsp lsp-deferred)
-
-  ;;-----
-  :init
-  ;;-----
-  (defun spydez/hook/lsp-generic (lsp-fn)
-    "LSP hook helper for both deferred and regular."
-    (lsp-fn)
-    (flycheck-mode))
-
-  (defun spydez/hook/lsp-deferred ()
-    "Generic LSP hook for any mode."
-    (spydez/hook/lsp-generic #'lsp-deferred))
-
-  (defun spydez/hook/lsp-immediate ()
-    "Generic LSP hook for any mode."
-    (spydez/hook/lsp-generic #'lsp))
+  ;; :commands (lsp lsp-deferred)
+  :demand t
 
 
   ;;-----
@@ -62,9 +48,26 @@
                                      "Left fringe is busy with git stuff.")
 
 
-  ;; ;;-----
-  ;; :config
-  ;; ;;-----
+  ;;-----
+  :config
+  ;;-----
+  (defun spydez/hook/lsp-generic (lsp-fn)
+    "LSP hook helper for both deferred and regular."
+    (funcall lsp-fn)
+    ;; TODO: convert to just straight call when flycheck gets gotten to...
+    (with-function 'flycheck-mode
+      (spydez/warning/message
+       nil nil
+       "TODO: convert to just straight call when flycheck gets gotten to...")
+      (flycheck-mode)))
+
+  (defun spydez/hook/lsp-deferred ()
+    "General LSP hook for any mode."
+    (spydez/hook/lsp-generic #'lsp-deferred))
+
+  (defun spydez/hook/lsp-immediate ()
+    "General LSP hook for any mode."
+    (spydez/hook/lsp-generic #'lsp))
 
   ;; Anything for generic LSP here? Specific languages should hold off for their
   ;; own config.
