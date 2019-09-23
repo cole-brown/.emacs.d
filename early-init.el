@@ -32,7 +32,7 @@
 
 
 ;;---
-;; Load Path: The Pre-Basics
+;; Load Path: The Stuff Before The Pre-Basics
 ;;---
 
 ;; Save off orginal. We're going to have a reduced set for bootstrapping, then reset and add the full monty.
@@ -54,6 +54,11 @@
 ;;---
 ;; Ok. Now we can do a few things before getting started.
 ;;---
+
+;; This is, like, pre-pre-basics...
+(require 'zeroth-zero)
+
+;; Now we're into the pre-basics, I guess.
 
 ;; Adjust garbage collection thresholds.
 (require 'zeroth-garbage)

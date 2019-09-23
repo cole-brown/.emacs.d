@@ -56,7 +56,8 @@
   (if (and window-system (bound-and-true-p spydez/file/auto-open-list))
       (dolist (file spydez/file/auto-open-list)
         (find-file file))))
-(add-hook 'emacs-startup-hook 'spydez/hook/auto-open-files)
+(add-hook 'spydez/hook/finalize/run-the-final-hooks
+          'spydez/hook/auto-open-files)
 
 
 ;;------------------------------------------------------------------------------
