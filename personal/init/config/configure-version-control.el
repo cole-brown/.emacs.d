@@ -234,9 +234,10 @@
 ;; Trial 2: [2019-09-24]
 ;;   - A new magit big version (added 'transient'), broke this so I disabled and
 ;;     didn't have any chance to try out.
-(use-package magit-gh-pulls
-  :after (magit))
-
+;; (use-package magit-gh-pulls
+;;   :after (magit))
+;; Trial 2 result:
+;;   No. Not maintained (1+ year to last commit).
 
 ;; ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#magit
 ;; ;; From http://endlessparentheses.com/merging-github-pull-requests-from-emacs.html
@@ -247,6 +248,17 @@
 ;;   (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls)
 ;;   (magit-gh-pulls-mode 1)
 ;;   (magit-gh-pulls-reload))
+
+
+;; Trying out "Forge" from Magit author(s).
+;; https://github.com/magit/forge
+;; Trial: [2019-09-24]
+;;
+;; [2019-09-24]: Failure for now... Needs a compiler on Windows which would want me to
+;; install... MinGW? And that's borking around on stuff that's already wonky on
+;; my old, creaky Windows 7 install.
+;; (use-package forge
+;;    :after (magit))
 
 
 ;;------------------------------------------------------------------------------

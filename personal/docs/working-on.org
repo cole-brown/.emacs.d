@@ -92,7 +92,10 @@ Company-Jedi:
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [6/13]
+  - [-] To Do: [6/14]
+    - [ ] Look at magit-lfs? Does it do anything I want?
+      - [ ] LFS first, then:
+      - [ ] Look at magit-svn? Does it do anything I want?
     - [ ] LSP mode for python
       - more work to get it to... useful and not annoying?
       - Lines judder and jump a bit - may be lsp-ui causing it?

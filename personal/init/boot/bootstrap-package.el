@@ -257,6 +257,7 @@
 ;;   'x' to upgrade?
 ;; After it's all done, maybe run:
 ;;   M-x package-autoremove
+;;   May need `M-x list-packages' first if custom-file doesn't exist right now.
 
 ;; Less manual. Upgrade all packages without showing *Packages* buffer.
 ;; https://emacs.stackexchange.com/questions/16398/noninteractively-upgrade-all-packages
