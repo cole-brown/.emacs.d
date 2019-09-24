@@ -41,9 +41,8 @@
   ;; It has chunk size, total file size.
 
   :config
-  (require 'vlf-setup)
   ;; C-c C-v prefix by default. Can be changed.
-  )
+  (require 'vlf-setup))
 
 ;; Basic Moving Around
 ;;
@@ -135,12 +134,24 @@
 ;; TODO: Enable for logs... How? VLF mode hook? Make a new, simple Log Mode?
 ;; TRIAL: [2019-03-05]
 (use-package hideshow
-  :bind (("C-c TAB" . hs-toggle-hiding)
-         ("C-\\" . hs-toggle-hiding)
-         ("M-+" . hs-show-all))
-  :init (add-hook #'prog-mode-hook #'hs-minor-mode)
   :diminish hs-minor-mode
+
+  ;;---
+  :bind ;; global
+  ;;---
+  (("C-c TAB" . hs-toggle-hiding)
+   ("C-\\" . hs-toggle-hiding)
+   ("M-+" . hs-show-all))
+
+  ;;---
+  :hook
+  ;;---
+  (prog-mode . hs-minor-mode)
+
+  ;;---
   :config
+  ;;---
+  ;; Not a defcustom, so ":config" and "setq".
   (setq hs-special-modes-alist
         (mapcar 'purecopy
                 '((c-mode "{" "}" "/[*/]" nil nil)

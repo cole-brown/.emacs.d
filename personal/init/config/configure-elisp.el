@@ -23,7 +23,9 @@
 ;; TODO: If that, change bind-key to a `:bind' section.
 (use-package pp
 
+  ;;---
   :init
+  ;;---
   ;; Don't think I have settings in hook in old .emacs...
   ;; Might not have any settings at all besides tab size...
   ;; TODO: few to check here: https://www.emacswiki.org/emacs/EmacsLispMode
@@ -34,7 +36,9 @@
     (setq tab-width spydez/dev-env/tab/min) ;; lisp gets the smaller tab width
     (bind-key "C-x C-e" 'pp-eval-last-sexp emacs-lisp-mode-map))
 
+  ;;---
   :hook
+  ;;---
   (emacs-lisp-mode . spydez/hook/emacs-lisp-mode))
 
 

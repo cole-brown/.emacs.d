@@ -19,9 +19,9 @@
 ;;   https://jakemccrary.com/blog/2014/07/04/using-emacs-to-explore-an-http-api/
 
 ;; Once installed, you can prepare a text file with queries.
-;; 
+;;
 ;; restclient-mode is a major mode which does a bit of highlighting and supports a few additional keypresses:
-;; 
+;;
 ;;     C-c C-c: runs the query under the cursor, tries to pretty-print the response (if possible)
 ;;     C-c C-r: same, but doesn't do anything with the response, just shows the buffer
 ;;     C-c C-v: same as C-c C-c, but doesn't switch focus to other window
@@ -34,15 +34,17 @@
 ;;     TAB: hide/show current request body, only if
 ;;     C-c C-a: show all collapsed regions
 (use-package restclient
+  ;;---
+  :mode
+  ;;---
   ;; Set some file extensions to use restclient in
-  :mode (("\\.http\\'" . restclient-mode)
-         ("\\.restclient\\'" . restclient-mode)
-         ;; restclient puts the response buffer into html mode automatically,
-         ;; but sometimes I save that response as this extension.
-         ("\\.restresponse\\'" . html-mode))
-  )
+  (("\\.http\\'" . restclient-mode)
+   ("\\.restclient\\'" . restclient-mode)
+   ;; restclient puts the response buffer into html mode automatically,
+   ;; but sometimes I save that response as this extension.
+   ("\\.restresponse\\'" . html-mode)))
 
-;; See (expand-filename "example.restclient" spydez/dir/personal/docs)
+;; See (spydez/path/to-file spydez/dir/personal/docs "example.restclient")
 ;; for an example file.
 ;; TODO: move that and unicode.txt into references if we get rid of other people's emacs files...
 
@@ -50,8 +52,10 @@
 (use-package company-restclient
   :after (restclient know-your-http-well company)
 
-  :init  (add-to-list 'company-backends 'company-restclient)
-  )
+  ;;---
+  :init
+  ;;---
+  (add-to-list 'company-backends 'company-restclient))
 
 
 ;;------------------------------------------------------------------------------
@@ -59,7 +63,8 @@
 ;;------------------------------------------------------------------------------
 
 ;; https://github.com/for-GET/know-your-http-well
-(use-package know-your-http-well)
+(use-package know-your-http-well
+  :commands (http-header http-method http-relation http-status-code))
 ;; M-x http-header ;; content-type
 ;; M-x http-method ;; post | POST
 ;; M-x http-relation ;; describedby

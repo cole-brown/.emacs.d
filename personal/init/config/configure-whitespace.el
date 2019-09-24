@@ -48,9 +48,9 @@
   :config
   ;;----------
 
-  ;; For a bug.
-  ;;  Path: (spydez/help/issue/path "whitespace-and-butler" "move-to-column.org")
-  ;;  File: (spydez/help/issue/visit "whitespace-and-butler" "move-to-column.org")
+  ;; For a bug. See for more info:
+  ;;  (spydez/help/issue/path "whitespace-and-butler" "move-to-column.org")
+  ;;  (spydez/help/issue/visit "whitespace-and-butler" "move-to-column.org")
   (defun spydez/advice/move-to-column/force-fix (args)
     "Un-lose the one single space that's being lost sometimes."
     (let ((column (nth 0 args))

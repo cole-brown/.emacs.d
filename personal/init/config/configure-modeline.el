@@ -94,8 +94,8 @@
 ;;
 ;; Well I'll try it... but right now it's not all that different. Maybe
 ;; when more packages are installed...
-(use-package smart-mode-line)
 ;; Trial: [2019-01-17]
+(use-package smart-mode-line)
 
 ;; Could configure some regexes into sml/replacer-regexp-list when up and running.
 ;; See git repo readme or Google.
@@ -107,24 +107,24 @@
 (use-package uniquify
   :ensure nil
 
-  ;; TODO: try these instead, see if they get sucked into custom-file
-  ;; (I don't want them in there...).
-  ;; :custom
-  ;; (uniquify-buffer-name-style 'post-forward)
-  ;; (uniquify-separator ":")            ; "file.txt:path/to"
-  ;; (uniquify-after-kill-buffer-p t)    ; rename after killing uniquified
-  ;; (uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
-
-  :config
+  ;;---
+  :custom
+  ;;---
   ;; "file.txt/to/path"
-  ;; (setq uniquify-buffer-name-style 'forward)
-  ;;       uniquify-separator "/"
+  ;; (uniquify-buffer-name-style 'forward
+  ;;  "Set uniquify-separator '/'. e.g. file.txt/to/path")
 
-  (setq uniquify-buffer-name-style 'post-forward
-        uniquify-separator ":"            ; "file.txt:path/to"
-        uniquify-after-kill-buffer-p t    ; rename after killing uniquified
-        uniquify-ignore-buffers-re "^\\*" ; don't muck with special buffers
-        ))
+  (uniquify-buffer-name-style 'post-forward
+   "Set uniquify names to e.g. file.txt|to/path")
+
+  (uniquify-separator ":"
+   "Set uniquify buffer/path separator to e.g. file.txt:path/to")
+
+  (uniquify-after-kill-buffer-p t
+   "Rename after killing uniquified. E.g. de-uniquify others as possible.")
+
+  (uniquify-ignore-buffers-re "^\\*"
+   "Don't muck with special buffers."))
 
 
 ;;------------------------------------------------------------------------------
@@ -136,7 +136,9 @@
   :if spydez/use-package/moody
   :demand t
 
+  ;;---
   :config
+  ;;---
 
   ;;---
   ;; General
@@ -212,8 +214,7 @@
     (spydez/moody/replace-mode-line-misc-info)
 
     ;; TODO: Anchor time to the right-hand side (with just the left slant from moody tab?).
-    )
-  )
+    ))
 
 
 ;;------------------------------------------------------------------------------
@@ -225,7 +226,10 @@
 
   ;; TODO: switch many many things over to :custom? Doesn't look like it hits
   ;; the custom-file at all.
+
+  ;;---
   :custom
+  ;;---
   ;; options:
   ;;   minions-blacklist: never show in menu
   ;;   minions-whitelist: always show in menu, even when not enabled
@@ -235,7 +239,9 @@
   ;;     - (does this manually format entire mode string in modeline then?)
   (minions-mode-line-lighter ":" "Smile instead of wink.")
 
+  ;;---
   :config
+  ;;---
   (minions-mode))
 
 

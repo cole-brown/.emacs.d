@@ -26,10 +26,13 @@
 ;; entering into the minibuffer. Sometimes you just want to be able to read it,
 ;; especially when it comes to lots of text. This binds C-M-e in a minibuffer)
 ;; so that you can edit the contents of the minibuffer before submitting it.
+;; Trial: [2019-01-17]
 (use-package miniedit
   :commands minibuffer-edit
-  :init (miniedit-install))
-;; Trial: [2019-01-17]
+
+  :init
+  (miniedit-install))
+
 
 ;; Alternative:
 ;;  minibuffer often displays so much information, even temporarily, that 

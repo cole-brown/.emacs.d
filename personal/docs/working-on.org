@@ -92,18 +92,16 @@ Company-Jedi:
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [4/12]
-    - [ ] use-package: Find all ":bind" and split into multiple ":bind" sections.
-      - One for global.
-      - One for each map.
+  - [-] To Do: [6/13]
+    - [ ] LSP mode for python
+      - more work to get it to... useful and not annoying?
+      - Lines judder and jump a bit - may be lsp-ui causing it?
+      - flycheck
     - [ ] use-package: rm setq
       - Find all setq, convert to ":custom" sections.
     - [ ] use-package: whitespace & neatness.
       - Two blank lines between keyword sections unless very simple.
       - Sections should have ";;---" around their keywords unless very simple.
-    - [ ] feature request: changable helpful buffer name format
-      - (defun helpful--buffer (symbol callable-p)
-      - Or, perhaps, a fix and pull request?
     - [-] Fancy checkboxes (<- like that) lose fancy boxyness when buffer has mismatched quotations or something
       - [X] double quote def work. Take out one of these and see. ""
       - [X] Started issue at (spydez/help/issue/visit "org-mode" "prettify-symbols.org")
@@ -114,14 +112,17 @@ Company-Jedi:
         - https://arenzana.org/2019/04/emacs-org-mode/
     - [ ] default-directory var for pretending a file is elsewhere
       - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eivtuo4
-    - [ ] LSP mode for python
-      - more work to get it to... useful and not annoying?
-      - Lines judder and jump a bit - may be lsp-ui causing it?
     - [ ] a per-device way of saying "off", "minimum", or "full" for features?
       - e.g. want full C# dev env at work, but minimum at home? Set it that way and
         language server, other external tools won't bother - just code hilighting maybe.
       - e.g.2. want rust or w/e flavor of the month catches my eye at home but
         none of it at work
+    - [X] use-package: Find all ":bind" and split into multiple ":bind" sections.
+      - One for global.
+      - One for each map.
+    - [X] feature request: changable helpful buffer name format
+      - (defun helpful--buffer (symbol callable-p) ...)
+      - Or, perhaps, a fix and pull request?
     - [X] Get yasnippets off TAB... getting annoying with all its one letter expansions.
     - [X] Company complete (I think) - proper case completion?
     - [X] ag, ack, gack, gawk, your mom, grep, something?

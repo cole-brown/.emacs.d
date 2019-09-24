@@ -73,57 +73,60 @@
         ;; So set up flyspell with that.
         (use-package flyspell
           ;; :delight ;; Not sure whether I want to kill its modeline or not
-          :init
-          (progn
-            (setq ispell-program-name (executable-find "hunspell"))
 
-            ;; "en_US" is key to lookup in `ispell-local-dictionary-alist`.
-            ;; Please note it will be passed as default value to hunspell CLI `-d` option
-            ;; if you don't manually setup `-d` in `ispell-local-dictionary-alist`
-            (setq ispell-dictionary "en_US")
+          ;;---
+          :custom
+          ;;---
+          (ispell-program-name (executable-find "hunspell"))
 
-            ;; TODO: get this from use-tool?.. Or do I need this at all?
-            ;; Don't think it's needed.
-            ;; (setq spydez/dir/hunspell-data "C:/bin/hunspell-1.3.2-3-w32-bin/share/hunspell")
+          ;; "en_US" is key to lookup in `ispell-local-dictionary-alist`.
+          ;; Please note it will be passed as default value to hunspell CLI `-d` option
+          ;; if you don't manually setup `-d` in `ispell-local-dictionary-alist`
+          (ispell-dictionary "en_US")
 
-            ;; Really hard to figure out if this is needed at all besides in xml mode(s)...
-            (setq ispell-local-dictionary-alist
-                  '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8)))
+          ;; TODO: get this from use-tool?.. Or do I need this at all?
+          ;; Don't think it's needed.
+          ;; (spydez/dir/hunspell-data "C:/bin/hunspell-1.3.2-3-w32-bin/share/hunspell")
 
-            ;; allow some hunspell-only stuff
-            (setq ispell-really-hunspell t)
+          ;; Really hard to figure out if this is needed at all besides in xml mode(s)...
+          (ispell-local-dictionary-alist
+           '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8)))
 
-            ;; Verbosity? These are t by default but not showing anything in *Messages* right now...
-            ;; (setq flyspell-issue-message-flag nil
-            ;;       flyspell-issue-welcome-flag nil)
+          ;; allow some hunspell-only stuff
+          (ispell-really-hunspell t)
 
-            ;; Personal Dictionary:
-            ;;   Looks like maybe can pass personal dict in as "-p" with "-d" list:
-            ;;     e.g. ("-d" "en_US" "-p" "path/to/personal.en")
-            ;;   Or maybe this is better:
-            ;;     TODO: a personal dictionary: C-h v ispell-personal-dictionary
-            )
+          ;; Verbosity? These are t by default but not showing anything in *Messages* right now...
+          ;; (flyspell-issue-message-flag nil)
+          ;; (flyspell-issue-welcome-flag nil)
 
-          :hook ;; only one list
+          ;; Personal Dictionary:
+          ;;   Looks like maybe can pass personal dict in as "-p" with "-d" list:
+          ;;     e.g. ("-d" "en_US" "-p" "path/to/personal.en")
+          ;;   Or maybe this is better:
+          ;;     TODO: a personal dictionary: C-h v ispell-personal-dictionary
+
+          ;;---
+          :hook
+          ;;---
           ;; TODO: shitty perf on an org-mode file with longish lines
           ;; (or just lots of 'misspelled' words?)
           ((prog-mode . flyspell-prog-mode)
            (text-mode . flyspell-mode))
 
           ;; If we want global flyspell:
+          ;; ;;---
           ;; :config
+          ;; ;;---
           ;; (flyspell-mode 1)
           )
       ;; else: no result from executable-find - warn and don't set up.
       (spydez/warning/message nil nil "No backend tool for flyspell. Checked for `hunspell': %s"
-                              spydez/file/hunspell)
-      )
+                              spydez/file/hunspell))
 
   ;; else, disabled so just note that.
   ;; TODO: make this a `with' function? `with-flag' or something maybe?
   (spydez/warning/message nil :debug "Config disabled: %s %s"
-                          'spydez/enabled/flyspell spydez/enabled/flyspell)
-  )
+                          'spydez/enabled/flyspell spydez/enabled/flyspell))
 
 
 ;;------------------------------------------------------------------------------
@@ -252,10 +255,17 @@
 (when (>= emacs-major-version 26)
   (use-package display-line-numbers
     :defer nil
-    :config
+
+    ;;---
+    :custom
+    ;;---
     ;; TODO: I think I want this, or display-line-numbers-width. Need a long
     ;; file to figure out which.
-    (setq display-line-numbers-width-start 't)
+    (display-line-numbers-width-start t)
+
+    ;;---
+    :config
+    ;;---
     (global-display-line-numbers-mode)))
 
 

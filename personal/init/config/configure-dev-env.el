@@ -12,8 +12,9 @@
 ;; Bind* -> Overrides Other (Minor Mode) Binds
 
 ;; Want to insist on "C-c C-c" being `comment-or-uncomment-region' in /all/ prog
-;; modes, but still use bind-keys... Which seems un-possible to do bere in one
-;; spot because python-mode-map steals it but doesn't exist yet.
+;; modes, but still use bind-keys... Which seems un-possible to do here in one
+;; spot because python-mode-map steals it but doesn't exist yet and I want
+;; python config all in configure-python.el
 (bind-keys
  ;;-----
  ;; Global Keybinds
@@ -350,12 +351,14 @@
 ;; mostly for killing regions? (Already moved it from hydra to dev-env...)
 ;; https://github.com/magnars/expand-region.el
 (use-package expand-region
-  :defer t
-  :bind
-  ("C-=" . er/expand-region)
-  ("C-<prior>" . er/expand-region)  ;; PageUp
-  ("C-<next>" . er/contract-region) ;; PageDown
-  )
+  :commands (er/expand-region er/contract-region)
+
+  ;;---
+  :bind ;; global
+  ;;---
+  (("C-=" . er/expand-region)
+   ("C-<prior>" . er/expand-region)    ;; PageUp
+   ("C-<next>" . er/contract-region))) ;; PageDown
 ;; See readme on GitHub for info on improving in certain modes.
 
 ;; NOTE: f.lux uses M-<PageUp> and M-<PageDown> (aka M-<prev>/M-<next>)
@@ -436,9 +439,11 @@ See `comment-region' for behavior of a prefix arg."
 ;; fills/unfills paragraphs alternatively."
 ;;   - https://zzamboni.org/post/my-emacs-configuration-with-commentary/
 ;;(use-package unfill
-;;  :bind
-;;  ("M-q" . unfill-toggle)
-;;  ("A-q" . unfill-paragraph))
+;;  ;;---
+;;  :bind ;; global
+;;  ;;---
+;;  (("M-q" . unfill-toggle)
+;;   ("A-q" . unfill-paragraph)))
 
 
 ;;------------------------------------------------------------------------------

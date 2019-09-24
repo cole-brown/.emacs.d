@@ -43,19 +43,20 @@
   (python-mode . spydez/hook/lsp-deferred)
 
 
+  ;; No global binds for python ATM.
+
   ;;-----
-  :bind
+  :bind ;; python-mode-map
   ;;-----
-  ;; [2019-08-12]
-  ;;   - moved `comment-or-uncomment-region' to configure-dev-env.el
-  ;;     and upgraded to prog-mode-map.
-  ;;   - Found out that isn't enough and I have to also map it here to overwrite
-  ;;     `python-shell-send-buffer' keybind.
-  (;; No global binds for python ATM.
-   :map python-mode-map
-        ("C-c C-c" . comment-or-uncomment-region)
-        )
-  ;; `python-shell-send-buffer' still sounds useful, but not on "C-c C-c"
+  (:map python-mode-map
+        ;; [2019-08-12]
+        ;;   - Moved `comment-or-uncomment-region' to configure-dev-env.el
+        ;;     and upgraded to prog-mode-map.
+        ;;   - Found out that isn't enough and I have to also map it here to
+        ;;     overwrite `python-shell-send-buffer' keybind.
+        ;;   - So `comment-or-uncomment-region' is bound in 2 maps.
+        ;; `python-shell-send-buffer' still sounds useful, but not on "C-c C-c"
+        ("C-c C-c" . comment-or-uncomment-region))
 
 
   ;;-----

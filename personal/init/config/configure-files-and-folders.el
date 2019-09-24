@@ -150,15 +150,17 @@ Returns buffer-name on kill, nil on no kill."
 ;; Note [2019-02-28]: This doesn't do anything by default - you have to turn it
 ;; on in the buffer. Or change settings that make it do things on its own.
 (use-package peep-dired
-  :delight ;; TODO: my google-fu is failing me or no one uses all-the-icons for minor modes...
+  :delight
+  ;; TODO: my google-fu is failing me or no one uses all-the-icons for minor modes...
   ;; I just want an eyeball for peeping. :(
   ;; Would ":after all-the-icons" help any?
-;;   '(:eval (propertize (all-the-icons-octicon "eye")
-;;             'face `(:family ,(all-the-icons-octicon-family) :height 1.2)
-;;             'display '(raise -0.1)))
-;; (all-the-icons-icon-for-mode)
-;; (all-the-icons-icon-for-file)
-;; (insert (all-the-icons-octicon "eye")) ;; todo: set modeline to eyeball emoji
+
+  ;;   '(:eval (propertize (all-the-icons-octicon "eye")
+  ;;             'face `(:family ,(all-the-icons-octicon-family) :height 1.2)
+  ;;             'display '(raise -0.1)))
+  ;; (all-the-icons-icon-for-mode)
+  ;; (all-the-icons-icon-for-file)
+  ;; (insert (all-the-icons-octicon "eye")) ;; todo: set modeline to eyeball emoji
 
   ;; Do we want these shortcuts or not?
   ;;   - Um... they already exist? Maybe this is to nuke them out of other
@@ -168,18 +170,23 @@ Returns buffer-name on kill, nil on no kill."
   ;;        ("<backspace>" . nil))   ;; scroll peeped file up
 
   ;;---
-  ;; Config
+  :custom
   ;;---
-  :config
-  (setq peep-dired-cleanup-eagerly t ; cleanup ASAP (just after moving to next entry
-        peep-dired-cleanup-on-disable t ; cleanup when minor mode disabled 
-        peep-dired-enable-on-directories t) ; peep is enabled in peeped dirs.
+  (peep-dired-cleanup-eagerly t
+                              "Cleanup ASAP (just after moving to next entry)")
+  (peep-dired-cleanup-on-disable t
+                                 "Cleanup when minor mode disabled.")
+  (peep-dired-enable-on-directories t
+                                    "Peep is enabled in peeped dirs.")
 
-  ;; Ignore all these extensions. Probably need more but here's my start.
-  (setq peep-dired-ignored-extensions '("iso" "deb"  ; disk images and packages
-                                        "exe" "dll"  ; binaries
-                                        "mp3" "mp4" "mkv")) ; music/video
+  (peep-dired-ignored-extensions '("iso" "deb"  ; disk images and packages
+                                   "exe" "dll"  ; binaries
+                                   "mp3" "mp4" "mkv") ; music/video
+   "Ignore all these extensions. Probably need more but here's my start.")
 
+  ;; ;;---
+  ;; :config
+  ;; ;;---
   ;; If OS is opening files too often with peep, do this:
   ;;   - https://github.com/itsjeyd/.emacs.d/blob/emacs24/init.el
   ;; ;; Functions
@@ -198,11 +205,11 @@ Returns buffer-name on kill, nil on no kill."
 ;;---
 ;; TRIAL: [2019-03-06]
 (use-package all-the-icons-dired
-  :after all-the-icons
   :if (display-graphic-p)
+  :after all-the-icons
   :hook (dired-mode . all-the-icons-dired-mode))
-;; Hey, neat. Thanks to wyuenho's dotfiles repo for showing up in a search for
-;; my attempts at the peep-dired delight line.
+;; Hey, neat. Thanks to this repo for showing up in a search for my attempts at
+;; the peep-dired delight line.
 ;; https://github.com/wyuenho/dotfiles/blob/master/.emacs
 
 
@@ -211,25 +218,35 @@ Returns buffer-name on kill, nil on no kill."
 ;;------------------------------------------------------------------------------
 
 ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#org0676afd
-(require 'recentf)
-(setq recentf-max-saved-items 200
-      recentf-max-menu-items 15)
-;; Recentf and TRAMP need some peace-keeping to get along.
-;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2007-07/msg00019.html
-(add-to-list 'recentf-keep 'file-remote-p)
-(recentf-mode)
+(use-package recentf
+  ;;---
+  :custom
+  ;;---
+  (recentf-max-saved-items 200)
+  (recentf-max-menu-items 15)
 
-;; may want to exclude more? idk.
-(unless (spydez/dir/self-policing-p)
-  (add-to-list 'recentf-exclude no-littering-var-directory)
-  (add-to-list 'recentf-exclude no-littering-etc-directory))
+  ;;---
+  :config
+  ;;---
+  ;; Recentf and TRAMP need some peace-keeping to get along.
+  ;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2007-07/msg00019.html
+  (add-to-list 'recentf-keep 'file-remote-p)
+  (recentf-mode)
 
-;; More config:
-;;   periodically save list of files: https://www.emacswiki.org/emacs/RecentFiles#toc1
-;;
-;;   Helm: https://www.emacswiki.org/emacs/RecentFiles#toc11
-;;     - ‘M-x helm-recentf’ will show only recently opened files (from recentf).
+  ;; may want to exclude more? idk.
+  (unless (spydez/dir/self-policing-p)
+    ;; ignore no-littering directories
+    (add-to-list 'recentf-exclude no-littering-var-directory)
+    (add-to-list 'recentf-exclude no-littering-etc-directory)
+    ;; ignore package directory
+    (add-to-list 'recentf-exclude package-user-dir))
 
+  ;; More config:
+  ;;   periodically save list of files: https://www.emacswiki.org/emacs/RecentFiles#toc1
+  ;;
+  ;;   Helm: https://www.emacswiki.org/emacs/RecentFiles#toc11
+  ;;     - ‘M-x helm-recentf’ will show only recently opened files (from recentf).
+  )
 
 ;;------------------------------------------------------------------------------
 ;; Desktop?

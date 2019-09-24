@@ -76,23 +76,29 @@
   ;; :delight '(:eval (concat " " (projectile-project-name)))
   ;; ...That doesn't work. Ok then. I guess set it in config.
 
+  ;;---
   :bind-keymap
+  ;;---
   ("C-c p" . projectile-command-map)
 
-  :config
+  ;;---
+  :custom
+  ;;---
   ;; mode line: trying this for now:
   ;;   orig: " Projectile[<proj>:<type>]"
   ;;   curr: " P[<proj>:<type>]"
-  ;; May want to get rid of type if it's not useful. (.emacs.d is `generic', really?!)
-  (setq ;; projectile-dynamic-mode-line '(:eval (format "[%s]" (projectile-project-name)))
-   projectile-mode-line-prefix " P")
-  ;;(projectile-project-type))
+  ;; ;; May want to get rid of type if it's not useful. (.emacs.d is `generic', really?!)
+  ;; (setq ;; projectile-dynamic-mode-line '(:eval (format "[%s]" (projectile-project-name)))
+  ;;  projectile-mode-line-prefix " P")
+  ;; ;;(projectile-project-type))
+  (projectile-mode-line-prefix " P"
+   "Reduce minor-mode-line a lot - takes up too much space by default.")
 
   ;; Completion system used by Projectile. Default is `ido' but we changed to... `default'?
   ;; Should I set this to `helm'? Not sure.
-  (setq projectile-completion-system 'default)
-  ;; cache is good, right?
-  (setq projectile-enable-caching t)
+  (projectile-completion-system 'default "See comment.")
+
+  (projectile-enable-caching t "Caching is good, right?")
 
   ;; ;; Using Emacs Lisp for indexing files is really slow on Windows. To enable
   ;; ;; external indexing, add this setting. The alien indexing method uses
@@ -103,11 +109,15 @@
   ;;
   ;; TRIAL [2019-09-09]
   ;; Going back to native to see if maybe that makes deadgrep work better?
-  (setq projectile-indexing-method 'native)
+  (projectile-indexing-method 'native
+                              "`alien' would be faster but I'm on windows 7...")
 
-  ;; I don't have any ignored yet... Maybe `third-party' if dirs can be ignored...
+  ;; I don't have any ignored yet... Maybe `third-party' if dirs can be ignored.
   ;; (add-to-list 'projectile-globally-ignored-files "node-modules")
 
+  ;;---
+  :config
+  ;;---
   (projectile-global-mode))
 
 ;; integrate with Helm
@@ -116,8 +126,9 @@
   :after (helm projectile)
   ;; Adds itself to projectile-command-map? It's at: C-c p h
 
+  :config
   ;; Do I need (helm-projectile-on)? I'm getting C-c p h anyways, so... Dunno?
-  )
+  (helm-projectile-on))
 
 
 ;;------------------------------------------------------------------------------
@@ -171,6 +182,7 @@
   ;; (taskspace/dir-name/parts-alists ...)
   ;; (taskspace/dir-name/valid-desc-regexp ...)
   )
+
 
 ;;------------------------------------------------------------------------------
 ;; TODOs

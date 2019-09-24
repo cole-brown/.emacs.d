@@ -93,11 +93,12 @@
   :delight undo-tree-mode " ↺" ;; fancy UTF-8
   ;; :delight undo-tree-mode ;; just squelched entirely
 
+  ;;---
   :config
-  (progn
-    (global-undo-tree-mode)
-    (setq undo-tree-visualizer-timestamps t)
-    (setq undo-tree-visualizer-diff t)))
+  ;;---
+  (global-undo-tree-mode)
+  (setq undo-tree-visualizer-timestamps t)
+  (setq undo-tree-visualizer-diff t))
 ;; Trial: [2019-01-17]
 ;;   - Not sure if I'll use this... I'm fine with the kill ring functionality usually.
 ;;   - [2019-01-28] Disabled for massive violations of expected undo functionality.

@@ -44,20 +44,28 @@
 (use-package deadgrep
   :demand t
 
-  :bind
+  ;;---
+  :bind ;; global
+  ;;---
   ;; Try binding to F5?
   ;; Maybe replace projectile search or something if don't like F5?
-  (("<f5>" . #'deadgrep)
+  (("<f5>" . #'deadgrep))
 
-   ;; TRIAL: [2019-08-27]
-   ;; kill buffer instead of quit?
-   :map deadgrep-mode-map
-   ("q" . kill-this-buffer)
+  ;;---
+  :bind ;; deadgrep-mode-map
+  ;;---
+  (:map deadgrep-mode-map
+        ;; Ok'd: [2019-08-27] -> [2019-09-24]
+        ;; Kill buffer instead of quit.
+        ("q" . kill-this-buffer))
 
-   ;; Also map into the projectile search group
-   ;; (projectile-grep, projectile-deadgrep, et al):
-   :map projectile-command-map
-         ("s d" . deadgrep)))
+  ;;---
+  :bind ;; projectile-command-map
+  ;;---
+  (:map projectile-command-map
+        ;; Also map into the projectile search group
+        ;; (projectile-grep, projectile-deadgrep, et al):
+        ("s d" . deadgrep)))
 
 
 ;;------------------------------------------------------------------------------

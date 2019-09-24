@@ -89,20 +89,41 @@
 (use-package beacon
   :delight
 
+  ;;---
+  :custom
+  ;;---
+  ;; [2019-09-24]: Most are here (but unchanged) so I know about them for
+  ;; maybe tweaking...
+  (beacon-blink-when-point-moves-vertically nil) ; default nil
+  (beacon-blink-when-point-moves-horizontally nil) ; default nil
+  (beacon-blink-when-buffer-changes t) ; default t
+  (beacon-blink-when-window-scrolls t) ; default t
+  (beacon-blink-when-window-changes t) ; default t
+  (beacon-blink-when-focused t) ; default nil
+
+  (beacon-blink-duration 0.3) ; default 0.3
+  (beacon-blink-delay 0.3) ; default 0.3
+  (beacon-size 20) ; default 40
+  (beacon-color 0.25 "A bit 'brighter' on zenburn dark bg.") ; default 0.5
+
+  ;; `beacon-color' can take names, hex strings ("#AABBCC"),
+  ;; and floats (converted to 'between bg and fg colors')
+  ;; (beacon-color "yellow") ; default 0.5
+  ;; (beacon-color 0.5) ; default 0.5
+  ;; (beacon-color spydez/theme/color/zenburn-magenta-bg-5) ; default 0.5
+
+  ;; Experiments, not sure I like...
+  ;; (setq beacon-size 10)
+  ;; (setq beacon-color spydez/theme/color/zenburn-magenta-bg-5)
+  ;; (zenburn-with-color-variables (setq beacon-color zenburn-red))
+  ;; (zenburn-with-color-variables (setq beacon-color zenburn-magenta))
+  ;; Reset:
+  ;; (setq beacon-size 20)
+  ;; (setq beacon-color 0.25)
+
+  ;;---
   :config
-  (setq beacon-blink-when-point-moves-vertically nil) ; default nil
-  (setq beacon-blink-when-point-moves-horizontally nil) ; default nil
-  (setq beacon-blink-when-buffer-changes t) ; default t
-  (setq beacon-blink-when-window-scrolls t) ; default t
-  (setq beacon-blink-when-window-changes t) ; default t
-  (setq beacon-blink-when-focused t) ; default nil
-
-  (setq beacon-blink-duration 0.3) ; default 0.3
-  (setq beacon-blink-delay 0.3) ; default 0.3
-  (setq beacon-size 20) ; default 40
-  ;; (setq beacon-color "yellow") ; default 0.5
-  ;; (setq beacon-color 0.5) ; default 0.5
-
+  ;;---
   ;; Not sure exactly why term-mode is no blink...
   ;; Do we want to also add shell, eshell?
   (add-to-list 'beacon-dont-blink-major-modes 'term-mode)
@@ -173,17 +194,23 @@
   ;;  ("<f2> <up>" . windmove-up)
   ;;  ("<f2> <down>" . windmove-down)
   ;;  )
+  ;; Well... We're still using this in a hydra, I guess.
 
-  :config
-  ;; No to this.
-  ;; Super + arrows on Windows is a command I use for organizing Windows' windows.
-  ;; Trying Sacha's F2+arrows for now.
-  ;; ;; use command key on Mac
-  ;; (windmove-default-keybindings 'super)
+  ;;---
+  :custom
+  ;;---
+  (windmove-wrap-around t)
 
-  ;; wrap around at edges
-  (setq windmove-wrap-around t)
+  ;; ;;---
+  ;; :config
+  ;; ;;---
+  ;; ;; No to this.
+  ;; ;; Super + arrows on Windows is a command I use for organizing Windows' windows.
+  ;; ;; Trying Sacha's F2+arrows for now.
+  ;; ;; ;; use command key on Mac
+  ;; ;; (windmove-default-keybindings 'super)
   )
+
 ;; TODO: Not quite sure what to do with this.
 ;;   Maybe try org-mode's solution:
 ;;     - https://emacs.stackexchange.com/questions/22286/shiftarrow-to-change-window-does-not-work-in-org-mode
@@ -194,12 +221,14 @@
 ;;   - https://www.reddit.com/r/emacs/comments/7evidd/windmove_shortcuts/
 ;;     -> https://github.com/abo-abo/ace-window
 
+
 ;; Switch window has a lot more setup/options in github readme. For now just
 ;; see if we like it at all.
 ;; https://github.com/dimitri/switch-window
 ;; Trial: [2019-01-23]
 (use-package switch-window
-  :bind (("C-x o" . switch-window)))
+  :bind
+  (("C-x o" . switch-window)))
 
 
 ;;------------------------------------------------------------------------------

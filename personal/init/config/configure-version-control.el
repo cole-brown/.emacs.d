@@ -86,7 +86,10 @@
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#orgfb77d93
 ;; Trial: [2019-01-25]
 (use-package git-messenger
-  :bind (("C-x v m" . git-messenger:popup-message)))
+  ;;---
+  :bind ;; global
+  ;;---
+  (("C-x v m" . git-messenger:popup-message)))
 ;; Oh wow - that's awesome. Commit message for line at point.
 ;; TODO: Way to include author in there?
 
@@ -177,7 +180,6 @@
 ;;     (jump-to-register :magit-fullscreen)))
 
 (use-package magit
-
   ;;-----
   :custom
   ;;-----
@@ -214,29 +216,27 @@
   ;;   - https://magit.vc/manual/magit/Automatic-Refreshing-of-Magit-Buffers.html
 
   ;;-----
-  :bind
+  :bind ;; global
   ;;-----
-  ;; some defaults: https://www.emacswiki.org/emacs/VersionControl
-  ;; I want to overwrite some of those, I think? magit-status is superior to vc-directory.
-  ;; Or should git be the VC, and magit be its own special thing? Going with overwrite for now.
-  ;; todo: consider "C-x g" for magit-status?
+  ;; Some Defaults: https://www.emacswiki.org/emacs/VersionControl
+  ;; I want to overwrite some of those, I think? magit-status is superior to
+  ;; vc-directory. Or should git be the VC, and magit be its own special thing?
+  ;; Going with overwrite for now.
+  ;; TODO: consider "C-x g" for magit-status?
   (("C-x v d" . magit-status)
    ("C-x v p" . magit-push)
    ;; ("C-x v C-d" . my/magit-status-in-directory)
    ;; ("C-x v c" . my/magit-commit-all) ;; this overrides vc "cancel"... any better one to steal?
-   )
-  )
+   ))
 
-;; Trial: [2019-01-25]
+
+;; Trial  : [2019-01-25]
+;; Trial 2: [2019-09-24]
+;;   - A new magit big version (added 'transient'), broke this so I disabled and
+;;     didn't have any chance to try out.
 (use-package magit-gh-pulls
-  :disabled
-  ;; Disabled: [2019-02-15]
-  ;;   A brand new magit version dropped magit-popup and created Transient.
-  ;;   https://www.reddit.com/r/emacs/comments/aqp6jc/transient_released_magitpopup_successor/
+  :after (magit))
 
-  ;; Wait a bit, update, re-enable?
-  ;;   - Well I don't really need this yet for anything, so... just wait.
-  )
 
 ;; ;; From http://pages.sachachua.com/.emacs.d/Sacha.html#magit
 ;; ;; From http://endlessparentheses.com/merging-github-pull-requests-from-emacs.html

@@ -814,8 +814,9 @@ For the transition, maybe a func for checking..."
 ;; library used for some list functions (by me and by some packages)
 ;; making it explicit now that I use it too
 ;; https://github.com/magnars/dash.el
-(use-package dash)
-;; `f' and `s' for files and strings are popular too.
+(use-package dash) ;; util functions ("-flatten", etc)
+(use-package f)    ;; file functions
+(use-package s)    ;; string functions
 
 ;; Setup backups, autosaves, and history.
 (spydez/info/require 'bootstrap-backups)

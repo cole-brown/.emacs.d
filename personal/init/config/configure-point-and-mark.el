@@ -60,7 +60,9 @@ point reaches the beginning or end of the buffer, stop there."
 ;; Orphaned: but I like it, so hopefully the orphanage keeps it around.
 ;; https://github.com/emacsorphanage/pager
 (use-package pager
-  :bind
+  ;;---
+  :bind ;; global
+  ;;---
   (("C-v" . pager-page-down)
    ([next] . pager-page-down)
    ("M-v" . pager-page-up)

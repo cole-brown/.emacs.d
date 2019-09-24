@@ -61,7 +61,8 @@ _c_: todo: %-15(spydez/signature/todo/comment)
     ("s" (spydez/signature/insert spydez/signature/short-pre))
     ("-" (spydez/signature/insert spydez/signature/name-post))
     ("t" (spydez/signature/insert spydez/signature/todo))
-    ("c" (spydez/signature/insert spydez/signature/todo/comment))
+    ("c" (spydez/signature/insert
+          (spydez/signature/options/add 'spydez/signature/todo/comment)))
 
     ("n" org-journal-new-entry)
     ("v" (funcall org-journal-find-file

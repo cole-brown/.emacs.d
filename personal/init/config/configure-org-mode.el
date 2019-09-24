@@ -228,12 +228,35 @@
   ;; Org-Mode Keybinds
   ;;----------------------------------------------------------------------------
 
+  ;;*****
+  :bind* ;; *GLOBAL*
+  ;;*****
   ;; `:bind*' to force some bindings (overrides minor mode binds).
-  :bind*
-  (;;---
-   :map org-mode-map
-   ;;---
-   ;; NOTE: THESE ARE ORG-MODE ONLY! And that is intended.
+  ;; Bind a few keys for globally useful org stuff.
+  ;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+
+  (;; Set up C-c l to store a link to the current org object, in counterpart to
+   ;; the default C-c C-l to insert a link.
+   ("C-c l" . org-store-link)
+
+   ;; ;; Set up C-c a to call up agenda mode.
+   ;; ("C-c a" . org-agenda)
+   ;; ;; TODO: try using org agenda mode maybe
+
+   ;; ;; I have read the help for `org-capture' and have one question...
+   ;; ;; WTF is org-capture?
+   ;; ("C-c c" . org-capture)
+   )
+  ;; Some more keybinds to consider here:
+  ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org44fc1f8
+
+  ;;*****
+  :bind* ;; *org-mode-map*
+  ;;*****
+  ;; `:bind*' to force some bindings (overrides minor mode binds).
+  (:map org-mode-map
+   ;; These are ORG-MODE only! Make new ":bind" or ":bind*" section for
+   ;; other maps.
 
    ;; 'C-c <tab>' to show headings only (no top parent notes, no
    ;; children notes, just headings). Org-Mode had 'C-c <tab>' as
@@ -504,9 +527,11 @@ savages."
 
 ;; Strike through DONE headlines?
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#orga092ba0
-;; TODO: try it out? Hopefully with a zenburn face?
+;;   "I wanted a quick way to visually distinguish DONE tasks from tasks I still
+;; need to do. This handy snippet from the Emacs Org-mode mailing list does the
+;; trick by striking through the headlines for DONE tasks."
 ;;
-;; I wanted a quick way to visually distinguish DONE tasks from tasks I still need to do. This handy snippet from the Emacs Org-mode mailing list does the trick by striking through the headlines for DONE tasks.
+;; TODO: try it out? Hopefully with a zenburn face?
 ;;
 ;; (setq org-fontify-done-headline t)
 ;; (custom-set-faces
@@ -537,32 +562,6 @@ savages."
       (erase-buffer)
       (insert document)
       (goto-char (point-min)))))
-
-
-;;------------------------------------------------------------------------------
-;; Global Org Keybinds
-;;------------------------------------------------------------------------------
-;; NOTE: THESE ARE GLOBAL BINDS. And that is intended.
-
-;; Bind a few keys for globally useful org stuff.
-;; https://zzamboni.org/post/my-emacs-configuration-with-commentary/
-(bind-keys*
-  ;; Set up C-c l to store a link to the current org object, in counterpart to
-  ;; the default C-c C-l to insert a link.
-  ("C-c l" . org-store-link)
-
-  ;; Set up C-c a to call up agenda mode.
-  ("C-c a" . org-agenda)
-  ;; TODO: try using org agenda mode maybe
-
-  ;; I have read the help for `org-capture' and have one question...
-  ;; WTF is org-capture?
-  ("C-c c" . org-capture)
-  ;; TODO: ...I don't know - comment this out?
-  )
-
-;; Some more keybinds to consider here:
-;; http://pages.sachachua.com/.emacs.d/Sacha.html#org44fc1f8
 
 
 ;;------------------------------------------------------------------------------

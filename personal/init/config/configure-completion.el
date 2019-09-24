@@ -57,12 +57,11 @@
             "'*helpful variable: helm-buffer-max-length*'. "
             "Default was 20. Upping to 30 to see how it goes."))
 
-  ;;---
-  :bind
-  ;;---
-  (
-   ;; [2019-03-01]: swapped helm-buffers-list with this.
-   ("C-x b"     . helm-mini)
+  ;;-----
+  :bind ;; global
+  ;;-----
+  ;; [2019-03-01]: swapped helm-buffers-list with this.
+  (("C-x b"     . helm-mini)
    ;; [2019-05-01]: helm-mini is more useful than helm-buffers-list, IMO.
    ("C-x C-b"   . helm-mini)
    ("C-c h"     . helm-buffers-list)
@@ -79,8 +78,7 @@
    ("C-x c y"   . helm-yas-complete)
    ("C-x c Y"   . helm-yas-create-snippet-on-region)
    ("C-x c SPC" . helm-all-mark-rings)
-   ("C-x C-f"   . helm-find-files) ; Use helm for finding instead of find-files
-   )
+   ("C-x C-f"   . helm-find-files)) ; Use helm for finding instead of find-files
 
   ;;---
   :config
@@ -304,10 +302,11 @@
   ;; prog-mode so it seems ok right now.
 
   ;;---
-  :config
+  :hook
   ;;---
   ;; Enable Company-Mode in any programming mode.
-  (add-hook 'prog-mode-hook 'company-mode))
+  (prog-mode . company-mode))
+
 
 ;; Completion will start automatically after you type a few letters. Use M-n and
 ;; M-p to select, <return> to complete or <tab> to complete the common part.
@@ -321,10 +320,16 @@
 (use-package helm-company
   :delight
 
-  :bind
+  ;;---
+  :bind ;; company-mode-map
+  ;;---
   (:map company-mode-map
-        ("C-;" . helm-company)
-   :map company-active-map
+        ("C-;" . helm-company))
+
+  ;;---
+  :bind ;; company-active-map
+  ;;---
+  (:map company-active-map
         ("C-;" . helm-company)))
 
 ;; Maybe `company-box' for some pretty icons?
