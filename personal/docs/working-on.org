@@ -92,19 +92,19 @@ Company-Jedi:
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [6/14]
-    - [ ] Look at magit-lfs? Does it do anything I want?
-      - [ ] LFS first, then:
-      - [ ] Look at magit-svn? Does it do anything I want?
-    - [ ] LSP mode for python
-      - more work to get it to... useful and not annoying?
-      - Lines judder and jump a bit - may be lsp-ui causing it?
-      - flycheck
+  - [-] To Do: [0/8]
     - [ ] use-package: rm setq
       - Find all setq, convert to ":custom" sections.
     - [ ] use-package: whitespace & neatness.
       - Two blank lines between keyword sections unless very simple.
       - Sections should have ";;---" around their keywords unless very simple.
+    - [ ] LSP mode for python
+      - more work to get it to... useful and not annoying?
+      - Lines judder and jump a bit - may be lsp-ui causing it?
+      - flycheck
+    - [ ] Look at magit-lfs? Does it do anything I want?
+      - [ ] LFS first, then:
+      - [ ] Look at magit-svn? Does it do anything I want?
     - [-] Fancy checkboxes (<- like that) lose fancy boxyness when buffer has mismatched quotations or something
       - [X] double quote def work. Take out one of these and see. ""
       - [X] Started issue at (spydez/help/issue/visit "org-mode" "prettify-symbols.org")
@@ -120,24 +120,6 @@ Company-Jedi:
         language server, other external tools won't bother - just code hilighting maybe.
       - e.g.2. want rust or w/e flavor of the month catches my eye at home but
         none of it at work
-    - [X] use-package: Find all ":bind" and split into multiple ":bind" sections.
-      - One for global.
-      - One for each map.
-    - [X] feature request: changable helpful buffer name format
-      - (defun helpful--buffer (symbol callable-p) ...)
-      - Or, perhaps, a fix and pull request?
-    - [X] Get yasnippets off TAB... getting annoying with all its one letter expansions.
-    - [X] Company complete (I think) - proper case completion?
-    - [X] ag, ack, gack, gawk, your mom, grep, something?
-      - [X] ripgrep https://github.com/BurntSushi/ripgrep
-        - Added ripgrep to Windows' PATH env var. Want it on bash cmd line too...
-      - [X] w/ deadgrep? https://github.com/Wilfred/deadgrep
-      - [X] Restart emacs and test.
-    - [X] interactive function for code->issue doc linkage
-      - M-x whatever -> prints/returns expanded filename
-      - C-u M-x whatever -> visits file
-      - First stab. Not interactive, but I need multiple args.
-        - `spydez/help/issue/path' and `spydez/help/issue/visit'
 
 
 Tabs:
@@ -180,6 +162,34 @@ C++ dev environment with:
   - CMAKE
   - Google C Style
 https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
+
+
+* DONE [2019-09-24] A list of things that are done now
+CLOSED: [2019-09-24 Tue 12:29]
+:LOGBOOK:
+- State "DONE"       from              [2019-09-24 Tue 12:29]
+:END:
+
+  - [X] To Do: [6/6]
+    - [X] use-package: Find all ":bind" and split into multiple ":bind" sections.
+      - One for global.
+      - One for each map.
+    - [X] feature request: changable helpful buffer name format
+      - (defun helpful--buffer (symbol callable-p) ...)
+      - Or, perhaps, a fix and pull request?
+    - [X] Get yasnippets off TAB... getting annoying with all its one letter expansions.
+    - [X] Company complete (I think) - proper case completion?
+    - [X] ag, ack, gack, gawk, your mom, grep, something?
+      - [X] ripgrep https://github.com/BurntSushi/ripgrep
+        - Added ripgrep to Windows' PATH env var. Want it on bash cmd line too...
+      - [X] w/ deadgrep? https://github.com/Wilfred/deadgrep
+      - [X] Restart emacs and test.
+    - [X] interactive function for code->issue doc linkage
+      - M-x whatever -> prints/returns expanded filename
+      - C-u M-x whatever -> visits file
+      - First stab. Not interactive, but I need multiple args.
+        - `spydez/help/issue/path' and `spydez/help/issue/visit'
+
 
 * DONE [2019-08-29] A list of things that are done now
 CLOSED: [2019-08-29 Thu 12:05]

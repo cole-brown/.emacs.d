@@ -233,13 +233,24 @@ Returns buffer-name on kill, nil on no kill."
   (add-to-list 'recentf-keep 'file-remote-p)
   (recentf-mode)
 
-  ;; may want to exclude more? idk.
-  (unless (spydez/dir/self-policing-p)
-    ;; ignore no-littering directories
-    (add-to-list 'recentf-exclude no-littering-var-directory)
-    (add-to-list 'recentf-exclude no-littering-etc-directory)
-    ;; ignore package directory
-    (add-to-list 'recentf-exclude package-user-dir))
+  ;; May want to exclude more? IDK.
+  (if (spydez/dir/self-policing-p)
+      (add-to-list 'recentf-exclude
+                   ;; Build the regex of ignored dirs 'efficiently'.
+                   (regexp-opt (list
+                                ;; ignore package directory
+                                (expand-file-name package-user-dir))))
+
+    ;; Else, using no-littering, so add their's in too.
+    ;; This is "list of regexps and predicates". So... regex?
+    (add-to-list 'recentf-exclude
+                 ;; Build the regex of ignored dirs 'efficiently'.
+                 (regexp-opt (list
+                              ;; ignore no-littering directories
+                              no-littering-var-directory
+                              no-littering-etc-directory
+                              ;; ignore package directory
+                              (expand-file-name package-user-dir)))))
 
   ;; More config:
   ;;   periodically save list of files: https://www.emacswiki.org/emacs/RecentFiles#toc1
