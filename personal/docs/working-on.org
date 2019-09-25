@@ -92,16 +92,19 @@ Company-Jedi:
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [0/8]
+  - [-] To Do: [0/9]
     - [ ] use-package: rm setq
       - Find all setq, convert to ":custom" sections.
+    - [ ] defcustom: make sure all mine are using my group.
     - [ ] use-package: whitespace & neatness.
       - Two blank lines between keyword sections unless very simple.
       - Sections should have ";;---" around their keywords unless very simple.
-    - [ ] LSP mode for python
-      - more work to get it to... useful and not annoying?
-      - Lines judder and jump a bit - may be lsp-ui causing it?
-      - flycheck
+    - [-] LSP mode for python
+      - [ ] more work to get it to... useful and not annoying?
+        - [ ] It has... an amazing amount of memory hogging/leaking going on...
+      - [ ] flycheck
+      - [X] Lines judder and jump a bit - may be lsp-ui causing it?
+        - Fixed by moving to different font.
     - [ ] Look at magit-lfs? Does it do anything I want?
       - [ ] LFS first, then:
       - [ ] Look at magit-svn? Does it do anything I want?

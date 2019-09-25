@@ -321,6 +321,116 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Auto/Easy Commit of Certain Docs Folders
+;;------------------------------------------------------------------------------
+
+
+(defcustom spydez/dir/git/auto-commit-locations
+  (list
+   spydez/dir/doc-save-secrets
+   spydez/dir/doc-save-vault)
+  "List of strings of directories (TODO: add allowance for single
+files?) to automatically add/commit/push in their respective git
+repos.")
+
+
+(defun spydez/magit/changes-in-subdir (subdir-abs)
+  "Determines if magit knows of any changes (staged, unstaged,
+untracked), and if any of them are in this (absolute path to)
+`subdir' of the repo."
+  (let* ((changes-rel (append (magit-staged-files)
+                              (magit-unstaged-files)
+                              (magit-untracked-files)))
+         (git-root (magit-toplevel))
+         (changes-abs (mapcar (lambda (x) (spydez/path/to-file git-root x))
+                              changes-rel)))
+
+    ;; Right... now just filter and return.
+    (seq-filter (lambda (x) (string-prefix-p subdir-abs x)) changes-abs)))
+
+
+;; §-TODO-§: Could make this async if it takes too long...
+;; §-TODO-§: Could make take an arg if desired?
+(require 'f)
+(require 'subr-x)
+(defun spydez/magit/auto-commit ()
+  "For each item in `spydez/dir/git/auto-commit-locations', use
+Magit to: add files, commit, and push."
+  (interactive)
+
+  (let (results)
+    ;; walk our list of auto-commit loctaions
+    (dolist (location spydez/dir/git/auto-commit-locations)
+      ;; Change the default-directory just for this scope...
+      (let ((default-directory (if (f-dir? location)
+                                   location
+                                 (f-dirname location)))
+            ;; some silly little message
+            (commit-message (format "%s: %s triggered in %s by %s"
+                                    (format-time-string
+                                     spydez/datetime/format/yyyy-mm-dd_hh-mm-ss)
+                                    "auto-commit"
+                                    "emacs/magit"
+                                    "spydez/magit/auto-commit function.")))
+        (message "Checking %s..." location)
+        ;; Magit works on `default-directory', so we are checking status
+        ;; on our repo with this.
+        (if (not (spydez/magit/changes-in-subdir location))
+            (progn
+              ;; Save that nothing happened.
+              (push (cons location nil) results)
+              ;; Say why nothing happened.
+              (message "  No changes to auto-commit: %s" default-directory))
+
+          ;; Else, commit changes.
+          (let ((changes (string-join ;; join results with comma
+                          ;; gather up all changed files, strip out dir prefix
+                          (mapcar (lambda (x)
+                                    (string-remove-prefix default-directory x))
+                                  (append (magit-staged-files)
+                                          (magit-unstaged-files)
+                                          (magit-untracked-files)))
+                          ", ")))
+            ;; Add!
+            (message "  Adding changes found: %s..." changes)
+            ;; "add <path>" or "add -A ." work to add untracked.
+            ;; "add -A ." == "add ." + "add -u ."
+            ;; "add ." only adds modified.
+            (magit-call-git "add" "-A" ".")
+
+            ;; Commit!
+            (message "  Committing changes: %s..." changes)
+            ;; Don't 'commit all' ("commit -a"), so we can commit just whatever
+            ;; sub-folder we are in.
+            (magit-call-git "commit" "-m" commit-message)
+
+            ;; Push?
+            (message "  Pushing changes: %s..." changes)
+            ;; Assume an origin of "origin", I guess?
+            ;; Could also just "push" to default...
+            (magit-call-git "push" "origin")
+
+            ;; Done. Until I find all the edge cases I guess.
+            ;; Like when push fails?
+            (message "  Committed and pushed (probably): %s" changes)
+
+            (push (cons location changes) results)))))
+
+    (message "Auto-Commit ran on %s locations: \n%s"
+             (length results)
+             ;; format for each: "path: changed, file, list.txt"
+             (string-join
+              (mapcar (lambda (x) (format "  %s: %s"
+                                          (car x)
+                                          (if (null (cdr x))
+                                              "None."
+                                            (cdr x))))
+                      results)
+              "\n"))))
+;; (spydez/magit/auto-commit)
+
+
+;;------------------------------------------------------------------------------
 ;; Provide this.
 ;;------------------------------------------------------------------------------
 (provide 'configure-version-control)

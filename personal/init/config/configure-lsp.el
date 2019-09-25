@@ -81,8 +81,7 @@
 ;;------------------------------------------------------------------------------
 
 (use-package lsp-ui
-;;  :after lsp-mode
-  :commands lsp-ui-mode
+  :after lsp-mode
 
   ;;---
   :init
@@ -95,6 +94,10 @@
   (unbind-key "M-.") ;; was xref-find-definitions
   (unbind-key "M-?") ;; was xref-find-references
 
+  ;;---
+  :hook
+  ;;---
+  (lsp-mode . lsp-ui-mode)
 
   ;;---
   :bind

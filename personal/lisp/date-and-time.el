@@ -12,6 +12,13 @@
   :type 'string)
 ;;(format-time-string spydez/datetime/format/yyyy-mm-dd)
 
+;; best format w/ time
+(defcustom spydez/datetime/format/yyyy-mm-dd_hh-mm-ss "%Y-%m-%d %H:%M:%S"
+  "My favorite, and the best, date & time format."
+  :group 'spydez/group
+  :type 'string)
+;;(format-time-string spydez/datetime/format/yyyy-mm-dd)
+
 (defcustom spydez/datetime/format/org-inactive-derivative "[%Y-%m-%d]"
   "org-time-stamp-inactive e.g.: [2019-09-19 Thu]
 mine e.g.: [2019-09-19]"
