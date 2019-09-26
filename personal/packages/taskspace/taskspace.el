@@ -246,9 +246,16 @@ Create if none. Return if just the one. Choose from multiple."
 
   ;; Default to "today" if date-input isn't parsable string,
   ;; then get date, taskspaces, etc. for that numerical relative day.
-  (let* ((date-input (string-to-number (if (and date-input (stringp date-input))
-                                           date-input
-                                         "0")))
+  (let* ((date-input (cond
+                      ;; no date-input is today is 0
+                      ((null date-input) 0)
+                      ;; strings should be converted to numbers
+                      ((stringp date-input)
+                       (string-to-number date-input))
+                      ;; just allow numbers through unscathed
+                      ((numberp date-input) date-input)
+                      ;; default to... today/0 I guess?
+                      (t 0)))
          (date (taskspace/get-date date-input))
          (taskspaces (taskspace/list-date date))
          (length-ts (length taskspaces)))
@@ -293,6 +300,7 @@ Create if none. Return if just the one. Choose from multiple."
      )))
 ;; M-x taskspace/task-dir/dwim
 ;; (taskspace/task-dir/dwim)
+;; (taskspace/task-dir/dwim -1)
 
 
 ;; TODO: support creating for non-today dates

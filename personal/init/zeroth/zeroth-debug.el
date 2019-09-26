@@ -59,7 +59,7 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Warning-Basics.html#Wa
 
 
 ;;------------------------------------------------------------------------------
-;; 'Themed' Debugss/Messages for More Help in Fixing Things.
+;; 'Themed' Debugs/Messages for More Help in Fixing Things.
 ;;------------------------------------------------------------------------------
 
 ;; See bootstrap-debug-early.el for some init debug options, settings, and flags.
@@ -77,9 +77,10 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Warning-Basics.html#Wa
 (defconst spydez/info/current-type '(spydez info))
 
 ;; just more pretty
-(defconst spydez/info/current-indent 0)
-(defconst spydez/info/init-indent 1)
-(defconst spydez/info/require-indent 2)
+(defconst spydez/info/indent/current 0)
+(defconst spydez/info/indent/init 1)
+(defconst spydez/info/indent/require 2)
+(defconst spydez/info/indent/require/piggyback 4)
 
 ;; TODO: all these types... I'm not using them much.
 ;; Should I make them take a symbol or list, then append that to their (current) defaults?
@@ -116,7 +117,7 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Warning-Basics.html#Wa
 (defun spydez/info/init-sequence (indent type message &rest args)
   "Print helpful debug message (if spydez/debugging-p) with init sequence formatting."
   (when (spydez/debugging-p)
-    (let* ((indent (or indent spydez/info/current-indent))
+    (let* ((indent (or indent spydez/info/indent/current))
            (indent-str (make-string indent ?-))
            (inject-message (format "%s> %s: %s" indent-str spydez/warning/current-type message)))
       (apply 'message inject-message args))))
@@ -124,17 +125,54 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Warning-Basics.html#Wa
 ;; (spydez/info/init-sequence 4 nil "My spydez/info/message-if test: %s %s" '(testing list) 'test-symbol)
 
 (defun spydez/info/init-message (message &rest args)
-  "Print helpful spydez/info/init-sequence message (if spydez/debugging-p) at init-indent."
-  (apply #'spydez/info/init-sequence spydez/info/init-indent nil message args))
+  "Print helpful spydez/info/init-sequence message (if spydez/debugging-p) at indent/init."
+  (apply #'spydez/info/init-sequence spydez/info/indent/init nil message args))
 ;; (spydez/info/init-message "start init: %s %s" '(testing list) 'test-symbol)
+
+
+;;------------------------------------------------------------------------------
+;; A Nice Require with Both Debug/Messages and Piggybacking.
+;;------------------------------------------------------------------------------
+
+(defcustom spydez/info/require/piggyback-format
+  "%s-secret"
+  "Format for piggybackers: <original provide/require symbol>-secret")
 
 (defun spydez/info/require (symbol &optional filename noerror)
   "Print helpful spydez/info/init-sequence message (if spydez/debugging-p) at
-require-indent. And then (require 'symbol)."
-  (spydez/info/init-sequence spydez/info/require-indent nil "(require '%s)" symbol)
-  (require symbol filename noerror))
+indent/require. Then (require 'symbol). Then (require 'symbol-secret nil
+'noerror) and print another message if anything loaded."
+
+  ;; Require the Actual Thing.
+  (spydez/info/init-sequence spydez/info/indent/require nil "(require '%s)" symbol)
+  (require symbol filename noerror)
+
+  ;; Look for piggy backing/addons.
+  ;;---
+  ;;   E.g.: Say we have configure-dungeon.el in our .emacs.d, which configures
+  ;; our dungeon for adventurers.
+  ;;     (spydez/info/require 'configure-dungeon)
+  ;;   Some of our adventurers may have peeked at our elisp file in our public
+  ;; git repo, so maybe all the good stuff (secret rooms, treasure, loot,
+  ;; BBEG...) are in a different, secret git repo. We don't want to overwrite
+  ;; our dungeon, but we do want to add the secret stuff in after. So look for
+  ;; that secret file.
+  (when (null filename)
+    (let* ((require-name (symbol-name symbol))
+           (secret-name (format spydez/info/require/piggyback-format
+                                require-name))
+           (secret-symbol (intern secret-name)))
+      ;; Want to print then load, if exists, to mirror print/require above.
+      (when (locate-library secret-name)
+        (spydez/info/init-sequence spydez/info/indent/require/piggyback
+                                   nil
+                                   "(require '%s)"
+                                   secret-symbol)
+        ;; Never error for piggybackers.
+         (require secret-symbol nil 'noerror)))))
 ;; (spydez/info/require 'asdf nil 'noerror)
 ;; (spydez/info/require 'cl)
+
 
 ;;------------------------------------------------------------------------------
 ;; TODOs
