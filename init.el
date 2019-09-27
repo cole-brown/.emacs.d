@@ -476,17 +476,12 @@
 
 
 ;;---
-;; Little bit of Sanity...
+;; Little Bit of Sanity...
 ;;---
-;; TODO: move other early sanity checks into here?
-;;   Then move this up earlier and move those checks into functions?
-;;   Then do the sanity check functions at the proper points?
-;;   Then maybe a new file name, maybe not.
-;; TODO: Sanity Check: make sure every var in a list is boundp so my vars/consts
-;;       can't just wander off on me.
-;; TODO: Sanity Check: make sure every func in a list is fboundp so my funcs
-;;       can't just wander off on me.
-(spydez/info/require 'bootstrap-sanity-early)
+;; Had this here:
+;;   (spydez/info/require 'bootstrap-sanity-early)
+;; But there was never anything in it. So it's gone. But if sanity is required,
+;; here is a good place for it.
 
 
 ;;------------------------------------------------------------------------------
