@@ -126,7 +126,6 @@
 ;; more popular? (non-+ have been updated more recently)
 
 
-
 ;;------------------------------------------------------------------------------
 ;; magit
 ;;------------------------------------------------------------------------------
@@ -309,21 +308,8 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Subversion? I do still use this...
-;;------------------------------------------------------------------------------
-
-;; TODO: which should take precedence if in a svn repo that I also made a git
-;; repo. Probably SVN because this is a rare edge-case.
-
-;; magit's `git svn' extension:
-;; https://github.com/magit/magit-svn
-;; TODO: Start using that if/when I have to move a work repo from svn to git.
-
-
-;;------------------------------------------------------------------------------
 ;; Auto/Easy Commit of Certain Docs Folders
 ;;------------------------------------------------------------------------------
-
 
 (defcustom spydez/dir/git/auto-commit-locations
   (list
@@ -340,9 +326,10 @@ repos."
 
 
 (defun spydez/magit/changes-in-subdir (subdir-abs)
-  "Determines if magit knows of any changes (staged, unstaged,
-untracked), and if any of them are in this (absolute path to)
-`subdir' of the repo."
+  "Determines if magit knows of any changes (staged, unstaged, untracked), and
+if any of them are in this (absolute path to) a sub-dir of the repo. Could be
+repo root, but a subdir of the repo is what magit can't handle with e.g.
+`magit-anything-modified-p'."
   (let* ((changes-rel (append (magit-staged-files)
                               (magit-unstaged-files)
                               (magit-untracked-files)))
@@ -354,14 +341,18 @@ untracked), and if any of them are in this (absolute path to)
     (seq-filter (lambda (x) (string-prefix-p subdir-abs x)) changes-abs)))
 
 
-;; §-TODO-§: Could make this async if it takes too long...
-;; §-TODO-§: Could make take an arg if desired?
+;; §-TODO-§: Could make this async if it takes too long... With messages going
+;; to async buffer...
 (require 'f)
 (require 'subr-x)
 (defun spydez/magit/auto-commit ()
   "For each item in `spydez/dir/git/auto-commit-locations', use
 Magit to: add files, commit, and push."
   (interactive)
+
+  ;; Either have to require magit here, or set magit to ":demand t" in
+  ;; use-package. Trying out requiring here as magit isn't the fastest to start.
+  (require 'magit)
 
   (let (results)
     ;; walk our list of auto-commit loctaions
@@ -433,6 +424,18 @@ Magit to: add files, commit, and push."
                       results)
               "\n"))))
 ;; (spydez/magit/auto-commit)
+
+
+;;------------------------------------------------------------------------------
+;; Subversion? I do still use this...
+;;------------------------------------------------------------------------------
+
+;; TODO: which should take precedence if in a svn repo that I also made a git
+;; repo. Probably SVN because this is a rare edge-case.
+
+;; magit's `git svn' extension:
+;; https://github.com/magit/magit-svn
+;; TODO: Start using that if/when I have to move a work repo from svn to git.
 
 
 ;;------------------------------------------------------------------------------

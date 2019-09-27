@@ -15,7 +15,7 @@
 ;; dos2unix Type Functions
 ;;------------------------------------------------------------------------------
 
-(defun spydez/to-unix-auto ()
+(defun spydez/buffer/coding/to-unix ()
   "Change the current buffer's line-ends to Unix, preserving the coding system."
   (interactive)
   (let ((coding-str (symbol-name buffer-file-coding-system)))
@@ -25,7 +25,7 @@
       (message "CODING: %s" coding-str)
       (set-buffer-file-coding-system (intern coding-str)) )))
 
-(defun spydez/to-unix-utf8 ()
+(defun spydez/buffer/coding/to-unix-utf8 ()
   "Change the current buffer to UTF-8 with Unix line-ends."
   (interactive)
   (set-buffer-file-coding-system 'utf-8-unix t))
@@ -61,16 +61,17 @@
 ;; Whitespaces And Deletion Functions
 ;;------------------------------------------------------------------------------
 
-;; TODO: these seem... like things emacs already does, I think? Maybe they avoid
-;; kill ring or something.
+;; These avoid the kill ring.
 
 (defun spydez/delete-word (arg)
-  "Kill characters forward until encountering the end of a word. With argument, do this that many times."
+  "Avoids kill ring. Kill characters forward until encountering
+   the end of a word. With argument, do this that many times."
   (interactive "p")
   (delete-region (point) (progn (forward-word arg) (point))))
 
 (defun spydez/backward-delete-word (arg)
-  "Kill characters backward until encountering the beginning of a word. With argument, do this that many times."
+  "Avoids kill ring. Kill characters backward until encountering
+   the beginning of a word. With argument, do this that many times."
   (interactive "p")
   (spydez/delete-word (- arg)))
 
