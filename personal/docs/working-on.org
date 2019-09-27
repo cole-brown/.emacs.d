@@ -32,6 +32,11 @@ polh
 mis
   - make it so
 
+
+** Dice: Very Expressive and Helpful
+
+Where each die, bonus, etc came from in a roll. See dropbox somewhere.
+
 * Win 10 App to Check Out Maybe
 
 FancyZones:

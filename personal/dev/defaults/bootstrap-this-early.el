@@ -97,7 +97,7 @@
   ;;----------------------------------------------------------------------------
   ;; The End.
   ;;----------------------------------------------------------------------------
-  (setq spydez/bootstrap/complete spydez/bootstrap/expected-complete))
+  (spydez/bootstrap/step-set 'spydez/bootstrap/expected-complete))
 
 ;;------------------------------------------------------------------------------
 ;; The Actual End.

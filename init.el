@@ -469,43 +469,11 @@
 
 
 ;;---
-;; Little bit of Sanity...
+;; System Setup...
 ;;---
-;; Not too much.
-(unless (and
-         (boundp 'spydez/bootstrap/complete)
-         (eq spydez/bootstrap/complete 'early))
-  (error "Bootstrap: Early Bootstrap sanity check failed."))
-;; TODO: copy important errors into scratch buffer or something?
-;; Probably or something.
-;; And then make sure it gets focus in final finalize.
+;; w/ sides of sanity and also sanity
+(spydez/info/require 'bootstrap-system)
 
-
-;;---
-;; Bootloader loading...
-;;---
-(spydez/info/require 'bootstrap-this-early)
-;; The default bootstrap-this-early provider will check...
-;; if system/known-p and no this-comp dir:
-;;   - make this-comp dir
-;;   - copy a default bootstrap-this-early there
-
-
-;;---
-;; Little bit of Sanity...
-;;---
-;; Not too much.
-;; TODO: also have bootstrap-this-early set it.
-(cond ((eq spydez/bootstrap/complete 'specific) t) ;; good to go
-      ;; using default - should probably warn
-      ((eq spydez/bootstrap/complete 'default)
-       (spydez/warning/message nil nil
-           "Specific bootstrap does not exist for this computer: %s %s"
-           spydez/bootstrap/complete spydez/setup/system/hash))
-      ;; fallthrough cases - nothing used
-      (t (error (spydez/warning/message nil nil
-                    "Bootstrap: No bootstrap for this computer?: %s %s"
-                    spydez/bootstrap/complete spydez/setup/system/hash))))
 
 ;;---
 ;; Little bit of Sanity...

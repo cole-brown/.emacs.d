@@ -101,7 +101,8 @@
 ;;---
 
 ;; Bare minimum in the Load-Path for finding bootstrapping files:
-(add-to-list 'load-path spydez/dir/dev/defaults) ;; defaults first so everything else overrides.
+(add-to-list 'load-path spydez/dir/init/boot) ;; "all systems" stuff
+(add-to-list 'load-path spydez/dir/dev/defaults) ;; "system defaults" first so everything else overrides.
 ;; Could add a domain level if needed?
 (add-to-list 'load-path spydez/dir/dev/system-this) ;; most specific to this computer last
 
@@ -109,9 +110,10 @@
 ;;------------------------------------------------------------------------------
 ;; The End.
 ;;------------------------------------------------------------------------------
-(defconst spydez/bootstrap/complete 'early
-  "values: nil, 'early, 'default, 'specific
-compare: (eq spydez/bootstrap/complete 'early)")
+(defconst spydez/bootstrap/steps '(nil early default specific complete))
+(defconst spydez/bootstrap/step-completed 'early
+  "Values: nil, 'early, 'default, 'specific.
+Compare with `spydez/bootstrap/step-at'")
 
 ;; (provide 'early-init)
 ;; early-init ends here

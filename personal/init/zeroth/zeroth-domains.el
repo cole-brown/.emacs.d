@@ -22,6 +22,9 @@
 (defconst spydez/setup/system/hash (spydez/hash-and-reduce spydez/setup/system/name spydez/setup/domain/subname)
   "(Hashed) Intended for this specific computer's setup folder.")
 
+(defconst spydez/setup/system/additional-required t
+  "Whether this system should warn on bootstrap that it's missing something.")
+
 
 ;;------------------------------------------------------------------------------
 ;; Tasks, Wants, Feature Requests, etc.
