@@ -32,6 +32,18 @@ auto-complete to have pity is my game."
     (call-interactively #'yas-insert-snippet nil))
 
   ;;---
+  :custom
+  ;;---
+  (yas-indent-line 'auto
+    "Try auto-indenting snippet.")
+  (yas-also-auto-indent-first-line t
+    "Also auto indent first line if yas-indent-line.")
+  (yas-also-indent-empty-lines t
+    "Also indent the empty lines...")
+  (yas-triggers-in-field t
+    "Allows snippets inside of snippets")
+
+  ;;---
   :config
   ;;---
 
@@ -184,7 +196,7 @@ undoes the expansion."
 
 
 ;;------------------------------------------------------------------------------
-;; TODOs
+;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------
 
 ;; TODO: check this for anything useful:

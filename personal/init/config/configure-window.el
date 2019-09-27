@@ -1,7 +1,7 @@
 ;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
 ;;------------------------------------------------------------------------------
-;; TODOs
+;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------
 
 ;; TODO: does some or all of this belong in configure-emacs? vice versa?

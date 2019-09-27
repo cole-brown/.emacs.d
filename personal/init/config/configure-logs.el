@@ -139,7 +139,9 @@
   ;;---
   :bind ;; global
   ;;---
-  (("C-c TAB" . hs-toggle-hiding)
+  (;; When I fuck up a keyboard shortcut or operation and thrash the keyboard,
+   ;; "C-c TAB" seems to be quite popular...
+   ;;("C-c TAB" . hs-toggle-hiding)
    ("C-\\" . hs-toggle-hiding)
    ("M-+" . hs-show-all))
 
@@ -207,7 +209,7 @@
 
 
 ;;------------------------------------------------------------------------------
-;; TODOs
+;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------
 
 ;; Pop up a shell?

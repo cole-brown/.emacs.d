@@ -55,7 +55,7 @@
 
 
 ;;------------------------------------------------------------------------------
-;; TODOs
+;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------
 
 ;; TODO: find or make a lisp function dice roller? like for dice ('xdy') and consts.

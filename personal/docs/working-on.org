@@ -92,10 +92,12 @@ Company-Jedi:
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [0/10]
+  - [-] To Do: [4/17]
     - [ ] use-package: rm setq
       - Find all setq, convert to ":custom" sections.
-    - [ ] defcustom: make sure all mine are using my group.
+    - [ ] bootstrap-this-early.el step is poorly designed. Computers override it then do nothing in it. Need better method for a system to say, "Yes I exist and have set myself up minimally, hello.".
+    - [ ] Check out spotify.el
+      - https://www.reddit.com/r/emacs/comments/d9johy/spotify_connect_support_in_spotifyel/
     - [ ] use-package: whitespace & neatness.
       - Two blank lines between keyword sections unless very simple.
       - Sections should have ";;---" around their keywords unless very simple.
@@ -125,6 +127,17 @@ Company-Jedi:
         language server, other external tools won't bother - just code hilighting maybe.
       - e.g.2. want rust or w/e flavor of the month catches my eye at home but
         none of it at work
+    - [ ] Check out DumbJump:
+      - https://www.reddit.com/r/emacs/comments/d33ist/dumb_jump_v053_released_adds_support_for_10_more/
+    - [ ] Check out Cascadia Code font?
+      - https://www.reddit.com/r/programming/comments/d64aq0/microsoft_released_the_cascadia_code_font/
+    - [X] 'TODOs' section into something else
+    - [X] Move spydez/prog-mode/* funcs to prog-mode.
+      - improve them?
+    - [X] Make prog-mode yasnippet "spy-fan" work.
+      - probably: prefix-mirror, field, postfix-mirror
+      - maybe: yas-moving-away-p
+    - [X] defcustom: make sure all mine are using my group.
 
 
 Tabs:

@@ -57,7 +57,7 @@
 
 
 ;;------------------------------------------------------------------------------
-;; TODOs
+;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------
 
 ;; TODO: some of these are modeline? Do we have enough modeline stuff for a

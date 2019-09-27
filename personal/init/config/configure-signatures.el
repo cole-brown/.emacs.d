@@ -14,7 +14,7 @@
 
 ;; https://unicode-table.com/en/blocks/miscellaneous-symbols/
 ;; Single unicode options:
-;;   ʬ ʭ ҈ ҉ † ‡ ‣ ↀ ↂ  ∀ ∎ ∮ ≈ ≜ ≡ ≣ ≷ ⊫ ⋈
+;;   ʬ ʭ ҈ ҉ † ‡ ‣ ↀ ↂ ∀ ∎ ∮ ≈ ≜ ≡ ≣ ≷ ⊫ ⋈
 ;;   § ▀ ▄
 ;;  Can't see now, but maybe in future? Watch the line height though...
 ;;   ⛤ ⇶ ⌦ ⏩ ⏻ ␑ ␦ ⑄ ⚶
@@ -175,11 +175,7 @@ characters to it, as appropriate."
 (defun spydez/signature/todo/comment ()
   "Turns spydez/signature/todo into a proper comment based on
 mode (uses `comment-*' emacs functions)."
-  (let* ((addon   (comment-add nil))
-         (prefix  (string-trim-right (comment-padright comment-start addon)))
-         (postfix (comment-padleft comment-end (comment-add addon)))
-         (sig     (concat spydez/signature/todo ":")))
-    (mapconcat 'identity (list prefix sig postfix) " ")))
+  (spydez/prog-mode/comment-wrap (concat spydez/signature/todo ":")))
 ;; (spydez/signature/todo/comment)
 
 
@@ -255,7 +251,7 @@ mode (uses `comment-*' emacs functions)."
 
 
 ;;------------------------------------------------------------------------------
-;; TODOs
+;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------
 
 

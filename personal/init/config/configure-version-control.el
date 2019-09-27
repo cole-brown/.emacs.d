@@ -331,7 +331,12 @@
    spydez/dir/doc-save-vault)
   "List of strings of directories (TODO: add allowance for single
 files?) to automatically add/commit/push in their respective git
-repos.")
+repos."
+  :group 'spydez/group
+  :type '(restricted-sexp :tag "String List"
+                          :match-alternatives
+                          (lambda (x) (and (listp x)
+                                           (seq-every-p #'stringp x)))))
 
 
 (defun spydez/magit/changes-in-subdir (subdir-abs)

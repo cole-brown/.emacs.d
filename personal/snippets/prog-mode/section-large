@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# contributor: Cole Brown <git@spydez.com>
+# name: spydez: prog-mode large comment section
+# key: spy-lg
+# --
+
+`(spydez/prog-mode/comment/center "")`
+`(spydez/prog-mode/comment/wrap "" t)` `yas-selected-text`$0
+`(spydez/prog-mode/comment/center "")`

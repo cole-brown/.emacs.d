@@ -62,7 +62,7 @@
 
 
 ;;------------------------------------------------------------------------------
-;; TODOs
+;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------
 
 ;; TODO: allow disabling of packages by just setting a var here.

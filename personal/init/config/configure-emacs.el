@@ -299,7 +299,7 @@ is bound to that key. If so, unbind."
 
 
 ;;------------------------------------------------------------------------------
-;; TODOs
+;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------
 
 ;; Also could make buffer read-only?

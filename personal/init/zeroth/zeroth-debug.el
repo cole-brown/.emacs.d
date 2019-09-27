@@ -136,7 +136,9 @@ https://www.gnu.org/software/emacs/manual/html_node/elisp/Warning-Basics.html#Wa
 
 (defcustom spydez/info/require/piggyback-format
   "%s-secret"
-  "Format for piggybackers: <original provide/require symbol>-secret")
+  "Format for piggybackers: <original provide/require symbol>-secret"
+  :group 'taskspace
+  :type 'string)
 
 (defun spydez/info/require (symbol &optional filename noerror)
   "Print helpful spydez/info/init-sequence message (if spydez/debugging-p) at
@@ -175,7 +177,7 @@ indent/require. Then (require 'symbol). Then (require 'symbol-secret nil
 
 
 ;;------------------------------------------------------------------------------
-;; TODOs
+;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------
 
 ;; TODO: also log all into my own buffer (regardless of level, debugging-p?)

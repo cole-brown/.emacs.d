@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# contributor: Cole Brown <git@spydez.com>
+# name: spydez: prog-mode small comment section
+# key: spy-sm
+# --
+
+`(spydez/prog-mode/comment/wrap (make-string 3 ?-) t "")`
+`(spydez/prog-mode/comment/wrap "" t)` `yas-selected-text`$0
+`(spydez/prog-mode/comment/wrap (make-string 3 ?-) t "")`

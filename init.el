@@ -13,12 +13,19 @@
 ;; 3) Some of my own 'packages' in personal/packages or personal/lisp.
 ;;    - ala `taskspace' or `with'
 
-;; 4) Excellent replacement/override.
+;; 4) Excellent replacement/override and extensibility.
 ;;    - Per-file/feature replacement by just having the source
 ;;      (provide 'zort) be in the (add-to-list 'load-path ...)
 ;;      later in the sequence.
+;;    - Per-file/feature piggybacking by just having the extra source be named
+;;      according to `spydez/info/require/piggyback-format' and be in the
+;;      load-path. E.g. (spydez/info/require 'zort) will require `zort' feature
+;;      and require (noerror) `zort-secret'.
 ;;    - Can do more surgical overriding or futzing in `finalize-domains' or some
 ;;      similar thing.
+;;    - All of this can be done on a per device, per domain, or global basis
+;;      based on load-path so that e.g. computers tagged 'work' domain setup
+;;      dirs one way and your 'home' computer sets up another.
 
 ;;; Code:
 
@@ -41,6 +48,7 @@
 ;; gpg say what versions you want, what os you expect, have ways for packages to
 ;; hook in so like gpg can be connected to EPA even if half windows, half MinGW
 ;; environment.
+;; This is started, but really sucks right now.
 
 
 ;;------------------------------------------------------------------------------
@@ -355,51 +363,61 @@
 ;;------------------------------------------------------------------------------
 ;; Concerning Consts, Vars, and Funcs.
 ;;------------------------------------------------------------------------------
-;; TODO: figure out naming scheme and put info here maybe
-;; TODO: do I want to follow:
-;;   - Emacs/Elisp conventions (e.g. spydez--)?
-;;   - common lisp (*var-name*, +const-name+)?
-;;     - https://en.wikipedia.org/wiki/Naming_convention_(programming)#Lisp
+
+;;---
+;; Defining Consts & Variables:
+;;---
+;;    `setq' vs `defconst' vs `defcustom' vs `customize-set-variable' vs
+;;    use-package ":custom"...
+;; - For packages, try to use ":custom".
+;; - For consts, `defconst' is good for hinting that it's constant while also
+;;   allowing a middle-finger via `setq' at any time.
+;; - For sorta consts that are more configuration of my things, use
+;;   `defcustom' with ":group spydez/group" and ":type <type>".
+;;   - See for types:
+;;     - Simple: https://www.gnu.org/software/emacs/manual/html_node/elisp/Simple-Types.html#Simple-Types
+;;     - Not:    https://www.gnu.org/software/emacs/manual/html_node/elisp/Composite-Types.html#Composite-Types
+;; - This leaves `defvar', `setq', `customize-set-variable', et al. for
+;;   special cases.
+
+
+;;---
+;; Naming Schemes
+;;---
+;; Emacs/Elisp convention seems to be "prefix--" or "prefix-", with "descriptive-function-name".
+;; However, this gives me names that can't be grokked into sub-components at-a-glance.
 ;;
-;; Currently kinda:
-;; prefix/namespace: spydez/
-;; domain/concern/concept separator: /
-;;   e.g.: spydez/dir/, spydez/hash/, spydez/setup/
-;; word joiner: -
-;;   e.g.: spydez/hash-and-reduce, spydez/backup-files
-;; TODO: Do I want anything for func vs var in name?
-;;   - e.g. spydez/f/... vs spydez/v/...
-;; TODO: Do I want anything for my provide/requires vs others in name?
-;;   - e.g. (require 'spydez-bootstrap-early) vs (require 'bootstrap-early)
-
-;; Evolving vars seem to be emerging into these groups:
-;;   - early-init: needed by all, used to figure out my system and specifics
-;;   - bootstrap-this-early:
-;;     - needed early (before now, after early-init) to bootstrap this system
-;;     - or only applicable/used by this system (e.g. "work.org" isn't
-;;       a file at home)
-;;   - this section:
-;;     - defaults - can be overridden by bootstrap-this-late at the
-;;       end off bootstrapping
-
-;; defconst vs defvar vs setq
-;;   https://www.gnu.org/software/emacs/manual/html_node/elisp/Defining-Variables.html
-;; Looks like I can use defconst for desired functionality/hinting, while also
-;; being allowed to ignore the const-ness and override via a setq in a later
-;; init sub-file.
+;; I like:
+;;   Prefix: spydez/
+;;   Infix:  -
+;;   Grouping Separator: /
+;;
+;; So, e.g. `spydez/datetime/format/org-inactive-derivative'.
+;; At a glance:
+;;   1. This is mine (spydez/)
+;;   2. This is datetime-related.
+;;   3. This is a format.
+;;   4. "org-inactive-derivative" is hopefully info enough when looking at
+;;      datetime formats to possibly use.
+;;
+;; The downsides so fare are:
+;;   - Not conforming to Emacs convention.
+;;   - Getting a bit verbose at times.
 
 
 ;;---
 ;; Cross Platform
 ;;---
-
 ;; I don't have any more than just some Windowses (7, 10) right now so a robust
 ;; cross-platform init with proper places for overriding things will probably
 ;; have to wait until I encounter it.
+;;
 ;; I think this is it (probably this is overkill), but I can't properly test.
+;; Well, this is definitely overengineered overkill.
 
-;; cross-platform dir and file names:
-;; http://www.gnu.org/software/emacs/manual/html_node/elisp/Directory-Names.html#Directory-Names
+;; Cross-platform dir and file names:
+;;   http://www.gnu.org/software/emacs/manual/html_node/elisp/Directory-Names.html#Directory-Names
+;; Helpers in "spydez/path/*", and dir names are "spydez/dir/*".
 
 
 ;;----------------------------------------------------------------------------;;
@@ -509,14 +527,6 @@
 
 ;; TODO: shift even more out into bootstrap-* files/steps?
 
-;; Defining this early so we don't have to worry about it existing when we get
-;; bootstrap & configuration rolling for real.
-;; Just a convenient group to chuck all my defcustoms into.
-(defgroup spydez/group nil
-  "General group namespace for the defcustoms in my emacs init."
-  :prefix "spydez/"
-  ;; not really sure where to stick it
-  :group 'convenience)
 
 ;;---
 ;; Setup some very basics, so we can get moving...
@@ -527,7 +537,6 @@
 ;;   Define differently in bootstrap-this-early;
 ;;   Or override with setq later in bootstrap-this-late.
 
-;; TODO: setq vs customize-set-variable (...vs being in the custom file?)
 
 ;; TODO: move these to a file?
 ;;   - but they're before the path so must limit to places zeroth knows.
@@ -1008,6 +1017,7 @@ For the transition, maybe a func for checking..."
 (spydez/info/require 'configure-whitespace)
 
 ;; Programming Modes
+(spydez/info/require 'configure-prog-mode) ;; The generic stuff
 (spydez/info/require 'configure-csharp)
 ;; TODO: configure code modes
 ;;  - C

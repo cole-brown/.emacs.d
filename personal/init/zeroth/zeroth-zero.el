@@ -10,6 +10,15 @@
 ;; General Settings
 ;;------------------------------------------------------------------------------
 
+;; Defining this early so we don't have to worry about it existing when we get
+;; bootstrap & configuration rolling for real.
+;; Just a convenient group to chuck all my defcustoms into.
+(defgroup spydez/group nil
+  "General group namespace for the defcustoms in my emacs init."
+  :prefix "spydez/"
+  ;; not really sure where to stick it
+  :group 'convenience)
+
 
 ;;------------------------------------------------------------------------------
 ;; Init Hooks of My Own?
@@ -26,7 +35,7 @@
 
 
 ;;------------------------------------------------------------------------------
-;; TODOs
+;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------
 
 

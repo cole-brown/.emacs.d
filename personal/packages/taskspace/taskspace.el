@@ -247,6 +247,7 @@ Create if none. Return if just the one. Choose from multiple."
   ;; Default to "today" if date-input isn't parsable string,
   ;; then get date, taskspaces, etc. for that numerical relative day.
   (let* ((date-input (cond
+                      ;; §-TODO-§: try `prefix-numeric-value' instead...
                       ;; no date-input is today is 0
                       ((null date-input) 0)
                       ;; strings should be converted to numbers
@@ -816,7 +817,7 @@ Returns nil or a string in `taskspaces'."
 
 
 ;;------------------------------------------------------------------------------
-;; TODOs
+;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------
 
 ;; TODO: Make empty dirs when creating task? (e.g. "archive" or "done" or something)

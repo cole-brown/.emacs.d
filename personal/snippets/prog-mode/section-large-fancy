@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# contributor: Cole Brown <git@spydez.com>
+# name: spydez: prog-mode large, fancy comment section
+# key: spy-fan
+# --
+
+${1:`(spydez/prog-mode/comment/center "(will center on exit)")`$(when yas/moving-away-p (spydez/prog-mode/comment/center yas-text))}
+${2:`(spydez/prog-mode/comment/center (or yas-selected-text "(will center on exit)") nil spydez/prog-mode/comment/center/whitespace)`$(when yas/moving-away-p (spydez/prog-mode/comment/center yas-text nil spydez/prog-mode/comment/center/whitespace))}
+`(spydez/prog-mode/comment/center "")`
+$0

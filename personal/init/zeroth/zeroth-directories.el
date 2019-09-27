@@ -156,7 +156,7 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
 
 
 ;;------------------------------------------------------------------------------
-;; TODOs
+;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------
 
 

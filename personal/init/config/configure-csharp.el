@@ -92,7 +92,7 @@
 
 
 ;;------------------------------------------------------------------------------
-;; TODOs
+;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------
 
 ;; TODO: some sanity check for things-I-want-in-mode-X-but-are-set-globally?
