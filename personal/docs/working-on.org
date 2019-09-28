@@ -97,10 +97,7 @@ Company-Jedi:
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [4/17]
-    - [ ] use-package: rm setq
-      - Find all setq, convert to ":custom" sections.
-    - [ ] bootstrap-this-early.el step is poorly designed. Computers override it then do nothing in it. Need better method for a system to say, "Yes I exist and have set myself up minimally, hello.".
+  - [-] To Do: [7/17]
     - [ ] Check out spotify.el
       - https://www.reddit.com/r/emacs/comments/d9johy/spotify_connect_support_in_spotifyel/
     - [ ] use-package: whitespace & neatness.
@@ -125,8 +122,6 @@ Company-Jedi:
     - [ ] configure-crypt needs babying... again... (again... (again?..))
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
         - https://arenzana.org/2019/04/emacs-org-mode/
-    - [ ] default-directory var for pretending a file is elsewhere
-      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eivtuo4
     - [ ] a per-device way of saying "off", "minimum", or "full" for features?
       - e.g. want full C# dev env at work, but minimum at home? Set it that way and
         language server, other external tools won't bother - just code hilighting maybe.
@@ -136,6 +131,11 @@ Company-Jedi:
       - https://www.reddit.com/r/emacs/comments/d33ist/dumb_jump_v053_released_adds_support_for_10_more/
     - [ ] Check out Cascadia Code font?
       - https://www.reddit.com/r/programming/comments/d64aq0/microsoft_released_the_cascadia_code_font/
+    - [X] use-package: rm setq
+      - Find all setq, convert to ":custom" sections.
+    - [X] default-directory var for pretending a file is elsewhere
+      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eivtuo4
+    - [X] bootstrap-this-early.el step is poorly designed. Computers override it then do nothing in it. Need better method for a system to say, "Yes I exist and have set myself up minimally, hello.".
     - [X] 'TODOs' section into something else
     - [X] Move spydez/prog-mode/* funcs to prog-mode.
       - improve them?

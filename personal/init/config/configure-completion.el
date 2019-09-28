@@ -140,28 +140,38 @@
 (use-package helm-flx
   :after helm
 
-  :config
-  ;; helm-flx
-  (setq helm-flx-for-helm-find-files t
-        helm-flx-for-helm-locate     t)
+  ;;---
+  :custom
+  ;;---
 
-  ;; helm itself...
+  ;; "Turn it on"
+  (helm-flx-for-helm-find-files t)
+  (helm-flx-for-helm-locate     t)
+
+  ;; "Make it fuzzy... everywhere."
+
+  ;; These are Helm vars...
   ;; Do I... do I use these with helm-flx?
   ;;  Or only when not using helm-flx?
   ;;    Or what?
   ;; https://tuhdo.github.io/helm-intro.html
-  (setq helm-M-x-fuzzy-match                  t
-        helm-buffers-fuzzy-matching           t
-        helm-completion-in-region-fuzzy-match t
-        helm-file-cache-fuzzy-match           t
-        helm-imenu-fuzzy-match                t
-        helm-mode-fuzzy-match                 t
-        helm-locate-fuzzy-match               t
-        helm-recentf-fuzzy-match              t
-        helm-semantic-fuzzy-match             t)
+  (helm-M-x-fuzzy-match                  t)
+  (helm-buffers-fuzzy-matching           t)
+  (helm-completion-in-region-fuzzy-match t)
+  (helm-file-cache-fuzzy-match           t)
+  (helm-imenu-fuzzy-match                t)
+  (helm-mode-fuzzy-match                 t)
+  (helm-locate-fuzzy-match               t)
+  (helm-recentf-fuzzy-match              t)
+  (helm-semantic-fuzzy-match             t)
+
+  ;;---
+  :config
+  ;;---
 
   ;; and enable
   (helm-flx-mode +1))
+
 
 ;; helm-fuzzier will only enhance matching for sources that have fuzzy-matching
 ;; enabled, so be sure to enable fuzzy-matching for the sources you're
@@ -176,19 +186,25 @@
 (use-package helm-fuzzier
   :after helm
 
-  :config
+  ;;---
+  :custom
+  ;;---
   ;; These are also set in my helm-flx config...
   ;; I don't know if they're needed there, but they are
   ;; wanted here by helm-fuzzier.
-  (setq helm-M-x-fuzzy-match                  t
-        helm-buffers-fuzzy-matching           t
-        helm-completion-in-region-fuzzy-match t
-        helm-file-cache-fuzzy-match           t
-        helm-imenu-fuzzy-match                t
-        helm-mode-fuzzy-match                 t
-        helm-locate-fuzzy-match               t
-        helm-recentf-fuzzy-match              t
-        helm-semantic-fuzzy-match             t)
+  (helm-M-x-fuzzy-match                  t)
+  (helm-buffers-fuzzy-matching           t)
+  (helm-completion-in-region-fuzzy-match t)
+  (helm-file-cache-fuzzy-match           t)
+  (helm-imenu-fuzzy-match                t)
+  (helm-mode-fuzzy-match                 t)
+  (helm-locate-fuzzy-match               t)
+  (helm-recentf-fuzzy-match              t)
+  (helm-semantic-fuzzy-match             t)
+
+  ;;---
+  :config
+  ;;---
 
   (helm-fuzzier-mode 1))
 
@@ -241,19 +257,31 @@
 
 (use-package ido
   :disabled
+  ;;---
+  :custom
+  ;;---
+
+  ;; ignore buffers like these
+  (ido-ignore-buffers '("\\` " "^\*" ".*Completion" "^irc\." "\.TAGS$"))
+  (ido-case-fold             t   "Be case-insensitive")
+  (ido-enable-flex-matching  t   "Be flexable in search if nothing better")
+  (ido-use-filename-at-point nil "Annoying: try to use filename...")
+  (ido-use-url-at-point      nil "Quite Annoying: try to use url at point.")
+  (ido-use-virtual-buffers   t
+    "If recentf enabled, allow visit to recently closed files")
+  (ido-auto-merge-work-directories-length -1
+    "ido should let me make my new file instead of going on a search for it")
+  ;; Considerations:
+  ;; ido-max-prospects 5             ; don't spam my minibuffer
+  ;; ido-confirm-unique-completion t ; wait for RET, even with unique completion
+
+  ;;---
   :config
+  ;;---
+
   (ido-mode t)
-  (ido-everywhere 1)
-  (setq ido-ignore-buffers '("\\` " "^\*" ".*Completion" "^irc\." "\.TAGS$") ; ignore buffers like these
-        ido-case-fold t               ; be case-insensitive
-        ido-enable-flex-matching t    ; be flexable in search if nothing better
-        ido-use-filename-at-point nil ; annoying:       try to use filename...
-        ido-use-url-at-point nil      ; quite annoying: ... or url at point
-        ido-use-virtual-buffers t     ; if recentf enabled, allow visit to recently closed files
-        ido-auto-merge-work-directories-length -1 ; ido should let me make my new file instead of going on a search for it
-        ; ido-max-prospects 5             ; don't spam my minibuffer
-        ; ido-confirm-unique-completion t ; wait for RET, even with unique completion
-        ))
+  (ido-everywhere 1))
+
 
 (use-package ido-completing-read+
   :disabled

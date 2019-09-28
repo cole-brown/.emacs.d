@@ -657,6 +657,7 @@ savages."
   :config
   ;;-----
   ;; move cache to no-littering's /var
+  ;; TODO: remove when no-littering updates to catch this.
   (setq org-journal-cache-file
         (no-littering-expand-var-file-name "org-journal.cache"))
 

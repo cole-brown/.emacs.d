@@ -94,11 +94,15 @@
   ;; :delight undo-tree-mode ;; just squelched entirely
 
   ;;---
+  :custom
+  ;;---
+  (undo-tree-visualizer-timestamps t)
+  (undo-tree-visualizer-diff t)
+
+  ;;---
   :config
   ;;---
-  (global-undo-tree-mode)
-  (setq undo-tree-visualizer-timestamps t)
-  (setq undo-tree-visualizer-diff t))
+  (global-undo-tree-mode))
 ;; Trial: [2019-01-17]
 ;;   - Not sure if I'll use this... I'm fine with the kill ring functionality usually.
 ;;   - [2019-01-28] Disabled for massive violations of expected undo functionality.
