@@ -110,9 +110,26 @@
 ;;------------------------------------------------------------------------------
 ;; The End.
 ;;------------------------------------------------------------------------------
-(defconst spydez/bootstrap/steps '(nil early default specific complete))
-(defconst spydez/bootstrap/step-completed 'early
-  "Values: nil, 'early, 'default, 'specific.
+
+(defconst spydez/bootstrap/steps '(nil
+                                   early
+
+                                   ;; system setup
+                                   default
+                                   specific
+
+                                   ;; significant steps
+                                   package
+
+                                   ;; finished
+                                   complete)
+  "These must be in an order that `spydez/bootstrap/step>=' understands. A more
+  complete step must be after a less. E.g. default and specific are similar, but
+  specific is better, so it is later in the list.")
+
+(defconst spydez/bootstrap/step-completed
+  'early ;; We are already done with early, so skip nil.
+  "See `spydez/bootstrap/steps' for acceptable values and approximate sequence.
 Compare with `spydez/bootstrap/step-at'")
 
 ;; (provide 'early-init)

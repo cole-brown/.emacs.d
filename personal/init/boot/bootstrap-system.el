@@ -21,6 +21,22 @@
     nil))
 
 
+(defun spydez/bootstrap/step>= (expected)
+  "Checks if bootstrap is at expected step of the process (exactly)."
+  ;; expected pos is either found in list, or very negative
+  (let ((exp-index (or (seq-position spydez/bootstrap/steps expected)
+                       -999))
+        ;; current pos is either found in list, or very positive
+        (curr-index (or (seq-position spydez/bootstrap/steps
+                                      spydez/bootstrap/step-completed)
+                        999)))
+    ;; So if one of those isn't found, we should have...
+    ;; -999 >=   N -> false
+    ;;    N >= 999 -> false
+    ;; Yeah? Ok.
+    (>= curr-index exp-index)))
+
+
 (defun spydez/bootstrap/step-set (current)
   "Checks if bootstrap is at expected step of the process (exactly)."
   (if (and (boundp 'spydez/bootstrap/step-completed)

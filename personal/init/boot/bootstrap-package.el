@@ -133,6 +133,7 @@
 ;;-
 ;; (use-package is now bootstrapped)
 ;;-
+(spydez/bootstrap/step-set 'package)
 
 
 ;;---
@@ -149,10 +150,28 @@
 ;; newer than the compiled (.elc)
 (setq load-prefer-newer t)
 
+
+(defun spydez/dir/self-policing-p ()
+  "Keep .emacs.d tidy (ish)!
+Trying to let no-littering take care of most/all this.
+For the transition, maybe a func for checking..."
+
+  (if (not (spydez/bootstrap/step>= 'package))
+      (error "Can't tell if self-policing yet, %s"
+             "as we're not past the package stage of bootstrapping.")
+
+    ;; Self-police if we don't have no-littering.
+    (not (featurep 'no-littering))
+    ;; TODO: Also t if in spydez/dir/personal?
+    ;;   - Don't care about this case right now.
+  ))
+
+
 ;; no-littering to clean up .emacs.d a bit
 (use-package no-littering
   :demand t
-  ;;:config
+
+  ;; :config
   ;;   Leave `no-littering-etc-directory' and `no-littering-var-directory'
   ;;   at default: .emacs.d/etc and .emacs.d/var
   )

@@ -494,12 +494,13 @@
 ;;---
 ;; Setup some very basics, so we can get moving...
 ;;---
-;; Here, early-init, and bootstrap-this-early are the defaults.
-;; To adjust for this system:
-;;   Define differently in early-init;
-;;   Define differently in bootstrap-this-early;
-;;   Or override with setq later in bootstrap-this-late.
-
+;; Here, we still have a very bare `load-path' defined by early-init. It's soon
+;; to be corrected to actual load path for rest of init, but if something is
+;; needed before then:
+;;   Add to early-init.
+;;   Add to bootstrap-system.
+;;   Wedge it in wherever it makes sense.
+;;   Fourth thing.
 
 ;; TODO: move these to a file?
 ;;   - but they're before the path so must limit to places zeroth knows.
@@ -507,135 +508,7 @@
 ;;---
 ;; Directories for Emacs or Packages
 ;;---
-
-(defun spydez/dir/self-policing-p ()
-  "Keep .emacs.d tidy (ish)!
-Trying to let no-littering take care of most/all this.
-For the transition, maybe a func for checking..."
-  (null (featurep 'no-littering)) ;; self-police if we don't have no-littering.
-  ;; TODO: also t if in spydez/dir/personal?
-  )
-
-;;--------------------------------------------------
-;;--------------------------------------------------
-;;--------------------------------------------------
-;;--------------------------------------------------
-;; TODO: make sure these don't escape no-littering's management...
-;;--------------------------------------------------
-
-;; folders for auto-save files and backup-files (#*# and *~)
-;; TODO: remove if I like no-littering?
-(defconst spydez/dir/backup-files
-  (spydez/path/to-dir spydez/dir/emacs "backups")
-  "Full path before no-littering package.")
-
-(defconst spydez/dir/auto-save-files
-  (spydez/path/to-dir spydez/dir/emacs "auto-save-list"))
-
-(defconst spydez/file/save-history
-  (spydez/path/to-file spydez/dir/emacs "savehist")
-  "History of commands, etc.")
-
-;;--------------------------------------------------
-;; END-TODO: make sure these don't escape no-littering's management...
-;;--------------------------------------------------
-;;--------------------------------------------------
-;;--------------------------------------------------
-;;--------------------------------------------------
-;;--------------------------------------------------
-
-(defconst spydez/dir/yasnippets
-  (spydez/path/to-file spydez/dir/emacs/personal "snippets")
-  "My Yasnippets directory.")
-;; Could add an override of my own snippets if needed.
-
-(defconst spydez/dir/personal/packages
-  (spydez/path/to-file spydez/dir/emacs/personal "packages")
-  "Custom/personal emacs 'packages' directory.")
-
-(defconst spydez/dir/packages/use-tool
-  (spydez/path/to-file spydez/dir/personal/packages "use-tool")
-  "use-tool directory.")
-
-(defconst spydez/dir/packages/taskspace
-  (spydez/path/to-file spydez/dir/personal/packages "taskspace")
-  "taskspace directory.")
-
-
-;;---
-;; Identity / Personal Information
-;;---
-;; http://www.gnu.org/software/emacs/manual/html_node/elisp/User-Identification.html
-;; TODO: change these in a projectile hook or something for repo-dependant git
-;;       identity?
-;; TODO: but only change after secrets are loaded so as not to leak irrelevant
-;;       work email addrs
-(setq user-full-name "Cole Brown"
-      user-mail-address "git@spydez.com")
-;; user-login-name exists if needed
-
-;; TODO: some consts for significant files or folders to jump to for e.g.
-;;       opening a work project file.
-
-
-;;---
-;; Misc
-;;---
-(defconst spydez/undo-limit 160000
-  "Upscale the default soft undo-limit. 80kB isn't a lot, so double it?")
-(defconst spydez/undo-strong-limit (* 2 spydez/undo-limit)
-  "Upscale default hard undo-limit as well. 120kB -> double soft limit.")
-
-
-;;---
-;; Load Path
-;;---
-
-;; Reset to orginal first. We had some subset in for bootstrapping. Now we're
-;; ready for the full set.
-;; TODO-EASY: sanity check? boundp and set to anything...
-(setq load-path spydez/dir/load-path/orig)
-
-;; TODO-reorg-done: updated this comment?
-;; Load-Path dirs, and places for overrides to exist (in ascending order):
-;;   ./personal/dev/defaults/
-;;   ./personal/
-;;   ./personal/dev/domains/[work, home, whatever]
-;;   ./personal/dev/computers/[pfo-dead-beef, home-1234-abcd, whatever]
-;; (Assuming default dir names for personal, etc.)
-
-;; This is setting priorities for overrides towards the front/head/car of
-;; load-path (add-to-list does this for us).
-;;
-;; Don't use .emacs.d.
-;; https://stackoverflow.com/questions/24779041/disable-warning-about-emacs-d-in-load-path
-;; (add-to-list 'load-path spydez/dir/emacs)
-
-;; Personal packages.
-(add-to-list 'load-path spydez/dir/packages/use-tool)
-(add-to-list 'load-path spydez/dir/packages/taskspace)
-
- ;; non-init; don't care about and should be overridable.
-(add-to-list 'load-path spydez/dir/personal/lisp)
-
-;; Defaults first so everything else overrides.
-(add-to-list 'load-path spydez/dir/dev/defaults)
-(add-to-list 'load-path spydez/dir/emacs/personal)
-(add-to-list 'load-path spydez/dir/personal/init)
-
-;; Now get into the actual bulk of emacs init and setup.
-;; Do we include zeroth or not? I think sure... for now.
-(add-to-list 'load-path spydez/dir/init/zeroth)
-(add-to-list 'load-path spydez/dir/init/boot)
-(add-to-list 'load-path spydez/dir/init/config)
-(add-to-list 'load-path spydez/dir/init/finalize)
-
-;; Overrides start here. Most specific to this computer last.
-(add-to-list 'load-path spydez/dir/dev/domain-all)
-(add-to-list 'load-path spydez/dir/dev/system-all)
-(add-to-list 'load-path spydez/dir/dev/domain-this)
-(add-to-list 'load-path spydez/dir/dev/system-this)
-;; TODO-reorg-done: more in the load path? new dirs (dev, init...)?
+(spydez/info/require 'bootstrap-directories)
 
 
 ;;---
@@ -649,6 +522,8 @@ For the transition, maybe a func for checking..."
 ;;---
 ;; Misc Stuff
 ;;---
+(spydez/info/require 'bootstrap-consts)
+
 ;; TODO: just delete? configure-crypt does not care about this anymore, I don't think...
 ;; TODO: move this to configure-crypt? And/or rejigger configure-crypt so some can happen soon enough for this to be happy actually loading a file.
 ;; Load sensitive information from outside of .emacs.d
@@ -659,82 +534,18 @@ For the transition, maybe a func for checking..."
 
 
 ;;---
-;; Dev Env vars
-;;---
-;; TODO: put in bootstrap-consts? bootstrap-this-late? bootstrap-data?
-;; dev-consts? dev-dev-env? dev-dev-env-envs?
-;; development-environment-for-this-device-consts?
-
-;; Tab widths. I like a smaller one for verbose/highly indented code (web dev
-;; mainly). Normally use a larger one for non-web programming.
-(defconst spydez/dev-env/tab/min 2
-  "Small tab width for more compact but readable code.")
-(defconst spydez/dev-env/tab/normal 4
-  "Normal tab width for more usual use cases for code languages like C++, C#.")
-(defconst spydez/dev-env/fill-column/normal 80
-  "Normal tab width for more usual use cases for code languages like C++, C#.")
-(defconst spydez/dev-env/fill-column/long 100 ;; 120
-  ;; 120 would be nice, but 2 equal panes on 1080p monitor is more like 100
-  ;; (~109 actual, 100 to be safer)
-  "Normal tab width for more usual use cases for code languages like C++, C#.")
-
-;; TODOS:
-;;  bootstrap-this-early, bootstrap-this-late?
-;;  copy external tools to bootstrap-this-late for this pc
-;;    - make default/empty here
-;;    - do tool exec/env step after bootstrap (or at end of bootstrap?)
-
-
-;;---
-;; External Tools
-;;---
-;; Do I want to do the "find git" on windows like this or like in the Windows
-;; PATH env var? Associative List of tool symbol to... tool path.
-(defconst spydez/tools/external
-  '(
-    ;; configure-shell wants bash (git bash (same path as diff))
-    ;; here and in Windows PATH atm... (debugging eshell)
-    ("bash" . "")
-
-    ;; Emacs EPA (EasyPG Assistant) should have latest GPG version
-    ;; TODO: add in a check for version numbers when checking for tools?
-    ("gpg" . "")
-
-    ;; magit wants git and diff
-    ("git" . "") ; in windows system env var PATH  right now
-    ("diff" . "")
-    )
-  "An alist for tool name -> exec path. These will be
- front-to-back appended to list, so if e.g. there's several git
- binaries and only one will work, put git in front of this
- alist."
-  ;; If I need more than a pair or triple tuple:
-  ;;   Options for Structured Data in Emacs Lisp:
-  ;;     https://nullprogram.com/blog/2018/02/14/
-  )
-
-
-;;---
 ;; Try-Load overrides (from bootstrap-this-late.el)?
 ;;---
 ;;(when (spydez/info/require bootstrap-this-late nil 'noerror)
 ;;  (spydez/warning/message nil nil "Empty bootstrap-this-late."))
 ;; I'm fine if this system has no late step.
 (spydez/info/require 'bootstrap-this-late nil 'noerror)
+;; I have a default, but it's a big commented out no-op right now.
 
 ;;---
 ;; Final Chance to Affect Bootstrap...
 ;;---
-;; TODO: leaving off noerror until home domain works as desired there
-(spydez/info/require 'dev-directories) ;; nil 'noerror)
-;; Could definitely rename this if I could find a better name. I have 'dev' a
-;; bit overloaded as 'device' and 'development'...
-
-;; TODO: Add a finalize step for adding files to auto-open-list?
-;; Add an "if file exists" check to auto-opening files?
-;; TODO: Some notion of "I expect these vars/funcs to be defined"?
-;;   Should I just def them before hand? That doesn't provide any validity
-;;   besides basic "it exists" sanity...
+(spydez/info/require 'dev-directories)
 
 
 ;;------------------------------------------------------------------------------
@@ -764,31 +575,16 @@ For the transition, maybe a func for checking..."
   (spydez/warning/message nil nil
       "TODO: figure out how early-init affects call to package-initialize"))
 
-;; Init use-package so we can use use-package for the rest of the packages we use.
+;; Init use-package so we can use that for the rest of the packages we use.
 ;;   - no-littering required here
-;;   - custom file: location set & contents loaded here
+;;   - custom file: location set & deliberately not loaded here
 (spydez/info/require 'bootstrap-package)
 
 ;; ASAP after use-package is available (debug prints, init load timings)
 (spydez/info/require 'bootstrap-debug-late)
 
 ;; Packages used by other packages.
-(use-package bind-key)
-(use-package diminish)
-(use-package delight)
-;; diminish vs delight... Having no sound knowledge on this subject, no real
-;; interest in it, and after weakly trying to get Projectile to use delight but
-;; failing and having to resort to asking Projectile nicely... I am fully
-;; qualified to s-
-;; I dunno... Delight maybe?
-;;   The correct answer was... `minions'.
-
-;; library used for some list functions (by me and by some packages)
-;; making it explicit now that I use it too
-;; https://github.com/magnars/dash.el
-(use-package dash) ;; util functions ("-flatten", etc)
-(use-package f)    ;; file functions
-(use-package s)    ;; string functions
+(spydez/info/require 'bootstrap-libraries)
 
 ;; Setup backups, autosaves, and history.
 (spydez/info/require 'bootstrap-backups)
