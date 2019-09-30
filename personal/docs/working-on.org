@@ -45,6 +45,10 @@ FancyZones:
 
 * Packages to Check Out Maybe
 
+compdef (mode-specific company backends):
+  - https://www.reddit.com/r/emacs/comments/db8dfx/compdef_just_hit_melpa_and_handle_and/
+  - https://gitlab.com/jjzmajic/compdef/tree/67104a38763cc819644f711248b170a43bce151b
+
 leaf (use-package alternative):
   - https://github.com/conao3/leaf.el
   - https://melpa.org/#/leaf
@@ -83,6 +87,7 @@ Company-Jedi:
   - python auto-complete package Jedi for Company package users.
   - https://github.com/syohex/emacs-company-jedi
 
+
 * Soon™ things [0/2]
 
  - [ ] commands/hydra for putting personalized markers down (TODO, "Left off here.", etc)
@@ -97,12 +102,16 @@ Company-Jedi:
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [7/17]
-    - [ ] Check out spotify.el
-      - https://www.reddit.com/r/emacs/comments/d9johy/spotify_connect_support_in_spotifyel/
+  - [-] To Do: [7/18]
+    - [ ] use-package: keybinds again
+      - yank all binds that shouldn't lazy load package out into config or something
+      - glare at use-package for being so god damn try hard about being lazy
     - [ ] use-package: whitespace & neatness.
       - Two blank lines between keyword sections unless very simple.
       - Sections should have ";;---" around their keywords unless very simple.
+    - [ ] Check out spotify.el
+      - https://www.reddit.com/r/emacs/comments/d9johy/spotify_connect_support_in_spotifyel/
+      - Needs a dev acct and such.
     - [ ] headache tracker?
       - org-journal + default-directory -> headache entries in separate journal from primary
     - [-] LSP mode for python
@@ -119,6 +128,10 @@ Company-Jedi:
       - [X] Started issue at (spydez/help/issue/visit "org-mode" "prettify-symbols.org")
       - [ ] See if issue is in other modes, or just org-mode?
       - [ ] Turn off for now?
+    - [ ] Check out DumbJump:
+      - https://www.reddit.com/r/emacs/comments/d33ist/dumb_jump_v053_released_adds_support_for_10_more/
+    - [ ] Check out Cascadia Code font?
+      - https://www.reddit.com/r/programming/comments/d64aq0/microsoft_released_the_cascadia_code_font/
     - [ ] configure-crypt needs babying... again... (again... (again?..))
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
         - https://arenzana.org/2019/04/emacs-org-mode/
@@ -127,10 +140,6 @@ Company-Jedi:
         language server, other external tools won't bother - just code hilighting maybe.
       - e.g.2. want rust or w/e flavor of the month catches my eye at home but
         none of it at work
-    - [ ] Check out DumbJump:
-      - https://www.reddit.com/r/emacs/comments/d33ist/dumb_jump_v053_released_adds_support_for_10_more/
-    - [ ] Check out Cascadia Code font?
-      - https://www.reddit.com/r/programming/comments/d64aq0/microsoft_released_the_cascadia_code_font/
     - [X] use-package: rm setq
       - Find all setq, convert to ":custom" sections.
     - [X] default-directory var for pretending a file is elsewhere
@@ -148,9 +157,6 @@ Company-Jedi:
 Tabs:
   [[https://melpa.org/#/?q=pager&sort=downloads&asc=false][MELPA]]
     [[https://jwiegley.github.io/use-package/keywords/#preface-init-config][use-package keywords]]
-    [[https://github.com/dholm/dotemacs/blob/master/.emacs.d/lisp/modes/csharp.el][C# stuff]]
-      https://github.com/OmniSharp/omnisharp-emacs
-      https://github.com/dholm/dotemacs/tree/master/.emacs.d/lisp
     https://github.com/purcell/emacs.d/blob/master/init.el
       http://www.flycheck.org/en/latest/
     https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
@@ -163,7 +169,6 @@ Tabs:
       https://github.com/PythonNut/emacs-config
       https://www.masteringemacs.org/
     https://github.com/emacs-tw/awesome-emacs
-    https://www.reddit.com/r/emacs/comments/b0na5p/unfamous_great_emacs_package/
 
 
 Soon™ things?

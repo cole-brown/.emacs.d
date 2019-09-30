@@ -71,16 +71,115 @@
 
 ;; TODO: check this https://github.com/dholm/dotemacs/blob/master/.emacs.d/lisp/modes/csharp.el
 (use-package csharp-mode
-  :config
-  (add-hook 'csharp-mode-hook 'spydez/hook/csharp-mode)
+  ;;---
+  :hook
+  ;;---
+  (csharp-mode . spydez/hook/csharp-mode)
 
-;; TODO: and... again with the do-i-want-this-i-don't-know-yet
-;  :bind
-;  (("{" 'paredit-open-curly csharp-mode-map)
-;   ("}" 'paredit-close-curly csharp-mode-map))
+
+  ;; TODO: and... again with the do-i-want-this-i-don't-know-yet
+  ;; :bind
+  ;; (("{" 'paredit-open-curly csharp-mode-map)
+  ;;  ("}" 'paredit-close-curly csharp-mode-map))
+
+  ;; ;;---
+  ;; :config
+  ;; ;;---
+  ;; ;; nothing?
   )
 
-;; §-TODO-TODAY-§: omnisharp probably want
+;; IDE helper, language server, auto-complete, jump-to-defs, etc.
+;; Doesn't use LSP-Mode as of [2019-09-30].
+;; Config initially from:
+;;   https://github.com/OmniSharp/omnisharp-emacs/issues/339#issuecomment-335077125
+(use-package omnisharp
+  :after csharp-mode
+
+  ;;---
+  :preface
+  ;;---
+  (defun spydez/hook/csharp-mode/omnisharp ()
+    (omnisharp-mode)
+    (add-to-list 'company-backends #'company-omnisharp)
+    (company-mode))
+
+  ;; ;;---
+  ;; :custom
+  ;; ;;---
+  ;; Can't do this cuz... custom happens before it knows about omnisharp-expected-server-version? :|
+  ;; (omnisharp-server-executable-path
+  ;;  (spydez/path/to-file omnisharp-cache-directory
+  ;;                       "server"
+  ;;                       (concat "v" omnisharp-expected-server-version)
+  ;;                       "OmniSharp.exe")
+  ;;  (concat "Path to OmniSharp executable. Package and server should be "
+  ;;          "lockstep? Or help for `omnisharp-expected-server-version' "
+  ;;          "seems to indicate so."))
+
+  ;;---
+  :hook
+  ;;---
+  (csharp-mode . spydez/hook/csharp-mode/omnisharp)
+
+  ;; ;;---
+  ;; :bind ;; omnisharp-mode-map
+  ;; ;;---
+  ;; (:map omnisharp-mode-map
+  ;;       ("C-c c"   . #'recompile) ;; csharp-mode-map???
+  ;;       ("C-c r r" . #'omnisharp-run-code-action-refactoring))
+
+  ;; TODO: other binds? like...
+  ;; (bind-key "M-." 'omnisharp-go-to-definition csharp-mode-map)
+  ;; (bind-key "M-," 'pop-tag-mark csharp-mode-map)
+  ;; (bind-key "C-c C-w C-c" 'omnisharp-find-usages csharp-mode-map)
+  ;; (evil-define-key 'normal omnisharp-mode-map (kbd "g d")
+  ;;                  (lambda() (interactive)
+  ;;                    (evil-jumper--set-jump)
+  ;;                    (omnisharp-go-to-definition)))
+  ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", b")
+  ;;                  'omnisharp-build-in-emacs)
+  ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", cf")
+  ;;                  'omnisharp-code-format)
+  ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", nm")
+  ;;                  'omnisharp-rename-interactively)
+  ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", fu")
+  ;;                  'omnisharp-helm-find-usages)
+  ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", fs")
+  ;;                  'omnisharp-helm-find-symbols)
+  ;; (evil-define-key 'normal omnisharp-mode-map (kbd "<M-RET>")
+  ;;                  'omnisharp-run-code-action-refactoring)
+  ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", ss")
+  ;;                  'omnisharp-start-omnisharp-server)
+  ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", sp")
+  ;;                  'omnisharp-stop-omnisharp-server)
+  ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", fi")
+  ;;                  'omnisharp-find-implementations)
+  ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", x")
+  ;;                  'omnisharp-fix-code-issue-at-point)
+  ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", fx")
+  ;;                  'omnisharp-fix-usings)
+  ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", o")
+  ;;                  'omnisharp-auto-complete-overrides)
+
+  ;;---
+  :config
+  ;;---
+
+  ;; use-package is getting annoying...
+  (bind-keys :map omnisharp-mode-map
+             ("C-c c"   . recompile) ;; csharp-mode-map???
+             ("C-c r r" . omnisharp-run-code-action-refactoring))
+
+
+  (customize-set-variable 'omnisharp-server-executable-path
+   (spydez/path/to-file omnisharp-cache-directory
+                        "server"
+                        (concat "v" omnisharp-expected-server-version)
+                        "OmniSharp.exe")
+   (concat "Path to OmniSharp executable. Package and server should be "
+           "lockstep? Or help for `omnisharp-expected-server-version' "
+           "seems to indicate so.")))
+
 ;; (use-package omnisharp
 ;;   :after csharp-mode)
 
