@@ -73,22 +73,34 @@
 (use-package csharp-mode
   :config
   (add-hook 'csharp-mode-hook 'spydez/hook/csharp-mode)
-  ;; TODO: omnisharp probably want
-  ;; TODO: also probably take out of this config - nesting isn't very common
-;  (use-package omnisharp
-;    :ensure t
-;    :config
-;    (setq omnisharp-server-executable-path "/home/baggers/Programs/omnisharp/myrun.sh")
-;    (bind-key "M-." 'omnisharp-go-to-definition csharp-mode-map)
-;    (bind-key "M-," 'pop-tag-mark csharp-mode-map)
-;    (bind-key "C-c C-w C-c" 'omnisharp-find-usages csharp-mode-map)
-;    (add-to-list 'company-backends 'company-omnisharp))
 
 ;; TODO: and... again with the do-i-want-this-i-don't-know-yet
 ;  :bind
 ;  (("{" 'paredit-open-curly csharp-mode-map)
 ;   ("}" 'paredit-close-curly csharp-mode-map))
   )
+
+;; §-TODO-TODAY-§: omnisharp probably want
+;; (use-package omnisharp
+;;   :after csharp-mode)
+
+;; https://github.com/dholm/dotemacs/blob/master/.emacs.d/lisp/modes/csharp.el
+;; (use-package omnisharp
+;;   :config
+;;   (validate-setq
+;;    omnisharp-server-executable-path
+;;    (path-join *user-omnisharp-path* "omnisharp")))
+
+;; dunno where I got this one...
+;;  (use-package omnisharp
+;;    :ensure t
+;;    :config
+;;    (setq omnisharp-server-executable-path "/home/baggers/Programs/omnisharp/myrun.sh")
+;;    (bind-key "M-." 'omnisharp-go-to-definition csharp-mode-map)
+;;    (bind-key "M-," 'pop-tag-mark csharp-mode-map)
+;;    (bind-key "C-c C-w C-c" 'omnisharp-find-usages csharp-mode-map)
+;;    (add-to-list 'company-backends 'company-omnisharp))
+
 
 
 ;;------------------------------------------------------------------------------

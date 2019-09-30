@@ -175,7 +175,7 @@ characters to it, as appropriate."
 (defun spydez/signature/todo/comment ()
   "Turns spydez/signature/todo into a proper comment based on
 mode (uses `comment-*' emacs functions)."
-  (spydez/prog-mode/comment-wrap (concat spydez/signature/todo ":")))
+  (spydez/prog-mode/comment/wrap (concat spydez/signature/todo ":")))
 ;; (spydez/signature/todo/comment)
 
 

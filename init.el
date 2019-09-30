@@ -54,16 +54,10 @@
 ;;------------------------------------------------------------------------------
 ;; Notes, TODOs, Links
 ;;------------------------------------------------------------------------------
-;; TODO: rename all these "TODOs" in my section headers so I can search for
-;; 'TODO' without dozens of false alarms...
 
 ;;---
 ;; Current Shortcomings:
 ;;---
-;; - No tracking of desired packages, so dropping one for another (e.g. let go
-;;   of guide-key for which-key) can result in dead weight.
-;;   - TODO: direct custom file to /dev/null (will that work on windows)?
-;;     - That might cause too much churn when following melpa for almost all...
 ;; - Bit over-engineered, probably. My last .emacs was not intuitive to
 ;;   tweak/fix when getting set up on a new device, so I probably went
 ;;   overboard with warnings/messages and overridability this time around...
