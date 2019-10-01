@@ -81,6 +81,11 @@
   ;; TODO: give it a tab or something in moody?
 
   ;;---
+  :custom
+  ;;---
+  (anzu-replace-to-string-separator "→")
+
+  ;;---
   :bind
   ;;---
   ;; Rebind to Anzu versions.

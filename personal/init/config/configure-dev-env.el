@@ -146,6 +146,54 @@
 ;;     (call-interactively #'compile)))
 
 
+(defun spydez/dev-env/visual-studio/compile/setup ()
+  "Set up compile command for Visual Studio"
+  (interactive)
+  (let ((vsvars
+         ;; path/to/vsvars32.bat
+         (spydez/path/to-file spydez/path/dev-env/visual-studio
+                              "Common7" "Tools" "vsvars32.bat"))
+        (solution-file
+         ;; `locate-dominating-file' returns the directory for the
+         ;; file so when you use a pattern to find a file, you need to run it
+         ;; again in the directory itself to get the file name.
+         (car (directory-files
+               (locate-dominating-file default-directory
+                                       (lambda (dir)
+                                         (directory-files dir
+                                                          nil
+                                                          ".*\\.sln$"
+                                                          t)))
+               t
+               ".*\\.sln$")))
+        (build-config "Debug"))
+
+    (setq compile-command
+          (concat "call " (shell-quote-argument vsvars)
+                  " && devenv " (shell-quote-argument solution-file)
+                  " /Build " build-config))
+    (message "Compile set up for '%s' @ '%s'"
+             (file-name-nondirectory solution-file)
+             build-config)))
+
+
+(defun spydez/dev-env/visual-studio/compile ()
+  "Compile in Visual Studio, maybe?"
+  (interactive)
+  ;; try to be smart... probably don't need to, but hey.
+  ;; If compile-command has the magic words, skip setup.
+  (unless (string-match-p (rx word-start "Visual" word-end
+                              (+? whitespace)
+                              word-start "Studio" word-end)
+                          compile-command)
+    (spydez/dev-env/visual-studio/compile/setup))
+
+  ;; Use standard windows shell.
+  ;; May have to use a per-domain/dev setting if needed for e.g. WSL?
+  (let ((shell-file-name (get 'shell-file-name 'standard-value)))
+    (call-interactively #'compile)))
+
+
 ;;------------------------------------------------------------------------------
 ;; Hex Editor
 ;;------------------------------------------------------------------------------
@@ -248,6 +296,9 @@
 
 ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Blinking.html
 ;; orig name: interactive-blink-matching-open
+;; §-TODO-§ [2019-10-01]: Put in a hydra or something? Useful if match is
+;; off-screen, maybe... But probably only if not in c-mode derivatives with
+;; brace-on-separate-line code style?
 (defun spydez/blink-paren ()
   "Indicate momentarily the start of parenthesized sexp before point."
   (interactive)
@@ -263,6 +314,7 @@
 
 
 ;; TODO: Try smartparen and/or rainbow delimiters.
+
 
 ;;---
 ;; Smartparen
@@ -369,7 +421,7 @@
 ;; Duplicate region, and then comment one out.
 ;; AKA Copy and Comment Region
 ;;------------------------------------------------------------------------------
-;; Few different ways to do it out there - this one in my tiny test gave the 
+;; Few different ways to do it out there - this one in my tiny test gave the
 ;; best formatting to the commented region and its new copy.
 ;;   https://stackoverflow.com/a/23588908
 (defun spydez/region/copy-and-comment (beg end &optional arg)
@@ -387,8 +439,10 @@ See `comment-region' for behavior of a prefix arg."
 
 
 ;;------------------------------------------------------------------------------
-;; Unfill Paragraph, Fill/Unfill Hydra
+;; Fill/Unfill Commands, Functions, Hydras
 ;;------------------------------------------------------------------------------
+;; Hydræ.
+
 ;; from: nhoffman http://nhoffman.github.io/.emacs.d/#org40b27e4
 ;;   which is from: http://defindit.com/readme_files/emacs_hints_tricks.html
 ;;     which is from: Stefan Monnier <foo at acm.org>
@@ -401,30 +455,96 @@ See `comment-region' for behavior of a prefix arg."
   (let ((fill-column (point-max)))
     (fill-paragraph nil)))
 
+
+(defun spydez/fill/paragraph/fn-for-mode ()
+  "Mode-aware fill-paragraph so I only have to bind one thing in
+the fill hydra. Separated the 'get func' out here so I can see if
+in a mode with a special fill for hydra hinting."
+  (cond
+   ;; c-mode and all derivatives
+   ((and (functionp 'c-buffer-is-cc-mode)
+         (c-buffer-is-cc-mode))
+    #'c-fill-paragraph)
+
+   ;; elisp, other lispses
+   ((or (derived-mode-p 'emacs-lisp-mode)
+        (derived-mode-p 'lisp-mode))
+    #'lisp-fill-paragraph)
+   ;; Might just use `fill-paragraph'?
+   ;; Seems to be what "M-q" is using right now?
+
+   ;; python-mode
+   ((derived-mode-p 'python-mode) #'python-fill-paragraph)
+
+   ;; org-mode
+   ((derived-mode-p 'org-mode) #'org-fill-paragraph)
+
+   ;; default to the usual fill-paragraph
+   (t #'fill-paragraph)))
+
+
+(defun spydez/fill/paragraph/per-mode (&optional justify)
+  "Mode-aware fill-paragraph so I only have to bind one thing in
+the fill hydra."
+  (interactive)
+  (funcall (spydez/fill/paragraph/fn-for-mode) justify))
+
+
+(defun spydez/fill/region/single-line (&optional justify)
+  "Grab start/end of current line and call `fill-region'. i.e.
+  \"'Fill Region' on just this line, please.\""
+  (interactive)
+
+  (let ((from (save-excursion (beginning-of-line) (point)))
+        (to   (save-excursion (end-of-line)       (point))))
+    (fill-region from to justify)))
+
+
 (require 'with)
 (with-feature 'hydra
-  (defhydra spydez/hydra/fill ()
-    "Fill Commands"
+  (defhydra spydez/hydra/fill (:color blue ;; default exit heads
+                               :idle 1.0   ;; no help for this many seconds
+                               :hint none)  ;; no hint - just fancy docstr
+    "
+^Regions^          ^Paragraphs^         ^Unfills^
+^-^----------------^-^------------------^-^----------
+_r_: Region        _p_: ?p?  _u_: Unfill ¶
+_a_: As Paragraph  _i_: Individual ¶
+_s_: Single Line   _n_: Non-Uniform ¶
+^ ^                _d_: Default Fill ¶
+"
 
+    ;;---
     ;; region...ish?
-    ("r" fill-region "region (selected)") ;; ole faithful
-    ("a" fill-region-as-paragraph "region as paragraph")
+    ;;---
+    ("r" fill-region) ;; "Region (selected)") ;; ole faithful
+    ("a" fill-region-as-paragraph) ;; "region as paragraph")
+    ("s" spydez/fill/region/single-line) ;; "This line as region")
 
+    ;;---
     ;; paragraph
-    ("i" fill-individual-paragraphs "individual paragraphs")
-    ("n" fill-nonuniform-paragraphs "non-uniform paragraphs")
-    ("p" fill-paragraph "paragraph") ;; the standard
-    ("o" org-fill-paragraph "paragraph (org-mode)")
+    ;;---
+    ;; this one is mode-aware, and hint should indicate mode vs default
+    ("p" spydez/fill/paragraph/per-mode
+     ;; fancy head's doc string used in above fancy body's docstring
+     (format "%-14s"
+             (if (eq (spydez/fill/paragraph/fn-for-mode) #'fill-paragraph)
+                 "Default Fill ¶"
+               "Mode-Aware ¶")))
 
+    ("i" fill-individual-paragraphs) ;; "individual paragraphs")
+    ("n" fill-nonuniform-paragraphs) ;; "non-uniform paragraphs")
+
+    ;; TRIAL [2019-10-01]: Stick default in too in case mode-aware isn't what was wanted?
+    ("d" fill-paragraph) ;; "\"default paragraph\"")
+
+    ;; don't need anymore - mode-aware catches this.
+    ;; ("o" org-fill-paragraph) ;; "paragraph (org-mode)")
+
+    ;;---
     ;; unfill
-    ("u" spydez/fill/unfill-paragraph "unfill")
-
-    ;; fill-paragraph for specific modes (bound over `fill-paragraph'
-    ;; in those modes). Ignore until I think I need 'em?
-    ;; c-fill-paragraph
-    ;; lisp-fill-paragraph
-    ;; python-fill-paragraph
-    ;; message-fill-paragraph
+    ;;---
+    ("u" spydez/fill/unfill-paragraph) ;; "unfill paragraph")
     )
 
   ;; 1) The first try was "C-i", but that is (by definition) TAB, and really

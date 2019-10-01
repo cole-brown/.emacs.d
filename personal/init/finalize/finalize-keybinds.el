@@ -41,29 +41,72 @@
 ;; Common Actions
 ;;------------------------------------------------------------------------------
 
-;; Hydra for some random collection of things I happen to do a lot...
-(with-feature 'hydra
-  (defhydra spydez/hydra/grab-bag (:color blue ;; default exit heads
-                                   :idle 1.0   ;; no help for this many seconds
-                                   :hint nil)  ;; no hint - just fancy docstr
-    "
-^Signatures^                ^Org-Mode^
-^----------^----------------^--------^------------
-_s_: sig:  %-15`spydez/signature/short-pre  _n_: New Journal Entry
-_-_: sig:  %-15`spydez/signature/name-post  _v_: Visit Journal
-_t_: todo: %-15`spydez/signature/todo
-_c_: todo: %-15(spydez/signature/todo/comment)
-"
-;; "%-15" for right-padded 15 length, which should be longer than these, which
-;; should be longest signatures... Update as needed.
-;;   (length (spydez/signature/todo/comment))
-;;   (length spydez/signature/name-post)
-    ("s" (spydez/signature/insert spydez/signature/short-pre))
-    ("-" (spydez/signature/insert spydez/signature/name-post))
-    ("t" (spydez/signature/insert spydez/signature/todo))
-    ("c" (spydez/signature/insert
-          (spydez/signature/options/add 'spydez/signature/todo/comment)))
+;; §-TODO-§ [2019-10-01]: nicer hydra help w/ less effort?
+;;   https://oremacs.com/2015/07/20/hydra-columns/
+;; Namely, there seems to be no good way of defining a format string var in a
+;; non-global way in the defhydras?.. -_- And every time a hydra is change a lot
+;; of tweaking is done on the docstring for the comments and such.
 
+;;---
+;; Hydra for some random collection of things I happen to do a lot...
+;;---
+(with-feature 'hydra
+  ;; Our "Sigs, Org-Mode, and Misc Stuff We Do Often" hydra.
+  (defhydra spydez/hydra/grab-bag (:color blue ;; default exit heads
+                                          :idle 0.75  ;; no help for x seconds
+                                          :hint none)  ;; no hint - just fancy docstr
+    "
+^Signatures^                           ^Org-Mode^
+^----------^---------------------------^--------^------------
+_s_: sig:  ?s?^^^^^^^^^^^^^^^^^^^^^^^  _n_: New Journal Entry
+_-_: sig:  ?-?^^^^^^^^^^^^^^^^^^^^^^^  _v_: Visit Journal
+_t_: todo: ?t?^^^^^^^^^^^^^^^^^^^^^^^
+_c_: todo: ?c?^^^^^^^^^^^^^^^^^^^^^^^
+_h_: todo: ?h?^^^^^^^^^^^^^^^^^^^^^^^
+_g_: todo: ?g?^^^^^^^^^^^^^^^^^^^^^^^
+"
+    ;; "%-26" for right-padded string, which should as long as these,
+    ;; which should be longest signatures... Update as needed.
+    ;;   (length (spydez/signature/todo/comment t))
+    ;;   (length spydez/signature/name-post)
+
+
+    ;;-----------------------------------------------------------------------
+    ;; Signatures
+    ;;-----------------------------------------------------------------------
+
+    ;;---
+    ;; Normal Signatures
+    ;;---
+    ("s" (spydez/signature/insert spydez/signature/short-pre)
+     (format "%-26s" spydez/signature/short-pre))
+    ("-" (spydez/signature/insert spydez/signature/name-post)
+     (format "%-26s" spydez/signature/name-post))
+
+    ;;---
+    ;; TODO Signatures
+    ;;---
+
+    ;; Timestamped
+    ("t" (insert (spydez/signature/todo/timestamp t))
+     (format "%-26s" (spydez/signature/todo/timestamp t)))
+    ("c" (insert (spydez/signature/todo/comment t))
+     (format "%-26s" (spydez/signature/todo/comment t)))
+
+    ;; Bare
+    ("h" (insert (spydez/signature/todo/timestamp nil))
+     (format "%-26s" (spydez/signature/todo/timestamp nil)))
+    ("g" (insert (spydez/signature/todo/comment nil))
+     (format "%-26s" (spydez/signature/todo/comment nil)))
+
+
+    ;;-----------------------------------------------------------------------
+    ;; Org-Mode
+    ;;-----------------------------------------------------------------------
+
+    ;;---
+    ;; Org-Journal
+    ;;---
     ("n" org-journal-new-entry)
     ("v" (funcall org-journal-find-file
                   (org-journal-get-entry-path))))
@@ -76,6 +119,9 @@ _c_: todo: %-15(spydez/signature/todo/comment)
 ;;   (bind-key* "C-," spydez/hydra/grab-bag/body))
 
 
+;;---
+;; Dynamic Hydra that Doesn't Work.
+;;---
 ;; I want this one to be a way to visit and open common files...
 ;; Haven't wrapped my head around dynamic hydras yet though.
 (with-all-features '(key-chord hydra)
@@ -110,6 +156,7 @@ _c_: todo: %-15(spydez/signature/todo/comment)
 ;; (spydez/warning/message nil nil
 ;;                         "Key-Chord or Hydra package not present. Cannot make spydez/hydra/common-stuff."))
 
+
 ;; TODO: make `with' better?
 ;; (<with-macro> <args>
 ;;  (:error <body>)
@@ -118,6 +165,7 @@ _c_: todo: %-15(spydez/signature/todo/comment)
 
 ;; TODO: make a hydra here for... files and stuff with 'eu' keychord.
 ;;    TODO: add a 'reload-init' type func in it if I'm in the right project or something?
+
 
 ;; TODO: need macros and stuff for the open-files bit, I think?
 ;; And this looks like a close-enough-to-start:

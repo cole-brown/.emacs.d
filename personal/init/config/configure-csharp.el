@@ -90,8 +90,10 @@
 
 ;; IDE helper, language server, auto-complete, jump-to-defs, etc.
 ;; Doesn't use LSP-Mode as of [2019-09-30].
+;;  - http://www.omnisharp.net/
+;;  - https://github.com/OmniSharp/omnisharp-emacs
 ;; Config initially from:
-;;   https://github.com/OmniSharp/omnisharp-emacs/issues/339#issuecomment-335077125
+;;  - https://github.com/OmniSharp/omnisharp-emacs/issues/339#issuecomment-335077125
 (use-package omnisharp
   :after csharp-mode
 
@@ -121,23 +123,46 @@
   ;;---
   (csharp-mode . spydez/hook/csharp-mode/omnisharp)
 
-  ;; ;;---
-  ;; :bind ;; omnisharp-mode-map
-  ;; ;;---
-  ;; (:map omnisharp-mode-map
-  ;;       ("C-c c"   . #'recompile) ;; csharp-mode-map???
-  ;;       ("C-c r r" . #'omnisharp-run-code-action-refactoring))
+  ;;---
+  :config
+  ;;---
+
+  (with-feature 'hydra
+    (defhydra spydez/hydra/csharp (:color blue ;; default exit heads
+                                   :idle 0.75)  ;; no help for this many seconds
+                                   ;; :hint nil)  ;; no hint - just fancy docstr
+      "C# Mode"
+
+      ("c"  spydez/dev-env/visual-studio/compile "compile")
+      ;; ("c"  recompile "compile") ;; Doesn't work? Calls 'make'...
+
+      ("r"  omnisharp-run-code-action-refactoring "refactor action...")
+      ("\\" omnisharp-go-to-definition "goto def")
+      ("="  omnisharp-find-usages "find usages")
+      ("/"  omnisharp-find-implementations "find impls")
+      ("u"  omnisharp-fix-usings "fix 'using's")
+
+      ;; Just use some awkward letters for start/stop?
+      ("Y"  omnisharp-start-omnisharp-server "Start OmniSharp")
+      ("F"  omnisharp-stop-server "Stop OmniSharp")
+
+      ("q"  nil "cancel" :color blue))
+
+    (bind-key* "C-c r" #'spydez/hydra/csharp/body))
+
+  ;; use-package is getting annoying... Can't do these in ':bind' or it won't
+  ;; ever hook into C# mode... Trying a hydra anyways.
+  ;; (bind-keys :map omnisharp-mode-map
+  ;;            ("C-c r c"   . recompile) ;; csharp-mode-map???
+  ;;            ("C-c r r" . omnisharp-run-code-action-refactoring)
+  ;;            ("M-." 'omnisharp-go-to-definition csharp-mode-map)
 
   ;; TODO: other binds? like...
-  ;; (bind-key "M-." 'omnisharp-go-to-definition csharp-mode-map)
   ;; (bind-key "M-," 'pop-tag-mark csharp-mode-map)
-  ;; (bind-key "C-c C-w C-c" 'omnisharp-find-usages csharp-mode-map)
   ;; (evil-define-key 'normal omnisharp-mode-map (kbd "g d")
   ;;                  (lambda() (interactive)
   ;;                    (evil-jumper--set-jump)
   ;;                    (omnisharp-go-to-definition)))
-  ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", b")
-  ;;                  'omnisharp-build-in-emacs)
   ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", cf")
   ;;                  'omnisharp-code-format)
   ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", nm")
@@ -148,28 +173,12 @@
   ;;                  'omnisharp-helm-find-symbols)
   ;; (evil-define-key 'normal omnisharp-mode-map (kbd "<M-RET>")
   ;;                  'omnisharp-run-code-action-refactoring)
-  ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", ss")
-  ;;                  'omnisharp-start-omnisharp-server)
-  ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", sp")
-  ;;                  'omnisharp-stop-omnisharp-server)
-  ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", fi")
-  ;;                  'omnisharp-find-implementations)
   ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", x")
   ;;                  'omnisharp-fix-code-issue-at-point)
   ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", fx")
   ;;                  'omnisharp-fix-usings)
   ;; (evil-define-key 'normal omnisharp-mode-map (kbd ", o")
   ;;                  'omnisharp-auto-complete-overrides)
-
-  ;;---
-  :config
-  ;;---
-
-  ;; use-package is getting annoying...
-  (bind-keys :map omnisharp-mode-map
-             ("C-c c"   . recompile) ;; csharp-mode-map???
-             ("C-c r r" . omnisharp-run-code-action-refactoring))
-
 
   (customize-set-variable 'omnisharp-server-executable-path
    (spydez/path/to-file omnisharp-cache-directory
@@ -217,10 +226,6 @@
 
 ;; TODO: CEDET?
 ;;   - https://github.com/tuhdo/tuhdo.github.io/blob/master/emacs-tutor/cedet.org
-
-;; TODO: Omnisharp? 
-;;   - http://www.omnisharp.net/
-;;   - https://github.com/OmniSharp/omnisharp-emacs
 
 
 ;;------------------------------------------------------------------------------

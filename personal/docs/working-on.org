@@ -102,7 +102,13 @@ Company-Jedi:
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [7/18]
+  - [-] To Do: [9/24]
+    - [ ] compile visual studio solution
+      - Not working yet...
+      - [[file:~/.emacs.d/personal/init/config/configure-dev-env.el::(defun%20spydez/dev-env/visual-studio/compile%20()][compile command]]
+    - [ ] Move 'Utils' in [[file:~/.emacs.d/personal/init/config/configure-signatures.el::;;%20Utils%20-%20Things%20That%20Don't%20Belong%20Here?][signatures]] to another file. In lisp, or configure-point?
+    - [ ] yasnippet up top in M-/ backends?
+    - [ ] What is turning off auto-revert in csharp-mode? -_-
     - [ ] use-package: keybinds again
       - yank all binds that shouldn't lazy load package out into config or something
       - glare at use-package for being so god damn try hard about being lazy
@@ -140,6 +146,9 @@ Company-Jedi:
         language server, other external tools won't bother - just code hilighting maybe.
       - e.g.2. want rust or w/e flavor of the month catches my eye at home but
         none of it at work
+    - [X] "fill one single line" command
+    - [X] 'c-fill-paragraph' in fill hydra instead of default in c-derived modes.
+      - Also C#, if it's not derived...
     - [X] use-package: rm setq
       - Find all setq, convert to ":custom" sections.
     - [X] default-directory var for pretending a file is elsewhere

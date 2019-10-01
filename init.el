@@ -740,7 +740,7 @@
 ;;   Arguments: -n +$(CurLine):$(CurCol) $(ItemPath)
 ;;   WorkingDirectory: $(ItemDirectory)
 
-;; TODO: shortcut for building Pathfinder_Everything in Emacs with Emacs output
+;; TODO: shortcut for building a project in Emacs with Emacs output
 ;; buffer?
 ;;------
 ;; END IDE Settings

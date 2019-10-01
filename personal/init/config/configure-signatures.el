@@ -172,11 +172,28 @@ characters to it, as appropriate."
     spydez/signature/todo)))
 
 
-(defun spydez/signature/todo/comment ()
+(defun spydez/signature/todo/timestamp (&optional timestamp)
+  "Optionally adds a TIMESTAMP if non-nil to spydez/signature/todo."
+  (if timestamp
+      (concat spydez/signature/todo
+              " "
+              (format-time-string
+               spydez/datetime/format/org-inactive-derivative))
+    spydez/signature/todo))
+;; (spydez/signature/todo/timestamp)
+;; (spydez/signature/todo/timestamp t)
+
+
+(defun spydez/signature/todo/comment (&optional timestamp)
   "Turns spydez/signature/todo into a proper comment based on
-mode (uses `comment-*' emacs functions)."
-  (spydez/prog-mode/comment/wrap (concat spydez/signature/todo ":")))
+mode (uses `comment-*' emacs functions). Optionally adds a
+TIMESTAMP if non-nil."
+  (spydez/prog-mode/comment/wrap
+   (concat
+    (spydez/signature/todo/timestamp timestamp)
+    ":")))
 ;; (spydez/signature/todo/comment)
+;; (spydez/signature/todo/comment t)
 
 
 ;; Org-Mode Signature: For easy marking of "this here is my inserted note"
