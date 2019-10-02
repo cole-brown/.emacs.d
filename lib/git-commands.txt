@@ -1,0 +1,5 @@
+
+Updating these libs:
+
+For spotify:
+  git subtree pull --prefix lib/spotify git@github.com:danielfm/spotify.el.git master --squash
