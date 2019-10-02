@@ -3,3 +3,5 @@ Updating these libs:
 
 For spotify:
   git subtree pull --prefix lib/spotify git@github.com:danielfm/spotify.el.git master --squash
+
+  Chose git subtree because: https://codewinsarguments.co/2016/05/01/git-submodules-vs-git-subtrees/
