@@ -9,7 +9,8 @@
 ;;------------------------------------------------------------------------------
 
 ;; Bind -> Politely asks for a keybind
-;; Bind* -> Overrides Other (Minor Mode) Binds
+;; Bind* -> Overrides other (Minor Mode) binds
+;;          - Does not override Major Mode bins. :/
 
 ;; Want to insist on "C-c C-c" being `comment-or-uncomment-region' in /all/ prog
 ;; modes, but still use bind-keys... Which seems un-possible to do here in one
@@ -146,37 +147,96 @@
 ;;     (call-interactively #'compile)))
 
 
+;; TODO: Move to configure-os.
+(defun spydez/shell/system-default ()
+  "Returns a string from the `standard-value' property of `shell-file-name'."
+  ;; Use standard windows shell.
+  ;; May have to use a per-domain/dev setting if needed for e.g. WSL?
+
+  ;; cmdproxy is for windows, so... Def move this to configure-os and have
+  ;; os-dependent things happen.
+  (let ((path-to-shell (executable-find "cmdproxy")))
+    (if path-to-shell
+        ;; just return that if we have it
+        path-to-shell
+
+      ;; else try to figure something out?
+      (let ((shell-file-name/std-prop (get 'shell-file-name 'standard-value)))
+        ;; `get' doesn't say what it returns... but it's returning a list,
+        ;; so... Check/hope for that, default to "I dunno. Whatever I was given
+        ;; I guess...".
+        (cond ((listp shell-file-name/std-prop)
+               (nth 0 shell-file-name/std-prop))
+
+              (t shell-file-name/std-prop))))))
+;; (spydez/shell/system-default)
+
+
 (defun spydez/dev-env/visual-studio/compile/setup ()
   "Set up compile command for Visual Studio"
-  (interactive)
-  (let ((vsvars
-         ;; path/to/vsvars32.bat
-         (spydez/path/to-file spydez/path/dev-env/visual-studio
-                              "Common7" "Tools" "vsvars32.bat"))
-        (solution-file
-         ;; `locate-dominating-file' returns the directory for the
-         ;; file so when you use a pattern to find a file, you need to run it
-         ;; again in the directory itself to get the file name.
-         (car (directory-files
-               (locate-dominating-file default-directory
-                                       (lambda (dir)
-                                         (directory-files dir
-                                                          nil
-                                                          ".*\\.sln$"
-                                                          t)))
-               t
-               ".*\\.sln$")))
-        (build-config "Debug"))
+;;  (interactive)
+  (let* ((error-message nil)
+         (vsvars
+          ;; path/to/vsvars32.bat
+          (spydez/path/to-file spydez/path/dev-env/visual-studio
+                               "Common7" "Tools" "vsvars32.bat"))
+         (solution-file
+          ;; catch when no sln file (i.e. ran from here instead of .cs buffer)
+          (condition-case-unless-debug err
+              ;; `locate-dominating-file' returns the directory for the
+              ;; file so when you use a pattern to find a file, you need to run it
+              ;; again in the directory itself to get the file name.
+              (car (directory-files
+                    (locate-dominating-file default-directory
+                                            (lambda (dir)
+                                              (directory-files dir
+                                                               nil
+                                                               ".*\\.sln$"
+                                                               t)))
+                    t
+                    ".*\\.sln$"))
+            ;; handler for error: message bad thing, return nil
+            (error (setq error-message
+                         (format "Compile Setup Error: %s --> %s"
+                                 "No .sln file found."
+                                 (error-message-string err)))
+                   nil)))
 
-    (setq compile-command
-          (concat "call " (shell-quote-argument vsvars)
-                  " && devenv " (shell-quote-argument solution-file)
-                  " /Build " build-config))
-    (message "Compile set up for '%s' @ '%s'"
-             (file-name-nondirectory solution-file)
-             build-config)))
+         (build-config "Debug")
+         ;; ;; switch back to cmd for this...
+         ;; (shell-file-name (spydez/shell/system-default))
+         ;; Didn't fix the "(file-error "Spawning child process" "Invalid
+         ;; argument")", so no.
+         )
+
+    ;; check for specific error message first
+    (cond
+     (error-message (message error-message))
+     ((null vsvars) (message "Compile Setup Error: No vsvars."))
+     ((null solution-file) (message "Compile Setup Error: No solution file."))
+     ((null build-config) (message "Compile Setup Error: No build config."))
+     (t ;; Alrighty... Let's do this.
+      (setq compile-command
+            ;; Don't shell quote these maybe?? No, uh...
+            ;; Double quote maybe??
+            ;; Those were all before other bugs were found so they're back
+            ;; on the menu as valid options.
+            (concat "call "
+                    "\"" vsvars "\""
+                    ;; vsvars
+                    ;;(shell-quote-argument vsvars)
+                    " && devenv "
+                    "\"" solution-file "\""
+                    ;; solution-file
+                    ;;(shell-quote-argument solution-file)
+                    " /Build " build-config))
+      (message "Compile Setup: Ready for '%s' @ '%s'"
+               (file-name-nondirectory solution-file)
+               build-config)))))
+  ;; (spydez/dev-env/visual-studio/compile/setup)
 
 
+;; (setq debug-on-error nil)
 (defun spydez/dev-env/visual-studio/compile ()
   "Compile in Visual Studio, maybe?"
   (interactive)
@@ -188,10 +248,35 @@
                           compile-command)
     (spydez/dev-env/visual-studio/compile/setup))
 
-  ;; Use standard windows shell.
-  ;; May have to use a per-domain/dev setting if needed for e.g. WSL?
-  (let ((shell-file-name (get 'shell-file-name 'standard-value)))
+  (let ((shell-file-name (spydez/shell/system-default)))
     (call-interactively #'compile)))
+
+
+(defun spydez/dev-env/visual-studio/compile/bury ()
+  "Bury the compile buffer, whatever window has it right now."
+  (let ((curr-buff (current-buffer))
+        (curr-name (buffer-name))
+        (compile-name "*compilation*"))
+    (save-excursion
+      (pop-to-buffer compile-name)
+      (bury-buffer))
+    ;; bury left me in the wrong window, probably?
+    (unless (string-equal curr-name compile-name)
+      (pop-to-buffer (current-buffer)))))
+
+
+;;-----------------------------------------------------------------------------
+;; Compilation Mode
+;;-----------------------------------------------------------------------------
+
+;; §-TODO-§ [2019-10-01]: use-package block?
+
+;; Scroll compilation buffer to follow output, but stop scrolling at first error
+;; in output.
+(customize-set-variable 'compilation-scroll-output 'first-error)
+
+;; Turn off confirm compile command.
+(customize-set-variable 'compilation-read-command nil)
 
 
 ;;------------------------------------------------------------------------------
@@ -461,6 +546,9 @@ See `comment-region' for behavior of a prefix arg."
 the fill hydra. Separated the 'get func' out here so I can see if
 in a mode with a special fill for hydra hinting."
   (cond
+   ((derived-mode-p 'csharp-mode)
+    #'c-fill-paragraph)
+
    ;; c-mode and all derivatives
    ((and (functionp 'c-buffer-is-cc-mode)
          (c-buffer-is-cc-mode))
@@ -510,7 +598,7 @@ the fill hydra."
 ^-^----------------^-^------------------^-^----------
 _r_: Region        _p_: ?p?  _u_: Unfill ¶
 _a_: As Paragraph  _i_: Individual ¶
-_s_: Single Line   _n_: Non-Uniform ¶
+_l_: Single Line   _n_: Non-Uniform ¶
 ^ ^                _d_: Default Fill ¶
 "
 
@@ -519,7 +607,7 @@ _s_: Single Line   _n_: Non-Uniform ¶
     ;;---
     ("r" fill-region) ;; "Region (selected)") ;; ole faithful
     ("a" fill-region-as-paragraph) ;; "region as paragraph")
-    ("s" spydez/fill/region/single-line) ;; "This line as region")
+    ("l" spydez/fill/region/single-line) ;; "This line as region")
 
     ;;---
     ;; paragraph

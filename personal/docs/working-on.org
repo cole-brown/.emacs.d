@@ -4,46 +4,324 @@
 #+DATE:      [2019-03-05 Tue]
 
 
-* Things I Want, Non-Emacs-Related
+* Now™ Things                                               :emacs:cole_time:
+:PROPERTIES:
+:VISIBILITY: all
+:END:
 
-** pretty output library helper
+  - [-] To Do: [2/17]
+    - [ ] a bury/kill buffer that won't switch to a file that's being viewed in another buffer
+      - bare start: [[file:~/.emacs.d/personal/init/config/configure-emacs.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-01%5D:][here]]
+    - [ ] end of day:
+      - kill omnisharp?
+      - kill all lsp servers!
+        - Will `lsp--global-teardown' do it? [[file:~/.emacs.d/elpa/lsp-mode-20190930.503/lsp-mode.el::(defun%20lsp--global-teardown%20()][here]]
+          - Yeah. Used [[file:~/.emacs.d/elpa/lsp-mode-20190930.503/lsp-mode.el::(add-hook%20'kill-emacs-hook%20#'lsp--global-teardown)][here]]: (add-hook 'kill-emacs-hook #'lsp--global-teardown)
+        - Or if only, like, plys would need to make fn...
+          - Better: `lsp-foreach-workspace', check if pyls, shutdown?
+          - Bad: Visit every buffer, is lsp-mode?, `when-lsp-workspace', kill all associtated with it?
+      - kill my special buffers? e.g. Tailing apache log, etc.
+      - auto-commit
+    - [ ] Check out spotify.el
+      - https://www.reddit.com/r/emacs/comments/d9johy/spotify_connect_support_in_spotifyel/
+      - Needs a dev acct and such.
+    - [ ] headache tracker?
+      - org-journal + default-directory -> headache entries in separate journal from primary
+    - [ ] use-package: keybinds again
+      - yank all binds that shouldn't lazy load package out into config or something
+      - glare at use-package for being so god damn try hard about being lazy
+    - [ ] use-package: whitespace & neatness.
+      - Two blank lines between keyword sections unless very simple.
+      - Sections should have ";;---" around their keywords unless very simple.
+    - [ ] Don't beacon in the minibuffer?
+    - [ ] What is turning off auto-revert in csharp-mode? -_-
+      - It was definitely off. But haven't had problems since that once.
+      - May be going crazy.
+    - [-] LSP mode for python
+      - [ ] more work to get it to... useful and not annoying?
+        - [ ] It has... an amazing amount of memory hogging/leaking going on...
+      - [ ] flycheck
+      - [X] Lines judder and jump a bit - may be lsp-ui causing it?
+        - Fixed by moving to different font.
+    - [ ] Look at magit-lfs? Does it do anything I want?
+      - [ ] LFS first, then:
+      - [ ] Look at magit-svn? Does it do anything I want?
+    - [-] Fancy checkboxes (<- like that) lose fancy boxyness when buffer has mismatched quotations or something
+      - [X] double quote def work. Take out one of these and see. ""
+      - [X] Started issue at (spydez/help/issue/visit "org-mode" "prettify-symbols.org")
+      - [ ] See if issue is in other modes, or just org-mode?
+      - [ ] Turn off for now?
+    - [ ] Check out DumbJump:
+      - https://www.reddit.com/r/emacs/comments/d33ist/dumb_jump_v053_released_adds_support_for_10_more/
+    - [ ] Check out Cascadia Code font?
+      - https://www.reddit.com/r/programming/comments/d64aq0/microsoft_released_the_cascadia_code_font/
+    - [ ] configure-crypt needs babying... again... (again... (again?..))
+      - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
+        - https://arenzana.org/2019/04/emacs-org-mode/
+    - [ ] a per-device way of saying "off", "minimum", or "full" for features?
+      - e.g. want full C# dev env at work, but minimum at home? Set it that way and
+        language server, other external tools won't bother - just code hilighting maybe.
+      - e.g.2. want rust or w/e flavor of the month catches my eye at home but
+        none of it at work
+    - [X] Move 'Utils' in [[file:~/.emacs.d/personal/init/config/configure-signatures.el::;;%20Utils%20-%20Things%20That%20Don't%20Belong%20Here?][signatures]] to another file. In lisp, or configure-point?
+    - [X] Turn off PgUp in minibuffer... or whatever spawns \*completions* buffer...
+      - Was not PgUp, I think. Was `completion-auto-help' custom var setting.
 
-features:
-  - indentation levels
-  - easy columns
-  - easy left/right/center alignment
-  - Easy "ensure we have N empty lines above what's about to print"
-  - easy line decorators ("-----", etc) of static or dynamic widths
-    - based on what's above, or below...
-      - Maybe "decorate this like so: (above, below, bracket), style, size"
-  - auto figuring out of how much width a label should be
-    - padding available, obvs.
 
-Would want it in... python, C#, elisp, every other language I do...
-
-*** Names?
-
-neater
-  - cuz... made more orderly/tidy?
-
-polh
-  - pretty output library helper
-
-mis
-  - make it so
+Tabs:
+  [[https://melpa.org/#/?q=pager&sort=downloads&asc=false][MELPA]]
+    [[https://jwiegley.github.io/use-package/keywords/#preface-init-config][use-package keywords]]
+    https://github.com/purcell/emacs.d/blob/master/init.el
+      http://www.flycheck.org/en/latest/
+    https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
+    [[https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=emacs%20cedet&=&=&oq=&gs_l=&pbx=1][CEDET stuff]]
+      http://cedet.sourceforge.net/languagesupport.shtml
+      http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+      https://www.emacswiki.org/emacs/CEDET_Quickstart
+      https://www.logilab.org/blogentry/173886
+    https://github.com/daedreth/UncleDavesEmacs#user-content-ido-and-why-i-started-using-helm
+      https://github.com/PythonNut/emacs-config
+      https://www.masteringemacs.org/
+    https://github.com/emacs-tw/awesome-emacs
 
 
-** Dice: Very Expressive and Helpful
+Soon™ things?
+  - To Do: [0/2]
+    - [ ] make treemacs issue report?
+    - [ ] make no-littering issue or fix w/ pull request?
+    - https://github.com/dzop/emacs-zmq
 
-Where each die, bonus, etc came from in a roll. See dropbox somewhere.
 
-* Win 10 App to Check Out Maybe
+* Completed Things [7/7]
+** DONE [2019-10-02] A list of things that are done now [13/13]
+CLOSED: [2019-10-02 Wed 11:04]
+:LOGBOOK:
+- State "DONE"       from "TODO"       [2019-10-02 Wed 11:04]
+:END:
 
-FancyZones:
-  - Tiling window manager. Save/restore layouts?
-  - https://github.com/microsoft/PowerToys/tree/master/src/modules/fancyzones
+    - [X] yasnippet up top in M-/ backends?
+    - [X] Turn off "C-h C-p"
+    - [X] "q" to kill \*Customize* buffers?
+    - [X] compile visual studio solution
+      - Not working yet...
+      - [[file:~/.emacs.d/personal/init/config/configure-dev-env.el::(defun%20spydez/dev-env/visual-studio/compile%20()][compile command]]
+    - [X] "fill one single line" command
+    - [X] 'c-fill-paragraph' in fill hydra instead of default in c-derived modes.
+      - Also C#, if it's not derived...
+    - [X] use-package: rm setq
+      - Find all setq, convert to ":custom" sections.
+    - [X] default-directory var for pretending a file is elsewhere
+      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eivtuo4
+    - [X] bootstrap-this-early.el step is poorly designed. Computers override it then do nothing in it. Need better method for a system to say, "Yes I exist and have set myself up minimally, hello.".
+    - [X] 'TODOs' section into something else
+    - [X] Move spydez/prog-mode/* funcs to prog-mode.
+      - improve them?
+    - [X] Make prog-mode yasnippet "spy-fan" work.
+      - probably: prefix-mirror, field, postfix-mirror
+      - maybe: yas-moving-away-p
+    - [X] defcustom: make sure all mine are using my group.
 
-* Packages to Check Out Maybe
+** DONE [2019-09-24] A list of things that are done now [6/6]
+CLOSED: [2019-09-24 Tue 12:29]
+:LOGBOOK:
+- State "DONE"       from              [2019-09-24 Tue 12:29]
+:END:
+
+    - [X] use-package: Find all ":bind" and split into multiple ":bind" sections.
+      - One for global.
+      - One for each map.
+    - [X] feature request: changable helpful buffer name format
+      - (defun helpful--buffer (symbol callable-p) ...)
+      - Or, perhaps, a fix and pull request?
+    - [X] Get yasnippets off TAB... getting annoying with all its one letter expansions.
+    - [X] Company complete (I think) - proper case completion?
+    - [X] ag, ack, gack, gawk, your mom, grep, something?
+      - [X] ripgrep https://github.com/BurntSushi/ripgrep
+        - Added ripgrep to Windows' PATH env var. Want it on bash cmd line too...
+      - [X] w/ deadgrep? https://github.com/Wilfred/deadgrep
+      - [X] Restart emacs and test.
+    - [X] interactive function for code->issue doc linkage
+      - M-x whatever -> prints/returns expanded filename
+      - C-u M-x whatever -> visits file
+      - First stab. Not interactive, but I need multiple args.
+        - `spydez/help/issue/path' and `spydez/help/issue/visit'
+
+
+** DONE [2019-08-29] A list of things that are done now [7/7]
+CLOSED: [2019-08-29 Thu 12:05]
+:LOGBOOK:
+- State "DONE"       from              [2019-08-29 Thu 12:05]
+:END:
+
+    - [X] Is there a command to list out applicable yasnippets?
+      - M-x yas-insert-snippet
+        - aka `C-c & C-s'
+      - Also made spydez/yas/list for calling that.
+        - But my snippets don't show up sometimes - order is weird. Search for '<spy'.
+    - [X] wsbutler - ignore line at point completely
+      - Something fucky is happening and my advice function only works if
+        there's a message to slow it down...?
+      - Complicated. See [[file:issues/whitespace-and-butler/bug-info.el::;;%20-*-%20mode:%20emacs-lisp;%20lexical-binding:%20t%20-*-][issue]] and [[file:~/.emacs.d/personal/init/config/configure-whitespace.el::;;%20Error%20seems%20a%20layer%20deeper%20in%20applying%20`buffer-display-table'%20to%20buffer...][config]]
+      - I could just have it skip over any EOL whitespace checking on point's line if point's in the whitespace maybe? That sounds complicated...
+    - [X] something subtler than magenta for the too-long lines from whitespace-mode?
+      - Something that works well with comments (green) and normal (white)
+    - [X] use-package helpful
+    - [X] null/temp custom.el
+      - Will package-selected-packages like this?
+      - [[https://www.reddit.com/r/emacs/comments/9rrhy8/emacsers_with_beautiful_initel_files_what_about/e8jaxxs?utm_source=share&utm_medium=web2x][temp file for custom]]
+        - No. Trying `null-device' instead.
+          - https://www.reddit.com/r/emacs/comments/9rrhy8/emacsers_with_beautiful_initel_files_what_about/e8juc8v
+    - [X] Magit - don't ignore whitespace in commit/diff
+    - [X] different whitespace-style list for org-mode
+      - [X] First stab failed. Try again.
+
+** DONE [2019-08-19] A list of things that are done now [5/5]
+CLOSED: [2019-08-19 Mon 12:34]
+:LOGBOOK:
+- State "DONE"       from              [2019-08-19 Mon 12:34]
+:END:
+
+    - [X] TODO: move most of org-mode stuff to :config or :hook as appropriate
+      - [X] Put hook into :init as its own defun
+    - [X] org-mode: Does the pretty boxes thing only work on this because it only
+      works on the 1st org-mode file/buffer?
+      - was a derived major mode thing
+      - [X] pretty boxes
+      - [X] Same for the pretty bullets... why so inconsistent?
+      - [X] Try the font-lock thing for bullets in the hook function maybe if
+           :config doesn't work?
+    - [X] org-journal - try it out?
+      - https://github.com/bastibe/org-journal
+    - [X] remove references/?
+      - Or put those files in repo... useless files now when not on whatever comp I downloaded em on.
+      - ref files were for files that were/are very useful on their own and so preserving them for
+        a decade or whatever from now would be useful.
+        - Some of my old .emacs is just references to dead web links... not useful.
+    - [X] fill-*
+      - fill-paragraph to a better keybind than M-q?
+      - fill-region to a keybind?
+      - [X] key-chord hydra for fill-* commands?
+
+
+** DONE [2019-08-09] A list of things that are done now [9/9]
+CLOSED: [2019-08-09 Fri 10:45]
+:LOGBOOK:
+- State "DONE"       from              [2019-08-09 Fri 10:45]
+:END:
+
+    - [X] csetq vs setq all the places? see zeroth-funcs
+      - csetq vs setq vs jamming everything into (use-package ... :custom ...)
+      - I think this:
+        - (use-package ...) is great if not too much trouble.
+        - customize-set-variable for single custom vars
+        - custom-set-variables for multiple custom vars
+      - [X] move custom.el so those three options work without us caring about custom.el spam.
+      - [X] remove csetq defun
+      - [X] remove all csetq
+      - [X] remove any custom-set-variables? Change to customize-set-variable.
+    - [X] A command for searching explainshell.com with a string
+      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eiv75b8
+      - Uh... already have this. Apparently.
+    - [X] have recentf ignore elpa dir?
+      - [X] It's not actually been a problem in a long time so I'm doing:
+        - [X] Meh.
+        - [X] No for now.
+    - [X] Have my taskspace write this somewhere:
+          "mkdir <00-my-remote-temp-dir>/2019-07-22_0_<task-desc>"
+      - Add to the notes.org? Well, but it needs generated from name.
+    - [X] Elisp command to call shell with string (shell command(s)) and print
+      output. See: 2019-03_tasks.org
+      - For routine/simple checking up on servers without having to leave emacs.
+      - [X] Figure out command/elisp.
+        - See: 2019-03_tasks.org
+      - [X] Make an interactive (spydez/... or (spydez/domain/work...
+            or whatever command. (<server-name>...)?
+    - [X] kill buffer cmd w/ no-kill list
+      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eiv960e
+    - [X] this hydra looks useful maybe:
+      - https://github.com/abo-abo/hydra/wiki/Emacs#Transpose
+    - [X] org-mode stuff to look at:
+      - https://www.reddit.com/r/emacs/comments/b90xc5/orgmode_your_life/
+    - [X] taskspace.el
+          feature?: temp/workspace dated/numbered dirs
+      - e.g. first/only dir of the day: 2019-04-05_0_<description>
+      - second: 2019-04-05_1_<2nd-description>
+      - '_' as date/num/desc separator
+      - '-' as date/word sep (space illegal/replaced)
+      - func to travel to/open in dired mode the directory
+        - and create it if non-existant
+
+
+** DONE [2019-07-18] A list of things that are done now [14/14]
+CLOSED: [2019-07-18 Thu 17:28]
+:LOGBOOK:
+- State "DONE"       from              [2019-07-18 Thu 17:28]
+:END:
+
+    - [X] rename spy/<datestamp> funcs? or delete?
+      - have:
+        - spydez/timestamp-ISO
+        - spydez/timestamp-ORG
+        - spydez/dd-mon-yy
+        - spydez/yyyy-mm-dd
+      - want?
+        - spydez/datetime/{ISO-datetime, ORG, US-human, ISO-date-sortable} ???
+    - [X] yascroll.el
+      - https://github.com/m2ym/yascroll-el
+      - Meh. A bug since 2015 still exists in it that would require me to require cl before its stuff so nope.
+    - [X] https://github.com/nhoffman/.emacs.d/blob/master/init.org
+    - [X] finish trawling zzazmboni config:
+      - left off here: https://zzamboni.org/post/my-emacs-configuration-with-commentary/#literate-programming-using-org-babel
+    - [X] https://emacs.stackexchange.com/questions/2427/how-to-test-rest-api-with-emacs
+    - [X] More dates in org headers? Created, updated...
+      - I think just "date" for now...?
+    - [X] templates?
+      - [X] for org headers?
+      - [X] for blank .emacs.d config file?
+    - [X] A more canonical place for the org file dates?
+      - "#+DATE:" is actually used
+    - [X] Notes/Issues
+      - [X] configure-files-and-folders notes removed into its issue file notes
+      - [X] epa/gpg notes into issues, for now?
+    - [X] all-the-icons working enough for me now?
+      - Uh... sure. And there's a todo or two up for the rest...
+    - [X] file structure has changed...
+    - [X] Also on bootstrap-debug-early todo
+    - [X] update notes/*.org?
+      - Think some todo'd placeholders have been done.
+      - Still one todo but its full of temp tab links
+    - [X] get yasnippets to load for org-mode, at least?
+      my 'header' template doesn't work until you poke yasnippets a bit.
+
+
+** DONE A list of things to consider working on
+CLOSED: [2019-10-02 Wed 11:12]
+:LOGBOOK:
+- State "DONE"       from              [2019-10-02 Wed 11:12]
+:END:
+
+Managed to do all this without remembering this section was here... >.>
+
+  1. some sort of search for this .emacs.d project
+     - [ ] Right now grep in projectile project doesn't like find command it generates.
+       - Command works when pasted into (git for windows) bash, and emacs knows about bash...?
+       - Command works in M-x shell.
+       - Hm... Not sure right now.
+
+  2. Projectile, use this .emacs.d project as test/tutorial?
+     - working on it
+
+  3. fuzzy stuff
+
+  4. ...
+
+  5. other note files...
+
+  6. look into: https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
+
+  7. hi
+
+* Packages to Check Out Maybe                                         :emacs:
 
 compdef (mode-specific company backends):
   - https://www.reddit.com/r/emacs/comments/db8dfx/compdef_just_hit_melpa_and_handle_and/
@@ -88,7 +366,7 @@ Company-Jedi:
   - https://github.com/syohex/emacs-company-jedi
 
 
-* Soon™ things [0/2]
+* Soon™ Things [0/2]                                             :valve_time:
 
  - [ ] commands/hydra for putting personalized markers down (TODO, "Left off here.", etc)
    - hook into... save? magit? to check for,complain about markers so they hopefully don't
@@ -97,98 +375,48 @@ Company-Jedi:
  - [ ] Try evil mode?
    - This will take... years?... to try properly maybe I think?
 
-* Next things?
-:PROPERTIES:
-:VISIBILITY: all
-:END:
+* Things I Want, Non-Emacs-Related
 
-  - [-] To Do: [9/24]
-    - [ ] compile visual studio solution
-      - Not working yet...
-      - [[file:~/.emacs.d/personal/init/config/configure-dev-env.el::(defun%20spydez/dev-env/visual-studio/compile%20()][compile command]]
-    - [ ] Move 'Utils' in [[file:~/.emacs.d/personal/init/config/configure-signatures.el::;;%20Utils%20-%20Things%20That%20Don't%20Belong%20Here?][signatures]] to another file. In lisp, or configure-point?
-    - [ ] yasnippet up top in M-/ backends?
-    - [ ] What is turning off auto-revert in csharp-mode? -_-
-    - [ ] use-package: keybinds again
-      - yank all binds that shouldn't lazy load package out into config or something
-      - glare at use-package for being so god damn try hard about being lazy
-    - [ ] use-package: whitespace & neatness.
-      - Two blank lines between keyword sections unless very simple.
-      - Sections should have ";;---" around their keywords unless very simple.
-    - [ ] Check out spotify.el
-      - https://www.reddit.com/r/emacs/comments/d9johy/spotify_connect_support_in_spotifyel/
-      - Needs a dev acct and such.
-    - [ ] headache tracker?
-      - org-journal + default-directory -> headache entries in separate journal from primary
-    - [-] LSP mode for python
-      - [ ] more work to get it to... useful and not annoying?
-        - [ ] It has... an amazing amount of memory hogging/leaking going on...
-      - [ ] flycheck
-      - [X] Lines judder and jump a bit - may be lsp-ui causing it?
-        - Fixed by moving to different font.
-    - [ ] Look at magit-lfs? Does it do anything I want?
-      - [ ] LFS first, then:
-      - [ ] Look at magit-svn? Does it do anything I want?
-    - [-] Fancy checkboxes (<- like that) lose fancy boxyness when buffer has mismatched quotations or something
-      - [X] double quote def work. Take out one of these and see. ""
-      - [X] Started issue at (spydez/help/issue/visit "org-mode" "prettify-symbols.org")
-      - [ ] See if issue is in other modes, or just org-mode?
-      - [ ] Turn off for now?
-    - [ ] Check out DumbJump:
-      - https://www.reddit.com/r/emacs/comments/d33ist/dumb_jump_v053_released_adds_support_for_10_more/
-    - [ ] Check out Cascadia Code font?
-      - https://www.reddit.com/r/programming/comments/d64aq0/microsoft_released_the_cascadia_code_font/
-    - [ ] configure-crypt needs babying... again... (again... (again?..))
-      - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
-        - https://arenzana.org/2019/04/emacs-org-mode/
-    - [ ] a per-device way of saying "off", "minimum", or "full" for features?
-      - e.g. want full C# dev env at work, but minimum at home? Set it that way and
-        language server, other external tools won't bother - just code hilighting maybe.
-      - e.g.2. want rust or w/e flavor of the month catches my eye at home but
-        none of it at work
-    - [X] "fill one single line" command
-    - [X] 'c-fill-paragraph' in fill hydra instead of default in c-derived modes.
-      - Also C#, if it's not derived...
-    - [X] use-package: rm setq
-      - Find all setq, convert to ":custom" sections.
-    - [X] default-directory var for pretending a file is elsewhere
-      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eivtuo4
-    - [X] bootstrap-this-early.el step is poorly designed. Computers override it then do nothing in it. Need better method for a system to say, "Yes I exist and have set myself up minimally, hello.".
-    - [X] 'TODOs' section into something else
-    - [X] Move spydez/prog-mode/* funcs to prog-mode.
-      - improve them?
-    - [X] Make prog-mode yasnippet "spy-fan" work.
-      - probably: prefix-mirror, field, postfix-mirror
-      - maybe: yas-moving-away-p
-    - [X] defcustom: make sure all mine are using my group.
+** pretty output library helper
+
+features:
+  - indentation levels
+  - easy columns
+  - easy left/right/center alignment
+  - Easy "ensure we have N empty lines above what's about to print"
+  - easy line decorators ("-----", etc) of static or dynamic widths
+    - based on what's above, or below...
+      - Maybe "decorate this like so: (above, below, bracket), style, size"
+  - auto figuring out of how much width a label should be
+    - padding available, obvs.
+
+Would want it in... python, C#, elisp, every other language I do...
+
+*** Names?
+
+neater
+  - cuz... made more orderly/tidy?
+
+polh
+  - pretty output library helper
+
+mis
+  - make it so
 
 
-Tabs:
-  [[https://melpa.org/#/?q=pager&sort=downloads&asc=false][MELPA]]
-    [[https://jwiegley.github.io/use-package/keywords/#preface-init-config][use-package keywords]]
-    https://github.com/purcell/emacs.d/blob/master/init.el
-      http://www.flycheck.org/en/latest/
-    https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
-    [[https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=emacs%20cedet&=&=&oq=&gs_l=&pbx=1][CEDET stuff]]
-      http://cedet.sourceforge.net/languagesupport.shtml
-      http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
-      https://www.emacswiki.org/emacs/CEDET_Quickstart
-      https://www.logilab.org/blogentry/173886
-    https://github.com/daedreth/UncleDavesEmacs#user-content-ido-and-why-i-started-using-helm
-      https://github.com/PythonNut/emacs-config
-      https://www.masteringemacs.org/
-    https://github.com/emacs-tw/awesome-emacs
+** Dice: Very Expressive and Helpful
 
+Where each die, bonus, etc came from in a roll. See dropbox somewhere.
 
-Soon™ things?
-  - To Do: [0/2]
-    - [ ] make treemacs issue report?
-    - [ ] make no-littering issue or fix w/ pull request?
-    - https://github.com/dzop/emacs-zmq
+* Win 10 App to Check Out Maybe
+
+FancyZones:
+  - Tiling window manager. Save/restore layouts?
+  - https://github.com/microsoft/PowerToys/tree/master/src/modules/fancyzones
 
 * Packages to Consider, but I Don't Need Them Now
 
-** C++
+** C++ - Not writing C++ code right now.
 
 Reddit text post where OP has good info/screenshots on a good
 C++ dev environment with:
@@ -199,206 +427,6 @@ C++ dev environment with:
   - CMAKE
   - Google C Style
 https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
-
-
-* DONE [2019-09-24] A list of things that are done now
-CLOSED: [2019-09-24 Tue 12:29]
-:LOGBOOK:
-- State "DONE"       from              [2019-09-24 Tue 12:29]
-:END:
-
-  - [X] To Do: [6/6]
-    - [X] use-package: Find all ":bind" and split into multiple ":bind" sections.
-      - One for global.
-      - One for each map.
-    - [X] feature request: changable helpful buffer name format
-      - (defun helpful--buffer (symbol callable-p) ...)
-      - Or, perhaps, a fix and pull request?
-    - [X] Get yasnippets off TAB... getting annoying with all its one letter expansions.
-    - [X] Company complete (I think) - proper case completion?
-    - [X] ag, ack, gack, gawk, your mom, grep, something?
-      - [X] ripgrep https://github.com/BurntSushi/ripgrep
-        - Added ripgrep to Windows' PATH env var. Want it on bash cmd line too...
-      - [X] w/ deadgrep? https://github.com/Wilfred/deadgrep
-      - [X] Restart emacs and test.
-    - [X] interactive function for code->issue doc linkage
-      - M-x whatever -> prints/returns expanded filename
-      - C-u M-x whatever -> visits file
-      - First stab. Not interactive, but I need multiple args.
-        - `spydez/help/issue/path' and `spydez/help/issue/visit'
-
-
-* DONE [2019-08-29] A list of things that are done now
-CLOSED: [2019-08-29 Thu 12:05]
-:LOGBOOK:
-- State "DONE"       from              [2019-08-29 Thu 12:05]
-:END:
-
-  - [X] To Do: [7/7]
-    - [X] Is there a command to list out applicable yasnippets?
-      - M-x yas-insert-snippet
-        - aka `C-c & C-s'
-      - Also made spydez/yas/list for calling that.
-        - But my snippets don't show up sometimes - order is weird. Search for '<spy'.
-    - [X] wsbutler - ignore line at point completely
-      - Something fucky is happening and my advice function only works if
-        there's a message to slow it down...?
-      - Complicated. See [[file:issues/whitespace-and-butler/bug-info.el::;;%20-*-%20mode:%20emacs-lisp;%20lexical-binding:%20t%20-*-][issue]] and [[file:~/.emacs.d/personal/init/config/configure-whitespace.el::;;%20Error%20seems%20a%20layer%20deeper%20in%20applying%20`buffer-display-table'%20to%20buffer...][config]]
-      - I could just have it skip over any EOL whitespace checking on point's line if point's in the whitespace maybe? That sounds complicated...
-    - [X] something subtler than magenta for the too-long lines from whitespace-mode?
-      - Something that works well with comments (green) and normal (white)
-    - [X] use-package helpful
-    - [X] null/temp custom.el
-      - Will package-selected-packages like this?
-      - [[https://www.reddit.com/r/emacs/comments/9rrhy8/emacsers_with_beautiful_initel_files_what_about/e8jaxxs?utm_source=share&utm_medium=web2x][temp file for custom]]
-        - No. Trying `null-device' instead.
-          - https://www.reddit.com/r/emacs/comments/9rrhy8/emacsers_with_beautiful_initel_files_what_about/e8juc8v
-    - [X] Magit - don't ignore whitespace in commit/diff
-    - [X] different whitespace-style list for org-mode
-      - [X] First stab failed. Try again.
-
-* DONE [2019-08-19] A list of things that are done now
-CLOSED: [2019-08-19 Mon 12:34]
-:LOGBOOK:
-- State "DONE"       from              [2019-08-19 Mon 12:34]
-:END:
-
-  - [X] To Do: [5/5]
-    - [X] TODO: move most of org-mode stuff to :config or :hook as appropriate
-      - [X] Put hook into :init as its own defun
-    - [X] org-mode: Does the pretty boxes thing only work on this because it only
-      works on the 1st org-mode file/buffer?
-      - was a derived major mode thing
-      - [X] pretty boxes
-      - [X] Same for the pretty bullets... why so inconsistent?
-      - [X] Try the font-lock thing for bullets in the hook function maybe if
-           :config doesn't work?
-    - [X] org-journal - try it out?
-      - https://github.com/bastibe/org-journal
-    - [X] remove references/?
-      - Or put those files in repo... useless files now when not on whatever comp I downloaded em on.
-      - ref files were for files that were/are very useful on their own and so preserving them for
-        a decade or whatever from now would be useful.
-        - Some of my old .emacs is just references to dead web links... not useful.
-    - [X] fill-*
-      - fill-paragraph to a better keybind than M-q?
-      - fill-region to a keybind?
-      - [X] key-chord hydra for fill-* commands?
-
-
-* DONE [2019-08-09] A list of things that are done now
-CLOSED: [2019-08-09 Fri 10:45]
-:LOGBOOK:
-- State "DONE"       from              [2019-08-09 Fri 10:45]
-:END:
-
-  - [X] To Do: [9/9]
-    - [X] csetq vs setq all the places? see zeroth-funcs
-      - csetq vs setq vs jamming everything into (use-package ... :custom ...)
-      - I think this:
-        - (use-package ...) is great if not too much trouble.
-        - customize-set-variable for single custom vars
-        - custom-set-variables for multiple custom vars
-      - [X] move custom.el so those three options work without us caring about custom.el spam.
-      - [X] remove csetq defun
-      - [X] remove all csetq
-      - [X] remove any custom-set-variables? Change to customize-set-variable.
-    - [X] A command for searching explainshell.com with a string
-      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eiv75b8
-      - Uh... already have this. Apparently.
-    - [X] have recentf ignore elpa dir?
-      - [X] It's not actually been a problem in a long time so I'm doing:
-        - [X] Meh.
-        - [X] No for now.
-    - [X] Have my taskspace write this somewhere:
-          "mkdir <00-my-remote-temp-dir>/2019-07-22_0_<task-desc>"
-      - Add to the notes.org? Well, but it needs generated from name.
-    - [X] Elisp command to call shell with string (shell command(s)) and print
-      output. See: 2019-03_tasks.org
-      - For routine/simple checking up on servers without having to leave emacs.
-      - [X] Figure out command/elisp.
-        - See: 2019-03_tasks.org
-      - [X] Make an interactive (spydez/... or (spydez/domain/work...
-            or whatever command. (<server-name>...)?
-    - [X] kill buffer cmd w/ no-kill list
-      - https://www.reddit.com/r/emacs/comments/b2uqdm/weekly_tipstricketc_thread/eiv960e
-    - [X] this hydra looks useful maybe:
-      - https://github.com/abo-abo/hydra/wiki/Emacs#Transpose
-    - [X] org-mode stuff to look at:
-      - https://www.reddit.com/r/emacs/comments/b90xc5/orgmode_your_life/
-    - [X] taskspace.el
-          feature?: temp/workspace dated/numbered dirs
-      - e.g. first/only dir of the day: 2019-04-05_0_<description>
-      - second: 2019-04-05_1_<2nd-description>
-      - '_' as date/num/desc separator
-      - '-' as date/word sep (space illegal/replaced)
-      - func to travel to/open in dired mode the directory
-        - and create it if non-existant
-
-
-* DONE [2019-07-18] A list of things that are done now
-CLOSED: [2019-07-18 Thu 17:28]
-:LOGBOOK:
-- State "DONE"       from              [2019-07-18 Thu 17:28]
-:END:
-
-  - More things to do: [14/14]
-    - [X] rename spy/<datestamp> funcs? or delete?
-      - have:
-        - spydez/timestamp-ISO
-        - spydez/timestamp-ORG
-        - spydez/dd-mon-yy
-        - spydez/yyyy-mm-dd
-      - want?
-        - spydez/datetime/{ISO-datetime, ORG, US-human, ISO-date-sortable} ???
-    - [X] yascroll.el
-      - https://github.com/m2ym/yascroll-el
-      - Meh. A bug since 2015 still exists in it that would require me to require cl before its stuff so nope.
-    - [X] https://github.com/nhoffman/.emacs.d/blob/master/init.org
-    - [X] finish trawling zzazmboni config:
-      - left off here: https://zzamboni.org/post/my-emacs-configuration-with-commentary/#literate-programming-using-org-babel
-    - [X] https://emacs.stackexchange.com/questions/2427/how-to-test-rest-api-with-emacs
-    - [X] More dates in org headers? Created, updated...
-      - I think just "date" for now...?
-    - [X] templates?
-      - [X] for org headers?
-      - [X] for blank .emacs.d config file?
-    - [X] A more canonical place for the org file dates?
-      - "#+DATE:" is actually used
-    - [X] Notes/Issues
-      - [X] configure-files-and-folders notes removed into its issue file notes
-      - [X] epa/gpg notes into issues, for now?
-    - [X] all-the-icons working enough for me now?
-      - Uh... sure. And there's a todo or two up for the rest...
-    - [X] file structure has changed...
-    - [X] Also on bootstrap-debug-early todo
-    - [X] update notes/*.org?
-      - Think some todo'd placeholders have been done.
-      - Still one todo but its full of temp tab links
-    - [X] get yasnippets to load for org-mode, at least?
-      my 'header' template doesn't work until you poke yasnippets a bit.
-
-
-* A list of things to consider working on
-
-  1) some sort of search for this .emacs.d project
-     - [ ] Right now grep in projectile project doesn't like find command it generates.
-       - Command works when pasted into (git for windows) bash, and emacs knows about bash...?
-       - Command works in M-x shell.
-       - Hm... Not sure right now.
-
-  2) Projectile, use this .emacs.d project as test/tutorial?
-     - working on it
-
-  3) fuzzy stuff
-
-  4) ...
-
-  5) other note files...
-
-  6) look into: https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
-
-  7) hi
 
 * look at these:
 

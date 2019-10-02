@@ -82,11 +82,12 @@
   ;; (("{" 'paredit-open-curly csharp-mode-map)
   ;;  ("}" 'paredit-close-curly csharp-mode-map))
 
-  ;; ;;---
-  ;; :config
-  ;; ;;---
-  ;; ;; nothing?
-  )
+  ;;---
+  :config
+  ;;---
+  (bind-keys :map csharp-mode-map
+             ;; `comment-or-uncomment-region' instead of just `comment-region'
+             ("C-c C-c" . comment-or-uncomment-region)))
 
 ;; IDE helper, language server, auto-complete, jump-to-defs, etc.
 ;; Doesn't use LSP-Mode as of [2019-09-30].
@@ -134,6 +135,7 @@
       "C# Mode"
 
       ("c"  spydez/dev-env/visual-studio/compile "compile")
+      ("b" (spydez/dev-env/visual-studio/compile/bury) "bury compile")
       ;; ("c"  recompile "compile") ;; Doesn't work? Calls 'make'...
 
       ("r"  omnisharp-run-code-action-refactoring "refactor action...")
@@ -148,7 +150,11 @@
 
       ("q"  nil "cancel" :color blue))
 
-    (bind-key* "C-c r" #'spydez/hydra/csharp/body))
+    (bind-keys :map csharp-mode-map
+               ("C-c r"   . spydez/hydra/csharp/body)
+               ("C-c C-r" . spydez/hydra/csharp/body)
+               ;; F7 is what my VS2010 has as "build" so it's kinda reflex...
+               ("<f7>" . spydez/dev-env/visual-studio/compile)))
 
   ;; use-package is getting annoying... Can't do these in ':bind' or it won't
   ;; ever hook into C# mode... Trying a hydra anyways.

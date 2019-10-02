@@ -409,13 +409,14 @@
 ;; Thanks to this guy for having run into this first and telling everyone:
 ;; http://trey-jackson.blogspot.com/2007/12/emacs-tip-5-hippie-expand.html
 (setq hippie-expand-try-functions-list
-      ;; dabbrev first, as it is usually useful
-      '(try-expand-dabbrev
+      ;; Trying out yasnippets first...
+      '(;; http://pages.sachachua.com/.emacs.d/Sacha.html#org84a9889
+        yas-hippie-try-expand
+
+        ;; dabbrev first, as it is usually useful
+        try-expand-dabbrev
         try-expand-dabbrev-all-buffers
         try-expand-dabbrev-from-kill
-
-        ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org84a9889
-        yas-hippie-try-expand
 
         ;; ...sure. All those filenames I need auto-completed.
         try-complete-file-name-partially

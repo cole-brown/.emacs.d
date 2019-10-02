@@ -8,11 +8,19 @@
 
 ;; Always give help window focus?
 ;; Can remove/set back to nil if annoying.
-(setq help-window-select t)
+;; TRIAL [2019-10-02]: Changed: t -> nil.
+;; Can set back to t/'always or try 'other if annoying.
+(customize-set-variable 'help-window-select nil)
+
+;; Got this buffer a few times and don't know why. Auto-complete help should be
+;; amply provided for by other packages/features I have.
+;; TRIAL [2019-10-02]: Can set back to 't (needs 1 fail to give help), or try
+;; 'lazy (needs 2 fails).
+(customize-set-variable 'completion-auto-help nil)
 
 
 ;;------------------------------------------------------------------------------
-;; Custom Helpful Helpers
+;; Spydez Helpful Helpers for Issues
 ;;------------------------------------------------------------------------------
 
 ;; It'd be nice to have one that could do both when eval'd, but I need to think
@@ -20,11 +28,20 @@
 ;; Idea 1:
 ;;   (spydez/help/issue "whitespace-and-butler" "move-to-column.org")
 ;;   - be at end
-;;     -     `C-x C-e' -> calls spydez/help/issue/path
-;;     - `C-u C-x C-e' -> calls spydez/help/issue/visit
+;;     -     "C-x C-e" -> calls spydez/help/issue/path
+;;     - "C-u C-x C-e" -> calls spydez/help/issue/visit
+;;     - But this is bad because I want the arg supplied in code and "C-u C-x
+;;       C-e" just prints out results of sexpr eval. Would take some shenanigans
+;;       about "eval-last-sexp" to get it done that way.
 ;; Idea 2:
 ;;   - Some sort of specially formatted link text, like system org-mode has in
 ;;     place. But that gets out of the relm of 'KISS' I wanted to stay in...
+;; Idea 3:
+;;   - Another param like...
+;;     (spydez/help/issue "bad-thing" "notes.org" 'visit)
+;;     (spydez/help/issue "bad-thing" "notes.org" 'path t) ;; (still have QUIET)
+;;     (spydez/help/issue "bad-thing" "notes.org" 'both)
+;;   - §-TODO-§ [2019-10-02]: Try out this one?
 
 (defun spydez/help/issue/path (issue-dir file-name &optional quiet)
   "Returns a string which is fully expanded path to issue file.

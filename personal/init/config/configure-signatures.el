@@ -11,7 +11,6 @@
 ;;------------------------------------------------------------------------------
 (require 'subr-x)
 
-
 ;; https://unicode-table.com/en/blocks/miscellaneous-symbols/
 ;; Single unicode options:
 ;;   ʬ ʭ ҈ ҉ † ‡ ‣ ↀ ↂ ∀ ∎ ∮ ≈ ≜ ≡ ≣ ≷ ⊫ ⋈
@@ -112,42 +111,8 @@ erse just eval these every call.")
 
 
 ;;------------------------------------------------------------------------------
-;; Utils - Things That Don't Belong Here?
-;;------------------------------------------------------------------------------
-;; TODO: move these utils to different file if use them more?
-
-;; TODO: move these utils to different file if use them more?
-;; http://ergoemacs.org/emacs/elisp_determine_cursor_inside_string_or_comment.html
-(defun spydez/point/inside-string-p ()
-  "Returns non-nil if inside string, else nil.
-Result depends on syntax table's string quote character."
-  (interactive)
-  (let ((result (nth 3 (syntax-ppss))))
-    (message "%s" result)
-    result))
-
-;; TODO: move these utils to different file if use them more?
-;; http://ergoemacs.org/emacs/elisp_determine_cursor_inside_string_or_comment.html
-(defun spydez/point/inside-comment-p ()
-  "Returns non-nil if inside comment, else nil.
-Result depends on syntax table's comment character."
-  (interactive)
-  (let ((result (nth 4 (syntax-ppss))))
-    (message "%s" result)
-    result))
-
-;; TODO: move these utils to different file if use them more?
-;; https://emacs.stackexchange.com/questions/16792/easiest-way-to-check-if-current-line-is-empty-ignoring-whitespace
-(defun spydez/point/current-line-empty-p ()
-  (save-excursion
-    (beginning-of-line)
-    (looking-at "[[:space:]]*$")))
-
-
-;;------------------------------------------------------------------------------
 ;; Signatures - Insert, Search...
 ;;------------------------------------------------------------------------------
-
 
 (defun spydez/signature/todo/dwim ()
   "Takes `spydez/signature/todo' and uses as-is, or adds comment

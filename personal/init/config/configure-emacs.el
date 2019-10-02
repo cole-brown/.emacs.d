@@ -45,25 +45,46 @@
 ;;---
 ;; Keybinds I Don't Like
 ;;---
-(defvar spydez/config/commands-to-unbind
+(defvar spydez/setup/commands-to-unbind
   '(
     ;; text-scale-adjust:
     ;;   - "C-x C-0", "C-x C-+", "C-x C--", "C-x C-="
     ;;   - I accidentally thrash it sometimes and then can't figure out how
     ;;     to revert my text size. Just unbind it.
-    text-scale-adjust)
+    text-scale-adjust
+
+    ;; Big old Emacs Help Buffer pops up and is annoying.
+    ;;   - "C-h C-p"
+    ;;   - Don't know why, but if I flub a command and fluster-type, this gets
+    ;;     called too much.
+    view-emacs-problems
+    ;;   - "C-h C-p"
+    ;;   - Only happened once, but I was right here in this file when it did.
+    view-emacs-news
+    ;;   - "C-h h"
+    view-hello-file
+    )
   "These commands will be unbound from keymaps (or just global? IDK.) on
 startup.")
 
 (require 'dash)
-;; TODO [2019-09-19]: Made this, but probably it's better just to use unbind-key?
-(defun spydez/config/unbind-commands (&rest commands)
+(defun spydez/setup/unbind-commands (&rest commands)
   "For each command, check for key bindings and then check if it
-is bound to that key. If so, unbind."
-  ;; Iterate over each of those commands.
+is bound to that key. If so, unbind.
+
+Only works in global map right now.
+Feature, if needed: Check more maps than just global?"
+  ;; `unbound' is our alist of actions completed in the form of:
+  ;;   (symbol . string).
+  ;; Successful unbinding is:
+  ;;   ('function . pretty-keybind-string)    e.g.: ('function . "C-x y z")
+  ;; May want to change to list and add what map or something if this function
+  ;; grows to take non-global map binds.
   (let (unbound)
+    ;; Iterate over each of those commands.
     (dolist (func (-flatten commands) unbound)
-      (push `(,func . "test") unbound)
+      ;; (push `(,func . "debug push test") unbound)
+
       ;; sanity check input
       (if (not (functionp func))
           (spydez/warning/message
@@ -74,10 +95,20 @@ is bound to that key. If so, unbind."
         (dolist (key (where-is-internal func))
           (when (eq (global-key-binding (eval key) t) func)
             (unbind-key key)
+
             (push `(,func . ,(key-description key)) unbound)))))))
 
 ;; And now we can unbind our list of built in commands we hate.
-(spydez/config/unbind-commands spydez/config/commands-to-unbind)
+(spydez/setup/unbind-commands spydez/setup/commands-to-unbind)
+
+
+;;---
+;; Keybinds I Want Changed
+;;---
+(bind-keys :map custom-mode-map
+           ;; Kill *Customize* buffer instead of bury on 'q'.
+           ("q" . kill-this-buffer))
+
 
 
 ;;------------------------------------------------------------------------------
@@ -280,6 +311,29 @@ is bound to that key. If so, unbind."
 
   ;; Enabled unkillable-scratch-mode, except it's not called "-mode".
   (unkillable-scratch t))
+
+
+;;-----------------------------------------------------------------------------
+;; Buffers
+;;-----------------------------------------------------------------------------
+
+;; §-TODO-§ [2019-10-01]:
+;; `bury-buffer' and/or `switch-to-prev-buffer' should not switch to a currently
+;; displayed buffer...
+
+;; `get-buffer-window' will say if a buffer is being shown. e.g.:
+;;   (get-buffer-window "working-on.org" 'visible)
+;; Need to make sure that's not this window.
+;; Then bury it in the list of possibilities from `window-next-buffers'.
+;;   (window-next-buffers window)
+
+;; (defun spytest ()
+;;   (interactive)
+;;   (let* ((window (window-normalize-window nil t))
+;;          ;; (frame (window-frame window))
+;;          (buffer-candidates (window-next-buffers window)))
+;;     (message "candidates: %s" buffer-candidates)))
+;; ;; (spytest)
 
 
 ;;------------------------------------------------------------------------------
