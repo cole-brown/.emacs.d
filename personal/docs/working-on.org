@@ -9,9 +9,12 @@
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [2/17]
-    - [ ] a bury/kill buffer that won't switch to a file that's being viewed in another buffer
-      - bare start: [[file:~/.emacs.d/personal/init/config/configure-emacs.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-01%5D:][here]]
+  - [-] To Do: [5/21]
+    - [ ] Am I stomping on a 'next/prev section' keybind in magit?
+      - With like `smartscan-symbol-go-forward' or something?
+    - [ ] Check out spotify.el
+      - https://www.reddit.com/r/emacs/comments/d9johy/spotify_connect_support_in_spotifyel/
+      - Needs a dev acct and such.
     - [ ] end of day:
       - kill omnisharp?
       - kill all lsp servers!
@@ -21,10 +24,10 @@
           - Better: `lsp-foreach-workspace', check if pyls, shutdown?
           - Bad: Visit every buffer, is lsp-mode?, `when-lsp-workspace', kill all associtated with it?
       - kill my special buffers? e.g. Tailing apache log, etc.
+        - Am now naming them special, so should be easier.
       - auto-commit
-    - [ ] Check out spotify.el
-      - https://www.reddit.com/r/emacs/comments/d9johy/spotify_connect_support_in_spotifyel/
-      - Needs a dev acct and such.
+    - [ ] a bury/kill buffer that won't switch to a file that's being viewed in another buffer
+      - bare start: [[file:~/.emacs.d/personal/init/config/configure-emacs.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-01%5D:][here]]
     - [ ] headache tracker?
       - org-journal + default-directory -> headache entries in separate journal from primary
     - [ ] use-package: keybinds again
@@ -63,6 +66,11 @@
         language server, other external tools won't bother - just code hilighting maybe.
       - e.g.2. want rust or w/e flavor of the month catches my eye at home but
         none of it at work
+    - [X] Move buffer naming helpers [[file:~/.secrets.d/dev/domains/work/pfo.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-02%5D:%20move%20these%20spydez/buffer/*%20things%20into...%20a%20better%20file.][here]] to somewhere better.
+    - [X] Move `spydez/buffer/bury-visible' to a more better file.
+      - [[file:~/.emacs.d/personal/init/config/configure-dev-env.el::(defun%20spydez/buffer/bury-visible%20()][link]]
+    - [X] Move dev-env defs in .secrets.d to here somewhere, redef there.
+      - [[file:~/.secrets.d/dev/domains/work/finalize-domain.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-02%5D:%20define%20these%20as%20blank%20in%20.emacs.d,%20redef%20here?][link]]
     - [X] Move 'Utils' in [[file:~/.emacs.d/personal/init/config/configure-signatures.el::;;%20Utils%20-%20Things%20That%20Don't%20Belong%20Here?][signatures]] to another file. In lisp, or configure-point?
     - [X] Turn off PgUp in minibuffer... or whatever spawns \*completions* buffer...
       - Was not PgUp, I think. Was `completion-auto-help' custom var setting.

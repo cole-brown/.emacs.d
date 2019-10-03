@@ -99,6 +99,27 @@
 ;; Visual Studio build command
 ;;------------------------------------------------------------------------------
 
+(defcustom spydez/path/dev-env/visual-studio
+  nil
+  "Path to currently used Visual Studio."
+  :group 'spydez/group
+  :type 'string)
+
+
+(defcustom spydez/exe/dev-env/unit-test
+  nil
+  "Path to executable to use to run unit tests."
+  :group 'spydez/group
+  :type 'string)
+
+
+(defcustom spydez/dev-env/unit-test/args
+  nil
+  "Args to pass to unit-test runner."
+  :group 'spydez/group
+  :type 'string)
+
+
 ;; TODO: (try to) get this working maybe
 ;; TODO: also try to use use-tool for vsvars?
 ;;
@@ -236,7 +257,6 @@
   ;; (spydez/dev-env/visual-studio/compile/setup)
 
 
-;; (setq debug-on-error nil)
 (defun spydez/dev-env/visual-studio/compile ()
   "Compile in Visual Studio, maybe?"
   (interactive)
@@ -249,20 +269,31 @@
     (spydez/dev-env/visual-studio/compile/setup))
 
   (let ((shell-file-name (spydez/shell/system-default)))
+    (spydez/buffer/kill-special (rx "unit"
+                                    (one-or-more whitespace)
+                                    "test" (optional "s")
+                                    (*? printing)))
     (call-interactively #'compile)))
 
 
-(defun spydez/dev-env/visual-studio/compile/bury ()
-  "Bury the compile buffer, whatever window has it right now."
-  (let ((curr-buff (current-buffer))
-        (curr-name (buffer-name))
-        (compile-name "*compilation*"))
-    (save-excursion
-      (pop-to-buffer compile-name)
-      (bury-buffer))
-    ;; bury left me in the wrong window, probably?
-    (unless (string-equal curr-name compile-name)
-      (pop-to-buffer (current-buffer)))))
+(defun spydez/dev-env/visual-studio/unit-test ()
+  "Run unit tests."
+  (interactive)
+  (if (not (and (boundp 'spydez/exe/dev-env/unit-test)
+                (boundp 'spydez/dev-env/unit-test/args)))
+      (spydez/warning/message nil :error
+                              "Needed variables not found. %s: %s, %s: %s"
+                              (symbol-name 'spydez/exe/dev-env/unit-test)
+                              (boundp 'spydez/exe/dev-env/unit-test)
+                              (symbol-name 'spydez/dev-env/unit-test/args)
+                              (boundp 'spydez/dev-env/unit-test/args))
+    (message "Running unit tests...")
+    (async-shell-command
+     (concat "\"" spydez/exe/dev-env/unit-test "\" "
+             (mapconcat 'identity spydez/dev-env/unit-test/args " ")
+             " ")
+     (spydez/buffer/special-name "Unit Tests" "Visual Studio"))))
+;; (spydez/dev-env/visual-studio/unit-test)
 
 
 ;;-----------------------------------------------------------------------------

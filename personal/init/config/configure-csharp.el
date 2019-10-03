@@ -135,8 +135,13 @@
       "C# Mode"
 
       ("c"  spydez/dev-env/visual-studio/compile "compile")
-      ("b" (spydez/dev-env/visual-studio/compile/bury) "bury compile")
+      ("b" (spydez/buffer/bury-visible "*compilation*") "bury compile")
       ;; ("c"  recompile "compile") ;; Doesn't work? Calls 'make'...
+
+      ("8" spydez/dev-env/visual-studio/unit-test "unit test")
+      ("9" (spydez/buffer/bury-visible
+            (spydez/buffer/special-name "Unit Tests"))
+       "bury unit test")
 
       ("r"  omnisharp-run-code-action-refactoring "refactor action...")
       ("\\" omnisharp-go-to-definition "goto def")

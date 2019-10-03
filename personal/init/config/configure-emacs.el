@@ -105,10 +105,11 @@ Feature, if needed: Check more maps than just global?"
 ;;---
 ;; Keybinds I Want Changed
 ;;---
-(bind-keys :map custom-mode-map
-           ;; Kill *Customize* buffer instead of bury on 'q'.
-           ("q" . kill-this-buffer))
-
+;; `custom-mode-map' doesn't exist right now. Wait for it.
+(with-eval-after-load 'cus-edit
+  (bind-keys :map custom-mode-map
+             ;; Kill *Customize* buffer instead of bury on 'q'.
+             ("q" . kill-this-buffer)))
 
 
 ;;------------------------------------------------------------------------------

@@ -1,7 +1,18 @@
+#+TITLE:       Git Commands for Libs
+#+AUTHOR:      Cole Brown
+#+EMAIL:       git@spydez.com
+#+DATE:        [2019-10-02 Wed]
 
-Updating these libs:
 
-For spotify:
-  git subtree pull --prefix lib/spotify git@github.com:danielfm/spotify.el.git master --squash
+* Updating These Libs
 
-  Chose git subtree because: https://codewinsarguments.co/2016/05/01/git-submodules-vs-git-subtrees/
+** spotify:
+
+I chose 'git subtree' for this because:
+  https://codewinsarguments.co/2016/05/01/git-submodules-vs-git-subtrees/
+
+
+Command:
+
+git subtree pull --prefix lib/spotify git@github.com:danielfm/spotify.el.git master --squash
+

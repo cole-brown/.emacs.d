@@ -605,8 +605,11 @@
 ;; Actually I do use one or two in init:
 ;;   - set keybinds to some
 ;;   - use e.g. range for e.g. tabstops
+;;
+;; Also, now, useful non-interactive functions used in init.
 (spydez/info/require 'misc-functions)
 (spydez/info/require 'date-and-time) ;; Need datetime formats from here...
+(spydez/info/require 'buffer-functions)
 
 ;; Stuff that affects emacs itself, like garbage collection.
 ;; Anything earlier than this might be in early-init.
