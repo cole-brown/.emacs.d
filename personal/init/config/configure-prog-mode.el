@@ -110,7 +110,6 @@ mode (uses `comment-*' emacs functions)."
         ;; No replacement; line-template is actual centered line.
         line-template
       (s-replace comment-placeholder comment line-template))))
-
 ;; (spydez/prog-mode/comment/center "Hello there.")
 ;; (spydez/prog-mode/comment/center "Hello there." t)
 ;; (spydez/prog-mode/comment/center "Hello there." nil ?- ?-)

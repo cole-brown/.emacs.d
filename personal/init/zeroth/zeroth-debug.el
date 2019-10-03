@@ -147,31 +147,33 @@ indent/require. Then (require 'symbol). Then (require 'symbol-secret nil
 
   ;; Require the Actual Thing.
   (spydez/info/init-sequence spydez/info/indent/require nil "(require '%s)" symbol)
-  (require symbol filename noerror)
+  ;; ...and return the value for the Actual Require of the Actual Thing.
+  (prog1
+      (require symbol filename noerror)
 
-  ;; Look for piggy backing/addons.
-  ;;---
-  ;;   E.g.: Say we have configure-dungeon.el in our .emacs.d, which configures
-  ;; our dungeon for adventurers.
-  ;;     (spydez/info/require 'configure-dungeon)
-  ;;   Some of our adventurers may have peeked at our elisp file in our public
-  ;; git repo, so maybe all the good stuff (secret rooms, treasure, loot,
-  ;; BBEG...) are in a different, secret git repo. We don't want to overwrite
-  ;; our dungeon, but we do want to add the secret stuff in after. So look for
-  ;; that secret file.
-  (when (null filename)
-    (let* ((require-name (symbol-name symbol))
-           (secret-name (format spydez/info/require/piggyback-format
-                                require-name))
-           (secret-symbol (intern secret-name)))
-      ;; Want to print then load, if exists, to mirror print/require above.
-      (when (locate-library secret-name)
-        (spydez/info/init-sequence spydez/info/indent/require/piggyback
-                                   nil
-                                   "(require '%s)"
-                                   secret-symbol)
-        ;; Never error for piggybackers.
-         (require secret-symbol nil 'noerror)))))
+    ;; Look for piggy backing/addons.
+    ;;---
+    ;;   E.g.: Say we have configure-dungeon.el in our .emacs.d, which configures
+    ;; our dungeon for adventurers.
+    ;;     (spydez/info/require 'configure-dungeon)
+    ;;   Some of our adventurers may have peeked at our elisp file in our public
+    ;; git repo, so maybe all the good stuff (secret rooms, treasure, loot,
+    ;; BBEG...) are in a different, secret git repo. We don't want to overwrite
+    ;; our dungeon, but we do want to add the secret stuff in after. So look for
+    ;; that secret file.
+    (when (null filename)
+      (let* ((require-name (symbol-name symbol))
+             (secret-name (format spydez/info/require/piggyback-format
+                                  require-name))
+             (secret-symbol (intern secret-name)))
+        ;; Want to print then load, if exists, to mirror print/require above.
+        (when (locate-library secret-name)
+          (spydez/info/init-sequence spydez/info/indent/require/piggyback
+                                     nil
+                                     "(require '%s)"
+                                     secret-symbol)
+          ;; Never error for piggybackers.
+          (require secret-symbol nil 'noerror))))))
 ;; (spydez/info/require 'asdf nil 'noerror)
 ;; (spydez/info/require 'cl)
 

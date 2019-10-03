@@ -35,7 +35,7 @@
   own code or make them my own.")
 
 
-(defconst spydez/dir/packages/git-subtree
+(defconst spydez/dir/packages/git-subtrees
   (spydez/path/to-file spydez/dir/packages/all-but-mine "subtrees")
   "These are git subtrees. Git subtree vs module is different
   enough for me to want to differentiate now so I know later...")

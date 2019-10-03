@@ -825,6 +825,7 @@
 ;; chat, social stuff
 (spydez/info/require 'configure-chat)
 
+(spydez/info/require 'configure-distractions)
 (spydez/info/require 'configure-fulfillment)
 
 ;; org-d20, dice roller?, other sources of random

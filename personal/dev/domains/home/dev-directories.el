@@ -16,8 +16,13 @@
 
 (defconst spydez/dir/secrets (spydez/path/to-dir spydez/dir/home ".secrets.d")
   "Location of secrets dir on this computer.")
-(defconst spydez/file/secrets
-  (spydez/path/to-file spydez/dir/secrets "emacs.secrets.el.gpg")
+
+(defconst spydez/dir/secrets/classified
+  (spydez/path/to-dir spydez/dir/secrets "classified")
+  "Location of secrets dir on this computer.")
+
+(defconst spydez/file/classified/emacs-general
+  (spydez/path/to-file spydez/dir/secrets/classified "emacs.classified.el.gpg")
   "Location of emacs' elisp secrets.")
 
 (defconst spydez/dir/secrets/dev

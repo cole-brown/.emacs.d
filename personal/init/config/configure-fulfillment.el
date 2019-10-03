@@ -46,7 +46,7 @@
 
   :commands forecast
   :config
-  (load spydez/file/secrets)
+  (load spydez/file/classified/emacs-general)
   (setq forecast-api-key secret/api-key/darksky
         calendar-latitude secret/forecast/latitude
         calendar-longitude secret/forecast/longitude
