@@ -12,7 +12,25 @@ I chose 'git subtree' for this because:
   https://codewinsarguments.co/2016/05/01/git-submodules-vs-git-subtrees/
 
 
-Command:
+Run from git root directory (.emacs.d/):
 
-git subtree pull --prefix lib/spotify git@github.com:danielfm/spotify.el.git master --squash
+Right now on 'async-test' branch due to this bug:
+  https://github.com/danielfm/spotify.el/issues/33
 
+Current Commands:
+
+  - Create/add:
+    git subtree add --prefix packages/subtrees/spotify git@github.com:danielfm/spotify.el.git async-test --squash
+
+  - Pull/update:
+    git subtree pull --prefix packages/subtrees/spotify git@github.com:danielfm/spotify.el.git async-test --squash
+
+
+*** Master Branch
+
+Go back to master when async-test is done/pushed to master. Just delete current spotify subtree folder and do it again:
+- Create/add:
+    git subtree add --prefix packages/subtrees/spotify git@github.com:danielfm/spotify.el.git master --squash
+
+  - Pull/update:
+    git subtree pull --prefix packages/subtrees/spotify git@github.com:danielfm/spotify.el.git master --squash

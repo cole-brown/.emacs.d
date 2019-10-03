@@ -55,14 +55,15 @@
       ;; Windows because no DBUS.
       (spotify-transport 'connect)
 
-      ;; refresh rate in seconds
-      (spotify-mode-line-refresh-interval 5)
+      ;; Refresh rate in seconds.
+      ;; This has to make an API call every time, so... don't overdo it and
+      ;; throttle yourself.
+      (spotify-mode-line-refresh-interval 10)
 
       ;; spotify-mode-line-format: default is "[%p: %a - %t ◷ %l %r%s]"
       ;;   - https://github.com/danielfm/spotify.el#customizing-the-mode-line
       ;; (setq spotify-mode-line-truncate-length 10) ;; default: 15
 
-;;spotify-remote-mode-map
       ;;---
       :config
       ;;---
@@ -85,6 +86,7 @@
 ;; §-TODO-§ [2019-10-03]: Hercules for the spotify mode map? Spotify's "M-p"
 ;;   prefix SUUUUUUUCKS and wants such an important (to me) & also default
 ;;   binding...
+;;spotify-remote-mode-map
 
 
 ;;------------------------------------------------------------------------------
