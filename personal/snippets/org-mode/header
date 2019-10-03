@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # contributor: Cole Brown <git@spydez.com>
-# name: <SPY: "file.org" header
-# key: <spy/header
+# name: spy-header: new file.org header
+# key: spy-header
 # notes: Double time stamps were being inserted. Found reason:
 #   "This happens because org-insert-time-stamp inserts a time stamp (like the
 # name says), but also returns the time stamp. Yasnippit inserts the return
@@ -12,8 +12,8 @@
 # Can also see what we can change about `C-c C-e #'.
 # --
 #+TITLE:       ${1:`(capitalize (file-name-nondirectory (file-name-sans-extension (buffer-file-name))))`}
-#+DESCRIPTION: ${2:description of your org-mode file}
-#+AUTHOR:      ${3:Cole Brown}
-#+EMAIL:       ${4:git@spydez.com}
-#+DATE:        ${5:`(let ((x (org-insert-time-stamp nil nil t))))`}
+{$2:#+DESCRIPTION: ${3:description of your org-mode file}}
+#+AUTHOR:      ${4:Cole Brown}
+#+EMAIL:       ${5:git@spydez.com}
+#+DATE:        ${6:`(let ((x (org-insert-time-stamp nil nil t))))`}
 $0

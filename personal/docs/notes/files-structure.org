@@ -158,6 +158,39 @@ Adjust folder tree?
       config/   - setting up emacs, enabling and setting up packages, etc.
       finalize/ - double checking, sanity checks...
 
+.emacs.d/ [2019-10-03]
+  etc/            - no-littering puts stuff here
+  var/            - no-littering puts stuff here
+  server/         - emacs server file
+  LICENSE         - license
+  early-init.el   - emacs: early init
+  init.el         - emacs: regular init
+  packages/       - all package archives
+    elpa/           - emacs lisp package archive
+    manual/         - copy/paste package archive
+    subtrees/       - packages that are git subtrees
+    submodules/     - packages that are git submodules
+  personal/       - all my other emacs stuff
+    dev/          - devices
+      computers/    - individual computer setup/overrides
+      defaults/     - defaults for individuals/domains
+      domains/      - domain (home, work) level setup/overrides
+    docs/         - non-code files
+      issues/       - errors, bugs, and annoyances encountered
+      notes/        - notes and stuff like this
+      references/   - I don't trust the internet to keep these around until I need them again.
+    init/         - initialization
+      zeroth/       - pre-boot stuff - early-init stuff
+      boot/         - post-early-init but pre-package configuration
+      config/       - setting up emacs, enabling and setting up packages, etc.
+      finalize/     - double checking, sanity checks...
+    lisp/         - my non-init emacs-lisp code
+    packages/     - my package archive
+      taskspace/    - KISS taskspace/workspace generator/manager
+      use-tool/     - my first, feeble, half-hearted attempt at making something to track exo-emacs applications.
+    snippets/     - my yasnippet collection
+
+
 * Reorg in progress
 
   - .emacs.d/ [12/14]

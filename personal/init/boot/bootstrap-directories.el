@@ -6,6 +6,59 @@
 ;;------------------------------------------------------------------------------
 
 
+;;-----------------------------------------------------------------------------
+;; Package Archives
+;;-----------------------------------------------------------------------------
+
+
+;;---
+;; Not-Mine Packages
+;;---
+
+(defconst spydez/dir/packages/all-but-mine
+  (spydez/path/to-file spydez/dir/emacs "packages")
+  "Emacs 'packages' directory parent for various package sources: elpa, git
+  submodules, git subtrees, manually copied files, etc.")
+
+
+(defconst spydez/dir/packages/elpa
+  (spydez/path/to-file spydez/dir/packages/all-but-mine "elpa")
+  "The standard Emacs Lisp Package Archive.")
+
+;; And tell emacs we moved it.
+(customize-set-variable 'package-user-dir spydez/dir/packages/elpa)
+
+
+(defconst spydez/dir/packages/manual
+  (spydez/path/to-file spydez/dir/packages/all-but-mine "manual")
+  "These were copy/pasted from somewhere and I don't want to fold them into my
+  own code or make them my own.")
+
+
+(defconst spydez/dir/packages/git-subtree
+  (spydez/path/to-file spydez/dir/packages/all-but-mine "subtrees")
+  "These are git subtrees. Git subtree vs module is different
+  enough for me to want to differentiate now so I know later...")
+
+
+(defconst spydez/dir/packages/git-submodules
+  (spydez/path/to-file spydez/dir/packages/all-but-mine "submodules")
+  "These are git modules. Git subtree vs module is different
+  enough for me to want to differentiate now so I know later...")
+
+
+;;---
+;; Mine!
+;;---
+;; "Packages"...
+;; Basically a big enough little feature that I moved it away from my files,
+;; removed all "spydez/*" and gave it a bit of love.
+
+(defconst spydez/dir/personal/packages
+  (spydez/path/to-file spydez/dir/emacs/personal "packages")
+  "Custom/personal emacs 'packages' directory.")
+
+
 ;;------------------------------------------------------------------------------
 ;; Constants
 ;;------------------------------------------------------------------------------
@@ -37,10 +90,6 @@
   (spydez/path/to-file spydez/dir/emacs/personal "snippets")
   "My Yasnippets directory.")
 ;; Could add an override of my own snippets if needed.
-
-(defconst spydez/dir/personal/packages
-  (spydez/path/to-file spydez/dir/emacs/personal "packages")
-  "Custom/personal emacs 'packages' directory.")
 
 (defconst spydez/dir/packages/use-tool
   (spydez/path/to-file spydez/dir/personal/packages "use-tool")

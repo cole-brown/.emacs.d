@@ -149,11 +149,6 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
   "Here there be +monsters+ documentation about
   errors/bugs/issues/etc I've had.")
 
-(defconst spydez/dir/emacs/manual-packages
-  (spydez/path/to-dir spydez/dir/emacs "manual-package-archive")
-  "Packages that are stuck back before package.el,
-  {ELPA,MELPA,...}, use-package...")
-
 
 ;;------------------------------------------------------------------------------
 ;; Tasks, Wants, Feature Requests, etc.

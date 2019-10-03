@@ -21,6 +21,7 @@
 
 # place for dumping old files/folders in case we need.
 # no-littering package should put things into /etc or /var now.
+# And nothing more should be added to here.
 /pre-no-littering
 
 
@@ -29,23 +30,24 @@
 ##---
 
 # emacs auto-save
-/auto-save-list/
-/backups/
-/savehist
+#/auto-save-list/ # managed by no-littering now?
+#/backups/ # managed by no-littering now?
+#/savehist # managed by no-littering now?
 
 # package.el repository
-/elpa/
+#/elpa/ # Moved to packages subdir.
+/packages/elpa/
 
 # emacs... processes?
 /server/
-/eshell/
+#/eshell/ # managed by no-littering
 
 # packages:
-/xkcd
-/recentf
-/url
-/projectile-bookmarks.eld
-/transient
+#/xkcd # managed by no-littering
+#/recentf # managed by no-littering
+#/url # managed by no-littering
+#/projectile-bookmarks.eld # managed by no-littering
+#/transient # managed by no-littering
 
 ##---
 ## Misc

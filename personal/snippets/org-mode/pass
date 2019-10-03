@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # contributor: Cole Brown <git@spydez.com>
-# name: <SPY: authinfo entry
-# key: <spy/pass
+# name: spy-pass: authinfo/plain-text password file entry
+# key: spy-pass
 # notes: None.
 # --
 machine ${1:hostname} login ${2:username} password ${3:password}${4: port $5}

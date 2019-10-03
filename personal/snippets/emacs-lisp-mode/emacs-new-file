@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # contributor: Cole Brown <git@spydez.com>
-# name: spydez: emacs "file.el" header/structure
-# key: spy-head
+# name: spy-header: emacs "file.el" header/structure
+# key: spy-header
 # --
 ;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
