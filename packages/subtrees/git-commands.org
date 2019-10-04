@@ -20,10 +20,10 @@ Right now on 'async-test' branch due to this bug:
 Current Commands:
 
   - Create/add:
-    git subtree add --prefix packages/subtrees/spotify git@github.com:danielfm/spotify.el.git async-test --squash
+    git subtree add --prefix packages/subtrees/spotify git@github.com:danielfm/spotify.el.git async-rewrite --squash
 
   - Pull/update:
-    git subtree pull --prefix packages/subtrees/spotify git@github.com:danielfm/spotify.el.git async-test --squash
+    git subtree pull --prefix packages/subtrees/spotify git@github.com:danielfm/spotify.el.git async-rewrite --squash
 
 
 *** Master Branch

@@ -47,8 +47,9 @@
   ;; electric-indent-mode is true and might take care of this?
   ;; (local-set-key [return] 'newline-and-indent)
 
-  ;; fill-column can use default for now.
-  ;; (setq fill-column spydez/dev-env/fill-column/normal)
+  ;; TRIAL [2019-10-03]: fill-column bumped out to 'long'?
+  (setq fill-column spydez/dev-env/fill-column/long)
+  (message "fill-column: %s" fill-column)
 
   ;; line numbers already on globally
 

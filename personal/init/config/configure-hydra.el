@@ -169,7 +169,6 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;   ("l" text-scale-decrease "out"))
 
 
-;; Trial: [2019-01-28]
 (use-package hydra
   ;;---
   :config
@@ -276,6 +275,13 @@ Repeated invocations toggle between the two most recently open buffers."
   ;; recursing.
   (bind-key "C--" 'spydez/hydra/main/body)
   )
+
+
+;;-----------------------------------------------------------------------------
+;; Hercules, defeater of hydras or something?
+;;-----------------------------------------------------------------------------
+(use-package hercules
+  :commands (hercules-def))
 
 
 ;;------------------------------------------------------------------------------

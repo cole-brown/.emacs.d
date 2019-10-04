@@ -52,16 +52,20 @@ mode (uses `comment-*' emacs functions)."
 
 
 (defun spydez/prog-mode/comment/center
-    (comment &optional fill-comment center-fill border-fill)
-  "Centers `comment' string. Wraps it in comment characters, gives it a border
-  of `border-fill' characters, and fills the center arount `comment' with
-  `center-fill' characters.
+    (comment &optional fill-comment center-fill border-fill border-width force-mirror)
+  "Centers COMMENT string. Wraps it in comment characters, gives it a border of
+  BORDER-FILL characters (length FORCE-MIRROR or 2), and fills the center arount
+  COMMENT with CENTER-FILL characters.
 
-  A non-nil `fill-comment' will allow `comment' to be filled with
-  `center-fill' as well."
+  A non-nil FILL-COMMENT will allow COMMENT to be filled with
+  CENTER-FILL as well.
 
-  (let* ((border-fill (or border-fill spydez/prog-mode/comment/center/thin))
-         (center-fill (or center-fill spydez/prog-mode/comment/center/thin))
+  A non-nil FORCE-MIRROR will append comment prefix characters to end of line,
+  but only if there are no comment postfix characters."
+
+  (let* ((border-fill  (or border-fill spydez/prog-mode/comment/center/thin))
+         (border-width (or border-width 2))
+         (center-fill  (or center-fill spydez/prog-mode/comment/center/thin))
          (comment-placeholder
           (if fill-comment
               ;; use comment as placeholder so it'll get filled
@@ -71,12 +75,15 @@ mode (uses `comment-*' emacs functions)."
                          spydez/prog-mode/comment/center/placeholder)))
          (addon   (comment-add nil))
          (prefix  (string-trim-right (comment-padright comment-start addon)))
-         (postfix (comment-padleft comment-end (comment-add addon)))
+         ;; postfix of comment's suggestion, or reversed prefix if FORCE-MIRROR,
+         ;; or nil.
+         (postfix (or (comment-padleft comment-end (comment-add addon))
+                      (and force-mirror (reverse prefix))))
          (indent (save-excursion
                    (beginning-of-line)
                    (funcall indent-line-function)
                    (current-column)))
-         (border (make-string 2 border-fill))
+         (border (make-string border-width border-fill))
          (pad-left (+ indent
                      (length prefix)
                      (length border)))

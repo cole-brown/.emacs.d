@@ -37,7 +37,7 @@
 ;;--                              Hello there.                              --;;
 ;;----------------------------------------------------------------------------;;
 ;;----                                                                    ----;;
-;;------                                                                ------;;
+;;------              (...this is maybe a bit complicated.)             ------;;
 
 
 (setq spydez/warning/current-type '(spydez interstitial-prose))
