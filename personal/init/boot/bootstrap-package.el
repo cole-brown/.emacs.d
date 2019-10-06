@@ -280,7 +280,7 @@ For the transition, maybe a func for checking..."
 
 ;; Less manual. Upgrade all packages without showing *Packages* buffer.
 ;; https://emacs.stackexchange.com/questions/16398/noninteractively-upgrade-all-packages
-(defun spydez/package/upgrade-all ()
+(defun spydez/packages/upgrade-all ()
   "Upgrade all packages automatically without showing *Packages* buffer."
   (interactive)
   (package-refresh-contents)
@@ -321,6 +321,27 @@ For the transition, maybe a func for checking..."
 ;;   package-activated-list     - variable containing list of the names of currently activated packages
 ;;   package-install            - install a package
 ;;   package-installed-p        - true if package is installed
+
+
+;;-----------------------------------------------------------------------------
+;; Packages I Don't Want Everywhere
+;;-----------------------------------------------------------------------------
+
+(defvar spydez/packages/disabled '()
+  "Packages (feature names) that should be disabled this
+  init (for this computer?).")
+
+(defun spydez/packages/disable (package)
+  (add-to-list 'spydez/packages/disabled package)
+  (spydez/info/message-if nil
+                          "Setting '%s' to disabled. Full list: %s"
+                          package spydez/packages/disabled))
+;; (spydez/packages/disable 'jeff)
+
+(defun spydez/packages/enabled-p (package)
+  (not (memq package spydez/packages/disabled)))
+;; (spydez/packages/enabled-p 'bob)
+;; (spydez/packages/enabled-p 'jeff)
 
 
 ;;------------------------------------------------------------------------------

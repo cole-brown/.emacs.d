@@ -97,6 +97,7 @@
 ;; Config initially from:
 ;;  - https://github.com/OmniSharp/omnisharp-emacs/issues/339#issuecomment-335077125
 (use-package omnisharp
+  :when (spydez/packages/enabled-p 'omnisharp)
   :after csharp-mode
 
   ;;---

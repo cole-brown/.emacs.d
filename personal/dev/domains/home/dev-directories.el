@@ -64,6 +64,7 @@
 ;; so take care.
 ;; Leaving Off: spydez/dir/secrets/dev
 (add-to-list 'load-path spydez/dir/secrets/dev/defaults)
+(add-to-list 'load-path spydez/dir/secrets/classified)
 (add-to-list 'load-path spydez/dir/secrets/dev/domain-all)
 (add-to-list 'load-path spydez/dir/secrets/dev/domain-this)
 (add-to-list 'load-path spydez/dir/secrets/dev/system-all)

@@ -502,6 +502,7 @@
 ;;---
 ;; Directories for Emacs or Packages
 ;;---
+;; This sets up the final load-path.
 (spydez/info/require 'bootstrap-directories)
 
 
@@ -599,6 +600,10 @@
 (setq spydez/warning/current-type '(spydez config))
 (spydez/info/init-message "init.el... Configuration.")
 ;; Loading and init are done - now do any more required setup.
+
+;; If needed, could make a "configure-packages" here for disabling/enabling
+;; packages per device/domain?..
+;; But for now, it's in configure-emacs-secret.el
 
 ;; Interactive funcs I don't use in init but may want sometimes interactively,
 ;; as they are interactive functions.
