@@ -9,7 +9,11 @@
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [6/24]
+  - [-] To Do: [6/26]
+    - [ ] Fix something... forget what.
+    - [ ] Make startup make more sense for where things come/came from?
+      - Was hard telling where to go for something without deadgrep or helpful...
+      - Especially the hooks. Make my hooks have what file put the hook in?
     - [ ] whitespace-mode in csharp-mode with 100 fill column set in hook still hilights at 80... -_-
     - [ ] Add to grab-bag hydra:
       - [ ] "(book)mark §" - just the symbol, no colon.

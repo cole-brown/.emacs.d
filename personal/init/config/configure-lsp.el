@@ -24,6 +24,8 @@
 ;; https://github.com/emacs-lsp/lsp-mode
 (require 'with)
 (use-package lsp-mode
+  :when (spydez/packages/enabled-p 'lsp-mode)
+
   ;; :commands (lsp lsp-deferred)
   :demand t
 
@@ -51,23 +53,7 @@
   ;;-----
   :config
   ;;-----
-  (defun spydez/hook/lsp-generic (lsp-fn)
-    "LSP hook helper for both deferred and regular."
-    (funcall lsp-fn)
-    ;; TODO: convert to just straight call when flycheck gets gotten to...
-    (with-function 'flycheck-mode
-      (spydez/warning/message
-       nil nil
-       "TODO: convert to just straight call when flycheck gets gotten to...")
-      (flycheck-mode)))
 
-  (defun spydez/hook/lsp-deferred ()
-    "General LSP hook for any mode."
-    (spydez/hook/lsp-generic #'lsp-deferred))
-
-  (defun spydez/hook/lsp-immediate ()
-    "General LSP hook for any mode."
-    (spydez/hook/lsp-generic #'lsp))
 
   ;; Anything for generic LSP here? Specific languages should hold off for their
   ;; own config.
@@ -76,11 +62,38 @@
   )
 
 
+(defun spydez/hook/lsp-generic (lsp-fn)
+  "LSP hook helper for both deferred and regular."
+  (funcall lsp-fn)
+  ;; TODO: convert to just straight call when flycheck gets gotten to...
+  (with-function 'flycheck-mode
+    (spydez/warning/message
+     nil nil
+     "TODO: convert to just straight call when flycheck gets gotten to...")
+    (flycheck-mode)))
+
+
+(defun spydez/hook/lsp-deferred ()
+  "General LSP hook for any mode."
+  (if (not (spydez/packages/enabled-p 'lsp-mode))
+      (message "spydez/hook/lsp-deferred: ignoring due to lsp-mode package disabled flag.")
+    (spydez/hook/lsp-generic #'lsp-deferred)))
+
+
+(defun spydez/hook/lsp-immediate ()
+  "General LSP hook for any mode."
+  (if (not (spydez/packages/enabled-p 'lsp-mode))
+      (message "spydez/hook/lsp-deferred: ignoring due to lsp-mode package disabled flag.")
+    (spydez/hook/lsp-generic #'lsp)))
+
+
 ;;------------------------------------------------------------------------------
 ;; LSP Sub-Packages
 ;;------------------------------------------------------------------------------
 
 (use-package lsp-ui
+  :when (spydez/packages/enabled-p 'lsp-mode)
+
   :after lsp-mode
 
   ;;---
@@ -115,6 +128,8 @@
 
 
 (use-package company-lsp
+  :when (spydez/packages/enabled-p 'lsp-mode)
+
 ;;  :after lsp-mode
   :after (lsp-mode company)
   :demand t
@@ -135,11 +150,15 @@
 
 
 (use-package helm-lsp
+  :when (spydez/packages/enabled-p 'lsp-mode)
+
 ;;  :after lsp-mode
   :commands helm-lsp-workspace-symbol)
 
 
 (use-package lsp-treemacs
+  :when (spydez/packages/enabled-p 'lsp-mode)
+
 ;;  :after lsp-mode
   :commands lsp-treemacs-errors-list)
 
