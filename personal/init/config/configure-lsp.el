@@ -50,10 +50,9 @@
                                      "Left fringe is busy with git stuff.")
 
 
-  ;;-----
-  :config
-  ;;-----
-
+  ;; ;;-----
+  ;; :config
+  ;; ;;-----
 
   ;; Anything for generic LSP here? Specific languages should hold off for their
   ;; own config.
@@ -61,6 +60,12 @@
   ;; [2019-09-18]: Moved sub-packages out.
   )
 
+
+;;---
+;; LSP-Mode Hooks
+;;---
+;; [2019-10-07]: Moved these hooks out of config so they're always defined even
+;; when lsp is disabled.
 
 (defun spydez/hook/lsp-generic (lsp-fn)
   "LSP hook helper for both deferred and regular."
@@ -76,14 +81,20 @@
 (defun spydez/hook/lsp-deferred ()
   "General LSP hook for any mode."
   (if (not (spydez/packages/enabled-p 'lsp-mode))
-      (message "spydez/hook/lsp-deferred: ignoring due to lsp-mode package disabled flag.")
+      (spydez/debug/message-always
+       '(spydez debug hook)
+       (concat "spydez/hook/lsp-deferred: ignoring due to "
+               "(spydez/packages/enabled-p 'lsp-mode) disabled flag."))
     (spydez/hook/lsp-generic #'lsp-deferred)))
 
 
 (defun spydez/hook/lsp-immediate ()
   "General LSP hook for any mode."
   (if (not (spydez/packages/enabled-p 'lsp-mode))
-      (message "spydez/hook/lsp-deferred: ignoring due to lsp-mode package disabled flag.")
+      (spydez/debug/message-always
+       '(spydez debug hook)
+       (concat "spydez/hook/lsp-immediate: ignoring due to "
+               "(spydez/packages/enabled-p 'lsp-mode) disabled flag."))
     (spydez/hook/lsp-generic #'lsp)))
 
 

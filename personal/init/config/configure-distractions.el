@@ -60,18 +60,14 @@
       ;; throttle yourself.
       (spotify-mode-line-refresh-interval 10)
 
-      ;; Currently Playing Info:
-      ;;   §-TODO-§ [2019-10-03]: Put in frame title? Modeline is full...
-      ;; Take over this, maybe: `spotify-update-mode-line'
-
       ;; spotify-mode-line-format: default is "[%p: %a - %t ◷ %l %r%s]"
       ;;   - https://github.com/danielfm/spotify.el#customizing-the-mode-line
       ;; I don't have that nice clock symbol in my font, do I?
       ;; §-TODO-§ [2019-10-03]: Remove unicode icon if I don't have it?
       ;; §-TODO-§ [2019-10-03]: or all-the-icons it?
-      (spotify-mode-line-format "[%r%s %p: %a - %t (◷%l)]")
+      (spotify-mode-line-format "    <<Spotify: [%r%s %p: %a - %t (T%l)]>>")
 
-      ;; Do I have unicode media icons?
+      ;; Do I have unicode media icons? Doesn't seem so. :/
       ;;   Play:         ▶ / ▶️
       ;;   Pause:        ⏸ / ⏸️
       ;;   Play/Pause:   ⏯ / ⏯️
@@ -80,17 +76,23 @@
       ;;   Skip Forward: ⏭ / ⏭️
       ;;   Shuffle:      🔀 / 🔀️
       ;;   Repeat:       🔁 / 🔁️
-      ;; §-TODO-§ [2019-10-03]: Remove unicode icons if I don't have them?
-      ;; §-TODO-§ [2019-10-03]: or all-the-icons them?
-      (spotify-mode-line-playing-text       "▶")
-      (spotify-mode-line-paused-text        "⏸")
-      (spotify-mode-line-stopped-text       "⏹")
-      (spotify-mode-line-repeating-text     "🔁")
+      ;; (spotify-mode-line-playing-text       "▶")
+      ;; (spotify-mode-line-paused-text        "⏸")
+      ;; (spotify-mode-line-stopped-text       "⏹")
+      ;; (spotify-mode-line-repeating-text     "🔁")
+      ;; (spotify-mode-line-not-repeating-text "-")
+      ;; (spotify-mode-line-shuffling-text     "🔀")
+      ;; (spotify-mode-line-not-shuffling-text "-")
+      ;; §-TODO-§ [2019-10-03]: Does all-the-icons have right icons and work?
+      (spotify-mode-line-playing-text       "p")
+      (spotify-mode-line-paused-text        "-")
+      (spotify-mode-line-stopped-text       "x")
+      (spotify-mode-line-repeating-text     "R")
       (spotify-mode-line-not-repeating-text "-")
-      (spotify-mode-line-shuffling-text     "🔀")
+      (spotify-mode-line-shuffling-text     "S")
       (spotify-mode-line-not-shuffling-text "-")
 
-      ;; (setq spotify-mode-line-truncate-length 10) ;; default: 15
+      ;; (spotify-mode-line-truncate-length 10) ;; default: 15
 
       ;;---
       :config
@@ -102,41 +104,156 @@
       (setq spotify-oauth2-client-id     spydez/secrets/spotify/client-id)
       (setq spotify-oauth2-client-secret spydez/secrets/spotify/client-secret)
 
-      ;; §-TODO-§ [2019-10-03]: Setup modeline? Or frame title?
-      ;; §-TODO-§ [2019-10-03]: Setup keybinds?
+      ;; Currently Playing Info:
+      ;;   Put in frame title? Modeline is full...
+      ;; Take over this, maybe: `spotify-update-mode-line'
+      (defun spydez/frame/spotify/update-status (str)
+        "Sets the given str to the frame title instead of the
+modeline. This should take over from `spotify-update-mode-line'."
+        (when (not (string= str spotify-mode-line))
+          (setq spotify-mode-line str)
+          ;; There isn't a straight-forward way to tell frame to update name
+          ;; based on `frame-title-format', but I did find this:
+          ;;   https://stackoverflow.com/questions/13667702/how-to-force-emacs-update-frame-title
+          (sit-for 0)
+          ;; This would nuke whatever `frame-title-format' last set...
+          ;; (modify-frame-parameters (selected-frame) (list (cons 'name title)))
+          ))
+      (setq spydez/spotify/orig-fn/spotify-update-mode-line
+            #'spotify-update-mode-line)
 
-      ;; either use spotify-remote-mode as wanted, or turn on globally:
+      (defvar spydez/hook/spotify/entered nil
+        "Non-nil if `spydez/hook/spotify-mode' has been entered and setup for
+         `spotify-remote-mode'. Nil if it hasn't been entered yet, or if it has
+         been used to exit and tear-down `spotify-remote-mode'.")
+
+      (defun spydez/hook/spotify-mode ()
+        "Hook to enable/disable Spotify-Mode status in Frame Title."
+        ;; skip setup/teardown?
+        (unless (eq spotify-remote-mode spydez/hook/spotify/entered)
+          (setq spydez/hook/spotify/entered spotify-remote-mode)
+
+          (let ((status '(:eval (spotify-mode-line-text))))
+            (if spotify-remote-mode
+                ;; enter mode
+                (progn
+                  (spydez/debug/message-if '(spydez debug hook)
+                                           "Entering spotify-remote-mode?")
+                  ;; Hook into the frame title
+                  (unless (member status frame-title-format)
+                    ;; Push our status string to the cdr of the last element of
+                    ;; the `frame-title-format'. i.e. append status to end of
+                    ;; list.
+                    (push status (cdr (last frame-title-format))))
+                  ;; and steal `spotify-update-mode-line'
+                  (fset #'spotify-update-mode-line
+                        #'spydez/frame/spotify/update-status))
+              ;; exit mode
+              (spydez/debug/message-if '(spydez debug hook)
+                                       "Exiting spotify-remote-mode?")
+              (when (member status frame-title-format)
+                (setq frame-title-format (remq s frame-title-format)))
+              ;; and un-steal `spotify-update-mode-line'
+              (fset #'spotify-update-mode-line
+                    #'spydez/spotify/orig-fn/spotify-update-mode-line)))))
+
+      (add-hook 'spotify-remote-mode-hook 'spydez/hook/spotify-mode)
+      ;; (add-hook 'global-spotify-remote-mode-hook 'spydez/hook/spotify-mode)
+      ;; global-spotify-remote-mode-hook
+      ;; spotify-remote-mode-hook
+
+      ;; Either use spotify-remote-mode as wanted, or turn on globally:
       ;; (progn (setq debug-on-error t) (global-spotify-remote-mode))
       ;; (setq global-spotify-remote-mode nil)
       ;; Not turning auto-on as part of init, though.
+      ;; Seems to work fine right now as not-turned-on and with hydra calls.
 
+      ;;---
+      ;; Spotify's "M-p" prefix SUUUUUUUCKS and wants such an important (to me)
+      ;; & also default binding...
+      ;;---
 
-      ;; §-TODO-§ [2019-10-03]: bind a turn on, then rebind as hercules/hydra when on?
-      ;; (bind-key "C-c m" #'global-spotify-remote-mode) ;; bind onto the global map
-      ;; Bind that, hook into spotify-remote-mode. Run hercules-def there?
+      (require 'with)
+      (with-feature 'hydra
+        (defhydra spydez/hydra/spotify (:color blue ;; default exit heads
+                                        :idle 0.25   ;; no help for this long
+                                        :hint none)  ;; no hint - just docstr
+          "
+^Track^                ^Playlists^            ^Misc^
+^-^--------------------^-^--------------------^-^---------------
+_p_: ?p?^^^^^^^        _l m_: My Lists        _d_: Select Device
+_b_: Next Track        _l f_: Featured Lists
+_f_: Previous Track    _l u_: User Lists      _v u_: Volume Up
+_M-r_: ?M-r?^^^^^^^^   _l s_: Search List     _v d_: Volume Down
+_M-s_: ?M-s?^^^^^^^^^  _l c_: Create list     _v d_: ?v m?
+_C-s_: Search Track
+_C-r_: Recently Played"
 
-      ;; §-TODO-§ [2019-10-03]: Oh... comment differently like this?
+          ;;---
+          ;; Track
+          ;;---
+          ("p" spotify-toggle-play
+           ;; §-TODO-§ [2019-10-07]: dynamic text for which it would toggle to
+           ;; Or Unicode. Or "[X] Shuffle"/"[ ] Shuffle"
+           "Play/Pause")
+
+          ("b" spotify-previous-track
+               :color red)
+          ("f" spotify-next-track
+               :color red)
+
+          ("M-r" spotify-toggle-repeat
+           ;; §-TODO-§ [2019-10-07]: dynamic text for which it would toggle to
+           ;; Or Unicode. Or "[X] Shuffle"/"[ ] Shuffle"
+           "Toggle Repeat")
+          ("M-s" spotify-toggle-shuffle
+           ;; §-TODO-§ [2019-10-07]: dynamic text for which it would toggle to
+           ;; Or Unicode. Or "[X] Shuffle"/"[ ] Shuffle"
+           "Toggle Shuffle")
+          ("C-s" spotify-track-search)
+          ("C-r" spotify-recently-played)
+
+          ;;---
+          ;; Playlist
+          ;;---
+          ("l m" spotify-my-playlists)
+          ("l f" spotify-featured-playlists)
+          ("l u" spotify-user-playlists)
+          ("l s" spotify-playlist-search)
+          ("l c" spotify-create-playlist)
+
+          ;;---
+          ;; Volume & Misc
+          ;;---
+          ("v u" spotify-volume-up
+                 :color red)
+          ("v d" spotify-volume-down
+                 :color red)
+          ("v m" spotify-volume-mute-unmute
+           ;; §-TODO-§ [2019-10-07]: dynamic text for which it would toggle to
+           ;; Or Unicode. Or "[X] Shuffle"/"[ ] Shuffle"
+           "Toggle Mute")
+          ("d"   spotify-select-device))
+
+        (defun spydez/spotify/smart-mode-or-hydra ()
+          "Enters `spotify-remote-mode' if not in it,
+           else calls `spydez/hydra/spotify/body'."
+          (interactive)
+          (if spotify-remote-mode
+              (call-interactively #'spydez/hydra/spotify/body)
+            (global-spotify-remote-mode)
+            (call-interactively #'spotify-select-device)))
+
+        ;; bind onto the global map in "C-c"/user-binds section.
+        ;; 'm' for music? idk...
+        (bind-key "C-c m" #'spydez/spotify/smart-mode-or-hydra))
+
+      ;; Don't like hercules for this. It wants clear enter/exit functions.
       ;; (hercules-def
       ;;  :toggle-funs '(spotify-remote-mode)
       ;;  :keymap 'spotify-remote-mode-map
       ;;  :transient t)
-
-
-      ;; Can't run this here as it doesn't know about spotify-remote-mode now.
-      ;;
-      ;; Hercules for the spotify mode map? Spotify's "M-p"
-      ;; prefix SUUUUUUUCKS and wants such an important (to me) & also default
-      ;; binding...
-      ;;
-      ;; TRIAL [2019-10-03]: Is this any good? Trying it out instead of hydra or
-      ;; lots of redefined keybinds.
-      ;; (hercules-def
-      ;;  :toggle-funs (#'spotify-remote-mode)
-      ;;  :keymap 'spotify-remote-mode-map
-      ;;  :transient t)
-      ;; Bind-key doesn't work with maps...
       ;; (bind-key "C-c m" #'spotify-remote-mode) ;; bind onto the global map
-      ;; (define-key global-map (kbd "C-c m") #'spotify-remote-mode) ;; bind onto the global map
       )))
 
 

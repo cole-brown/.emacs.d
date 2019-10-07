@@ -281,7 +281,18 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; Hercules, defeater of hydras or something?
 ;;-----------------------------------------------------------------------------
 (use-package hercules
-  :commands (hercules-def))
+  :commands (hercules-def)
+
+  ;;---
+  :disabled
+  ;;---
+
+  ;; Tried this out for Spotify.el, but did not do - at all - what I wanted.
+  ;; Disabling until I find another usage.
+
+  ;; Hercules seems to want clear enter/exit functions. Not as flexable as
+  ;; hydra head colors.
+  )
 
 
 ;;------------------------------------------------------------------------------

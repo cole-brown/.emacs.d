@@ -9,8 +9,11 @@
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [6/26]
-    - [ ] Fix something... forget what.
+  - [-] To Do: [7/27]
+    - [ ] Fix dev-directories.el - (add-to-list load-path ...) section is exactly same
+    - [ ] spydez/{info,debug,warning,etc}/message* change to:
+      - [ ] spydez/message/{info,debug,warning,etc}/*
+      - [ ] And change TYPE to be optional?
     - [ ] Make startup make more sense for where things come/came from?
       - Was hard telling where to go for something without deadgrep or helpful...
       - Especially the hooks. Make my hooks have what file put the hook in?
@@ -23,12 +26,6 @@
       - [ ] webstaging: search needs to go down to root
       - [ ] depot/dev: search needs to stay up in dev instead of going down to depot
       - (run-hook-with-args-until-success 'project-find-functions "c:/depot/dev/Pathfinder_Client/Login/CharacterSelectionGui.cs")
-    - [-] Check out spotify.el
-      - https://www.reddit.com/r/emacs/comments/d9johy/spotify_connect_support_in_spotifyel/
-      - [X] Needs a dev acct and such for app.
-      - [X] basics working
-      - [ ] mode line in the frame title [[file:~/.emacs.d/personal/init/config/configure-distractions.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-03%5D:%20Remove%20unicode%20icon%20if%20I%20don't%20have%20it?][todo]]
-      - [ ] [[https://gitlab.com/jjzmajic/hercules.el][Hercules]] for spotify-remote-mode-map? [[file:~/.emacs.d/personal/init/config/configure-distractions.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-03%5D:%20Hercules%20for%20the%20spotify%20mode%20map?%20Spotify's%20"M-p"][todo]]
     - [ ] end of day:
       - kill omnisharp?
       - kill all lsp servers!
@@ -83,6 +80,13 @@
         language server, other external tools won't bother - just code hilighting maybe.
       - e.g.2. want rust or w/e flavor of the month catches my eye at home but
         none of it at work
+    - [X] Check out spotify.el
+      - https://www.reddit.com/r/emacs/comments/d9johy/spotify_connect_support_in_spotifyel/
+      - [X] Needs a dev acct and such for app.
+      - [X] basics working
+      - [X] mode line in the frame title [[file:~/.emacs.d/personal/init/config/configure-distractions.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-03%5D:%20Remove%20unicode%20icon%20if%20I%20don't%20have%20it?][todo]]
+      - [X] [[https://gitlab.com/jjzmajic/hercules.el][Hercules]] for spotify-remote-mode-map? [[file:~/.emacs.d/personal/init/config/configure-distractions.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-03%5D:%20Hercules%20for%20the%20spotify%20mode%20map?%20Spotify's%20"M-p"][todo]]
+        - [X] Nopers. Hydra.
     - [X] Am I stomping on a 'next/prev section' keybind in magit?
       - With like `smartscan-symbol-go-forward' or something?
       - Eh. Can use n/p instead of M-n/M-p.

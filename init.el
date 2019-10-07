@@ -944,3 +944,5 @@
 ;; TODO: check out old cole-PC.emacs and bootstrap.el.
 ;; old setup: https://github.com/spydez/emacs
 ;; See how much this init.el can be reduced to minimum?
+
+;; §-TODO-§ [2019-10-07]: proper ending. Maybe a nice poem or one art please.

@@ -166,7 +166,7 @@ Feature, if needed: Check more maps than just global?"
 ;;                   "%b")) " [%*]"))
 
 ;; Annnd... think this one is good for now.
-(setq frame-title-format
+(defcustom spydez/emacs/frame/format
     ;; %*: buffer status (read/write/modified)
   '(" [%*] "
     ;; invocation-name: emacs
@@ -180,10 +180,25 @@ Feature, if needed: Check more maps than just global?"
     ;; %X: human-readable buffer size
     ;;  B: "human-readable" means just "k, M, etc" so add the B for Byte.
     " %IB"
-    ))
+    )
+  "Frame's Title Formatting."
+  :group 'spydez/group
+  :type '(choice string sexp))
+
+;; Not a custom setting, so just setq.
+(setq frame-title-format spydez/emacs/frame/format)
+
 
 ;; Consider: updating it to use (multiple-frames ...) if I start using more
 ;; than one frame normally.
+
+
+;; This is how you would do it, but try to just use the frame-title-format.
+;; See configure-distractions.el for spotify-mode setup for how to add/remove
+;; from frame-title-format, and how to force title update.
+;; (defun spydez/emacs/frame/set-title (title)
+;;   "Set the title of the current frame to the string TITLE."
+;;   (modify-frame-parameters (selected-frame) (list (cons 'name title))))
 
 
 ;;------------------------------------------------------------------------------

@@ -110,3 +110,24 @@ This checklist should have boxes of incorrect color.
   - [ ] This has color 2; next will have color 3: [
     - [X] checked
     - [ ] unchecked
+* Bug 3: Also Bug 1 happens when inside links...
+
+** Test Case
+
+Add or remove double quotes until next checklist boxes look correct.
+""
+Add or remove close parens until next checklist colors look correct.
+)))
+
+This checklist should be prettified:
+  - [-] half filled
+    - [X] checked
+    - [ ] unchecked
+
+This should cause the issue due to hiding unbalanced parens:
+      - [[file:~/.emacs.d/personal/init/config/configure-dev-env.el::(defun%20spydez/buffer/bury-visible%20()][link]]
+
+This checklist should have boxes of incorrect color.
+  - [-] half filled
+    - [X] checked
+    - [ ] unchecked
