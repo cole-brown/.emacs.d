@@ -538,9 +538,9 @@
 ;; I have a default, but it's a big commented out no-op right now.
 
 ;;---
-;; Final Chance to Affect Bootstrap...
+;; Final Chance to Affect Bootstrap?
 ;;---
-(spydez/info/require 'dev-directories)
+(spydez/info/require 'dev-directories nil 'noerror)
 
 
 ;;------------------------------------------------------------------------------

@@ -9,9 +9,11 @@
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [10/30]
-    - [ ] Fix dev-directories.el - (add-to-list load-path ...) section is exactly same
+  - [ ] Home Domain To Do: [0/1]
+    - [ ] Get deadgrep working.
 
+
+  - [-] General To Do: [1/18]
     - [ ] Make startup make more sense for where things come/came from?
       - Was hard telling where to go for something without deadgrep or helpful...
       - Especially the hooks. Make my hooks have what file put the hook in?
@@ -22,18 +24,15 @@
       - `spydez/bootstrap/step-at', `spydez/bootstrap/step-completed'
       - `spydez/message/warning/current-type'
       - Function to set both 'types'? Combine them?
+
     - [ ] Add to grab-bag hydra:
       - [ ] "(book)mark §" - just the symbol, no colon.
       - [ ] "search §"
       - [ ] "search sig..." to grab-bag. Goes into a sub-hydra for searching exactly each sig, same keys as inserting 'em.
-    - [ ] deadgrep: tweak starting dir of search?
-      - [ ] webstaging: search needs to go down to root
-      - [ ] depot/dev: search needs to stay up in dev instead of going down to depot
-      - (run-hook-with-args-until-success 'project-find-functions "c:/depot/dev/Pathfinder_Client/Login/CharacterSelectionGui.cs")
-    - [ ] Home Domain:
-      - [ ] Get deadgrep working.
+
     - [ ] a bury/kill buffer that won't switch to a file that's being viewed in another buffer
       - bare start: [[file:~/.emacs.d/personal/init/config/configure-emacs.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-01%5D:][here]]
+
     - [ ] spotify - fork, pull from my repo into submodule, do changes there, push request to github?
       - [ ] make sure that play func is defined in all comm modes
       - [ ] frame vs modeline updates?
@@ -74,6 +73,44 @@
     - [ ] configure-crypt needs babying... again... (again... (again?..))
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
         - https://arenzana.org/2019/04/emacs-org-mode/
+    - [X] deadgrep: tweak starting dir of search?
+      - [X] webstaging: search needs to go down to root
+      - [X] depot/dev: search needs to stay up in dev instead of going down to depot
+      - (run-hook-with-args-until-success 'project-find-functions "c:/depot/dev/Pathfinder_Client/Login/CharacterSelectionGui.cs")
+
+
+Tabs:
+  [[https://melpa.org/#/?q=pager&sort=downloads&asc=false][MELPA]]
+    [[https://jwiegley.github.io/use-package/keywords/#preface-init-config][use-package keywords]]
+    https://github.com/purcell/emacs.d/blob/master/init.el
+      http://www.flycheck.org/en/latest/
+    https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
+    [[https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=emacs%20cedet&=&=&oq=&gs_l=&pbx=1][CEDET stuff]]
+      http://cedet.sourceforge.net/languagesupport.shtml
+      http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
+      https://www.emacswiki.org/emacs/CEDET_Quickstart
+      https://www.logilab.org/blogentry/173886
+    https://github.com/daedreth/UncleDavesEmacs#user-content-ido-and-why-i-started-using-helm
+      https://github.com/PythonNut/emacs-config
+      https://www.masteringemacs.org/
+    https://github.com/emacs-tw/awesome-emacs
+
+
+Soon™ things?
+  - To Do: [0/2]
+    - [ ] make treemacs issue report?
+    - [ ] make no-littering issue or fix w/ pull request?
+    - https://github.com/dzop/emacs-zmq
+
+
+* Completed Things [8/8]
+** DONE [2019-10-08] A list of things that are done now [11/11]
+CLOSED: [2019-10-08 Tue 13:25]
+:LOGBOOK:
+- State "DONE"       from              [2019-10-08 Tue 13:25]
+:END:
+
+    - [X] Fix dev-directories.el - (add-to-list load-path ...) section is exactly same
     - [X] spydez/{info,debug,warning,etc}/message* change to:
       - [X] spydez/message/{info,debug,warning,etc}/*
       - [X] And change TYPE to be optional?
@@ -117,31 +154,6 @@
       - Was not PgUp, I think. Was `completion-auto-help' custom var setting.
 
 
-Tabs:
-  [[https://melpa.org/#/?q=pager&sort=downloads&asc=false][MELPA]]
-    [[https://jwiegley.github.io/use-package/keywords/#preface-init-config][use-package keywords]]
-    https://github.com/purcell/emacs.d/blob/master/init.el
-      http://www.flycheck.org/en/latest/
-    https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/
-    [[https://www.google.com/search?hl=en&output=search&sclient=psy-ab&q=emacs%20cedet&=&=&oq=&gs_l=&pbx=1][CEDET stuff]]
-      http://cedet.sourceforge.net/languagesupport.shtml
-      http://alexott.net/en/writings/emacs-devenv/EmacsCedet.html
-      https://www.emacswiki.org/emacs/CEDET_Quickstart
-      https://www.logilab.org/blogentry/173886
-    https://github.com/daedreth/UncleDavesEmacs#user-content-ido-and-why-i-started-using-helm
-      https://github.com/PythonNut/emacs-config
-      https://www.masteringemacs.org/
-    https://github.com/emacs-tw/awesome-emacs
-
-
-Soon™ things?
-  - To Do: [0/2]
-    - [ ] make treemacs issue report?
-    - [ ] make no-littering issue or fix w/ pull request?
-    - https://github.com/dzop/emacs-zmq
-
-
-* Completed Things [7/7]
 ** DONE [2019-10-02] A list of things that are done now [13/13]
 CLOSED: [2019-10-02 Wed 11:04]
 :LOGBOOK:

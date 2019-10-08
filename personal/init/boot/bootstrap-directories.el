@@ -60,7 +60,7 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Constants
+;; Other Emacs Dirs
 ;;------------------------------------------------------------------------------
 
 ;;---
@@ -101,7 +101,7 @@
 
 
 ;;-----------------------------------------------------------------------------
-;; Load Path
+;; Add to Load Path
 ;;-----------------------------------------------------------------------------
 
 ;; Reset to orginal first. We had some subset in for bootstrapping. Now we're
@@ -149,6 +149,69 @@
 (add-to-list 'load-path spydez/dir/dev/domain-this)
 (add-to-list 'load-path spydez/dir/dev/system-this)
 ;; TODO-reorg-done: more in the load path? new dirs (dev, init...)?
+
+
+;;------------------------------------------------------------------------------
+;; Secrets Directories
+;;------------------------------------------------------------------------------
+
+;; TODO-SECRETS: Change from spydez/.../secrets... to secrets/... ??
+;;   ...not convinced.
+
+(defconst spydez/dir/secrets
+  (spydez/path/to-dir spydez/dir/home ".secrets.d")
+  "Location of secrets dir on this computer.")
+
+(defconst spydez/dir/secrets/classified
+  (spydez/path/to-dir spydez/dir/secrets "classified")
+  "Location of secrets dir on this computer.")
+
+(defconst spydez/file/classified/emacs-general
+  (spydez/path/to-file spydez/dir/secrets/classified "emacs.classified.el.gpg")
+  "Location of emacs' elisp secrets.")
+
+(defconst spydez/dir/secrets/dev
+  (spydez/path/to-dir spydez/dir/secrets "dev")
+  "Dev config outside of .emacs.d.")
+
+(defconst spydez/dir/secrets/dev/defaults
+  (spydez/path/to-dir spydez/dir/secrets/dev "defaults")
+  "All of my optional/default setup elisp files...")
+
+(defconst spydez/dir/secrets/dev/domain-all
+  (spydez/path/to-dir spydez/dir/secrets/dev "domains")
+  "Domains folder. For subdirs of work, home, etc.")
+
+(defconst spydez/dir/secrets/dev/domain-this
+  (spydez/path/to-dir spydez/dir/secrets/dev/domain-all
+                      spydez/setup/domain/name)
+  "Anything that has to be domain specific. Tab widths or whatnot.")
+
+(defconst spydez/dir/secrets/dev/system-all
+  (spydez/path/to-dir spydez/dir/secrets/dev "computers")
+  "Computers folder. For subdirs of different computers.")
+
+(defconst spydez/dir/secrets/dev/system-this
+  (spydez/path/to-dir spydez/dir/secrets/dev/system-all
+                      spydez/setup/system/hash)
+  "Anything that has to be computer specific.
+Overriding tab widths or whatnot.")
+
+
+;;------------------------------------------------------------------------------
+;; Add Secrets to Load-Path
+;;------------------------------------------------------------------------------
+
+;; NOTE: these are all higher priority than any .emacs.d path, right now,
+;; so take care.
+;; Leaving Off: spydez/dir/secrets/dev
+(add-to-list 'load-path spydez/dir/secrets/dev/defaults)
+(add-to-list 'load-path spydez/dir/secrets/classified)
+(add-to-list 'load-path spydez/dir/secrets/dev/domain-all)
+(add-to-list 'load-path spydez/dir/secrets/dev/domain-this)
+(add-to-list 'load-path spydez/dir/secrets/dev/system-all)
+(add-to-list 'load-path spydez/dir/secrets/dev/system-this)
+;; Add highest-priority/most specific to this computer last.
 
 
 ;;------------------------------------------------------------------------------
