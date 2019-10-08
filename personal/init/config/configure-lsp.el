@@ -72,7 +72,7 @@
   (funcall lsp-fn)
   ;; TODO: convert to just straight call when flycheck gets gotten to...
   (with-function 'flycheck-mode
-    (spydez/warning/message
+    (spydez/message/warning
      nil nil
      "TODO: convert to just straight call when flycheck gets gotten to...")
     (flycheck-mode)))
@@ -81,7 +81,7 @@
 (defun spydez/hook/lsp-deferred ()
   "General LSP hook for any mode."
   (if (not (spydez/packages/enabled-p 'lsp-mode))
-      (spydez/debug/message-always
+      (spydez/message/debug
        '(spydez debug hook)
        (concat "spydez/hook/lsp-deferred: ignoring due to "
                "(spydez/packages/enabled-p 'lsp-mode) disabled flag."))
@@ -91,7 +91,7 @@
 (defun spydez/hook/lsp-immediate ()
   "General LSP hook for any mode."
   (if (not (spydez/packages/enabled-p 'lsp-mode))
-      (spydez/debug/message-always
+      (spydez/message/debug
        '(spydez debug hook)
        (concat "spydez/hook/lsp-immediate: ignoring due to "
                "(spydez/packages/enabled-p 'lsp-mode) disabled flag."))

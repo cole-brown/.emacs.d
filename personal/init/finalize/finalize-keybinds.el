@@ -33,7 +33,7 @@
   ;; Going with 'tp' transpose and also 'p' is in the common-stuff hydra
   (spydez/key-chord/define-global "t" 'spydez/hydra/transpose/body))
 ;;  ;; else
-;;  (spydez/warning/message nil nil
+;;  (spydez/message/warning nil nil
 ;;                          "Key-Chord or Hydra package not present. Cannot make spydez/hydra/transpose."))
 
 
@@ -153,7 +153,7 @@ _g_: todo: ?g?^^^^^^^^^^^^^^^^^^^^^^^
   ;; double dash for the common hydra?
   (spydez/key-chord/define-global "-" 'spydez/hydra/common-stuff/body))
 ;; [2019-09-20]Switched from "if featurep"s to with, so lost this fail warning.
-;; (spydez/warning/message nil nil
+;; (spydez/message/warning nil nil
 ;;                         "Key-Chord or Hydra package not present. Cannot make spydez/hydra/common-stuff."))
 
 

@@ -20,9 +20,19 @@
 ;; things to how they should be.
 ;;
 ;; See: https://github.com/search?q=early-init.el&type=Code
-(when (boundp 'early-init-file)
-  (let ((warn-type '(spydez post))) ;; as in power-on-self-test, not the HTTP thing.
-    (lwarn warn-type :warning "  %s:  Update early-init.el for actual active duty! Emacs %s uses early-init proper." warn-type emacs-version)))
+(let ((post-type '(spydez post)))
+  (if (boundp 'early-init-file)
+      ;; as in 'Power-On-Self-Test', not the HTTP thing.
+      (lwarn warn-type :warning
+             "  %s:  %s! Emacs %s uses early-init proper."
+             warn-type
+             "Update early-init.el for actual active duty"
+             emacs-version)
+
+  ;; Print out something that hopefully still conforms to nice function output
+  ;; we won't have til after zeroth-debug...
+  (message "-> %s: early-init.el... Pre-history." post-type)))
+
 
 
 ;;-----------------------------------zeroth-----------------------------------;;
@@ -67,6 +77,12 @@
 (require 'zeroth-debug)
 ;; debug helpers now loaded - including `spydez/info/require'
 
+;;                                    ---
+;;                                  -------
+;; This will be the start of actual spydez/message/init(-sequence) messages.
+;;                                  -------
+;;                                    ---
+
 ;; Funcs, vars for some very early strings/hashing.
 (spydez/info/require 'zeroth-funcs)
 
@@ -75,7 +91,7 @@
 ;; Step... 0.5? Domains, Master List, Per Computer Stuff.
 ;;------------------------------------------------------------------------------
 ;; Need to know something about my boots so I can pull the right straps.
-(spydez/info/init-message "early-init.el... Zeroth step.")
+(spydez/message/init "early-init.el... Zeroth step.")
 
 ;;---
 ;; Domain & System Setup
@@ -101,14 +117,15 @@
 ;;---
 
 ;; Bare minimum in the Load-Path for finding bootstrapping files:
-(add-to-list 'load-path spydez/dir/init/boot) ;; "all systems" stuff
-(add-to-list 'load-path spydez/dir/dev/defaults) ;; "system defaults" first so everything else overrides.
+;; Add in order of more-overridable/less-specific.
+(add-to-list 'load-path spydez/dir/init/boot)    ;; "all systems" stuff
+(add-to-list 'load-path spydez/dir/dev/defaults) ;; "system defaults" stuff
 ;; Could add a domain level if needed?
-(add-to-list 'load-path spydez/dir/dev/system-this) ;; most specific to this computer last
+(add-to-list 'load-path spydez/dir/dev/system-this) ;; most specific
 
 
 ;;------------------------------------------------------------------------------
-;; The End.
+;; The Steps.
 ;;------------------------------------------------------------------------------
 
 (defconst spydez/bootstrap/steps '(nil
@@ -132,5 +149,9 @@
   "See `spydez/bootstrap/steps' for acceptable values and approximate sequence.
 Compare with `spydez/bootstrap/step-at'")
 
+
+;;------------------------------------------------------------------------------
+;; The End.
+;;------------------------------------------------------------------------------
 ;; (provide 'early-init)
 ;; early-init ends here

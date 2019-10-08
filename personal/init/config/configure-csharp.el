@@ -49,7 +49,10 @@
 
   ;; TRIAL [2019-10-03]: fill-column bumped out to 'long'?
   (setq fill-column spydez/dev-env/fill-column/long)
-  (message "fill-column: %s" fill-column)
+  (spydez/message/debug/when
+   '(spydez debug working-on whitespace)
+   "fill-column (%s) not being obeyed by whitespace... -_-"
+   fill-column)
 
   ;; line numbers already on globally
 

@@ -22,7 +22,7 @@
     (bound-and-true-p server-process))
 
 (unless (server-started-p)
-  (spydez/debug/message-if nil "Starting server.")
+  (spydez/message/debug/when nil "Starting server.")
   (server-start))
 
 

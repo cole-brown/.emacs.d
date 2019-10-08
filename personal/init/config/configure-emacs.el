@@ -88,7 +88,7 @@ Feature, if needed: Check more maps than just global?"
 
       ;; sanity check input
       (if (not (functionp func))
-          (spydez/warning/message
+          (spydez/message/warning
            nil :error
            (format "Unbind-commands expects functions. '%s' is not." func))
 

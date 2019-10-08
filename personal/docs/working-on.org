@@ -9,15 +9,19 @@
 :VISIBILITY: all
 :END:
 
-  - [-] To Do: [7/27]
+  - [-] To Do: [10/30]
     - [ ] Fix dev-directories.el - (add-to-list load-path ...) section is exactly same
-    - [ ] spydez/{info,debug,warning,etc}/message* change to:
-      - [ ] spydez/message/{info,debug,warning,etc}/*
-      - [ ] And change TYPE to be optional?
+
     - [ ] Make startup make more sense for where things come/came from?
       - Was hard telling where to go for something without deadgrep or helpful...
       - Especially the hooks. Make my hooks have what file put the hook in?
+
     - [ ] whitespace-mode in csharp-mode with 100 fill column set in hook still hilights at 80... -_-
+
+    - [ ] steps... there's:
+      - `spydez/bootstrap/step-at', `spydez/bootstrap/step-completed'
+      - `spydez/message/warning/current-type'
+      - Function to set both 'types'? Combine them?
     - [ ] Add to grab-bag hydra:
       - [ ] "(book)mark §" - just the symbol, no colon.
       - [ ] "search §"
@@ -26,20 +30,15 @@
       - [ ] webstaging: search needs to go down to root
       - [ ] depot/dev: search needs to stay up in dev instead of going down to depot
       - (run-hook-with-args-until-success 'project-find-functions "c:/depot/dev/Pathfinder_Client/Login/CharacterSelectionGui.cs")
-    - [ ] end of day:
-      - kill omnisharp?
-      - kill all lsp servers!
-        - Will `lsp--global-teardown' do it? [[file:~/.emacs.d/elpa/lsp-mode-20190930.503/lsp-mode.el::(defun%20lsp--global-teardown%20()][here]]
-          - Yeah. Used [[file:~/.emacs.d/elpa/lsp-mode-20190930.503/lsp-mode.el::(add-hook%20'kill-emacs-hook%20#'lsp--global-teardown)][here]]: (add-hook 'kill-emacs-hook #'lsp--global-teardown)
-        - Or if only, like, plys would need to make fn...
-          - Better: `lsp-foreach-workspace', check if pyls, shutdown?
-          - Bad: Visit every buffer, is lsp-mode?, `when-lsp-workspace', kill all associtated with it?
-      - kill my special buffers? e.g. Tailing apache log, etc.
-        - Am now naming them special, so should be easier.
-      - _KillAllTheThings.bat
-      - auto-commit
+    - [ ] Home Domain:
+      - [ ] Get deadgrep working.
     - [ ] a bury/kill buffer that won't switch to a file that's being viewed in another buffer
       - bare start: [[file:~/.emacs.d/personal/init/config/configure-emacs.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-01%5D:][here]]
+    - [ ] spotify - fork, pull from my repo into submodule, do changes there, push request to github?
+      - [ ] make sure that play func is defined in all comm modes
+      - [ ] frame vs modeline updates?
+      - [ ] Hydra?
+      - [ ] A changable prefix for mode map?
     - [ ] headache tracker?
       - org-journal + default-directory -> headache entries in separate journal from primary
     - [ ] use-package: keybinds again
@@ -75,11 +74,29 @@
     - [ ] configure-crypt needs babying... again... (again... (again?..))
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
         - https://arenzana.org/2019/04/emacs-org-mode/
-    - [ ] a per-device way of saying "off", "minimum", or "full" for features?
+    - [X] spydez/{info,debug,warning,etc}/message* change to:
+      - [X] spydez/message/{info,debug,warning,etc}/*
+      - [X] And change TYPE to be optional?
+        - Eh. No for now.
+    - [X] a per-device way of saying "off", "minimum", or "full" for features?
       - e.g. want full C# dev env at work, but minimum at home? Set it that way and
         language server, other external tools won't bother - just code hilighting maybe.
       - e.g.2. want rust or w/e flavor of the month catches my eye at home but
         none of it at work
+      - Have "off" now. (spydez/packages/enabled-p)
+    - [X] end of day:
+      - [X] kill omnisharp?
+        - Not until it misbehaves.
+      - [X] kill all lsp servers!
+        - Will `lsp--global-teardown' do it? [[file:~/.emacs.d/elpa/lsp-mode-20190930.503/lsp-mode.el::(defun%20lsp--global-teardown%20()][here]]
+          - Yeah. Used [[file:~/.emacs.d/elpa/lsp-mode-20190930.503/lsp-mode.el::(add-hook%20'kill-emacs-hook%20#'lsp--global-teardown)][here]]: (add-hook 'kill-emacs-hook #'lsp--global-teardown)
+        - Or if only, like, plys would need to make fn...
+          - Better: `lsp-foreach-workspace', check if pyls, shutdown?
+          - Bad: Visit every buffer, is lsp-mode?, `when-lsp-workspace', kill all associtated with it?
+      - [X] _KillAllTheThings.bat
+      - [X] auto-commit
+      - [X] kill my special buffers? e.g. Tailing apache log, etc.
+        - Am now naming them special, so should be easier.
     - [X] Check out spotify.el
       - https://www.reddit.com/r/emacs/comments/d9johy/spotify_connect_support_in_spotifyel/
       - [X] Needs a dev acct and such for app.

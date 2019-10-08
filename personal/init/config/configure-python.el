@@ -31,7 +31,7 @@
   ;; ;;-----
   ;; :init
   ;; ;;-----
-  ;; (spydez/warning/message nil nil "Uh... hi? python:init")
+  ;; (spydez/message/warning nil nil "Uh... hi? python:init")
 
 
   ;;-----
@@ -72,7 +72,7 @@
   ;; ;;-----
   ;; :config
   ;; ;;-----
-  ;; (spydez/warning/message nil nil "Uh... hi? python:config")
+  ;; (spydez/message/warning nil nil "Uh... hi? python:config")
 
   ;; ;; Language Server Protocol for Python (LSP)
   ;; ;;---

@@ -281,7 +281,7 @@
   (interactive)
   (if (not (and (boundp 'spydez/exe/dev-env/unit-test)
                 (boundp 'spydez/dev-env/unit-test/args)))
-      (spydez/warning/message nil :error
+      (spydez/message/warning nil :error
                               "Needed variables not found. %s: %s, %s: %s"
                               (symbol-name 'spydez/exe/dev-env/unit-test)
                               (boundp 'spydez/exe/dev-env/unit-test)

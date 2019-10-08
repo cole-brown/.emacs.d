@@ -40,8 +40,8 @@
 ;;------              (...this is maybe a bit complicated.)             ------;;
 
 
-(setq spydez/warning/current-type '(spydez interstitial-prose))
-;;(spydez/info/init-message "init.el... Intermission.")
+(setq spydez/message/warning/current-type '(spydez interstitial-prose))
+;;(spydez/message/init "init.el... Intermission.")
 ;; TODO: emacs 27: Turn back on.
 
 ;; TODO: use-tool package, like use-package, but for external tools like git,
@@ -423,8 +423,8 @@
 ;;---
 ;; We're faking early-init's earlyness, so can't do these here right now.
 ;; See below for place for now.
-;; (setq spydez/warning/current-type '(spydez bootstrap))
-;; (spydez/info/init-message "init.el... Bootstrapping.")
+;; (setq spydez/message/warning/current-type '(spydez bootstrap))
+;; (spydez/message/init "init.el... Bootstrapping.")
 ;;---
 
 ;;---
@@ -457,8 +457,8 @@
   (load (expand-file-name "early-init" user-emacs-directory)))
 ;; Remove the load when early-init is real.
 ;; Also move this bootstrapping info message up when early-init is real.
-(setq spydez/warning/current-type '(spydez bootstrap))
-(spydez/info/init-message "init.el... Bootstrapping.")
+(setq spydez/message/warning/current-type '(spydez bootstrap))
+(spydez/message/init "init.el... Bootstrapping.")
 ;;-----
 
 
@@ -524,15 +524,15 @@
 ;; Load sensitive information from outside of .emacs.d
 ;;(if (bound-and-true-p spydez/dir/doc-save-common)
 ;;    (when (not (load (spydez/path/to-file spydez/dir/doc-save-common ".emacs.secrets") 'noerror))
-;;      (spydez/warning/message nil :debug "No secrets to load."))
-;;  (spydez/warning/message nil nil "No secrets loaded. Do not know where to look. '%s' undefined." 'spydez/dir/doc-save-common))
+;;      (spydez/message/warning nil :debug "No secrets to load."))
+;;  (spydez/message/warning nil nil "No secrets loaded. Do not know where to look. '%s' undefined." 'spydez/dir/doc-save-common))
 
 
 ;;---
 ;; Try-Load overrides (from bootstrap-this-late.el)?
 ;;---
 ;;(when (spydez/info/require bootstrap-this-late nil 'noerror)
-;;  (spydez/warning/message nil nil "Empty bootstrap-this-late."))
+;;  (spydez/message/warning nil nil "Empty bootstrap-this-late."))
 ;; I'm fine if this system has no late step.
 (spydez/info/require 'bootstrap-this-late nil 'noerror)
 ;; I have a default, but it's a big commented out no-op right now.
@@ -567,7 +567,7 @@
 ;; commented out version here so that package.el does not add it again.
 ;; TODO: emacs 27: Figure out how true this is.
 (when (boundp 'early-init-file)
-  (spydez/warning/message nil nil
+  (spydez/message/warning nil nil
       "TODO: figure out how early-init affects call to package-initialize"))
 
 ;; Init use-package so we can use that for the rest of the packages we use.
@@ -597,8 +597,8 @@
 ;;------------------------------------------------------------------------------
 ;; Configuration.
 ;;------------------------------------------------------------------------------
-(setq spydez/warning/current-type '(spydez config))
-(spydez/info/init-message "init.el... Configuration.")
+(setq spydez/message/warning/current-type '(spydez config))
+(spydez/message/init "init.el... Configuration.")
 ;; Loading and init are done - now do any more required setup.
 
 ;; If needed, could make a "configure-packages" here for disabling/enabling
@@ -898,8 +898,8 @@
 ;;------------------------------------------------------------------------------
 ;; The End.
 ;;------------------------------------------------------------------------------
-(setq spydez/warning/current-type '(spydez finalize))
-(spydez/info/message-if spydez/warning/current-type
+(setq spydez/message/warning/current-type '(spydez finalize))
+(spydez/message/info/when spydez/message/warning/current-type
                         "init.el... Finalizing...")
 
 ;; TODO: initial-buffer-choice vs spydez/auto-open-list???
@@ -937,8 +937,8 @@
 ;; help info for this into a list during use-package init or config...
 
 (spydez/info/require 'zzz-finalize)
-(setq spydez/warning/current-type '(spydez running))
-(spydez/info/init-message "init.el...Ok. 3 2 1, let's go.")
+(setq spydez/message/warning/current-type '(spydez running))
+(spydez/message/init "init.el...Ok. 3 2 1, let's go.")
 ;; fin
 
 ;; TODO: check out old cole-PC.emacs and bootstrap.el.

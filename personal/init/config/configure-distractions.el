@@ -21,14 +21,14 @@
 
 ;; First (try to) load the auth secrets
 (if (not (spydez/info/require 'spotify-auth nil 'noerror))
-    (spydez/warning/message
+    (spydez/message/warning
      nil :error
      (concat "Cannot setup Spotify.el package correctly. "
              "No `spotify-auth' feature found."))
   ;; We have loaded the file and can check for our secrets now.
   (if (not (and (boundp 'spydez/secrets/spotify/client-secret)
                 (boundp 'spydez/secrets/spotify/client-id)))
-      (spydez/warning/message
+      (spydez/message/warning
        nil :error
        (concat "Cannot setup Spotify.el package correctly. "
                "No auth consts found. %s: %s, %s: %s")
@@ -137,7 +137,7 @@ modeline. This should take over from `spotify-update-mode-line'."
             (if spotify-remote-mode
                 ;; enter mode
                 (progn
-                  (spydez/debug/message-if '(spydez debug hook)
+                  (spydez/message/debug/when '(spydez debug hook)
                                            "Entering spotify-remote-mode?")
                   ;; Hook into the frame title
                   (unless (member status frame-title-format)
@@ -149,7 +149,7 @@ modeline. This should take over from `spotify-update-mode-line'."
                   (fset #'spotify-update-mode-line
                         #'spydez/frame/spotify/update-status))
               ;; exit mode
-              (spydez/debug/message-if '(spydez debug hook)
+              (spydez/message/debug/when '(spydez debug hook)
                                        "Exiting spotify-remote-mode?")
               (when (member status frame-title-format)
                 (setq frame-title-format (remq s frame-title-format)))
@@ -179,15 +179,15 @@ modeline. This should take over from `spotify-update-mode-line'."
                                         :idle 0.25   ;; no help for this long
                                         :hint none)  ;; no hint - just docstr
           "
-^Track^                ^Playlists^            ^Misc^
-^-^--------------------^-^--------------------^-^---------------
-_p_: ?p?^^^^^^^        _l m_: My Lists        _d_: Select Device
-_b_: Next Track        _l f_: Featured Lists
-_f_: Previous Track    _l u_: User Lists      _v u_: Volume Up
-_M-r_: ?M-r?^^^^^^^^   _l s_: Search List     _v d_: Volume Down
-_M-s_: ?M-s?^^^^^^^^^  _l c_: Create list     _v d_: ?v m?
+^Track^                 ^Playlists^            ^Misc^
+^-^---------------------^-^--------------------^-^-----------------
+_p_: ?p?^^^^^^^         _l m_: My Lists        _d_:   Select Device
+_b_: Back a Track       _l f_: Featured Lists
+_f_: Forward a Track    _l u_: User Lists      _v u_: Volume Up
+_M-r_: ?M-r?^^^^^^^^    _l s_: Search List     _v d_: Volume Down
+_M-s_: ?M-s?^^^^^^^^^   _l c_: Create list     _v m_: ?v m?
 _C-s_: Search Track
-_C-r_: Recently Played"
+_C-r_: Recently Played  ^   ^                  _q_:   quit"
 
           ;;---
           ;; Track
@@ -233,7 +233,10 @@ _C-r_: Recently Played"
            ;; §-TODO-§ [2019-10-07]: dynamic text for which it would toggle to
            ;; Or Unicode. Or "[X] Shuffle"/"[ ] Shuffle"
            "Toggle Mute")
-          ("d"   spotify-select-device))
+
+          ("d"   spotify-select-device)
+
+          ("q"   nil))
 
         (defun spydez/spotify/smart-mode-or-hydra ()
           "Enters `spotify-remote-mode' if not in it,

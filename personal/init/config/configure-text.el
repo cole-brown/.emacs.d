@@ -120,12 +120,12 @@
           ;; (flyspell-mode 1)
           )
       ;; else: no result from executable-find - warn and don't set up.
-      (spydez/warning/message nil nil "No backend tool for flyspell. Checked for `hunspell': %s"
+      (spydez/message/warning nil nil "No backend tool for flyspell. Checked for `hunspell': %s"
                               spydez/file/hunspell))
 
   ;; else, disabled so just note that.
   ;; TODO: make this a `with' function? `with-flag' or something maybe?
-  (spydez/warning/message nil :debug "Config disabled: %s %s"
+  (spydez/message/warning nil :debug "Config disabled: %s %s"
                           'spydez/enabled/flyspell spydez/enabled/flyspell))
 
 
@@ -212,7 +212,7 @@
   ;;     7) Curse
   ;;  Windows 10:
   ;;     1) Hope Win7 instructions work for Win10, but like actually work.
-  (spydez/warning/message nil nil
+  (spydez/message/warning nil nil
                           "all-the-icons not installed. Will need manual help after install. See configure-text.el for details."))
 
 ;; So now on a Windows 7 machine I have... some icons? Run both these:

@@ -7,9 +7,9 @@
 ;; TODO: does some or all of this belong in configure-emacs? vice versa?
 
 ;; TODO: skip all or most of this:
-;;    (unless window-system (spydez/debug/message-if nil "hi"))
+;;    (unless window-system (spydez/message/debug/when nil "hi"))
 ;; Or maybe do all/most of this:
-;;    (when window-system (spydez/debug/message-if nil "hi"))
+;;    (when window-system (spydez/message/debug/when nil "hi"))
 
 
 ;;------------------------------------------------------------------------------

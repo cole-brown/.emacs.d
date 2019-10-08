@@ -71,7 +71,7 @@
       (spydez/bootstrap/step-set 'specific)
 
     ;; needs another step done?
-    (spydez/warning/message
+    (spydez/message/warning
      nil nil
      "  System '%s' needs additional setup! %s %s"
      spydez/setup/system/name
@@ -96,29 +96,29 @@
  ;;---------------------------------------------------------------------------
  ;; Tell user to setup up this system.
  ((not (bound-and-true-p spydez/bootstrap/system/known-p))
-  ;; Put point at end of (spydez/warning/message nil nil ...) then:
+  ;; Put point at end of (spydez/message/warning nil nil ...) then:
   ;;   C-x C-e to evaluate these sexprs.
-  (spydez/warning/message
+  (spydez/message/warning
    nil nil
    "Hello there from bootstrap-system. This system needs added to: '%s'"
    (spydez/path/to-file spydez/dir/personal/dev "master-list.el"))
 
   ;; Make sure these are correct:
-  (spydez/warning/message
+  (spydez/message/warning
    nil nil
    "New computer? Make sure these are correct:")
-  (spydez/warning/message
+  (spydez/message/warning
    nil nil
    "  system/name: %s" spydez/setup/system/name)
-  (spydez/warning/message
+  (spydez/message/warning
    nil nil
    "  system/hash: %s" spydez/setup/system/hash)
 
   ;; Then make sure these folders/files are correct/exist:
-  (spydez/warning/message
+  (spydez/message/warning
    nil nil
    "  dir/domain: %s" spydez/dir/dev/domain-this)
-  (spydez/warning/message
+  (spydez/message/warning
    nil nil
    "  dir/system: %s" spydez/dir/dev/system-this)
 
@@ -134,12 +134,12 @@
 
       ;; using default - should probably warn
       ((spydez/bootstrap/step-at 'default)
-       (spydez/warning/message nil nil
+       (spydez/message/warning nil nil
            "Specific bootstrap does not exist for this computer: %s %s"
            spydez/bootstrap/step-completed spydez/setup/system/hash))
 
       ;; fallthrough cases - nothing used
-      (t (error (spydez/warning/message nil nil
+      (t (error (spydez/message/warning nil nil
                     "Bootstrap: No bootstrap at all for this computer?: %s %s"
                     spydez/bootstrap/step-completed spydez/setup/system/hash))))
 
