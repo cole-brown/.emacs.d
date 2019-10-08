@@ -1,0 +1,25 @@
+#+TITLE:       Git Commands for Libs
+#+AUTHOR:      Cole Brown
+#+EMAIL:       git@spydez.com
+#+DATE:        [2019-10-02 Wed]
+
+
+* Updating These Libs
+
+** spotify:
+
+I chose 'git submodule' for this because:
+  https://codewinsarguments.co/2016/05/01/git-submodules-vs-git-subtrees/
+Initially chose subtree but may want to do bug fixes in a way I can pull-request back to owner.
+  - my fork: git@github.com:spydez/spotify.el.git
+  - owner:   git@github.com:danielfm/spotify.el.git
+
+Run from git root directory (.emacs.d/):
+
+Current Commands:
+
+- Create/add:
+    git submodule add --prefix packages/submodules/spotify git@github.com:spydez/spotify.el.git master --squash
+
+  - Pull/update:
+    git submodule pull --prefix packages/submodules/spotify git@github.com:spydez/spotify.el.git master --squash

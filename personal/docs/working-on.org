@@ -13,33 +13,28 @@
     - [ ] Get deadgrep working.
 
 
-  - [-] General To Do: [1/18]
+  - [-] General To Do: [3/18]
     - [ ] Make startup make more sense for where things come/came from?
       - Was hard telling where to go for something without deadgrep or helpful...
       - Especially the hooks. Make my hooks have what file put the hook in?
-
-    - [ ] whitespace-mode in csharp-mode with 100 fill column set in hook still hilights at 80... -_-
 
     - [ ] steps... there's:
       - `spydez/bootstrap/step-at', `spydez/bootstrap/step-completed'
       - `spydez/message/warning/current-type'
       - Function to set both 'types'? Combine them?
 
-    - [ ] Add to grab-bag hydra:
-      - [ ] "(book)mark §" - just the symbol, no colon.
-      - [ ] "search §"
-      - [ ] "search sig..." to grab-bag. Goes into a sub-hydra for searching exactly each sig, same keys as inserting 'em.
-
-    - [ ] a bury/kill buffer that won't switch to a file that's being viewed in another buffer
-      - bare start: [[file:~/.emacs.d/personal/init/config/configure-emacs.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-01%5D:][here]]
-
     - [ ] spotify - fork, pull from my repo into submodule, do changes there, push request to github?
       - [ ] make sure that play func is defined in all comm modes
       - [ ] frame vs modeline updates?
       - [ ] Hydra?
       - [ ] A changable prefix for mode map?
+
     - [ ] headache tracker?
       - org-journal + default-directory -> headache entries in separate journal from primary
+
+    - [ ] a bury/kill buffer that won't switch to a file that's being viewed in another buffer
+      - bare start: [[file:~/.emacs.d/personal/init/config/configure-emacs.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-01%5D:][here]]
+
     - [ ] use-package: keybinds again
       - yank all binds that shouldn't lazy load package out into config or something
       - glare at use-package for being so god damn try hard about being lazy
@@ -73,6 +68,13 @@
     - [ ] configure-crypt needs babying... again... (again... (again?..))
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
         - https://arenzana.org/2019/04/emacs-org-mode/
+    - [X] whitespace-mode in csharp-mode with 100 fill column set in hook still hilights at 80... -_-
+    - [X] Add to grab-bag hydra:
+      - [X] "(book)mark §" - just the symbol, no colon.
+      - [X] "search §"
+      - [X] "search sig..." to grab-bag.
+        - +Goes into a sub-hydra for searching exactly each sig, same keys as inserting 'em.+
+        - Turns out I have a function for this I just gotta call.
     - [X] deadgrep: tweak starting dir of search?
       - [X] webstaging: search needs to go down to root
       - [X] depot/dev: search needs to stay up in dev instead of going down to depot

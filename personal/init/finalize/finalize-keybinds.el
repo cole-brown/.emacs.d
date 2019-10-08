@@ -54,12 +54,13 @@
   ;; Our "Sigs, Org-Mode, and Misc Stuff We Do Often" hydra.
   (defhydra spydez/hydra/grab-bag (:color blue ;; default exit heads
                                           :idle 0.75  ;; no help for x seconds
-                                          :hint none)  ;; no hint - just fancy docstr
+                                          :hint none)  ;; no hint - just docstr
     "
-^Signatures^                           ^Org-Mode^
-^----------^---------------------------^--------^------------
-_s_: sig:  ?s?^^^^^^^^^^^^^^^^^^^^^^^  _n_: New Journal Entry
-_-_: sig:  ?-?^^^^^^^^^^^^^^^^^^^^^^^  _v_: Visit Journal
+^Signatures^                           ^Org-Mode^              ^Search^
+^----------^---------------------------^--------^--------------^------^-----------------
+_/_: sig:  ?/?^^^^^^^^^^^^^^^^^^^^^^^  _n_: New Journal Entry  _s m_: ?s m?
+_-_: sig:  ?-?^^^^^^^^^^^^^^^^^^^^^^^  _v_: Visit Journal      _s s_: Search...
+_m_: mark: ?m?^^^^^^^^^^^^^^^^^^^^^^^
 _t_: todo: ?t?^^^^^^^^^^^^^^^^^^^^^^^
 _c_: todo: ?c?^^^^^^^^^^^^^^^^^^^^^^^
 _h_: todo: ?h?^^^^^^^^^^^^^^^^^^^^^^^
@@ -78,10 +79,14 @@ _g_: todo: ?g?^^^^^^^^^^^^^^^^^^^^^^^
     ;;---
     ;; Normal Signatures
     ;;---
-    ("s" (spydez/signature/insert spydez/signature/short-pre)
+    ("/" (spydez/signature/insert spydez/signature/short-pre)
      (format "%-26s" spydez/signature/short-pre))
     ("-" (spydez/signature/insert spydez/signature/name-post)
      (format "%-26s" spydez/signature/name-post))
+
+    ;; just a mark char
+    ("m" (spydez/signature/insert spydez/signature/char)
+     (format "%-26s" spydez/signature/char))
 
     ;;---
     ;; TODO Signatures
@@ -109,7 +114,17 @@ _g_: todo: ?g?^^^^^^^^^^^^^^^^^^^^^^^
     ;;---
     ("n" org-journal-new-entry)
     ("v" (funcall org-journal-find-file
-                  (org-journal-get-entry-path))))
+                  (org-journal-get-entry-path)))
+
+    ;;-------------------------------------------------------------------------
+    ;; Search
+    ;;-------------------------------------------------------------------------
+
+    ("s m" (spydez/signature/search spydez/signature/char)
+     (format "%-26s"
+             (format "Search for Mark: %s" spydez/signature/char)))
+    ("s s" (call-interactively #'spydez/signature/search)
+     (format "%-26s" "Search for Signature...")))
 
   ;; global keybind (can override minor mode binds)
   (bind-key* "C-," #'spydez/hydra/grab-bag/body))

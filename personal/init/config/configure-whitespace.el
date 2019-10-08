@@ -136,6 +136,10 @@ than other modes."
   ;;----------
   :custom
   ;;----------
+  (whitespace-line-column nil
+   (concat "Set 'lines-tail/'lines in `whitespace-style' to base "
+           "off of `fill-column' instead of just 80.")
+
   (whitespace-style
    (quote
     ;;---
