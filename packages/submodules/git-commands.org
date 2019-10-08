@@ -19,7 +19,7 @@ Run from git root directory (.emacs.d/):
 Current Commands:
 
 - Create/add:
-    git submodule add --prefix packages/submodules/spotify git@github.com:spydez/spotify.el.git master --squash
+    git submodule add git@github.com:spydez/spotify.el.git packages/submodules/spotify
 
   - Pull/update:
-    git submodule pull --prefix packages/submodules/spotify git@github.com:spydez/spotify.el.git master --squash
+    Like normal git.

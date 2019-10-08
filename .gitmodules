@@ -1,0 +1,3 @@
+[submodule "packages/submodules/spotify"]
+	path = packages/submodules/spotify
+	url = git@github.com:spydez/spotify.el.git

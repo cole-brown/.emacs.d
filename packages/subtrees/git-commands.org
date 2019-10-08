@@ -8,6 +8,10 @@
 
 ** spotify:
 
+Moved to a submodule.
+
+*** old notes
+
 I chose 'git subtree' for this because:
   https://codewinsarguments.co/2016/05/01/git-submodules-vs-git-subtrees/
 
@@ -26,7 +30,7 @@ Current Commands:
     git subtree pull --prefix packages/subtrees/spotify git@github.com:danielfm/spotify.el.git async-rewrite --squash
 
 
-*** Master Branch
+**** Master Branch
 
 Go back to master when async-test is done/pushed to master. Just delete current spotify subtree folder and do it again:
 - Create/add:
