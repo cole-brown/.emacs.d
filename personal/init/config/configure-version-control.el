@@ -330,19 +330,22 @@ repos."
 if any of them are in this (absolute path to) a sub-dir of the repo. Could be
 repo root, but a subdir of the repo is what magit can't handle with e.g.
 `magit-anything-modified-p'."
-  (let* ((changes-rel (append (magit-staged-files)
+  ;; Magit works on `default-directory', so make sure to set that.
+  (let* ((default-directory subdir-abs)
+         ;; these are all changes in repo, not subdir
+         (changes-rel (append (magit-staged-files)
                               (magit-unstaged-files)
                               (magit-untracked-files)))
          (git-root (magit-toplevel))
          (changes-abs (mapcar (lambda (x) (spydez/path/to-file git-root x))
                               changes-rel)))
 
-    ;; Right... now just filter and return.
+    ;; Now just filter and return.
     (seq-filter (lambda (x) (string-prefix-p subdir-abs x)) changes-abs)))
 
 
-;; §-TODO-§: Could make this async if it takes too long... With messages going
-;; to async buffer...
+;; Could make this async if it takes too long... With messages going
+;; to "§- a buffer -§"...
 (require 'f)
 (require 'subr-x)
 (defun spydez/magit/auto-commit ()
@@ -367,11 +370,13 @@ Magit to: add files, commit, and push."
                                      spydez/datetime/format/yyyy-mm-dd_hh-mm-ss)
                                     "auto-commit"
                                     "emacs/magit"
-                                    "spydez/magit/auto-commit function.")))
+                                    "spydez/magit/auto-commit function."))
+            (change-list (spydez/magit/changes-in-subdir location)))
+
         (message "Checking %s..." location)
         ;; Magit works on `default-directory', so we are checking status
         ;; on our repo with this.
-        (if (not (spydez/magit/changes-in-subdir location))
+        (if (null change-list)
             (progn
               ;; Save that nothing happened.
               (push (cons location nil) results)
@@ -379,42 +384,41 @@ Magit to: add files, commit, and push."
               (message "  No changes to auto-commit: %s" default-directory))
 
           ;; Else, commit changes.
-          (let ((changes (string-join ;; join results with comma
+          (let ((change-str (string-join ;; join results with comma
                           ;; gather up all changed files, strip out dir prefix
                           (mapcar (lambda (x)
                                     (string-remove-prefix default-directory x))
-                                  (append (magit-staged-files)
-                                          (magit-unstaged-files)
-                                          (magit-untracked-files)))
+                                  change-list)
                           ", ")))
             ;; Add!
-            (message "  Adding changes found: %s..." changes)
+            (message "  Adding changes found: %s..." change-str)
+
             ;; "add <path>" or "add -A ." work to add untracked.
             ;; "add -A ." == "add ." + "add -u ."
             ;; "add ." only adds modified.
             (magit-call-git "add" "-A" ".")
 
             ;; Commit!
-            (message "  Committing changes: %s..." changes)
+            (message "  Committing changes: %s..." change-str)
             ;; Don't 'commit all' ("commit -a"), so we can commit just whatever
             ;; sub-folder we are in.
             (magit-call-git "commit" "-m" commit-message)
 
             ;; Push?
-            (message "  Pushing changes: %s..." changes)
+            (message "  Pushing changes: %s..." change-str)
             ;; Assume an origin of "origin", I guess?
             ;; Could also just "push" to default...
             (magit-call-git "push" "origin")
 
             ;; Done. Until I find all the edge cases I guess.
             ;; Like when push fails?
-            (message "  Committed and pushed (probably): %s" changes)
+            (message "  Committed and pushed (probably): %s" change-str)
 
-            (push (cons location changes) results)))))
+            (push (cons location change-str) results)))))
 
     (message "Auto-Commit ran on %s locations: \n%s"
              (length results)
-             ;; format for each: "path: changed, file, list.txt"
+             ;; format for each: "path: changed.el, file.py, list.txt"
              (string-join
               (mapcar (lambda (x) (format "  %s: %s"
                                           (car x)

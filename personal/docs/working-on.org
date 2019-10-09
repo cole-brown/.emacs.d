@@ -13,7 +13,7 @@
     - [ ] Get deadgrep working.
 
 
-  - [-] General To Do: [3/18]
+  - [-] General To Do: [4/19]
     - [ ] Make startup make more sense for where things come/came from?
       - Was hard telling where to go for something without deadgrep or helpful...
       - Especially the hooks. Make my hooks have what file put the hook in?
@@ -40,6 +40,7 @@
       - glare at use-package for being so god damn try hard about being lazy
       - [ ] Switch to General? https://github.com/noctuid/general.el
       - [ ] Just use bind-key directly?
+
     - [ ] use-package: whitespace & neatness.
       - Two blank lines between keyword sections unless very simple.
       - Sections should have ";;---" around their keywords unless very simple.
@@ -68,6 +69,7 @@
     - [ ] configure-crypt needs babying... again... (again... (again?..))
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
         - https://arenzana.org/2019/04/emacs-org-mode/
+    - [X] Magit auto-commit is grabbing files I don't want it to again... :(
     - [X] whitespace-mode in csharp-mode with 100 fill column set in hook still hilights at 80... -_-
     - [X] Add to grab-bag hydra:
       - [X] "(book)mark §" - just the symbol, no colon.
@@ -428,6 +430,9 @@ Company-Jedi:
   - python auto-complete package Jedi for Company package users.
   - https://github.com/syohex/emacs-company-jedi
 
+Undohist
+  - persistant, per-file undo history
+  - https://melpa.org/#/undohist
 
 * Soon™ Things [0/2]                                             :valve_time:
 

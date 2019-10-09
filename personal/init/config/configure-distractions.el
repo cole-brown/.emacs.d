@@ -39,7 +39,7 @@
 
     ;; secrets exist and we have done all the error checking. use-package it.
     (use-package spotify
-      :load-path (lambda () (spydez/path/to-dir spydez/dir/packages/git-subtrees "spotify"))
+      :load-path (lambda () (spydez/path/to-dir spydez/dir/packages/git-submodules "spotify"))
 
       ;; Checked above and error/warning message, but can do here if lazy or
       ;; want quiet load/ignore.
