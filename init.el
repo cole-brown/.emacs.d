@@ -18,8 +18,8 @@
 ;;      (provide 'zort) be in the (add-to-list 'load-path ...)
 ;;      later in the sequence.
 ;;    - Per-file/feature piggybacking by just having the extra source be named
-;;      according to `spydez/info/require/piggyback-format' and be in the
-;;      load-path. E.g. (spydez/info/require 'zort) will require `zort' feature
+;;      according to `spydez/require/piggyback-format' and be in the
+;;      load-path. E.g. (spydez/require 'zort) will require `zort' feature
 ;;      and require (noerror) `zort-secret'.
 ;;    - Can do more surgical overriding or futzing in `finalize-domains' or some
 ;;      similar thing.
@@ -40,7 +40,7 @@
 ;;------              (...this is maybe a bit complicated.)             ------;;
 
 
-(setq spydez/message/warning/current-type '(spydez interstitial-prose))
+;;(spydez/init/step/set-completed '(intermission none))
 ;;(spydez/message/init "init.el... Intermission.")
 ;; TODO: emacs 27: Turn back on.
 
@@ -423,7 +423,7 @@
 ;;---
 ;; We're faking early-init's earlyness, so can't do these here right now.
 ;; See below for place for now.
-;; (setq spydez/message/warning/current-type '(spydez bootstrap))
+;; (spydez/init/step/set-completed '(intermission interstitial-prose))
 ;; (spydez/message/init "init.el... Bootstrapping.")
 ;;---
 
@@ -457,23 +457,28 @@
   (load (expand-file-name "early-init" user-emacs-directory)))
 ;; Remove the load when early-init is real.
 ;; Also move this bootstrapping info message up when early-init is real.
-(setq spydez/message/warning/current-type '(spydez bootstrap))
+(spydez/init/step/set-completed 'bootstrap 'none)
 (spydez/message/init "init.el... Bootstrapping.")
 ;;-----
 
+;; Nothing really before system bootstrap, right now.
+(spydez/init/step/set-completed 'bootstrap 'early)
 
 ;;---
 ;; System Setup...
 ;;---
 ;; w/ sides of sanity and also sanity
-(spydez/info/require 'bootstrap-system)
+(spydez/require 'bootstrap-system)
+;; `spydez/init/step/completed' should either be:
+;;   '(bootstrap . '(system default))
+;;   '(bootstrap . '(system specific))
 
 
 ;;---
 ;; Little Bit of Sanity...
 ;;---
 ;; Had this here:
-;;   (spydez/info/require 'bootstrap-sanity-early)
+;;   (spydez/require 'bootstrap-sanity-early)
 ;; But there was never anything in it. So it's gone. But if sanity is required,
 ;; here is a good place for it.
 
@@ -503,7 +508,7 @@
 ;; Directories for Emacs or Packages
 ;;---
 ;; This sets up the final load-path.
-(spydez/info/require 'bootstrap-directories)
+(spydez/require 'bootstrap-directories)
 
 
 ;;---
@@ -511,13 +516,13 @@
 ;;---
 ;; All the way down here because I want my load paths, but we could put at the
 ;; top if needed with a little adjustment.
-(spydez/info/require 'bootstrap-debug-early)
+(spydez/require 'bootstrap-debug-early)
 
 
 ;;---
 ;; Misc Stuff
 ;;---
-(spydez/info/require 'bootstrap-consts)
+(spydez/require 'bootstrap-consts)
 
 ;; TODO: just delete? configure-crypt does not care about this anymore, I don't think...
 ;; TODO: move this to configure-crypt? And/or rejigger configure-crypt so some can happen soon enough for this to be happy actually loading a file.
@@ -531,16 +536,17 @@
 ;;---
 ;; Try-Load overrides (from bootstrap-this-late.el)?
 ;;---
-;;(when (spydez/info/require bootstrap-this-late nil 'noerror)
+;;(when (spydez/require bootstrap-this-late nil 'noerror)
 ;;  (spydez/message/warning nil nil "Empty bootstrap-this-late."))
 ;; I'm fine if this system has no late step.
-(spydez/info/require 'bootstrap-this-late nil 'noerror)
+(spydez/require 'bootstrap-this-late nil 'noerror)
 ;; I have a default, but it's a big commented out no-op right now.
 
 ;;---
 ;; Final Chance to Affect Bootstrap?
 ;;---
-(spydez/info/require 'dev-directories nil 'noerror)
+(spydez/require 'dev-directories nil 'noerror)
+(spydez/init/step/set-completed 'bootstrap '(system finalized))
 
 
 ;;------------------------------------------------------------------------------
@@ -553,9 +559,9 @@
 ;; rewrite.
 
 ;; Bootstrap of OS and External Tools.
-(spydez/info/require 'bootstrap-os)
+(spydez/require 'bootstrap-os)
 
-;; Keep near (spydez/info/require 'bootstrap-package):
+;; Keep near (spydez/require 'bootstrap-package):
 ;;---
 ;; Not sure how true this is, but...
 ;; source: https://github.com/kaushalmodi/.emacs.d/blob/master/init.el
@@ -573,37 +579,41 @@
 ;; Init use-package so we can use that for the rest of the packages we use.
 ;;   - no-littering required here
 ;;   - custom file: location set & deliberately not loaded here
-(spydez/info/require 'bootstrap-package)
+(spydez/require 'bootstrap-package)
+(spydez/init/step/set-completed 'bootstrap 'package)
 
 ;; ASAP after use-package is available (debug prints, init load timings)
-(spydez/info/require 'bootstrap-debug-late)
+(spydez/require 'bootstrap-debug-late)
 
 ;; Packages used by other packages.
-(spydez/info/require 'bootstrap-libraries)
+(spydez/require 'bootstrap-libraries)
 
 ;; Setup backups, autosaves, and history.
-(spydez/info/require 'bootstrap-backups)
+(spydez/require 'bootstrap-backups)
 
 ;; keyboard stuff
-(spydez/info/require 'bootstrap-keyboard)
+(spydez/require 'bootstrap-keyboard)
 
 ;; TODO:
 ;; conditional use-package stuff?
 ;; https://jwiegley.github.io/use-package/keywords/
 
-(spydez/info/require 'bootstrap-final)
+(spydez/require 'bootstrap-final)
+(spydez/init/step/set-completed 'bootstrap 'complete)
 
 
 ;;------------------------------------------------------------------------------
 ;; Configuration.
 ;;------------------------------------------------------------------------------
-(setq spydez/message/warning/current-type '(spydez config))
+(spydez/init/step/set-completed 'config 'none)
 (spydez/message/init "init.el... Configuration.")
 ;; Loading and init are done - now do any more required setup.
 
 ;; If needed, could make a "configure-packages" here for disabling/enabling
 ;; packages per device/domain?..
 ;; But for now, it's in configure-emacs-secret.el
+
+(spydez/init/step/set-completed 'config 'early)
 
 ;; Interactive funcs I don't use in init but may want sometimes interactively,
 ;; as they are interactive functions.
@@ -612,13 +622,14 @@
 ;;   - use e.g. range for e.g. tabstops
 ;;
 ;; Also, now, useful non-interactive functions used in init.
-(spydez/info/require 'misc-functions)
-(spydez/info/require 'date-and-time) ;; Need datetime formats from here...
-(spydez/info/require 'buffer-functions)
+(spydez/require 'misc-functions)
+(spydez/require 'date-and-time) ;; Need datetime formats from here...
+(spydez/require 'buffer-functions)
+(spydez/init/step/set-completed 'config 'libraries)
 
 ;; Stuff that affects emacs itself, like garbage collection.
 ;; Anything earlier than this might be in early-init.
-(spydez/info/require 'configure-emacs)
+(spydez/require 'configure-emacs)
 
 ;; TODO: A keymap prefix of my own? Or a hydra...
 ;;   M-s is used by: https://github.com/itsjeyd/.emacs.d/blob/emacs24/init.el
@@ -634,40 +645,42 @@
 ;; Any windows vs Linux vs etc stuff.
 ;; Also a decent place for XEmacs vs Emacs if we need any of that.
 ;; Mainly just windows stuff...
-(spydez/info/require 'configure-os)
+(spydez/require 'configure-os)
 
 ;; Make sure emacs server daemon is running.
-(spydez/info/require 'configure-daemons)
+(spydez/require 'configure-daemons)
 
 ;; log or large file stuff
-(spydez/info/require 'configure-logs)
+(spydez/require 'configure-logs)
+
+(spydez/init/step/set-completed 'config 'backend)
 
 ;; inserting, searching for my own 'signatures' in notes, code.
-(spydez/info/require 'configure-signatures)
+(spydez/require 'configure-signatures)
 
 ;; key-chords, hydra, some helper functions
 ;;   - probably high enough in the order now...
-(spydez/info/require 'configure-hydra)
+(spydez/require 'configure-hydra)
 
 ;; Helm/ido/etc
-(spydez/info/require 'configure-completion)
+(spydez/require 'configure-completion)
 
 ;; Minibuffer and mode line tweaks
-(spydez/info/require 'configure-minibuffer)
-(spydez/info/require 'configure-modeline)
+(spydez/require 'configure-minibuffer)
+(spydez/require 'configure-modeline)
 
 ;; Window setup (menu bar, color theme, etc)
-(spydez/info/require 'configure-window)
+(spydez/require 'configure-window)
 
 ;; Kill/Yank Ring (aka Undo/Redo)
-(spydez/info/require 'configure-kill-ring)
+(spydez/require 'configure-kill-ring)
 
 ;; Help?
 ;; I need somebody...
-(spydez/info/require 'configure-help)
+(spydez/require 'configure-help)
 
 ;; VC: git, magit, svn, etc.
-(spydez/info/require 'configure-version-control)
+(spydez/require 'configure-version-control)
 ;; todo: finish this.
 ;; TODO: svn-of-some-sort
 ;; TODO-maybe-as-well: multiple git users (work, personal) for magit/github
@@ -677,16 +690,16 @@
 ;; For moving around in and messing with text via or at point and/or mark.
 ;; Hi Mark.
 ;; Obviously this and configure-text and configure-dev-env
-(spydez/info/require 'configure-point-and-mark)
+(spydez/require 'configure-point-and-mark)
 
 ;; Dired, recentf, other file or folder operations
-(spydez/info/require 'configure-files-and-folders)
+(spydez/require 'configure-files-and-folders)
 
 ;; Text: fill-column, UTF-8, etc.
-(spydez/info/require 'configure-text)
+(spydez/require 'configure-text)
 
 ;; Org-Mode: Final Boss of Emacs Major Modes
-(spydez/info/require 'configure-org-mode)
+(spydez/require 'configure-org-mode)
 
 ;; Dired Mode - seems IDE adjacent so it may go into configure-dev-env.
 ;;   Putting it there for now.
@@ -695,13 +708,13 @@
 ;; Parenthesis Matching/Delimiters
 ;; Basically stuff that is development/programmer in nature but global or for
 ;; multiple modes?
-(spydez/info/require 'configure-dev-env)
+(spydez/require 'configure-dev-env)
 
 ;; DevOps - ain't got much right now
-(spydez/info/require 'configure-dev-ops)
+(spydez/require 'configure-dev-ops)
 
 ;; projectile, helm-projectile
-(spydez/info/require 'configure-project)
+(spydez/require 'configure-project)
 
 ;; TODO: Tags and tag files?
 ;; http://pages.sachachua.com/.emacs.d/Sacha.html#orgfb77d93
@@ -712,7 +725,7 @@
 ;; Language Server Protocol
 ;; Language-agnostic protocol for on-the-fly syntax, auto-complete, go-to
 ;; definitions, etc.
-(spydez/info/require 'configure-lsp)
+(spydez/require 'configure-lsp)
 
 ;; TODO: configure IDE?
 ;;------------------------------------------------------------------------------
@@ -763,7 +776,7 @@
 ;; https://emacs.stackexchange.com/questions/22049/git-bash-in-emacs-on-windows
 ;; (setq explicit-shell-file-name "C:/git-for-windows/bin/bash.exe")
 ;; (setq explicit-bash.exe-args '("--login" "-i"))
-(spydez/info/require 'configure-shell)
+(spydez/require 'configure-shell)
 
 ;; TODO: configure parenthesis
 
@@ -772,28 +785,28 @@
 ;; TODO: you were here... where did you go?
 ;; TODO: take snippets out of M-/ completion maybe?
 ;;   Getting annoying when writing elisp and I don't really use them right now...
-(spydez/info/require 'configure-templates)
+(spydez/require 'configure-templates)
 
 ;; What to do with all that whitespace?
-(spydez/info/require 'configure-whitespace)
+(spydez/require 'configure-whitespace)
 
 ;; Programming Modes
-(spydez/info/require 'configure-prog-mode) ;; The generic stuff
-(spydez/info/require 'configure-csharp)
+(spydez/require 'configure-prog-mode) ;; The generic stuff
+(spydez/require 'configure-csharp)
 ;; TODO: configure code modes
 ;;  - C
 ;;  - C++
 ;;  - go?
-(spydez/info/require 'configure-python)
-(spydez/info/require 'configure-elisp)
+(spydez/require 'configure-python)
+(spydez/require 'configure-elisp)
 
 ;; web related things (restclient)
-(spydez/info/require 'configure-web)
+(spydez/require 'configure-web)
 
 ;; TODO: htmlize? I don't think I ever really used it...
 ;; converts buffers to html
 ;; http://fly.srk.fer.hr/~hniksic/emacs/htmlize.el
-;; (spydez/info/require 'htmlize)
+;; (spydez/require 'htmlize)
 
 ;; TODO-maybe?: web-mode for django work?
 ;;   - http://pages.sachachua.com/.emacs.d/Sacha.html#org0acdde9
@@ -822,19 +835,19 @@
 ;;   http://ergoemacs.org/misc/ergoemacs_vi_mode.html
 ;; TODO: does this apply to key-chord and/or hydra packages?
 
-(spydez/info/require 'configure-crypt)
+(spydez/require 'configure-crypt)
 
 ;; Do search late as it probably just relies on/sets up other things.
-(spydez/info/require 'configure-search)
+(spydez/require 'configure-search)
 
 ;; chat, social stuff
-(spydez/info/require 'configure-chat)
+(spydez/require 'configure-chat)
 
-(spydez/info/require 'configure-distractions)
-(spydez/info/require 'configure-fulfillment)
+(spydez/require 'configure-distractions)
+(spydez/require 'configure-fulfillment)
 
 ;; org-d20, dice roller?, other sources of random
-(spydez/info/require 'configure-dice)
+(spydez/require 'configure-dice)
 ;; TODO: anything useful in my old emacs/ERC dice roller (sasta.el)?
 ;;   - may have to go back to find author I derived from?
 ;;     - (did I?)
@@ -856,9 +869,9 @@
 ;; kind of a comfort blanket for most of us; you will never fail to bild a
 ;; system without it (unless you are using Java, then you need IntelliJ). Still
 ;; it is quite nice to have popup documentation.
-;; (spydez/info/require 'fuzzy)
-;; (spydez/info/require 'auto-complete)
-;; (spydez/info/require 'auto-complete-config)
+;; (spydez/require 'fuzzy)
+;; (spydez/require 'auto-complete)
+;; (spydez/require 'auto-complete-config)
 ;; (ac-config-default)
 ;; (setq ac-auto-start nil)
 ;; (ac-set-trigger-key "TAB")
@@ -873,7 +886,7 @@
 
 
 ;; Templates/snippets
-;; (spydez/info/require 'yasnippet)
+;; (spydez/require 'yasnippet)
 ;; (yas-load-directory (concat (cask-elpa-dir)
 ;;                             "/yasnippet-20140306.5/snippets"))
 ;; (eval-after-load "delight"
@@ -893,14 +906,21 @@
 
 ;; TODO: ... I forget what.
 
-(spydez/info/require 'taskspace)
+(spydez/require 'taskspace)
+
+(spydez/init/step/set-completed 'config 'libraries)
+
+
+(spydez/init/step/set-completed 'config 'complete)
+
 
 ;;------------------------------------------------------------------------------
 ;; The End.
 ;;------------------------------------------------------------------------------
-(setq spydez/message/warning/current-type '(spydez finalize))
-(spydez/message/info/when spydez/message/warning/current-type
-                        "init.el... Finalizing...")
+(spydez/init/step/set-completed 'finalize 'none)
+(spydez/message/init "init.el... Finalizing...")
+
+(spydez/init/step/set-completed 'finalize 'early)
 
 ;; TODO: initial-buffer-choice vs spydez/auto-open-list???
 
@@ -911,18 +931,20 @@
 ;; TODO: require sanity
 ;;   - sanity ido-mode off?
 ;;   - sanity other things? emacs version complainer? platform complainer?
-(spydez/info/require 'finalize-sanity)
+(spydez/require 'finalize-sanity)
+(spydez/init/step/set-completed 'finalize 'sanity)
 
-(spydez/info/require 'finalize-boot-and-config)
+(spydez/require 'finalize-boot-and-config)
 
 ;; TODO: define shortcuts to frequently used files?
 ;;   http://pages.sachachua.com/.emacs.d/Sacha.html#org9750649
 ;; todo: rename something better for its function here instead of what
 ;; it happens to reside right now. `finalize-user-startup' or something
 ;; TODO: leaving off noerror until home domain works as desired there
-(spydez/info/require 'finalize-domain) ;; nil 'noerror)
+(spydez/require 'finalize-domain) ;; nil 'noerror)
+(spydez/init/step/set-completed 'finalize 'system)
 
-(spydez/info/require 'finalize-keybinds)
+(spydez/require 'finalize-keybinds)
 
 ;; TODO: move to a finalize probably?
 ;; Have a shell open and ready.
@@ -936,13 +958,11 @@
 ;; Choose a random one maybe. Have various things push their
 ;; help info for this into a list during use-package init or config...
 
-(spydez/info/require 'zzz-finalize)
-(setq spydez/message/warning/current-type '(spydez running))
+(spydez/require 'zzz-finalize)
+(spydez/init/step/set-completed 'finalize 'complete)
 (spydez/message/init "init.el...Ok. 3 2 1, let's go.")
-;; fin
 
-;; TODO: check out old cole-PC.emacs and bootstrap.el.
-;; old setup: https://github.com/spydez/emacs
-;; See how much this init.el can be reduced to minimum?
+(spydez/init/step/set-completed 'running 'none)
+;; fin
 
 ;; §-TODO-§ [2019-10-07]: proper ending. Maybe a nice poem or one art please.

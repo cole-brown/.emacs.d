@@ -130,12 +130,6 @@
 ;;-
 
 
-;;-
-;; (use-package is now bootstrapped)
-;;-
-(spydez/bootstrap/step-set 'package)
-
-
 ;;---
 ;; Post Use-Package Bootstrap
 ;;---
@@ -156,9 +150,11 @@
 Trying to let no-littering take care of most/all this.
 For the transition, maybe a func for checking..."
 
-  (if (not (spydez/bootstrap/step>= 'package))
-      (error "Can't tell if self-policing yet, %s"
-             "as we're not past the package stage of bootstrapping.")
+  (if (not (spydez/init/step/past 'bootstrap 'package))
+      (error (concat "Can't tell if self-policing yet, as we're not past "
+                     "the package stage of bootstrapping. At: %s. Want: %s.")
+             spydez/init/step/completed
+             '(bootstrap package))
 
     ;; Self-police if we don't have no-littering.
     (not (featurep 'no-littering))

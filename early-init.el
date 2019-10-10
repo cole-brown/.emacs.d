@@ -20,18 +20,18 @@
 ;; things to how they should be.
 ;;
 ;; See: https://github.com/search?q=early-init.el&type=Code
-(let ((post-type '(spydez post)))
+(let ((post-type '(spydez zeroth post)))
   (if (boundp 'early-init-file)
       ;; as in 'Power-On-Self-Test', not the HTTP thing.
-      (lwarn warn-type :warning
+      (lwarn post-type :warning
              "  %s:  %s! Emacs %s uses early-init proper."
-             warn-type
+             post-type
              "Update early-init.el for actual active duty"
              emacs-version)
 
   ;; Print out something that hopefully still conforms to nice function output
   ;; we won't have til after zeroth-debug...
-  (message "-> %s: early-init.el... Pre-history." post-type)))
+  (message ">> %s: early-init.el... Pre-history." post-type)))
 
 
 
@@ -66,7 +66,9 @@
 ;;---
 
 ;; This is, like, pre-pre-basics...
+(require 'zeroth-steps)
 (require 'zeroth-zero)
+(spydez/init/step/set-completed 'zeroth 'zero)
 
 ;; Now we're into the pre-basics, I guess.
 
@@ -75,7 +77,8 @@
 
 ;; Funcs, vars for my debugging/warning messages.
 (require 'zeroth-debug)
-;; debug helpers now loaded - including `spydez/info/require'
+;; debug helpers now loaded - including `spydez/require'
+(spydez/init/step/set-completed 'zeroth 'debug)
 
 ;;                                    ---
 ;;                                  -------
@@ -84,7 +87,7 @@
 ;;                                    ---
 
 ;; Funcs, vars for some very early strings/hashing.
-(spydez/info/require 'zeroth-funcs)
+(spydez/require 'zeroth-funcs)
 
 
 ;;------------------------------------------------------------------------------
@@ -96,7 +99,7 @@
 ;;---
 ;; Domain & System Setup
 ;;---
-(spydez/info/require 'zeroth-domains)
+(spydez/require 'zeroth-domains)
 
 
 ;;---
@@ -104,13 +107,13 @@
 ;;---
 
 ;; not in zeroth directory - in dev instead 
-(spydez/info/require 'master-list)
+(spydez/require 'master-list)
 
 
 ;;---
 ;; Directories
 ;;---
-(spydez/info/require 'zeroth-directories)
+(spydez/require 'zeroth-directories)
 
 ;;---
 ;; Load Path: The Basics
@@ -123,35 +126,12 @@
 ;; Could add a domain level if needed?
 (add-to-list 'load-path spydez/dir/dev/system-this) ;; most specific
 
-
-;;------------------------------------------------------------------------------
-;; The Steps.
-;;------------------------------------------------------------------------------
-
-(defconst spydez/bootstrap/steps '(nil
-                                   early
-
-                                   ;; system setup
-                                   default
-                                   specific
-
-                                   ;; significant steps
-                                   package
-
-                                   ;; finished
-                                   complete)
-  "These must be in an order that `spydez/bootstrap/step>=' understands. A more
-  complete step must be after a less. E.g. default and specific are similar, but
-  specific is better, so it is later in the list.")
-
-(defconst spydez/bootstrap/step-completed
-  'early ;; We are already done with early, so skip nil.
-  "See `spydez/bootstrap/steps' for acceptable values and approximate sequence.
-Compare with `spydez/bootstrap/step-at'")
+(spydez/init/step/set-completed 'zeroth 'system)
 
 
 ;;------------------------------------------------------------------------------
 ;; The End.
 ;;------------------------------------------------------------------------------
+(spydez/init/step/set-completed 'zeroth 'complete)
 ;; (provide 'early-init)
 ;; early-init ends here

@@ -5,6 +5,10 @@
 ;;--                    And Things to Make Them Better.                      --
 ;;-----------------------------------------------------------------------------
 
+;; §-TODO-§ [2019-10-10]: Derive a mode from special-mode for putting my special
+;; buffers into?
+;; (define-derived-mode messages-buffer-mode special-mode "Messages"
+;;   "Major mode used in the \"*Messages*\" buffer.")
 
 
 ;;------------------------------------------------------------------------------

@@ -81,6 +81,56 @@
 ;;     - dead link
 
 
+;;-----------------------------------------------------------------------------
+;; Pretty Init Messages in *Messages* Buffer?
+;;-----------------------------------------------------------------------------
+;; (require 'with)
+;; (with-feature 'zenburn
+;;   (zenburn-with-color-variables
+;;     (defface spydez/message/face/types-sep
+;;       `(;; (display . plist)
+
+;;         ;; display t matches everything...
+;;         (t
+;;          ;; face plist
+;;          (:foreground ,zenburn-fg-1)))
+;;       "my test face for finding out how to face"
+;;       :group 'spydez/group
+;;       )
+;;     (defface spydez/message/face/types
+;;       `(;; (display . plist)
+
+;;         ;; display t matches everything...
+;;         (t
+;;          ;; face plist
+;;          (:foreground ,zenburn-orange)))
+;;       "my test face for finding out how to face"
+;;       :group 'spydez/group
+;;       )
+;;     (defface spydez/message/face/gutter
+;;       `(;; (display . plist)
+
+;;         ;; display t matches everything...
+;;         (t
+;;          ;; face plist
+;;          (:foreground ,zenburn-yellow)))
+;;       "my test face for finding out how to face"
+;;       :group 'spydez/group
+;;       )
+;;     (defface spydez/message/face/text
+;;       `(;; (display . plist)
+
+;;         ;; display t matches everything...
+;;         (t
+;;          ;; face plist
+;;          (:foreground ,zenburn-default)))
+;;       "my test face for finding out how to face"
+;;       :group 'spydez/group
+;;       )))
+
+;; see `spydez/message/preserve-properties'
+
+
 ;;------------------------------------------------------------------------------
 ;; Cursor: Beacon
 ;;------------------------------------------------------------------------------

@@ -13,15 +13,11 @@
     - [ ] Get deadgrep working.
 
 
-  - [-] General To Do: [4/19]
-    - [ ] Make startup make more sense for where things come/came from?
-      - Was hard telling where to go for something without deadgrep or helpful...
-      - Especially the hooks. Make my hooks have what file put the hook in?
-
-    - [ ] steps... there's:
-      - `spydez/bootstrap/step-at', `spydez/bootstrap/step-completed'
-      - `spydez/message/warning/current-type'
-      - Function to set both 'types'? Combine them?
+  - [-] General To Do: [5/19]
+    - [-] Make startup make more sense for where things come/came from?
+      - [X] Was hard telling where to go for something without deadgrep or helpful...
+        - Made zeroth-steps.el. Made colors go into \*Messages* buffer for better glancability/grokking.
+      - [ ] Especially the hooks. Make my hooks have what file put the hook in?
 
     - [ ] spotify - fork, pull from my repo into submodule, do changes there, push request to github?
       - [ ] make sure that play func is defined in all comm modes
@@ -44,6 +40,7 @@
     - [ ] use-package: whitespace & neatness.
       - Two blank lines between keyword sections unless very simple.
       - Sections should have ";;---" around their keywords unless very simple.
+
     - [ ] Don't beacon in the minibuffer?
     - [ ] What is turning off auto-revert in csharp-mode? -_-
       - It was definitely off. But haven't had problems since that once.
@@ -69,6 +66,10 @@
     - [ ] configure-crypt needs babying... again... (again... (again?..))
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
         - https://arenzana.org/2019/04/emacs-org-mode/
+    - [X] steps... there's:
+      - `spydez/bootstrap/step-at', `spydez/bootstrap/step-completed'
+      - `spydez/message/warning/current-type'
+      - Function to set both 'types'? Combine them?
     - [X] Magit auto-commit is grabbing files I don't want it to again... :(
     - [X] whitespace-mode in csharp-mode with 100 fill column set in hook still hilights at 80... -_-
     - [X] Add to grab-bag hydra:

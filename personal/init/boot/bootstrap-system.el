@@ -3,56 +3,13 @@
 
 (require 'seq)
 
-;;------------------------------------------------------------------------------
-;; Helpers
-;;------------------------------------------------------------------------------
-
-(defun spydez/bootstrap/step-at (expected)
-  "Checks if bootstrap is at expected step of the process (exactly)."
-  (if (and (boundp 'spydez/bootstrap/step-completed)
-           (eq spydez/bootstrap/step-completed expected))
-      ;; Ok! All's well.
-      t
-
-    ;; Nopers.
-    (error (concat "Bootstrap: Sanity check failed. Expected to be at step "
-                   "'%s' but we're on '%s' instead.")
-           expected spydez/bootstrap/step-completed)
-    nil))
-
-
-(defun spydez/bootstrap/step>= (expected)
-  "Checks if bootstrap is at expected step of the process (exactly)."
-  ;; expected pos is either found in list, or very negative
-  (let ((exp-index (or (seq-position spydez/bootstrap/steps expected)
-                       -999))
-        ;; current pos is either found in list, or very positive
-        (curr-index (or (seq-position spydez/bootstrap/steps
-                                      spydez/bootstrap/step-completed)
-                        999)))
-    ;; So if one of those isn't found, we should have...
-    ;; -999 >=   N -> false
-    ;;    N >= 999 -> false
-    ;; Yeah? Ok.
-    (>= curr-index exp-index)))
-
-
-(defun spydez/bootstrap/step-set (current)
-  "Checks if bootstrap is at expected step of the process (exactly)."
-  (if (and (boundp 'spydez/bootstrap/step-completed)
-           (seq-contains spydez/bootstrap/steps current))
-      (setq spydez/bootstrap/step-completed current)
-    (error (concat "spydez/bootstrap/step-set: Cannot set current "
-                   "step to '%s'. Options: %s")
-           current spydez/bootstrap/steps)))
-
 
 ;;--------------------------Little Bit of Sanity...----------------------------
 ;;--                         Early Step Completed?                           --
 ;;-----------------------------------------------------------------------------
-(unless (spydez/bootstrap/step-at 'early)
-  (spydez/bootstrap/step-set 'default))
-;; step-at complains so we don't have to...
+(spydez/init/step/at 'bootstrap 'early)
+;; step/at complains so we don't have to... Just want the sanity check of
+;; calling it to be here.
 
 
 ;;-----------------------------------System------------------------------------
@@ -68,7 +25,7 @@
   (if (or (file-exists-p spydez/dir/dev/system-this)
           (not spydez/setup/system/additional-required))
       ;; a-ok - no need to do anything
-      (spydez/bootstrap/step-set 'specific)
+      (spydez/init/step/set-completed 'bootstrap '(system specific))
 
     ;; needs another step done?
     (spydez/message/warning
@@ -78,7 +35,7 @@
      (if spydez/setup/system/additional-required
          "(more setup required?)"
        (format "(setup file missing: %s" spydez/dir/dev/system-this)))
-    (spydez/bootstrap/step-set 'default)))
+    (spydez/init/step/set-completed 'bootstrap '(system default))))
  ;;!!!!!
  ;; AFTER SETUP IN master-list.el ONLY!
  ;;   If you need to create the system's dir for additional-setup, put cursor
@@ -123,25 +80,27 @@
    "  dir/system: %s" spydez/dir/dev/system-this)
 
   ;; And we're only done w/ default bootstrap.
-  (spydez/bootstrap/step-set 'default)))
+  (spydez/init/step/set-completed 'bootstrap '(system default))))
 
 
 ;;--------------------------Little Bit of Sanity...----------------------------
 ;;--                   "How was bootstrap today, Honey?"                     --
 ;;-----------------------------------------------------------------------------
 ;; Not too much sanity.
-(cond ((spydez/bootstrap/step-at 'specific) t) ;; good to go
+(cond ((spydez/init/step/at 'bootstrap '(system specific))
+       ;; good to go
+       t)
 
       ;; using default - should probably warn
-      ((spydez/bootstrap/step-at 'default)
+      ((spydez/init/step/at 'bootstrap '(system default))
        (spydez/message/warning nil nil
            "Specific bootstrap does not exist for this computer: %s %s"
-           spydez/bootstrap/step-completed spydez/setup/system/hash))
+           spydez/init/step/completed spydez/setup/system/hash))
 
       ;; fallthrough cases - nothing used
       (t (error (spydez/message/warning nil nil
                     "Bootstrap: No bootstrap at all for this computer?: %s %s"
-                    spydez/bootstrap/step-completed spydez/setup/system/hash))))
+                    spydez/init/step/completed spydez/setup/system/hash))))
 
 
 ;;------------------------------------------------------------------------------

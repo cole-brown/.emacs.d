@@ -20,7 +20,7 @@
 ;; helper for secrets-requiring stuff?
 
 ;; First (try to) load the auth secrets
-(if (not (spydez/info/require 'spotify-auth nil 'noerror))
+(if (not (spydez/require 'spotify-auth nil 'noerror))
     (spydez/message/warning
      nil :error
      (concat "Cannot setup Spotify.el package correctly. "
