@@ -24,14 +24,35 @@
 ;; Init Hooks of My Own?
 ;;------------------------------------------------------------------------------
 
-(defvar spydez/hook/finalize/run-boot-and-config-hooks nil
-  "Add hooks to here for running at beginning of 'finalize' step of init.")
-;; spydez/hook/finalize/run-hooks
+;; ;; §-TODO-§ [2019-10-10]: This one is better... maybe?
+;; ;; See finalize domain for use attempts...
+;; (defmacro spydez/hook/defun (name &rest body)
+;;   "Turns HOOK-FN into a closure with a helpful
+;; steal of the file-name this macro is called from."
+;;   `(let ((fn ,name))
+;;      ;; §-TODO-§ [2019-10-10]: defun part?
+;;      (spydez/message/info/when '(,@spydez/init/step/completed)
+;;                                "Running hook `%s' from %s..."
+;;                                fn ,(buffer-name))
+;;      ,@body))
+
+;; [2019-10-10]: This is fucky too...
+;; ;; This could go with spydez/message/* things or here with hook things...
+;; ;; *shrug*
+;; ;; But if I switch to a better macro it belongs here so stay here with this?
+;; (defmacro spydez/message/hook/info (fn-symbol)
+;;   "Easy lil' macro to chuck message with FN-SYMBOL and buffer name into hooks."
+;;   `(let ((fn ,fn-symbol))
+;;      (spydez/message/info/when '(,@spydez/init/step/completed)
+;;                                "Running hook `%s' from %s..."
+;;                                fn ,(buffer-name))))
 
 
-(defvar spydez/hook/finalize/run-the-final-hooks nil
+(defvar spydez/hook-runner/finalize/boot-and-config nil
   "Add hooks to here for running at beginning of 'finalize' step of init.")
-;; spydez/hook/finalize/run-hooks
+
+(defvar spydez/hook-runner/finalize/final-finalities nil
+  "Add hooks to here for running at beginning of 'finalize' step of init.")
 
 
 ;;------------------------------------------------------------------------------

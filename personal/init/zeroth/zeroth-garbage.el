@@ -49,7 +49,7 @@
                                file-name-handler-alist
                                spydez/file-name-handler-alist/orig)))))
 
-(add-hook 'spydez/hook/finalize/run-boot-and-config-hooks
+(add-hook 'spydez/hook-runner/finalize/boot-and-config
           'spydez/file-name-handler-alist/revert)
 
 

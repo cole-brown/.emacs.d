@@ -16,7 +16,7 @@
 ;;------------------------------------------------------------------------------
 
 ;; Run it!
-(run-hooks 'spydez/hook/finalize/run-boot-and-config-hooks)
+(run-hooks 'spydez/hook-runner/finalize/boot-and-config)
 
 ;;------------------------------------------------------------------------------
 ;; Tasks, Wants, Feature Requests, etc.

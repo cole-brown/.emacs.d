@@ -23,6 +23,15 @@
 ;; Auto-Open Files
 ;;------------------------------------------------------------------------------
 
+;; §-TODO-§ [2019-09-21]: make this an alist, with (action . path). actions:
+;; 'bury, 'default/nil, 'show, 'the-one
+;;   - bury: open, then call `bury-buffer'
+;;   - default: open, then it's done
+;;   - show: open, add to list of 'to-be-summoned-to-top'.
+;;     - once all auto-open opened, bring to top in order.
+;;   - the-one: Open after everything is done. Be on top, shown.
+;;     - There can be only one.
+
 ;; auto-open this file list at end of emacs init/setup
 ;; setq to just override the whole thing
 (defvar spydez/file/auto-open-list
@@ -56,7 +65,8 @@
   (if (and window-system (bound-and-true-p spydez/file/auto-open-list))
       (dolist (file spydez/file/auto-open-list)
         (find-file file))))
-(add-hook 'spydez/hook/finalize/run-the-final-hooks
+
+(add-hook 'spydez/hook-runner/finalize/final-finalities
           'spydez/hook/auto-open-files)
 
 

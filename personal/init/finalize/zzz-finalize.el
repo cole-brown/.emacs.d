@@ -5,7 +5,7 @@
 ;;------------------------------------------------------------------------------
 
 ;; Run it!
-(run-hooks 'spydez/hook/finalize/run-the-final-hooks)
+(run-hooks 'spydez/hook-runner/finalize/final-finalities)
 
 
 ;;------------------------------------------------------------------------------
