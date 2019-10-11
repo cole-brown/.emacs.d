@@ -111,7 +111,8 @@
   ;;----------
   :init
   ;;----------
-  (defun spydez/hook/whitespace-mode/org-mode ()
+  (spydez/hook/defun org-mode-hook t
+      "whitespace-mode" "org-mode" "init/config/configure-whitespace.el"
     "I like some whitespace-mode stuff in org-mode, but want less
 than other modes."
     ;; make a local copy of whitespace-style we can modify and...

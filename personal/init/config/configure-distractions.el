@@ -127,7 +127,8 @@ modeline. This should take over from `spotify-update-mode-line'."
          `spotify-remote-mode'. Nil if it hasn't been entered yet, or if it has
          been used to exit and tear-down `spotify-remote-mode'.")
 
-      (defun spydez/hook/spotify-mode ()
+      (spydez/hook/defun-and-hooker spotify-remote-mode-hook t
+          nil nil "init/config/configure-distractions.el"
         "Hook to enable/disable Spotify-Mode status in Frame Title."
         ;; skip setup/teardown?
         (unless (eq spotify-remote-mode spydez/hook/spotify/entered)
@@ -156,11 +157,6 @@ modeline. This should take over from `spotify-update-mode-line'."
               ;; and un-steal `spotify-update-mode-line'
               (fset #'spotify-update-mode-line
                     #'spydez/spotify/orig-fn/spotify-update-mode-line)))))
-
-      (add-hook 'spotify-remote-mode-hook 'spydez/hook/spotify-mode)
-      ;; (add-hook 'global-spotify-remote-mode-hook 'spydez/hook/spotify-mode)
-      ;; global-spotify-remote-mode-hook
-      ;; spotify-remote-mode-hook
 
       ;; Either use spotify-remote-mode as wanted, or turn on globally:
       ;; (progn (setq debug-on-error t) (global-spotify-remote-mode))

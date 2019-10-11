@@ -17,7 +17,13 @@
 ;; Testing startup aka (emacs-init-time)
 ;;   without this:   ~5.5 sec
 ;;   with:         -> 4.6 sec
-(defun spydez/file-name-handler-alist/revert ()
+(spydez/hook/defun-and-hooker
+    spydez/hook-runner/finalize/boot-and-config nil
+    "spydez/file-name-handler-alist/revert"
+    nil
+    "init/zeroth/zeroth-garbage.el"
+  "Reverts file-name-handler-alist to original value. Will try to
+merge if junk was added meanwhile."
   (cond
    ;; both null - who cares
    ((and (null file-name-handler-alist)
@@ -48,9 +54,6 @@
     (seq-uniq (seq-concatenate 'list
                                file-name-handler-alist
                                spydez/file-name-handler-alist/orig)))))
-
-(add-hook 'spydez/hook-runner/finalize/boot-and-config
-          'spydez/file-name-handler-alist/revert)
 
 
 ;;------------------------------------------------------------------------------

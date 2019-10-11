@@ -50,7 +50,8 @@
   ;;   - Con: This doesn't update until point has moved off the line... Possibly
   ;;     interacting with my highlight row thing/mode?
   ;; Nice lil search for symbols: http://www.unicode.org/charts/
-  (defun spydez/hook/org-mode/checkboxes ()
+  (spydez/hook/defun org-mode-hook t
+      nil "checkboxes" "init/config/configure-org-mode.el"
     "Beautify Org Checkbox Symbol"
     (setq prettify-symbols-alist
           '(("[ ]" . "☐")
@@ -75,7 +76,8 @@
 
   ;; Show list markers with a middle dot instead of the
   ;; original character.
-  (defun spydez/hook/org-mode/simple-list ()
+  (spydez/hook/defun org-mode-hook t
+      nil "simple-list" "init/config/configure-org-mode.el"
     "Nice up simple lists - replacing hypen with a unicode middle dot."
     (font-lock-add-keywords
      nil ;; 'org-mode - some org-mode stuff (e.g. org-journal) is a derived
@@ -83,8 +85,7 @@
          ;; be `nil' and put in the org-mode hook.
      '(("^ *\\([-]\\) "
         (0 (prog1 () (compose-region (match-beginning 1)
-                                     (match-end 1) "•"))))))
-    )
+                                     (match-end 1) "•")))))))
 
   ;;   "Enable Speed Keys, which allows quick single-key commands when the
   ;; cursor is placed on a heading. Usually the cursor needs to be at the
@@ -109,8 +110,8 @@
   ;; Org-Mode Hooks
   ;;----------------------------------------------------------------------------
   :hook
-  ((org-mode . spydez/hook/org-mode/checkboxes)
-   (org-mode . spydez/hook/org-mode/simple-list))
+  ((org-mode . spydez/hook/org-mode-hook/checkboxes)
+   (org-mode . spydez/hook/org-mode-hook/simple-list))
   ;;-----------------
   ;; /':hook' section
   ;;-----------------

@@ -54,12 +54,15 @@
   )
 
 ;; My actual C++ hook - just the default for now
-(defun spydez/hook/c++-mode ()
-  (spydez/hook/c-common-mode)
-  )
+(spydez/hook/defun c++-mode-hook t nil nil "init/config/configure-cpp.el"
+  "Hook for C++-mode, specifically.
+As opposed to c-mode or other derived modes."
+  (spydez/hook/c-common-mode))
 
 ;; My actual C hook - just the default for now
-(defun spydez/hook/c-mode ()
+(spydez/hook/defun c-mode-hook t nil nil "init/config/configure-cpp.el"
+  "Hook for C++-mode, specifically.
+As opposed to c-mode or other derived modes."
   (spydez/hook/c-common-mode))
 
 
@@ -70,8 +73,8 @@
 ;; TODO: check this https://github.com/dholm/dotemacs/blob/master/.emacs.d/lisp/modes/c-c%2B%2B.el
 (use-package cc-mode
   ;; TODO: switch all package hook from add-hook to this if possible?
-  :hook ((c++-mode-hook . spydez/hook/c++-mode)
-         (c-mode-hook . spydez/hook/c-mode))
+  :hook ((c++-mode-hook . spydez/hook/c++-mode-hook)
+         (c-mode-hook . spydez/hook/c-mode-hook))
 
   :config
   (add-to-list 'auto-mode-alist '("\\.cxx$" . c++-mode))

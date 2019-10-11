@@ -78,8 +78,9 @@
     (flycheck-mode)))
 
 
-(defun spydez/hook/lsp-deferred ()
-  "General LSP hook for any mode."
+(spydez/hook/defun 'lsp-mode-hook t
+    "lsp-deferred" nil "init/config/configure-lsp.el"
+  "General LSP hook for any mode. Defers LSP startup until buffer is visible."
   (if (not (spydez/packages/enabled-p 'lsp-mode))
       (spydez/message/debug
        '(spydez debug hook)
@@ -88,8 +89,9 @@
     (spydez/hook/lsp-generic #'lsp-deferred)))
 
 
-(defun spydez/hook/lsp-immediate ()
-  "General LSP hook for any mode."
+(spydez/hook/defun 'lsp-mode-hook t
+    "lsp-immediate" nil "init/config/configure-lsp.el"
+  "General LSP hook for any mode. Starts LSP immediately."
   (if (not (spydez/packages/enabled-p 'lsp-mode))
       (spydez/message/debug
        '(spydez debug hook)

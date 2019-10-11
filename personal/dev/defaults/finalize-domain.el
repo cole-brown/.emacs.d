@@ -61,13 +61,17 @@
 
 ;; TODO: should put this in a common place instead of here
 ;; TODO: split frame, open these in other-window?
-(defun spydez/hook/auto-open-files ()
+(spydez/hook/defun-and-hooker
+    spydez/hook-runner/finalize/final-finalities nil
+    "auto-open-files"
+    nil
+    "dev/defaults/finalize-domain.el"
+  "Opens files defined in `spydez/file/auto-open-list'."
   (if (and window-system (bound-and-true-p spydez/file/auto-open-list))
       (dolist (file spydez/file/auto-open-list)
         (find-file file))))
-
-(add-hook 'spydez/hook-runner/finalize/final-finalities
-          'spydez/hook/auto-open-files)
+;; (setq spydez/hook-runner/finalize/final-finalities nil)
+;; (run-hook 'spydez/hook-runner/finalize/final-finalities)
 
 
 ;;------------------------------------------------------------------------------

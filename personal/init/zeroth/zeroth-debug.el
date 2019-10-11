@@ -149,7 +149,8 @@ should be of length `spydez/message/indent-gutter'."
 
 (defconst spydez/init-debug t) ;; nil)
 (defun spydez/debugging-p ()
-  (bound-and-true-p spydez/init-debug))
+  (or (bound-and-true-p spydez/init-debug)
+      (bound-and-true-p debug-on-error)))
 
 
 ;;-----------------------------------------------------------------------------
@@ -265,6 +266,21 @@ M-x list-faces-display for all defined faces. Call with a propertized string."
 ;;   (propertize "┤:" 'face 'font-lock-comment-delimiter-face)
 ;;   " "
 ;;   (propertize "early-init.el... Zeroth step." 'face 'default)))
+
+;; §-TODO-§ [2019-10-11]: Try font-lock mode instead of string properties?
+;; Could add auto detect of my file names, maybe.
+;; And other "arrorws"...
+;; and 'require'...
+;;
+;; (spydez/hook/defun example-hook t
+;;     nil "simple-list" "init/config/configure-jeff.el"
+;;   "Nice up simple lists - replacing hypen with a unicode middle dot."
+;;   (font-lock-add-keywords
+;;    nil ;; if in a derived mode, doing font lock in a hook could be easier...
+;;    '(("^ *\\([-]\\) "
+;;       (0 (prog1 () (compose-region (match-beginning 1)
+;;                                    (match-end 1) "•")))))))
+
 
 
 ;;-----

@@ -31,6 +31,19 @@ components; they are expected to be valid."
 ;; (spydez/path/to-dir spydez/dir/home "personal" "something" "zort")
 
 
+(defun spydez/path/to-relative (&optional path root)
+  "Given a possibly absolute PATH, try to trim out ROOT. If both
+nil, returns file name."
+  (interactive)
+  (let ((path (or path (buffer-file-name)))
+        (root (or root "")))
+    (s-replace (file-name-as-directory  ;; make sure to have an ending slash
+                (expand-file-name root)) ;; and expand it out fully
+               "" ;; replace with nothing
+               (expand-file-name path)))) ;; make sure we're all expanded here too.
+;; (spydez/path/to-relative spydez/dir/dev/system-this spydez/dir/emacs/personal)
+;; (spydez/path/to-relative)
+
 ;; There are some existing packages for dealing with windows->unix or unix->windows paths...
 ;;   Windows emacs, Cygwin paths: https://www.emacswiki.org/emacs/cygwin-mount.el
 ;;   Cygwin/WSL emacs, win paths: https://github.com/victorhge/windows-path

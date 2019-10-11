@@ -25,8 +25,9 @@
 ;; From https://github.com/cbaggers/dotemacs/blob/master/init/csharp.el
 
 ;; Some from old emacs config, some from someone else's.
-(defun spydez/hook/csharp-mode ()
-;;; <my old emacs>
+(spydez/hook/defun csharp-mode-hook t nil nil "init/config/configure-csharp.el"
+  "Sets up csharp-mode, which is not derived from cc-mode, so do
+All The Things!"
 
   ;; Use BSD in C, C++. Used to use it in C#.
   ;; But now C# shares a style with Java, so see if that's better.
@@ -56,20 +57,19 @@
 
   ;; line numbers already on globally
 
-;;; </my old emacs>
-
-  ;; TODO: I probably want most or all of these, or some competing package/feature
+  ;; §-TODO-§ [2019-10-11]: I probably want most or all of these, or some
+  ;;   competing package/feature
   ;; (paredit-mode 1)
-  ;; (omnisharp-mode 1)
   ;; (my/disable-paredit-spaces-before-paren)
   ;; (company-mode 1)
   ;; (yas-minor-mode 1)
   ;; (flycheck-mode 1)
 
-  ;; TODO: check out these ideas from: https://github.com/dholm/dotemacs/blob/master/.emacs.d/lisp/modes/c-c%2B%2B.el
-  ;; TODO: enable/disable in c-common-hook as well.
+  ;; §-TODO-§ [2019-10-11]: check out these ideas from:
+  ;;   https://github.com/dholm/dotemacs/blob/master/.emacs.d/lisp/modes/c-c%2B%2B.el
+  ;; §-TODO-§ [2019-10-11]: enable/disable in c-common-hook as well.
 
-  ;; Separate camel-case into separate words.
+  ;; Separate camel-case into separate words?
   ;; (subword-mode t)
   )
 
@@ -78,7 +78,7 @@
   ;;---
   :hook
   ;;---
-  (csharp-mode . spydez/hook/csharp-mode)
+  (csharp-mode . spydez/hook/csharp-mode-hook)
 
 
   ;; TODO: and... again with the do-i-want-this-i-don't-know-yet
@@ -106,7 +106,11 @@
   ;;---
   :preface
   ;;---
-  (defun spydez/hook/csharp-mode/omnisharp ()
+  ;; §-TODO-§ [2019-10-11]: Move to omnisharp?
+  (spydez/hook/defun
+      csharp-mode-hook t nil "omnisharp"
+      "init/config/configure-csharp.el"
+    "Hook OmniSharp into C#-Mode."
     (omnisharp-mode)
     (add-to-list 'company-backends #'company-omnisharp)
     (company-mode))
@@ -127,7 +131,7 @@
   ;;---
   :hook
   ;;---
-  (csharp-mode . spydez/hook/csharp-mode/omnisharp)
+  (csharp-mode . spydez/hook/csharp-mode-hook/omnisharp)
 
   ;;---
   :config

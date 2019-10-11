@@ -31,7 +31,10 @@
   ;; TODO: few to check here: https://www.emacswiki.org/emacs/EmacsLispMode
 
   ;; Setup my elisp mode hook
-  (defun spydez/hook/emacs-lisp-mode ()
+  (spydez/hook/defun emacs-lisp-mode-hook t
+      nil nil
+      "init/config/configure-elisp.el"
+    "Hook into emacs-lisp-mode."
     ;; TODO: more settings for elisp?
     (setq tab-width spydez/dev-env/tab/min) ;; lisp gets the smaller tab width
     (bind-key "C-x C-e" 'pp-eval-last-sexp emacs-lisp-mode-map))
@@ -39,7 +42,7 @@
   ;;---
   :hook
   ;;---
-  (emacs-lisp-mode . spydez/hook/emacs-lisp-mode))
+  (emacs-lisp-mode . spydez/hook/emacs-lisp-mode-hook))
 
 
 ;;------------------------------------------------------------------------------
