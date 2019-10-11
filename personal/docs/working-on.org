@@ -13,14 +13,17 @@
     - [ ] Get deadgrep working.
 
 
-  - [-] General To Do: [5/19]
+  - [-] General To Do: [6/19]
     - [-] Make startup make more sense for where things come/came from?
       - [X] Was hard telling where to go for something without deadgrep or helpful...
         - Made zeroth-steps.el. Made colors go into \*Messages* buffer for better glancability/grokking.
       - [ ] Especially the hooks. Make my hooks have what file put the hook in?
 
-    - [ ] spotify - fork, pull from my repo into submodule, do changes there, push request to github?
-      - [ ] make sure that play func is defined in all comm modes
+    - [-] spotify - fork, pull from my repo into submodule, do changes there, push request to github?
+      - [X] make sure that play func is defined in all comm modes
+        - Gave pull request.
+          - Got denied. :/
+          - They did the opposite instead. :'(
       - [ ] frame vs modeline updates?
       - [ ] Hydra?
       - [ ] A changable prefix for mode map?
@@ -42,9 +45,6 @@
       - Sections should have ";;---" around their keywords unless very simple.
 
     - [ ] Don't beacon in the minibuffer?
-    - [ ] What is turning off auto-revert in csharp-mode? -_-
-      - It was definitely off. But haven't had problems since that once.
-      - May be going crazy.
     - [-] LSP mode for python
       - [ ] more work to get it to... useful and not annoying?
         - [ ] It has... an amazing amount of memory hogging/leaking going on...
@@ -66,6 +66,9 @@
     - [ ] configure-crypt needs babying... again... (again... (again?..))
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
         - https://arenzana.org/2019/04/emacs-org-mode/
+    - [X] What is turning off auto-revert in csharp-mode? -_-
+      - It was definitely off. But haven't had problems since that once.
+      - [X] Nothing? Seems fine? May be going crazy.
     - [X] steps... there's:
       - `spydez/bootstrap/step-at', `spydez/bootstrap/step-completed'
       - `spydez/message/warning/current-type'
