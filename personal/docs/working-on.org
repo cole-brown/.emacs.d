@@ -11,6 +11,9 @@
 
   - [ ] Home Domain To Do: [0/1]
     - [ ] Get deadgrep working.
+      - [ ] Need a "(with-system (system-type version)) ...)" I think.
+        - I'm getting bash from c:/system32... Which is probably good(?), but that one doesn't seem to like rg->rg.exe.
+        - Or fix use-tool to override that nonsense?
 
 
   - [-] General To Do: [6/19]

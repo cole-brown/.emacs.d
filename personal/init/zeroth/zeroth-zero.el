@@ -24,28 +24,32 @@
 ;; Init Hooks of My Own?
 ;;------------------------------------------------------------------------------
 
-;; ;; §-TODO-§ [2019-10-10]: This one is better... maybe?
-;; ;; See finalize domain for use attempts...
-;; (defmacro spydez/hook/defun (name &rest body)
-;;   "Turns HOOK-FN into a closure with a helpful
-;; steal of the file-name this macro is called from."
-;;   `(let ((fn ,name))
-;;      ;; §-TODO-§ [2019-10-10]: defun part?
-;;      (spydez/message/info/when '(,@spydez/init/step/completed)
-;;                                "Running hook `%s' from %s..."
-;;                                fn ,(buffer-name))
-;;      ,@body))
+;; §-TODO-§ [2019-10-10]: Start using this for spydez/hook-runner/*?
+;; from here:
+;; https://www.reddit.com/r/emacs/comments/1m7fqv/avoid_lambda_in_hooks_use_defun_instead/cc83axz/
+(defmacro spydez/hook/defun-and-hooker (hook-var &optional postfix &rest body)
+  "Macro that `defun's a function called
+'spydez/hook/<HOOK-VAR-symbol-name>' or
+'spydez/hook/<HOOK-VAR-symbol-name>/<POSTFIX>' with body of
+BODY. Then hooks it into HOOK-VAR via `add-hook'."
+  (declare (indent 1))
+  (let* ((hook-fn-name (concat "spydez/hook/"
+                               (symbol-name hook-var)
+                               (when postfix
+                                 (concat "/" postfix))))
+         (hook-fn (intern hook-fn-name)))
+    `(progn
+       (defun ,hook-fn ()
+         (spydez/message/info/when '(,@spydez/init/step/completed)
+                               "Running hook `%s' from %s..."
+                                ,hook-fn-name ,(buffer-name))
 
-;; [2019-10-10]: This is fucky too...
-;; ;; This could go with spydez/message/* things or here with hook things...
-;; ;; *shrug*
-;; ;; But if I switch to a better macro it belongs here so stay here with this?
-;; (defmacro spydez/message/hook/info (fn-symbol)
-;;   "Easy lil' macro to chuck message with FN-SYMBOL and buffer name into hooks."
-;;   `(let ((fn ,fn-symbol))
-;;      (spydez/message/info/when '(,@spydez/init/step/completed)
-;;                                "Running hook `%s' from %s..."
-;;                                fn ,(buffer-name))))
+         ;; §-TODO-§ [2019-10-10]: add message here...
+         ,@body)
+       (add-hook ',hook-var #',hook-fn))))
+;; (setq test-hook nil)
+;; (spydez/hook/defun-and-hooker test-hook nil (message "Hello there."))
+;; (run-hooks 'test-hook)
 
 
 (defvar spydez/hook-runner/finalize/boot-and-config nil
