@@ -16,26 +16,23 @@
         - Or fix use-tool to override that nonsense?
 
 
-  - [-] General To Do: [7/21]
+  - [-] General To Do: [0/15]
     - [ ] Add "with-nil" to with.el?
       - For e.g. (with-nil 'jeff (stringp 'jeff) ) so that becomes...
         - (when (and (not (null 'jeff) (stringp 'jeff)) ,@body)
         - or maybe pass in list of things that shouldn't be nil? \*shrug*
 
-    - [-] spotify - fork, pull from my repo into submodule, do changes there, push request to github?
-      - [X] make sure that play func is defined in all comm modes
-        - Gave pull request.
-          - Got denied. :/
-          - They did the opposite instead. :'(
-      - [ ] frame vs modeline updates?
-      - [ ] Hydra?
-      - [ ] A changable prefix for mode map?
+    - [ ] spotify - status in hydra
 
+    - [ ] spotify - fork, pull from my repo into submodule, do changes there, push request to github?
+      - [ ] frame vs modeline updates
+        - Is theirs acting ok? Was fucky when I first switched to it.
     - [ ] headache tracker?
       - org-journal + default-directory -> headache entries in separate journal from primary
 
     - [ ] a bury/kill buffer that won't switch to a file that's being viewed in another buffer
       - bare start: [[file:~/.emacs.d/personal/init/config/configure-emacs.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-01%5D:][here]]
+      - whatever help buffer does on q restores previous buffer... that could be a start.
 
     - [ ] use-package: keybinds again
       - yank all binds that shouldn't lazy load package out into config or something
@@ -55,6 +52,7 @@
       - [ ] flycheck
       - [X] Lines judder and jump a bit - may be lsp-ui causing it?
         - Fixed by moving to different font.
+
     - [ ] Look at magit-lfs? Does it do anything I want?
       - [ ] LFS first, then:
       - [ ] Look at magit-svn? Does it do anything I want?
@@ -73,29 +71,6 @@
     - [ ] configure-crypt needs babying... again... (again... (again?..))
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
         - https://arenzana.org/2019/04/emacs-org-mode/
-    - [X] Make startup make more sense for where things come/came from?
-      - [X] Was hard telling where to go for something without deadgrep or helpful...
-        - Made zeroth-steps.el. Made colors go into \*Messages* buffer for better glancability/grokking.
-      - [X] Especially the hooks. Make my hooks have what file put the hook in?
-    - [X] What is turning off auto-revert in csharp-mode? -_-
-      - It was definitely off. But haven't had problems since that once.
-      - [X] Nothing? Seems fine? May be going crazy.
-    - [X] steps... there's:
-      - `spydez/bootstrap/step-at', `spydez/bootstrap/step-completed'
-      - `spydez/message/warning/current-type'
-      - Function to set both 'types'? Combine them?
-    - [X] Magit auto-commit is grabbing files I don't want it to again... :(
-    - [X] whitespace-mode in csharp-mode with 100 fill column set in hook still hilights at 80... -_-
-    - [X] Add to grab-bag hydra:
-      - [X] "(book)mark §" - just the symbol, no colon.
-      - [X] "search §"
-      - [X] "search sig..." to grab-bag.
-        - +Goes into a sub-hydra for searching exactly each sig, same keys as inserting 'em.+
-        - Turns out I have a function for this I just gotta call.
-    - [X] deadgrep: tweak starting dir of search?
-      - [X] webstaging: search needs to go down to root
-      - [X] depot/dev: search needs to stay up in dev instead of going down to depot
-      - (run-hook-with-args-until-success 'project-find-functions "c:/depot/dev/Pathfinder_Client/Login/CharacterSelectionGui.cs")
 
 
 Tabs:
@@ -122,7 +97,47 @@ Soon™ things?
     - https://github.com/dzop/emacs-zmq
 
 
-* Completed Things [8/8]
+* Completed Things [9/9]
+
+** DONE [2019-10-11] A list of things that are done now [8/8]
+CLOSED: [2019-10-11 Fri 15:09]
+:LOGBOOK:
+- State "DONE"       from              [2019-10-11 Fri 15:09]
+:END:
+
+    - [X] spotify - fork, pull from my repo into submodule, do changes there, push request to github?
+      - [X] Hydra?
+        - Meh. I like mine and they'll just change it.
+      - [X] make sure that play func is defined in all comm modes
+        - Gave pull request.
+          - Got denied. :/
+          - They did the opposite instead. :'(
+      - [X] +A changable prefix for mode map?+
+        - Someone got there first
+    - [X] Make startup make more sense for where things come/came from?
+      - [X] Was hard telling where to go for something without deadgrep or helpful...
+        - Made zeroth-steps.el. Made colors go into \*Messages* buffer for better glancability/grokking.
+      - [X] Especially the hooks. Make my hooks have what file put the hook in?
+    - [X] What is turning off auto-revert in csharp-mode? -_-
+      - It was definitely off. But haven't had problems since that once.
+      - [X] Nothing? Seems fine? May be going crazy.
+    - [X] steps... there's:
+      - `spydez/bootstrap/step-at', `spydez/bootstrap/step-completed'
+      - `spydez/message/warning/current-type'
+      - Function to set both 'types'? Combine them?
+    - [X] Magit auto-commit is grabbing files I don't want it to again... :(
+    - [X] whitespace-mode in csharp-mode with 100 fill column set in hook still hilights at 80... -_-
+    - [X] Add to grab-bag hydra:
+      - [X] "(book)mark §" - just the symbol, no colon.
+      - [X] "search §"
+      - [X] "search sig..." to grab-bag.
+        - +Goes into a sub-hydra for searching exactly each sig, same keys as inserting 'em.+
+        - Turns out I have a function for this I just gotta call.
+    - [X] deadgrep: tweak starting dir of search?
+      - [X] webstaging: search needs to go down to root
+      - [X] depot/dev: search needs to stay up in dev instead of going down to depot
+      - (run-hook-with-args-until-success 'project-find-functions "c:/depot/dev/Pathfinder_Client/Login/CharacterSelectionGui.cs")
+
 ** DONE [2019-10-08] A list of things that are done now [11/11]
 CLOSED: [2019-10-08 Tue 13:25]
 :LOGBOOK:

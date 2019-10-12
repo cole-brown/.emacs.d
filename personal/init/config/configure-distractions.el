@@ -58,14 +58,19 @@
       ;; Refresh rate in seconds.
       ;; This has to make an API call every time, so... don't overdo it and
       ;; throttle yourself.
-      (spotify-mode-line-refresh-interval 10)
+      (spotify-player-status-refresh-interval 10)
 
-      ;; spotify-mode-line-format: default is "[%p: %a - %t ◷ %l %r%s]"
-      ;;   - https://github.com/danielfm/spotify.el#customizing-the-mode-line
+      ;; Put status in title-bar instead of modeline
+      (spotify-status-location 'title-bar)
+
+      ;; spotify-player-status-format: default is "[%p: %a - %t ◷ %l %r%s]"
+      ;;   - https://github.com/danielfm/spotify.el#customizing-the-player-status
       ;; I don't have that nice clock symbol in my font, do I?
       ;; §-TODO-§ [2019-10-03]: Remove unicode icon if I don't have it?
       ;; §-TODO-§ [2019-10-03]: or all-the-icons it?
-      (spotify-mode-line-format "    <<Spotify: [%r%s %p: %a - %t (T%l)]>>")
+      (spotify-player-status-format "╠ <Spotify: [%r%s %p: %a - %t (T%l)]> ╣")
+      (spotify-title-bar-separator "      ┅┅      ")
+      ;; frame-title-format
 
       ;; Do I have unicode media icons? Doesn't seem so. :/
       ;;   Play:         ▶ / ▶️
@@ -76,23 +81,24 @@
       ;;   Skip Forward: ⏭ / ⏭️
       ;;   Shuffle:      🔀 / 🔀️
       ;;   Repeat:       🔁 / 🔁️
-      ;; (spotify-mode-line-playing-text       "▶")
-      ;; (spotify-mode-line-paused-text        "⏸")
-      ;; (spotify-mode-line-stopped-text       "⏹")
-      ;; (spotify-mode-line-repeating-text     "🔁")
-      ;; (spotify-mode-line-not-repeating-text "-")
-      ;; (spotify-mode-line-shuffling-text     "🔀")
-      ;; (spotify-mode-line-not-shuffling-text "-")
+      ;; (spotify-player-status-playing-text       "▶")
+      ;; (spotify-player-status-paused-text        "⏸")
+      ;; (spotify-player-status-stopped-text       "⏹")
+      ;; (spotify-player-status-repeating-text     "🔁")
+      ;; (spotify-player-status-not-repeating-text "-")
+      ;; (spotify-player-status-shuffling-text     "🔀")
+      ;; (spotify-player-status-not-shuffling-text "-")
       ;; §-TODO-§ [2019-10-03]: Does all-the-icons have right icons and work?
-      (spotify-mode-line-playing-text       "p")
-      (spotify-mode-line-paused-text        "-")
-      (spotify-mode-line-stopped-text       "x")
-      (spotify-mode-line-repeating-text     "R")
-      (spotify-mode-line-not-repeating-text "-")
-      (spotify-mode-line-shuffling-text     "S")
-      (spotify-mode-line-not-shuffling-text "-")
+      (spotify-player-status-playing-text       "p")
+      (spotify-player-status-paused-text        "-")
+      (spotify-player-status-stopped-text       "x")
+      (spotify-player-status-repeating-text     "R")
+      (spotify-player-status-not-repeating-text "-")
+      (spotify-player-status-shuffling-text     "S")
+      (spotify-player-status-not-shuffling-text "-")
 
-      ;; (spotify-mode-line-truncate-length 10) ;; default: 15
+      ;; (spotify-player-status-truncate-length 10) ;; default: 15
+
 
       ;;---
       :config
@@ -104,59 +110,153 @@
       (setq spotify-oauth2-client-id     spydez/secrets/spotify/client-id)
       (setq spotify-oauth2-client-secret spydez/secrets/spotify/client-secret)
 
-      ;; Currently Playing Info:
-      ;;   Put in frame title? Modeline is full...
-      ;; Take over this, maybe: `spotify-update-mode-line'
-      (defun spydez/frame/spotify/update-status (str)
-        "Sets the given str to the frame title instead of the
-modeline. This should take over from `spotify-update-mode-line'."
-        (when (not (string= str spotify-mode-line))
-          (setq spotify-mode-line str)
-          ;; There isn't a straight-forward way to tell frame to update name
-          ;; based on `frame-title-format', but I did find this:
-          ;;   https://stackoverflow.com/questions/13667702/how-to-force-emacs-update-frame-title
-          (sit-for 0)
-          ;; This would nuke whatever `frame-title-format' last set...
-          ;; (modify-frame-parameters (selected-frame) (list (cons 'name title)))
-          ))
-      (setq spydez/spotify/orig-fn/spotify-update-mode-line
-            #'spotify-update-mode-line)
+      ;;---
+      ;; Status Cache?
+      ;;---
+      (defvar spydez/spotify/player-status/cache nil
+        "Tuple of (current-time status) where status is untouched return value
+of `spotify-api-get-player-status'.")
 
-      (defvar spydez/hook/spotify/entered nil
-        "Non-nil if `spydez/hook/spotify-mode' has been entered and setup for
-         `spotify-remote-mode'. Nil if it hasn't been entered yet, or if it has
-         been used to exit and tear-down `spotify-remote-mode'.")
+      (require 'json)
+      (defun spydez/spotify/player-status (field)
+        "Returns value of field in cached status, or nil."
+        (let* ((duration-format "%m:%02s")
+               (json-object-type 'hash-table)
+               (json-key-type 'symbol)
+               (json (condition-case nil
+                         (json-read-from-string
+                          spydez/spotify/player-status/cache)
+                       (error nil))))
+          (when json
+            (cond
+             ;; known fields and some aliases - field is first
+             ((eq field 'artist)
+              (gethash 'artist json))
 
-      (spydez/hook/defun-and-hooker spotify-remote-mode-hook t
-          nil nil "init/config/configure-distractions.el"
-        "Hook to enable/disable Spotify-Mode status in Frame Title."
-        ;; skip setup/teardown?
-        (unless (eq spotify-remote-mode spydez/hook/spotify/entered)
-          (setq spydez/hook/spotify/entered spotify-remote-mode)
+             ((or (eq field 'name)
+                  (eq field 'track_name)
+                  (eq field 'track-name))
+              (gethash 'name json))
 
-          (let ((status '(:eval (spotify-mode-line-text))))
-            (if spotify-remote-mode
-                ;; enter mode
-                (progn
-                  (spydez/message/debug/when '(spydez debug hook)
-                                           "Entering spotify-remote-mode?")
-                  ;; Hook into the frame title
-                  (unless (member status frame-title-format)
-                    ;; Push our status string to the cdr of the last element of
-                    ;; the `frame-title-format'. i.e. append status to end of
-                    ;; list.
-                    (push status (cdr (last frame-title-format))))
-                  ;; and steal `spotify-update-mode-line'
-                  (fset #'spotify-update-mode-line
-                        #'spydez/frame/spotify/update-status))
-              ;; exit mode
-              (spydez/message/debug/when '(spydez debug hook)
-                                       "Exiting spotify-remote-mode?")
-              (when (member status frame-title-format)
-                (setq frame-title-format (remq s frame-title-format)))
-              ;; and un-steal `spotify-update-mode-line'
-              (fset #'spotify-update-mode-line
-                    #'spydez/spotify/orig-fn/spotify-update-mode-line)))))
+             ((eq field 'track_number)
+              (gethash 'track_number json))
+
+             ((eq field 'duration)
+              (gethash 'duration json))
+
+             ((or (eq field 'player_shuffling)
+                  (eq field 'shuffling))
+              (gethash 'player_shuffling json))
+
+             ((or (eq field 'player_repeating)
+                  (eq field 'repeating))
+              (gethash 'player_repeating json))
+
+             ((or (eq field 'player_state)
+                  (eq field 'playing))
+              (gethash 'player_state json))
+
+             ;; Well... we can try to get it anyways?
+             (t
+              ;; gethash returns default of nil so I'm fine with blindly trying
+              (gethash field json))))))
+      ;; (spydez/spotify/player-status 'artist)
+
+
+      (defun spydez/advice/spotify/player-status/store (callback status)
+        "Timestamp and hold onto status from
+`spotify-api-get-player-status' for when we want status and don't
+care about how uppest to datest it is."
+        ;; cache status w/ timestamp
+        (let ((time (current-time)))
+          (when (or (null spydez/spotify/player-status/cache)
+                    (time-less-p (car spydez/spotify/player-status/cache)
+                                 (current-time)))
+            (setq spydez/spotify/player-status/cache (list time status))))
+
+        ;; and return unchanged status
+        (funcall callback status))
+
+
+      (defun spydez/advice/spotify/player-status/glom (args)
+        "Function for grabbing onto spotify-api player status
+calls in order to cache results. Insert our func as the
+callback (which will then call correct callback)."
+        (let ((callback (nth 0 args)))
+          (list (lambda (status) (funcall #'spydez/advice/spotify/player-status/store
+                                          callback
+                                          status)))))
+      ;; (spydez/advice/spotify/player-status/glom '(jeff))
+
+
+      ;; (setq debug-on-error t)
+
+      ;; §-TODO-§ [2019-10-11]: not working quite yet...
+      ;; (advice-add 'spotify-api-get-player-status
+      ;;             :filter-args
+      ;;             #'spydez/advice/spotify/player-status/glom)
+      ;; (advice-remove 'spotify-api-get-player-status
+      ;;                 #'spydez/advice/spotify/player-status/glom)
+
+      ;;---
+      ;; Status in Title Bar (before it was a feature in spotify.el)
+      ;;---
+
+      ;; §-TODO-§ [2019-10-11]: Move this to an issue or something?.. it was
+      ;; good learnin' and I hate to see it go.
+;;       ;; Currently Playing Info:
+;;       ;;   Put in frame title? Modeline is full...
+;;       ;; Take over this, maybe: `spotify-update-player-status'
+;;       (defun spydez/frame/spotify/update-status (str)
+;;         "Sets the given str to the frame title instead of the
+;; modeline. This should take over from `spotify-update-player-status'."
+;;         (when (not (string= str spotify-player-status))
+;;           (setq spotify-player-status str)
+;;           ;; There isn't a straight-forward way to tell frame to update name
+;;           ;; based on `frame-title-format', but I did find this:
+;;           ;;   https://stackoverflow.com/questions/13667702/how-to-force-emacs-update-frame-title
+;;           (sit-for 0)
+;;           ;; This would nuke whatever `frame-title-format' last set...
+;;           ;; (modify-frame-parameters (selected-frame) (list (cons 'name title)))
+;;           ))
+;;       (setq spydez/spotify/orig-fn/spotify-update-player-status
+;;             #'spotify-update-player-status)
+
+;;       (defvar spydez/hook/spotify/entered nil
+;;         "Non-nil if `spydez/hook/spotify-mode' has been entered and setup for
+;;          `spotify-remote-mode'. Nil if it hasn't been entered yet, or if it has
+;;          been used to exit and tear-down `spotify-remote-mode'.")
+
+;;       (spydez/hook/defun-and-hooker spotify-remote-mode-hook t
+;;           nil nil "init/config/configure-distractions.el"
+;;         "Hook to enable/disable Spotify-Mode status in Frame Title."
+;;         ;; skip setup/teardown?
+;;         (unless (eq spotify-remote-mode spydez/hook/spotify/entered)
+;;           (setq spydez/hook/spotify/entered spotify-remote-mode)
+
+;;           (let ((status '(:eval (spotify-player-status-text))))
+;;             (if spotify-remote-mode
+;;                 ;; enter mode
+;;                 (progn
+;;                   (spydez/message/debug/when '(spydez debug hook)
+;;                                            "Entering spotify-remote-mode?")
+;;                   ;; Hook into the frame title
+;;                   (unless (member status frame-title-format)
+;;                     ;; Push our status string to the cdr of the last element of
+;;                     ;; the `frame-title-format'. i.e. append status to end of
+;;                     ;; list.
+;;                     (push status (cdr (last frame-title-format))))
+;;                   ;; and steal `spotify-update-player-status'
+;;                   (fset #'spotify-update-player-status
+;;                         #'spydez/frame/spotify/update-status))
+;;               ;; exit mode
+;;               (spydez/message/debug/when '(spydez debug hook)
+;;                                        "Exiting spotify-remote-mode?")
+;;               (when (member status frame-title-format)
+;;                 (setq frame-title-format (remq s frame-title-format)))
+;;               ;; and un-steal `spotify-update-player-status'
+;;               (fset #'spotify-update-player-status
+;;                     #'spydez/spotify/orig-fn/spotify-update-player-status)))))
 
       ;; Either use spotify-remote-mode as wanted, or turn on globally:
       ;; (progn (setq debug-on-error t) (global-spotify-remote-mode))
@@ -165,10 +265,10 @@ modeline. This should take over from `spotify-update-mode-line'."
       ;; Seems to work fine right now as not-turned-on and with hydra calls.
 
       ;;---
-      ;; Spotify's "M-p" prefix SUUUUUUUCKS and wants such an important (to me)
-      ;; & also default binding...
+      ;; Keybinds
       ;;---
 
+      ;; Don't like the normal map... doing a hydra instead.
       (require 'with)
       (with-feature 'hydra
         (defhydra spydez/hydra/spotify (:color blue ;; default exit heads

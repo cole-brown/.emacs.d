@@ -28,10 +28,14 @@
   ;;:demand t
 
 
-  ;; ;;-----
-  ;; :init
-  ;; ;;-----
-  ;; (spydez/message/warning nil nil "Uh... hi? python:init")
+  ;;-----
+  :init
+  ;;-----
+  (spydez/hook/defun python-mode-hook t
+                     nil nil "init/config/configure-python.el"
+    "Settings for python-mode itself. Non-LSP stuff."
+    ;; pycodestyle insists 79 is the One True Fill Column...
+    (setq fill-column 79))
 
 
   ;;-----
@@ -40,7 +44,8 @@
   ;;---
   ;; Language Server Protocol for Python (LSP)
   ;;---
-  (python-mode . spydez/hook/lsp-deferred)
+  ((python-mode . spydez/hook/lsp-deferred)
+   (python-mode . spydez/hook/python-mode-hook))
 
 
   ;; No global binds for python ATM.

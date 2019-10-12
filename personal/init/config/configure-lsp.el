@@ -70,11 +70,7 @@
 (defun spydez/hook/lsp-generic (lsp-fn)
   "LSP hook helper for both deferred and regular."
   (funcall lsp-fn)
-  ;; TODO: convert to just straight call when flycheck gets gotten to...
   (with-function 'flycheck-mode
-    (spydez/message/warning
-     nil nil
-     "TODO: convert to just straight call when flycheck gets gotten to...")
     (flycheck-mode)))
 
 
