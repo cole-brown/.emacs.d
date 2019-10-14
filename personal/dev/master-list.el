@@ -28,6 +28,18 @@
  ;;        spydez/setup/system/additional-required nil))
 
  ;;---
+ ;; Home Laptop/Tablet
+ ;;---
+ ((equal spydez/setup/system/hash "computer-d122-2b66")
+  (setq spydez/setup/domain/name "home"
+        spydez/setup/domain/subname "deep"
+        spydez/setup/system/hash (spydez/hash-and-reduce
+                                  spydez/setup/system/name
+                                  spydez/setup/domain/subname)
+        spydez/bootstrap/system/known-p t
+        spydez/setup/system/additional-required nil))
+
+ ;;---
  ;; Home Desktop 2017-
  ;;---
  ((equal spydez/setup/system/hash "computer-2418-d188")
@@ -62,7 +74,10 @@
  ;;---
  ;; Fallthrough Case - nothing specified so defaults will be used
  ;;---
- (t (spydez/message/warning nil nil "Update 'Master List' for this system (%s) here." spydez/setup/system/hash)
+ (t
+  (spydez/message/warning nil nil
+			  "Update 'Master List' for this system (%s) here."
+			  spydez/setup/system/hash)
     (setq spydez/bootstrap/system/known-p nil
           spydez/setup/system/additional-required t)))
 

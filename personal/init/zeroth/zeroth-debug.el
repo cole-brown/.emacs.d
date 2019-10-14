@@ -171,6 +171,7 @@ LEVEL: level for lwarn; nil will become `spydez/message/warning/current-level'"
   (let* ((type (or type (spydez/init/step/to-type nil)))
          (level (or level spydez/message/warning/current-level))
          (injected-message (format "  %s:  %s" type message)))
+    (message "%s %s %s" type level injected-message)
     (apply 'lwarn type level injected-message args)
     ;; basically becomes e.g.:
     ;; (lwarn '(spydez bootstrap) :warning
@@ -178,6 +179,7 @@ LEVEL: level for lwarn; nil will become `spydez/message/warning/current-level'"
     ;;  '(spydez bootstrap) spydez/setup/system/hash)
     ))
 ;; (spydez/message/warning nil nil "Test: %s %s" '(testing list) 'test-symbol)
+;; (spydez/message/warning nil nil "Update 'Master List' for this system (%s) here." spydez/setup/system/hash)
 
 
 ;;---

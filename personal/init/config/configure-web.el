@@ -6,6 +6,35 @@
 ;;------------------------------------------------------------------------------
 
 
+;;-----------------------------------------------------------------------------
+;; Web Bookmarks
+;;-----------------------------------------------------------------------------
+
+;; Derived from org-linkz:
+;; https://github.com/p-kolacz/org-linkz
+(use-package org-protocol
+  :after org
+  :demand t
+
+  ;;---
+  :config
+  ;;---
+
+  (defconst spydez/file/org/web-bookmarks
+    (spydez/path/to-file spydez/dir/doc-save-secrets "web-bookmarks.org")
+    "Org-Mode file for web bookmarksfile.")
+
+  (setq org-capture-templates
+        '(
+          ("o" "Web Bookmark Capture" entry
+           (file+headline (spydez/file/org/web-bookmarks "INBOX"))
+           "* %a %U"
+           :immediate-finish t)
+          ))
+
+  (setq org-protocol-default-template-key "o"))
+
+
 ;;------------------------------------------------------------------------------
 ;; REST: restclient
 ;;------------------------------------------------------------------------------
