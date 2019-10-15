@@ -337,7 +337,7 @@ Feature, if needed: Check more maps than just global?"
 ;; Buffers
 ;;-----------------------------------------------------------------------------
 
-;; §-TODO-§ [2019-10-01]:
+;; §-TODO-§ [2019-10-01]: bury-buffer tweak
 ;; `bury-buffer' and/or `switch-to-prev-buffer' should not switch to a currently
 ;; displayed buffer...
 

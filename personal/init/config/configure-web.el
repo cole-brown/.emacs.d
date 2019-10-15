@@ -10,7 +10,7 @@
 ;; Web Bookmarks
 ;;-----------------------------------------------------------------------------
 
-;; §-TODO-§ [2019-10-14]: get bookmarks working...
+;; §-TODO-§ [2019-10-14]: get web bookmarks working...
 ;; Derived from org-linkz:
 ;; https://github.com/p-kolacz/org-linkz
 ;; org-protocol set up in configure-org-mode.el

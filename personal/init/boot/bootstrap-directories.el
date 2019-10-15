@@ -184,7 +184,7 @@
 
 (defconst spydez/dir/secrets/dev/domain-this
   (spydez/path/to-dir spydez/dir/secrets/dev/domain-all
-                      spydez/setup/domain/name)
+                      spydez/dev/domain/name)
   "Anything that has to be domain specific. Tab widths or whatnot.")
 
 (defconst spydez/dir/secrets/dev/system-all
@@ -193,7 +193,7 @@
 
 (defconst spydez/dir/secrets/dev/system-this
   (spydez/path/to-dir spydez/dir/secrets/dev/system-all
-                      spydez/setup/system/hash)
+                      spydez/dev/system/hash)
   "Anything that has to be computer specific.
 Overriding tab widths or whatnot.")
 

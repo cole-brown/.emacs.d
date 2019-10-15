@@ -7,6 +7,22 @@
 
 
 ;;-----------------------------------------------------------------------------
+;; General Functions
+;;-----------------------------------------------------------------------------
+
+;; Need this here - super early - so not a great place to put...
+(defun spydez/consp-and-not-listp (var)
+  "Apparently lists qualify as conses so... fucking lisp, yeah?
+...and I can't `listp' or `length' a cons because it's not a list...?!?!
+
+Jesus fuck lisp. I just want to check for dotted-pair conses...
+
+https://emacs.stackexchange.com/questions/10489/predicate-function-for-dotted-pairs
+Pretty sure this is just a hack to check length 2, but fuck it;
+it works."
+  (and (cdr var) (atom (cdr var))))
+
+;;-----------------------------------------------------------------------------
 ;; Progress of Steps
 ;;-----------------------------------------------------------------------------
 
@@ -189,13 +205,7 @@ functions. Appends any EXTRAS onto end."
                   ;; if defaulting, tack 'spydez' on front.
                   (append '(spydez) spydez/init/step/completed))))
     (cond
-     ;; Apparently lists qualify as conses so... fucking lisp, yeah?
-     ;; ...and I can't `listp' or `length' a cons because it's not a li- eh?
-     ;; Jesus fuck lisp. I just want to allow dotted-pair conses...
-     ;; https://emacs.stackexchange.com/questions/10489/predicate-function-for-dotted-pairs
-     ;; Pretty sure this is just a hack to check length 2,
-     ;; but fuck it; it works.
-     ((and (cdr type) (atom (cdr type)))
+     ((spydez/consp-and-not-listp type)
       ;; convert to list... without mucking up any variables looking at step...
       (message "hm... %s" (list (car type) (cdr type)))
       (setq type (list (car type) (cdr type))))

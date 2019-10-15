@@ -107,14 +107,14 @@ can't decided on where, exactly, $HOME is for bash/emacs/etc on Windows.")
   (spydez/path/to-dir spydez/dir/personal/dev "domains")
   "Domains folder. For subdirs of work, home, etc.")
 (defconst spydez/dir/dev/domain-this
-  (spydez/path/to-dir spydez/dir/dev/domain-all spydez/setup/domain/name)
+  (spydez/path/to-dir spydez/dir/dev/domain-all spydez/dev/domain/name)
   "Anything that has to be domain specific. Tab widths or whatnot.")
 
 (defconst spydez/dir/dev/system-all
   (spydez/path/to-dir spydez/dir/personal/dev "computers")
   "Computers folder. For subdirs of different computers.")
 (defconst spydez/dir/dev/system-this
-  (spydez/path/to-dir spydez/dir/dev/system-all spydez/setup/system/hash)
+  (spydez/path/to-dir spydez/dir/dev/system-all spydez/dev/system/hash)
   "Anything that has to be computer specific. Overriding tab widths or whatnot.")
 
 

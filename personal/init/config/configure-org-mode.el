@@ -29,9 +29,13 @@
 ;;- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ;;------------------------------------------------------------------------------
 (use-package org
-  ;; specify ':ensure nil' so that use-package doesn’t try to install it,
+  ;; Specify ':ensure nil' so that use-package doesn’t try to install it,
   ;; and just loads and configures it.
-  :ensure nil
+  ;; TRIAL [2019-10-15]:
+  ;; Trying ':ensure org-plus-contrib' to see if it gets me org-contacts?
+  ;; Also adding 'org' to the `package-archives'.
+  ;; I think (?) it pulls org from org archive instead of somewhere else, maybe?
+  :ensure org-plus-contrib
   :demand t
 
 
@@ -289,26 +293,9 @@
   ;; default: (org-w3m org-bbdb org-bibtex org-docview org-gnus
   ;;           org-info org-irc org-mhe org-rmail)
   (add-to-list 'org-modules 'org-protocol)
-  (add-to-list 'org-modules 'org-contacts)
+  ;; (add-to-list 'org-modules 'org-contacts) ;; guess this isn't a module...
   (eval-after-load 'org
     '(org-load-modules-maybe t))
-
-  ;;-----------------
-  ;; Org Contacts
-  ;;-----------------
-
-  ;; §-TODO-§ [2019-10-14]: get Org-Contacts working...
-  ;; https://github.com/tkf/org-mode/blob/master/contrib/lisp/org-contacts.el
-  ;;
-  (add-to-list 'org-capture-templates
-               `("c" "Contacts" entry
-                  (file ,(spydez/path/to-file
-                         spydez/dir/org-docs-secrets
-                         "contacts.org"))
-                  ,(concat "* %(org-contacts-template-name)\n"
-                          ":PROPERTIES:\n"
-                          ":EMAIL: %(org-contacts-template-email)\n"
-                          ":END:\n")))
 
   ;;-----------------
   ;; Faces
@@ -392,18 +379,49 @@
 ;; Org-Modules
 ;;-----------------------------------------------------------------------------
 
-;; §-TODO-§ [2019-10-14]: Move their config here? capture template and such.
-
 (use-package org-protocol
   :ensure nil
   :after org
   :demand t
-)
+  )
+
+;;-----------------------------------------------------------------------------
+;; Org-Babel Languages
+;;-----------------------------------------------------------------------------
+;; ;; TRIAL: [2019-10-15] - trial delayed (also [2019-10-15])
+;; ;; Don't really know what these do...
+;; (use-package ob-emacs-lisp :ensure nil :after org)
+;; (use-package ob-C :ensure nil :after org)
+;; (use-package ob-org :ensure nil :after org)
+;; (use-package ob-python :ensure nil :after org)
+;; (use-package ob-shell :ensure nil :after org)
+;; (use-package ob-sql :ensure nil :after org)
+
+
+;;-----------------------------------------------------------------------------
+;; Org Contacts
+;;-----------------------------------------------------------------------------
 (use-package org-contacts
   :ensure nil
   :after org
   :demand t
-)
+
+  :custom
+  (org-contacts-files (spydez/path/to-file spydez/dir/org-docs-secrets
+                                           "contacts.org"))
+
+  :config
+  ;; §-TODO-§ [2019-10-14]: get Org-Contacts working...
+  ;; https://github.com/tkf/org-mode/blob/master/contrib/lisp/org-contacts.el
+  (add-to-list 'org-capture-templates
+               `("c" "Contacts" entry
+                  (file ,(spydez/path/to-file
+                         spydez/dir/org-docs-secrets
+                         "contacts.org"))
+                  ,(concat "* %(org-contacts-template-name)\n"
+                          ":PROPERTIES:\n"
+                          ":EMAIL: %(org-contacts-template-email)\n"
+                          ":END:\n"))))
 
 ;;------------------------------------------------------------------------------
 ;; Org-Mode Headline Bullets: (Making Org-Mode Pretty)
@@ -418,7 +436,7 @@
   :custom
   (org-bullets-bullet-list
    ;; default: '("◉" "○" "✸" "✿")
-   '("◆" "♦" "●" "○")
+   '("◆" "♦" "●" "○" "►" "▸")
     ;; ♥ ● ◇ ✚ ✜ ☯ ◆ ♠ ♣ ♦ ☢ ❀ ◆ ◖ ▶
     ;;; Small
     ;; ► • ★ ▸

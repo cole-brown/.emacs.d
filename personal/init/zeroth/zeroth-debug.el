@@ -176,10 +176,10 @@ LEVEL: level for lwarn; nil will become `spydez/message/warning/current-level'"
     ;; basically becomes e.g.:
     ;; (lwarn '(spydez bootstrap) :warning
     ;;  "  %s:  Update 'Master List' for this system (%s) here."
-    ;;  '(spydez bootstrap) spydez/setup/system/hash)
+    ;;  '(spydez bootstrap) spydez/dev/system/hash)
     ))
 ;; (spydez/message/warning nil nil "Test: %s %s" '(testing list) 'test-symbol)
-;; (spydez/message/warning nil nil "Update 'Master List' for this system (%s) here." spydez/setup/system/hash)
+;; (spydez/message/warning nil nil "Update 'Master List' for this system (%s) here." spydez/dev/system/hash)
 
 
 ;;---

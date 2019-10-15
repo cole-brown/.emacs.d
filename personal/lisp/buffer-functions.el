@@ -15,7 +15,6 @@
 ;; General Settings
 ;;------------------------------------------------------------------------------
 
-;; §-TODO-§ [2019-10-02]: move these spydez/buffer/* things into... a better file.
 (defcustom spydez/buffer/format/bookend-normal
   '("§-" "-§")
   "Start/end strings for special-name formats."

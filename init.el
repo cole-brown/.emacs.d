@@ -31,13 +31,13 @@
 
 
 
-;;------                                                                ------;;
-;;----                                                                    ----;;
-;;----------------------------------init.el-----------------------------------;;
-;;--                              Hello there.                              --;;
-;;----------------------------------------------------------------------------;;
-;;----                                                                    ----;;
-;;------              (...this is maybe a bit complicated.)             ------;;
+;;------                                                               ------;;
+;;----                                                                   ----;;
+;;----------------------------------init.el----------------------------------;;
+;;--                              Hello there.                             --;;
+;;---------------------------------------------------------------------------;;
+;;----                                                                   ----;;
+;;------              (...this is maybe a bit complicated.)            ------;;
 
 
 ;;(spydez/init/step/set-completed '(intermission none))
@@ -51,9 +51,9 @@
 ;; This is started, but really sucks right now.
 
 
-;;------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 ;; Notes, TODOs, Links
-;;------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 
 ;;---
 ;; Current Shortcomings:
@@ -354,9 +354,9 @@
 ;;    - e.g.: Sacha.org's file
 
 
-;;------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 ;; Concerning Consts, Vars, and Funcs.
-;;------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 
 ;;---
 ;; Defining Consts & Variables:
@@ -483,9 +483,9 @@
 ;; here is a good place for it.
 
 
-;;------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 ;; Bootstrap Consts, Vars, and Funcs.
-;;------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 
 ;; TODO: shift even more out into bootstrap-* files/steps?
 
@@ -549,9 +549,9 @@
 (spydez/init/step/set-completed 'bootstrap '(system finalized))
 
 
-;;------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 ;; Final Bootstrap.
-;;------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 ;; Actual bootstrapping, or finalizing of bootstrap, depending on how you look
 ;; at it. The above was, essentially, the min needed to get ready for
 ;; use-package which is the min needed for bootstrap-debug-late which is
@@ -602,9 +602,9 @@
 (spydez/init/step/set-completed 'bootstrap 'complete)
 
 
-;;------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 ;; Configuration.
-;;------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 (spydez/init/step/set-completed 'config 'none)
 (spydez/message/init "init.el... Configuration.")
 ;; Loading and init are done - now do any more required setup.
@@ -728,9 +728,9 @@
 (spydez/require 'configure-lsp)
 
 ;; TODO: configure IDE?
-;;------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 ;; IDE Settings
-;;------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 ;;
 ;; Setup Visual Studio to auto check/notice changed files? (or does it do that
 ;; by default?)
@@ -914,9 +914,9 @@
 (spydez/init/step/set-completed 'config 'complete)
 
 
-;;------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 ;; The End.
-;;------------------------------------------------------------------------------
+;;-----------------------------------------------------------------------------
 (spydez/init/step/set-completed 'finalize 'none)
 (spydez/message/init "init.el... Finalizing...")
 
@@ -965,4 +965,127 @@
 (spydez/init/step/set-completed 'running 'none)
 ;; fin
 
-;; §-TODO-§ [2019-10-07]: proper ending. Maybe a nice poem or one art please.
+
+
+
+;; §-TODO-§ [2019-10-07]: move this koans stuff to its own file.
+
+
+;; Mainly for a nice obvious end to init in messages buffer.
+
+(defun spydez/message/koan/line (line)
+  "Returns a propertized line of a koan."
+  (let ((text nil)
+        (border-width nil)
+        (pass-through nil))
+    (cond
+     ;; 0) specials
+     ((eq line 'line-empty)
+      (setq text "\n"
+            pass-through t))
+     ((eq line 'line-full)
+      (setq text (propertize
+                  (spydez/string/center "" t nil nil nil nil nil)
+                  'face 'font-lock-comment-delimiter-face)
+            pass-through t))
+
+     ;; 1) general
+     ;; a) Just a string
+     ((stringp line)
+      (setq text line))
+     ;; b) ("string" int)
+     ((and (listp line)
+           (= (length line) 2)
+           (stringp (nth 0 line))
+           (numberp (nth 1 line)))
+      (setq text (nth 0 line)
+            border-width (nth 1 line)))
+
+     ;; 3) errors
+     (t
+      (error "unknown line type: %s" line)))
+
+    ;; Have our line setup now... process it?
+    (if pass-through
+        text
+
+      (let ((centering (spydez/string/center
+                        text nil ?\s nil border-width 0 t)))
+        (mapconcat 'identity
+                   (list
+                    (propertize (nth 0 centering) 'face 'font-lock-comment-delimiter-face)
+                    (propertize (nth 1 centering) 'face 'font-lock-keyword-face)
+                    (propertize (nth 2 centering) 'face 'font-lock-comment-delimiter-face))
+                   "")))))
+
+
+(defun spydez/message/koan (lines)
+  "Prints a pretty little message to the *Messages* buffer."
+  (dolist (line lines)
+    (spydez/message/preserve-properties (spydez/message/koan/line line))))
+
+
+(defvar spydez/koan/on-running nil
+  "Koans to choose from when transitioning from init to running states.")
+
+
+(defun spydez/koan/add (koan)
+  "Pushes KOAN into `spydez/koan/on-running'."
+  (push koan spydez/koan/on-running))
+
+(defun spydez/koan (&optional which)
+  "Prints a random koan, or the one indicated by WHICH if non-nil."
+  (when (and spydez/koan/on-running
+             (listp spydez/koan/on-running))
+    (spydez/message/koan (nth (random (length spydez/koan/on-running))
+                              spydez/koan/on-running))))
+
+
+;; General Kenobi!
+(spydez/koan/add
+  '(line-empty
+    line-full
+    "Hello there."
+    line-full
+    line-empty))
+
+
+;; §-TODO-§ [2019-10-15]: get more from here? http://www.catb.org/~esr/writings/unix-koans/
+;; http://www.catb.org/~esr/writings/unix-koans/
+(spydez/koan/add
+ '(line-empty
+   line-full
+                        ("“Even the hacker who works alone" 13)
+                           ("collaborates with others," 9)
+                ("and must constantly communicate clearly to them," 7)
+                    ("lest his work become confused and lost,”" 9)
+                                ("said the Master." 13)
+   line-full
+
+              "“Of what others do you speak?” the Prodigy demanded."
+   line-full
+                   ("Master Foo said: “All your future selves.”" 13)
+   line-full
+   line-empty))
+
+
+;; (theme song)
+(spydez/koan/add
+ '(line-empty
+   line-full
+   "Standby for Reincarnation..."
+   "  - Futurama"
+   line-full
+   line-empty))
+
+
+(spydez/koan)
+
+
+;;------                                                               ------;;
+;;----                                                                   ----;;
+;;----------------------------------init.el----------------------------------;;
+;;--                        See You Space Cowboy...                        --;;
+;;---------------------------------------------------------------------------;;
+;;----                                                                   ----;;
+;;------                            (~fin~)                            ------;;

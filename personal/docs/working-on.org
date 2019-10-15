@@ -16,7 +16,11 @@
         - Or fix use-tool to override that nonsense?
 
 
-  - [-] General To Do: [0/15]
+  - [-] General To Do: [0/17]
+    - [ ] package: alert?
+      - https://github.com/rememberYou/.emacs.d/blob/master/config.org#alert
+      - Anything else from here? https://github.com/rememberYou/.emacs.d/blob/master/config.org
+
     - [ ] Add "with-nil" to with.el?
       - For e.g. (with-nil 'jeff (stringp 'jeff) ) so that becomes...
         - (when (and (not (null 'jeff) (stringp 'jeff)) ,@body)
@@ -27,9 +31,9 @@
     - [ ] spotify - fork, pull from my repo into submodule, do changes there, push request to github?
       - [ ] frame vs modeline updates
         - Is theirs acting ok? Was fucky when I first switched to it.
+
     - [ ] headache tracker?
       - org-journal + default-directory -> headache entries in separate journal from primary
-
     - [ ] a bury/kill buffer that won't switch to a file that's being viewed in another buffer
       - bare start: [[file:~/.emacs.d/personal/init/config/configure-emacs.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-01%5D:][here]]
       - whatever help buffer does on q restores previous buffer... that could be a start.
@@ -46,13 +50,14 @@
 
     - [ ] Don't beacon in the minibuffer?
 
+    - [ ] package: major-mode-hydra (and pretty-hydra)
+      - https://github.com/jerrypnz/major-mode-hydra.el
     - [-] LSP mode for python
       - [ ] more work to get it to... useful and not annoying?
         - [ ] It has... an amazing amount of memory hogging/leaking going on...
       - [ ] flycheck
       - [X] Lines judder and jump a bit - may be lsp-ui causing it?
         - Fixed by moving to different font.
-
     - [ ] Look at magit-lfs? Does it do anything I want?
       - [ ] LFS first, then:
       - [ ] Look at magit-svn? Does it do anything I want?
