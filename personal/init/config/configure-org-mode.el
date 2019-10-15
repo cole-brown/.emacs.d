@@ -40,6 +40,9 @@
   ;;----------------------------------------------------------------------------
   :init ;; can do multiple forms until next keyword
 
+  (unless (boundp 'org-capture-templates)
+    (setq org-capture-templates nil))
+
   ;; Put .org.txt into the mode list for org-mode
   (add-to-list 'auto-mode-alist '("\\.org.txt$" . org-mode))
 
@@ -121,6 +124,10 @@
   ;; Org-Mode Custom Settings
   ;;----------------------------------------------------------------------------
   :custom
+
+  ;; could also be `spydez/dir/org-docs' or `spydez/dir/org-docs-dropbox'.
+  (org-directory spydez/dir/org-docs-secrets)
+  (org-default-notes-file (spydez/path/to-file org-directory "notes.org"))
 
   (org-log-done t "auto-timestamp when TODOs are turned to DONE state")
 
@@ -244,9 +251,9 @@
    ;; ("C-c a" . org-agenda)
    ;; ;; TODO: try using org agenda mode maybe
 
-   ;; ;; I have read the help for `org-capture' and have one question...
-   ;; ;; WTF is org-capture?
-   ;; ("C-c c" . org-capture)
+   ;; I have read the help for `org-capture' and have one question...
+   ;; WTF is org-capture?
+   ("C-c c" . org-capture)
    )
   ;; Some more keybinds to consider here:
   ;; http://pages.sachachua.com/.emacs.d/Sacha.html#org44fc1f8
@@ -275,6 +282,37 @@
   ;; Org-Mode Config (Post-Load)
   ;;----------------------------------------------------------------------------
   :config
+
+  ;;-----------------
+  ;; Org Modules
+  ;;-----------------
+  ;; default: (org-w3m org-bbdb org-bibtex org-docview org-gnus
+  ;;           org-info org-irc org-mhe org-rmail)
+  (add-to-list 'org-modules 'org-protocol)
+  (add-to-list 'org-modules 'org-contacts)
+  (eval-after-load 'org
+    '(org-load-modules-maybe t))
+
+  ;;-----------------
+  ;; Org Contacts
+  ;;-----------------
+
+  ;; §-TODO-§ [2019-10-14]: get Org-Contacts working...
+  ;; https://github.com/tkf/org-mode/blob/master/contrib/lisp/org-contacts.el
+  ;;
+  (add-to-list 'org-capture-templates
+               `("c" "Contacts" entry
+                  (file ,(spydez/path/to-file
+                         spydez/dir/org-docs-secrets
+                         "contacts.org"))
+                  ,(concat "* %(org-contacts-template-name)\n"
+                          ":PROPERTIES:\n"
+                          ":EMAIL: %(org-contacts-template-email)\n"
+                          ":END:\n")))
+
+  ;;-----------------
+  ;; Faces
+  ;;-----------------
 
   ;; There is a `:custom-face' section of use-packge, but I don't think I can do
   ;; the zenburn feature check or the `zenburn-with-color-variables' call.
@@ -349,6 +387,23 @@
   ;;------------------------------------
   )
 
+
+;;-----------------------------------------------------------------------------
+;; Org-Modules
+;;-----------------------------------------------------------------------------
+
+;; §-TODO-§ [2019-10-14]: Move their config here? capture template and such.
+
+(use-package org-protocol
+  :ensure nil
+  :after org
+  :demand t
+)
+(use-package org-contacts
+  :ensure nil
+  :after org
+  :demand t
+)
 
 ;;------------------------------------------------------------------------------
 ;; Org-Mode Headline Bullets: (Making Org-Mode Pretty)
@@ -665,38 +720,6 @@ savages."
   ;; TODO: encryption?
   ;; https://github.com/bastibe/org-journal#encryption
   )
-
-
-;;------------------------------------------------------------------------------
-;; Org Modules
-;;------------------------------------------------------------------------------
-;; Org has a whole bunch of optional modules.
-;; These are the ones I'm currently experimenting with.
-;; Or, well, if I was, they would be here...
-;; Or, well, if I was, I would move this into the 'use-package org-mode' and
-;; they would be there.
-;; (setq org-modules '(org-bbdb
-;;                     org-gnus
-;;                     org-drill
-;;                     org-info
-;;                     org-jsinfo
-;;                     org-habit
-;;                     org-irc
-;;                     org-mouse
-;;                     org-protocol
-;;                     org-annotate-file
-;;                     org-eval
-;;                     org-expiry
-;;                     org-interactive-query
-;;                     org-man
-;;                     org-collector
-;;                     org-panel
-;;                     org-screen
-;;                     org-toc))
-;; (eval-after-load 'org
-;;   '(org-load-modules-maybe t))
-;; ;; Prepare stuff for org-export-backends
-;; (setq org-export-backends '(org latex icalendar html ascii))
 
 
 ;;------------------------------------------------------------------------------

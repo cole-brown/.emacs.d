@@ -10,29 +10,22 @@
 ;; Web Bookmarks
 ;;-----------------------------------------------------------------------------
 
+;; §-TODO-§ [2019-10-14]: get bookmarks working...
 ;; Derived from org-linkz:
 ;; https://github.com/p-kolacz/org-linkz
-(use-package org-protocol
-  :after org
-  :demand t
+;; org-protocol set up in configure-org-mode.el
 
-  ;;---
-  :config
-  ;;---
+(defconst spydez/file/org/web-bookmarks
+  (spydez/path/to-file spydez/dir/doc-save-secrets "web-bookmarks.org")
+  "Org-Mode file for web bookmarksfile.")
 
-  (defconst spydez/file/org/web-bookmarks
-    (spydez/path/to-file spydez/dir/doc-save-secrets "web-bookmarks.org")
-    "Org-Mode file for web bookmarksfile.")
+(add-to-list 'org-capture-templates
+             `("o" "Web Bookmark Capture" entry
+                (file+headline (,spydez/file/org/web-bookmarks "INBOX"))
+                "* %a %U"
+                :immediate-finish t))
 
-  (setq org-capture-templates
-        '(
-          ("o" "Web Bookmark Capture" entry
-           (file+headline (spydez/file/org/web-bookmarks "INBOX"))
-           "* %a %U"
-           :immediate-finish t)
-          ))
-
-  (setq org-protocol-default-template-key "o"))
+(setq org-protocol-default-template-key "o")
 
 
 ;;------------------------------------------------------------------------------
