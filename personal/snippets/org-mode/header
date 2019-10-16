@@ -12,8 +12,7 @@
 # Can also see what we can change about `C-c C-e #'.
 # --
 #+TITLE:       ${1:`(capitalize (file-name-nondirectory (file-name-sans-extension (buffer-file-name))))`}
-{$2:#+DESCRIPTION: ${3:description of your org-mode file}}
-#+AUTHOR:      ${4:Cole Brown}
-#+EMAIL:       ${5:git@spydez.com}
-#+DATE:        ${6:`(let ((x (org-insert-time-stamp nil nil t))))`}
+#+AUTHOR:      ${2:Cole Brown}
+#+EMAIL:       ${3:git@spydez.com}
+#+DATE:        ${4:`(let ((x (org-insert-time-stamp nil nil t))))`}
 $0

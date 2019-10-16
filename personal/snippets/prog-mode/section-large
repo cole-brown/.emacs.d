@@ -4,6 +4,6 @@
 # key: spy-lg
 # --
 
-`(spydez/prog-mode/comment/center "")`
+`(spydez/prog-mode/comment/center "" nil spydez/char/center/border)`
 `(spydez/prog-mode/comment/wrap "" t)` `yas-selected-text`$0
-`(spydez/prog-mode/comment/center "")`
+`(spydez/prog-mode/comment/center "" nil spydez/char/center/border)`

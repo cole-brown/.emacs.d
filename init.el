@@ -622,6 +622,7 @@
 ;;   - use e.g. range for e.g. tabstops
 ;;
 ;; Also, now, useful non-interactive functions used in init.
+(spydez/require 'strings-and-things)
 (spydez/require 'misc-functions)
 (spydez/require 'date-and-time) ;; Need datetime formats from here...
 (spydez/require 'buffer-functions)
@@ -975,30 +976,38 @@
 
 (defun spydez/message/koan/line (line)
   "Returns a propertized line of a koan."
-  (let ((text nil)
+  (let ((string nil)
+        (fill-char nil)
         (border-width nil)
-        (pass-through nil))
+        (pass-through nil)
+        (faces '(;; :whitespace nil
+                 :padding font-lock-comment-delimiter-face
+                 :border font-lock-comment-face
+                 :text font-lock-keyword-face)))
+
     (cond
      ;; 0) specials
      ((eq line 'line-empty)
-      (setq text "\n"
+      (setq string (spydez/string/parts/build-string "\n" faces)
             pass-through t))
      ((eq line 'line-full)
-      (setq text (propertize
-                  (spydez/string/center "" t nil nil nil nil nil)
-                  'face 'font-lock-comment-delimiter-face)
-            pass-through t))
+      (setq string ""
+            fill-char spydez/char/center/border
+            ;; This is just border line so center should just be border color.
+            ;; But, uh... Using just faces in plist-put fucks up our let var
+            ;; `faces' somehow? So be careful...
+            faces (plist-put (-clone faces) :text font-lock-comment-face)))
 
      ;; 1) general
      ;; a) Just a string
      ((stringp line)
-      (setq text line))
+      (setq string line))
      ;; b) ("string" int)
      ((and (listp line)
            (= (length line) 2)
            (stringp (nth 0 line))
            (numberp (nth 1 line)))
-      (setq text (nth 0 line)
+      (setq string (nth 0 line)
             border-width (nth 1 line)))
 
      ;; 3) errors
@@ -1007,16 +1016,15 @@
 
     ;; Have our line setup now... process it?
     (if pass-through
-        text
+        string
 
-      (let ((centering (spydez/string/center
-                        text nil ?\s nil border-width 0 t)))
-        (mapconcat 'identity
-                   (list
-                    (propertize (nth 0 centering) 'face 'font-lock-comment-delimiter-face)
-                    (propertize (nth 1 centering) 'face 'font-lock-keyword-face)
-                    (propertize (nth 2 centering) 'face 'font-lock-comment-delimiter-face))
-                   "")))))
+      (let ((centering (spydez/string/center/parts
+                        string
+                        nil fill-char
+                        nil
+                        (spydez/string/center/borders border-width))))
+        (spydez/string/center centering faces)))))
+;; (spydez/koan)
 
 
 (defun spydez/message/koan (lines)

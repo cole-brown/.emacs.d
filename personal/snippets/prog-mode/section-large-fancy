@@ -4,7 +4,7 @@
 # key: spy-fan
 # --
 
-${1:`(spydez/prog-mode/comment/center "(will center on exit)")`$(when yas/moving-away-p (spydez/prog-mode/comment/center yas-text))}
-${2:`(spydez/prog-mode/comment/center (or yas-selected-text "(will center on exit)") nil spydez/prog-mode/comment/center/whitespace)`$(when yas/moving-away-p (spydez/prog-mode/comment/center yas-text nil spydez/prog-mode/comment/center/whitespace))}
-`(spydez/prog-mode/comment/center "")`
+${1:`(spydez/prog-mode/comment/center "(will center on exit)" nil spydez/char/center/border)`$(when yas/moving-away-p (spydez/prog-mode/comment/center yas-text nil spydez/char/center/border))}
+${2:`(spydez/prog-mode/comment/center (or yas-selected-text "(will center on exit)"))`$(when yas/moving-away-p (spydez/prog-mode/comment/center yas-text))}
+`(spydez/prog-mode/comment/center "" nil spydez/char/center/border)`
 $0
