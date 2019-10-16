@@ -11,6 +11,7 @@
 ;;------------------------------------------------------------------------------
 ;; General Settings
 ;;------------------------------------------------------------------------------
+
 (defcustom spydez/char/center/whitespace ?\s
   "Center with whitespace."
   :group 'spydez/group
@@ -30,6 +31,9 @@
   "'Replacement character' seems a bit appropriate. Won't exist
 outside function.")
 ;; https://en.wikipedia.org/wiki/Specials_(Unicode_block)#Replacement_character
+
+(defvar spydez/koan/list nil
+  "Koans loaded up and ready to go.")
 
 
 ;;------------------------------------------------------------------------------
@@ -233,6 +237,150 @@ matching properties in both plists."
    faces-plist))
 ;; (spydez/string/center "foo")
 ;; (spydez/string/center "")
+
+
+;;-----------------------------There is no spoon.-------------------------------
+;;--                             Koan Functions                               --
+;;------------------------------------------------------------------------------
+
+(defun spydez/message/koan/line (line)
+  "Returns a propertized line of a koan."
+  (let ((string nil)
+        (fill-char nil)
+        (border-width nil)
+        (pass-through nil)
+        (faces '(;; :whitespace nil
+                 :padding font-lock-comment-delimiter-face
+                 :border font-lock-comment-face
+                 :text font-lock-keyword-face)))
+
+    (cond
+     ;; 0) specials
+     ((eq line 'line-empty)
+      (setq string (spydez/string/parts/build-string "\n" faces)
+            pass-through t))
+     ((eq line 'line-full)
+      (setq string ""
+            fill-char spydez/char/center/border
+            ;; This is just border line so center should just be border color.
+            ;; But, uh... Using just faces in plist-put fucks up our let var
+            ;; `faces' somehow? So be careful...
+            faces (plist-put (-clone faces) :text font-lock-comment-face)))
+
+     ;; 1) general
+     ;; a) Just a string
+     ((stringp line)
+      (setq string line))
+     ;; b) ("string" int)
+     ((and (listp line)
+           (= (length line) 2)
+           (stringp (nth 0 line))
+           (numberp (nth 1 line)))
+      (setq string (nth 0 line)
+            border-width (nth 1 line)))
+
+     ;; 3) errors
+     (t
+      (error "unknown line type: %s" line)))
+
+    ;; Have our line setup now... process it?
+    (if pass-through
+        string
+
+      (let ((centering (spydez/string/center/parts
+                        string
+                        nil fill-char
+                        nil
+                        (spydez/string/center/borders border-width))))
+        (spydez/string/center centering faces)))))
+;; (spydez/koan)
+
+
+(defun spydez/message/koan (lines)
+  "Prints a pretty little message to the *Messages* buffer."
+  (dolist (line lines)
+    (spydez/message/preserve-properties (spydez/message/koan/line line))))
+
+
+(defun spydez/koan/add (koan)
+  "Pushes KOAN into `spydez/koan/list'."
+  (push koan spydez/koan/list))
+
+
+(defun spydez/koan ()
+  "Prints a random koan, or the one indicated by WHICH if non-nil."
+  (when (and spydez/koan/list
+             (listp spydez/koan/list))
+    (spydez/message/koan (nth (random (length spydez/koan/list))
+                              spydez/koan/list))))
+
+
+;;---------------------No, really. Go get your own spoon.-----------------------
+;;--                             Koan Collection                              --
+;;------------------------------------------------------------------------------
+
+;; General Kenobi!
+(spydez/koan/add
+  '(line-empty
+    line-full
+    "Hello there."
+    line-full
+    line-empty))
+
+
+;; Such language...
+(spydez/koan/add
+  '(line-empty
+    line-full
+    "You can't say 'fuck' in the source code..."
+    line-full
+    line-empty))
+
+
+;; §-TODO-§ [2019-10-15]: get more from here? http://www.catb.org/~esr/writings/unix-koans/
+;; http://www.catb.org/~esr/writings/unix-koans/
+(spydez/koan/add
+ '(line-empty
+   line-full
+                        ("“Even the hacker who works alone" 13)
+                           ("collaborates with others," 9)
+                ("and must constantly communicate clearly to them," 7)
+                    ("lest his work become confused and lost,”" 9)
+                                ("said the Master." 13)
+   line-full
+
+              "“Of what others do you speak?” the Prodigy demanded."
+   line-full
+                   ("Master Foo said: “All your future selves.”" 13)
+   line-full
+   line-empty))
+
+
+;; (theme song)
+(spydez/koan/add
+ '(line-empty
+   line-full
+   "Standby for Reincarnation..."
+   "  - Futurama"
+   line-full
+   line-empty))
+
+
+;; Spybreak! - Short One
+(spydez/koan/add
+  '(line-empty
+    line-full
+                        ("“Do not try and bend the spoon," 13)
+                               ("that’s impossible." 9)
+                   ("Instead, only try to realize the truth..." 7)
+    line-full
+                               "There is no spoon."
+    line-full
+              ("Then you’ll see that it is not the spoon that bends," 7)
+                             ("it is only yourself.”" 9)
+                               ("    - Spoon Boy to Neo" 13)
+    line-full
+    line-empty))
 
 
 ;;------------------------------------------------------------------------------
