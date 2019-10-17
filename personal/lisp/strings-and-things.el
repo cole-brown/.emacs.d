@@ -243,7 +243,7 @@ matching properties in both plists."
 ;;--                             Koan Functions                               --
 ;;------------------------------------------------------------------------------
 
-(defun spydez/message/koan/line (line)
+(defun spydez/koan/process-line (line)
   "Returns a propertized line of a koan."
   (let ((string nil)
         (fill-char nil)
@@ -296,10 +296,10 @@ matching properties in both plists."
 ;; (spydez/koan)
 
 
-(defun spydez/message/koan (lines)
+(defun spydez/koan/message (lines)
   "Prints a pretty little message to the *Messages* buffer."
   (dolist (line lines)
-    (spydez/message/preserve-properties (spydez/message/koan/line line))))
+    (spydez/message/preserve-properties (spydez/koan/process-line line))))
 
 
 (defun spydez/koan/add (koan)
@@ -311,7 +311,7 @@ matching properties in both plists."
   "Prints a random koan, or the one indicated by WHICH if non-nil."
   (when (and spydez/koan/list
              (listp spydez/koan/list))
-    (spydez/message/koan (nth (random (length spydez/koan/list))
+    (spydez/koan/message (nth (random (length spydez/koan/list))
                               spydez/koan/list))))
 
 
@@ -349,7 +349,7 @@ matching properties in both plists."
                                 ("said the Master." 13)
    line-full
 
-              "“Of what others do you speak?” the Prodigy demanded."
+               "“Of what others do you speak?” the Prodigy demanded."
    line-full
                    ("Master Foo said: “All your future selves.”" 13)
    line-full
@@ -374,7 +374,7 @@ matching properties in both plists."
                                ("that’s impossible." 9)
                    ("Instead, only try to realize the truth..." 7)
     line-full
-                               "There is no spoon."
+                                "There is no spoon."
     line-full
               ("Then you’ll see that it is not the spoon that bends," 7)
                              ("it is only yourself.”" 9)

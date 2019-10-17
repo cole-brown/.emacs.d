@@ -74,34 +74,44 @@ found. If LEVEL is a numberp, returns LEVEL."
   "Returns a string which is an ascii arrow with a tail of length
 defined by LEVEL in `spydez/message/indents'. Will be left
 pointing if DIRECTION is 'left, else right. All strings returned
-should be of length `spydez/message/indent-gutter'."
-  (let* ((indent (spydez/message/get-indent level))
-         (left (eq direction 'left)) ;; defaults to right
-         (prefix-str (make-string indent
-                                  (if left
-                                      ?\s
-                                    spydez/message/indent-arrow/tail)))
-         (postfix-str (make-string indent
-                                   (if left
-                                       spydez/message/indent-arrow/tail
-                                     ?\s)))
-         (arrow-head (or (alist-get direction spydez/message/indent-arrow/head)
-                         (alist-get 'right spydez/message/indent-arrow/head)))
-         (gutter-format (format "%%-%ds" spydez/message/indent-gutter)))
-    ;; make sure we don't go over length
-    (truncate-string-to-width
-     ;; format the whole gutter for correct right space str pad
-     ;; (make sure we don't go under length)
-     (format gutter-format
-             ;; format the left/right arrow
-             (concat prefix-str arrow-head postfix-str))
-     spydez/message/indent-gutter)))
+should be of length `spydez/message/indent-gutter'.
+
+Returns empty string if LEVEL or DIRECTION is `ignore'."
+  (let ((gutter-format (format "%%-%ds" spydez/message/indent-gutter)))
+    (if (or (eq level 'ignore)
+            (eq direction 'ignore))
+        (format gutter-format "")
+      ;; actual arrow
+      (let* ((indent (spydez/message/get-indent level))
+             (left (eq direction 'left)) ;; defaults to right
+             (prefix-str (make-string indent
+                                      (if left
+                                          ?\s
+                                        spydez/message/indent-arrow/tail)))
+             (postfix-str (make-string indent
+                                       (if left
+                                           spydez/message/indent-arrow/tail
+                                         ?\s)))
+             (arrow-head (or (alist-get direction
+                                        spydez/message/indent-arrow/head)
+                             (alist-get 'right
+                                        spydez/message/indent-arrow/head))))
+        ;; make sure we don't go over length
+        (truncate-string-to-width
+         ;; format the whole gutter for correct right space str pad
+         ;; (make sure we don't go under length)
+         (format gutter-format
+                 ;; format the left/right arrow
+                 (concat prefix-str arrow-head postfix-str))
+         spydez/message/indent-gutter)))))
 ;; (length (spydez/message/indent-arrow 'init) )
 ;; (length (spydez/message/indent-arrow 'init 'left) )
 ;; (length (spydez/message/indent-arrow 'require) )
 ;; (length (spydez/message/indent-arrow 'require 'left) )
 ;; (length (spydez/message/indent-arrow 'require-piggyback) )
 ;; (length (spydez/message/indent-arrow 'require-piggyback 'left) )
+;; (length (spydez/message/indent-arrow 'ignore) )
+;; (length (spydez/message/indent-arrow 'require 'ignore) )
 
 
 ;;-----------------------------------------------------------------------------
@@ -325,12 +335,14 @@ ARGS will fill in."
 ;; (spydez/message/init-sequence 'require-piggyback 'left "Test: %s" 'jeff)
 
 
-(defun spydez/message/init (msg-fmt &rest args)
+(defun spydez/message/init (indent msg-fmt &rest args)
   "Print helpful spydez/message/init-sequence message (if
 spydez/debugging-p) at 'init indent. Really just a way to not
 bother with INDENT/TYPE."
-  (apply #'spydez/message/init-sequence 'init nil msg-fmt args))
-;; (spydez/message/init "start init: %s %s" '(testing list) 'test-symbol)
+  (let ((indent (or indent 'init)))
+    (apply #'spydez/message/init-sequence indent nil msg-fmt args)))
+;; (spydez/message/init 'init "start init: %s %s" '(testing list) 'test-symbol)
+;; (spydez/message/init 'ignore "hi?")
 
 
 (defun spydez/message/init-step/done (prev curr &rest args)

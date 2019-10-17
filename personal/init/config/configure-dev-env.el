@@ -464,9 +464,11 @@
 (use-package rainbow-delimiters
   :hook
   ((prog-mode . rainbow-delimiters-mode)
-   (org-mode . rainbow-delimiters-mode)))
-
-
+   ;; TRIAL [2019-10-16]: rainbow delimiters were getting a bit annoying what
+   ;; with copying incomplete code, using "->" a lot, and other things I do in
+   ;; org-mode... apparently. Trying with them off
+   ;;(org-mode . rainbow-delimiters-mode)))
+   ))
 
 
 ;;------------------------------------------------------------------------------

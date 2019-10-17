@@ -94,7 +94,7 @@
 ;; Step... 0.5? Domains, Master List, Per Computer Stuff.
 ;;------------------------------------------------------------------------------
 ;; Need to know something about my boots so I can pull the right straps.
-(spydez/message/init "early-init.el... Zeroth step.")
+(spydez/message/init 'init "early-init.el... Zeroth step.")
 
 ;;---
 ;; Domain & System Setup

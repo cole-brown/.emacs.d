@@ -41,7 +41,7 @@
 
 
 ;;(spydez/init/step/set-completed '(intermission none))
-;;(spydez/message/init "init.el... Intermission.")
+;;(spydez/message/init 'init "init.el... Intermission.")
 ;; TODO: emacs 27: Turn back on.
 
 ;; TODO: use-tool package, like use-package, but for external tools like git,
@@ -424,7 +424,7 @@
 ;; We're faking early-init's earlyness, so can't do these here right now.
 ;; See below for place for now.
 ;; (spydez/init/step/set-completed '(intermission interstitial-prose))
-;; (spydez/message/init "init.el... Bootstrapping.")
+;; (spydez/message/init 'init "init.el... Bootstrapping.")
 ;;---
 
 ;;---
@@ -458,7 +458,7 @@
 ;; Remove the load when early-init is real.
 ;; Also move this bootstrapping info message up when early-init is real.
 (spydez/init/step/set-completed 'bootstrap 'none)
-(spydez/message/init "init.el... Bootstrapping.")
+(spydez/message/init 'init "init.el... Bootstrapping.")
 ;;-----
 
 ;; Nothing really before system bootstrap, right now.
@@ -606,7 +606,7 @@
 ;; Configuration.
 ;;-----------------------------------------------------------------------------
 (spydez/init/step/set-completed 'config 'none)
-(spydez/message/init "init.el... Configuration.")
+(spydez/message/init 'init "init.el... Configuration.")
 ;; Loading and init are done - now do any more required setup.
 
 ;; If needed, could make a "configure-packages" here for disabling/enabling
@@ -919,7 +919,7 @@
 ;; The End.
 ;;-----------------------------------------------------------------------------
 (spydez/init/step/set-completed 'finalize 'none)
-(spydez/message/init "init.el... Finalizing...")
+(spydez/message/init 'init "init.el... Finalizing...")
 
 (spydez/init/step/set-completed 'finalize 'early)
 
@@ -961,23 +961,16 @@
 
 (spydez/require 'zzz-finalize)
 (spydez/init/step/set-completed 'finalize 'complete)
-(spydez/message/init "init.el...Ok. 3 2 1, let's go.")
+(spydez/message/init 'init "init.el...Ok. 3 2 1, let's go.")
 
 (spydez/init/step/set-completed 'running 'none)
-;; fin
+;; init.el is done. Go home.
 
 
+;; ...
 
-
-;; §-TODO-§ [2019-10-07]: move this koans stuff to its own file.
-
-
-;; Mainly for a nice obvious end to init in messages buffer.
-
-
-
+;; Ok; one more thing - for a nice obvious end to init in messages buffer.
 (spydez/koan)
-
 
 ;;------                                                               ------;;
 ;;----                                                                   ----;;

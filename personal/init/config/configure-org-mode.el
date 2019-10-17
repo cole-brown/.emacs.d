@@ -702,7 +702,9 @@ savages."
   ;; Top dir for org-journals.
   ;; NOTE: Placeholder! Should get overridden in <secrets>/finalize-domain.el
   ;; or somewhere.
-  ;; TODO: a default for spydez/dir/org-docs? And spydez/dir/doc-save-common?
+  ;; TODO: default to home or org-docs dir? would probably need to def org-docs
+  ;; in .emacs.d if defaulting to it...
+  ;; (org-journal-dir (spydez/path/to-dir spydez/dir/org-docs "logbook"))
   (org-journal-dir (spydez/path/to-dir spydez/dir/home "logbook"))
 
   ;; Tack day name onto our format for the org-journal headline.

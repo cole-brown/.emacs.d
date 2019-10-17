@@ -159,7 +159,7 @@
   ;; Custom: Time tab.
   ;;---
   (when (spydez/moody/managing-time)
-    (message "Moody is managing time!")
+    (spydez/message/init 'ignore "Moody is managing time!")
     ;; Have to get the time string replaced by moody ala `(moody-replace-vc-mode)' above.
 
     ;; It exists in the modeline like so:
@@ -205,8 +205,35 @@
     ;; Need to parse out mode-line-misc-info, parse out global-mode-string?,
     ;; replace display-time-string with my shit, and then I'm done?? Nonono, no.
     ;; No. Just moody-tab the whole thing and do that shit later if required.
+
+    (defvar spydez/moody/mode-line-misc-info/inside-parts
+      '(spydez/moody/time-string)
+      "Items to go inside `moody-tab' of `spydez/moody/mode-line-misc-info'.")
+
+    (defun spydez/moody/mode-line-misc-info/inside-string ()
+        "Turns `spydez/moody/mode-line-misc-info/inside-parts' into a string for
+         the modeline moody tab."
+        (let ((result nil))
+          (string-trim
+           (mapconcat
+            'identity
+            (nreverse
+             (dolist (part spydez/moody/mode-line-misc-info/inside-parts result)
+               (cond
+                ((stringp part)
+                 (push part result))
+                ((functionp part)
+                 (push (funcall part) result))
+                (t
+                 (push (format "%s" part) result)))))
+            " "))))
+    ;; (spydez/moody/mode-line-misc-info/inside-string)
+
     (defvar spydez/moody/mode-line-misc-info
-      '(:eval (moody-tab (spydez/moody/time-string) nil 'up)))
+      '(:eval (moody-tab (spydez/moody/mode-line-misc-info/inside-string)
+                         nil 'up))
+      "Moody tab to replace mode-line-misc-info.")
+
     (put 'spydez/moody/mode-line-misc-info 'risky-local-variable t)
     (make-variable-buffer-local 'spydez/moody/mode-line-misc-info)
 

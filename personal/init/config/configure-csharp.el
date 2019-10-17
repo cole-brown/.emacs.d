@@ -49,11 +49,8 @@ All The Things!"
   ;; (local-set-key [return] 'newline-and-indent)
 
   ;; TRIAL [2019-10-03]: fill-column bumped out to 'long'?
+  ;; C# codebase is very... long.
   (setq fill-column spydez/dev-env/fill-column/long)
-  (spydez/message/debug/when
-   '(spydez debug working-on whitespace)
-   "fill-column (%s) not being obeyed by whitespace... -_-"
-   fill-column)
 
   ;; line numbers already on globally
 

@@ -13,6 +13,60 @@
 
 
 ;;------------------------------------------------------------------------------
+;; RedTick - Pomodoro Timer
+;;------------------------------------------------------------------------------
+
+;; Launch a pomodoro by:
+;;  - M-x redtick
+;;  - M-x redtick-with-description RET (manual description) RET
+
+;; Check up on your history?
+;; (find-file redtick-history-file)
+;; --> added to grab-bag
+
+;; A simple pomodoro timer. No org-mode integration or any of that.
+;; https://github.com/ferfebles/redtick
+;; https://melpa.org/#/redtick
+(use-package redtick
+  :ensure t
+
+  ;; You should install SoX (Sound eXchange http://sox.sourceforge.net) if you
+  ;; want to hear the clock ticking! (be careful, in windows you should clear
+  ;; the "" in the sox path to allow emacs to find the executable)
+
+  ;;---
+  :custom
+  ;;---
+  ;; NOTE: Placeholder! Should get overridden in <secrets>/finalize-domain.el
+  ;; or somewhere.
+  ;; TODO: default to home or org-docs dir? would probably need to def org-docs
+  ;; in .emacs.d if defaulting to it...
+  ;; (redtick-history-file (spydez/path/to-file spydez/dir/org-docs "logbook"
+  (redtick-history-file (spydez/path/to-file spydez/dir/home "logbook"
+                                             spydez/dev/system/hash
+                                             "redtick-history.txt")
+                        "Default. Overridden in finalize-domain.el?")
+
+  ;;---
+  :config
+  ;;---
+
+  ;; Stuff the redtick timer into the moody time tab.
+  (when (spydez/moody/managing-time)
+
+    (defun spydez/redtick/mode-line-misc-info ()
+      "Redtick puts this into `mode-line-misc-info'... which we
+ignore when moody is managing the time tab."
+      (if (and redtick-mode (redtick--selected-window-p))
+          redtick--current-bar))
+
+    ;; add redtick to our time tab
+    (add-to-list 'spydez/moody/mode-line-misc-info/inside-parts
+                 #'spydez/redtick/mode-line-misc-info
+                 t)))
+
+
+;;------------------------------------------------------------------------------
 ;; Spotify
 ;;------------------------------------------------------------------------------
 
