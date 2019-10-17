@@ -16,7 +16,10 @@
         - Or fix use-tool to override that nonsense?
 
 
-  - [-] General To Do: [0/17]
+  - [-] General To Do: [0/18]
+    - [ ] performance tweaks?
+      - [ ] remove line number from modeline, see if that makes emacs any faster?
+
     - [ ] package: alert?
       - https://github.com/rememberYou/.emacs.d/blob/master/config.org#alert
       - Anything else from here? https://github.com/rememberYou/.emacs.d/blob/master/config.org
@@ -31,6 +34,7 @@
     - [ ] spotify - fork, pull from my repo into submodule, do changes there, push request to github?
       - [ ] frame vs modeline updates
         - Is theirs acting ok? Was fucky when I first switched to it.
+      - [ ] mute/unmute smarter. unmute to 100% volume is stupid.
 
     - [ ] headache tracker?
       - org-journal + default-directory -> headache entries in separate journal from primary

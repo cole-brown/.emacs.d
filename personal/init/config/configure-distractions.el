@@ -168,53 +168,96 @@ ignore when moody is managing the time tab."
       ;; Status Cache?
       ;;---
       (defvar spydez/spotify/player-status/cache nil
-        "Tuple of (current-time status) where status is untouched return value
-of `spotify-api-get-player-status'.")
+        "Tuple of (current-time raw-status) where raw-status is
+untouched return value of `spotify-api-get-player-status'.")
 
-      (require 'json)
       (defun spydez/spotify/player-status (field)
         "Returns value of field in cached status, or nil."
-        (let* ((duration-format "%m:%02s")
-               (json-object-type 'hash-table)
-               (json-key-type 'symbol)
-               (json (condition-case nil
-                         (json-read-from-string
-                          spydez/spotify/player-status/cache)
-                       (error nil))))
-          (when json
+        (if-let* ((duration-format "%m:%02s")
+                  (cache spydez/spotify/player-status/cache) ;; null check
+                  (status (nth 1 cache))
+                  (track (gethash 'item status)))
+            ;; if-let* success case
             (cond
              ;; known fields and some aliases - field is first
              ((eq field 'artist)
-              (gethash 'artist json))
+              (gethash 'name (car (gethash 'artists track))))
 
-             ((or (eq field 'name)
+             ((or (eq field 'track-name)
                   (eq field 'track_name)
-                  (eq field 'track-name))
-              (gethash 'name json))
+                  (eq field 'name))
+              (gethash 'name track))
 
-             ((eq field 'track_number)
-              (gethash 'track_number json))
+             ((or (eq field 'track-number)
+                  (eq field 'track_number)
+                  (eq field 'number))
+              (gethash 'track_number track))
 
              ((eq field 'duration)
-              (gethash 'duration json))
+              (gethash 'duration_ms track))
+             ((eq field 'duration-formatted)
+              (format-seconds "%m:%02s" (/ (gethash 'duration_ms track) 1000)))
 
-             ((or (eq field 'player_shuffling)
+             ((or (eq field 'player-shuffling)
+                  (eq field 'player_shuffling)
                   (eq field 'shuffling))
-              (gethash 'player_shuffling json))
+              (not (eq (gethash 'shuffle_state status) :json-false)))
 
-             ((or (eq field 'player_repeating)
+             ((or (eq field 'player-repeating)
+                  (eq field 'player_repeating)
                   (eq field 'repeating))
-              (gethash 'player_repeating json))
+              (not (string= (gethash 'repeat_state status) "off")))
 
-             ((or (eq field 'player_state)
+             ((or (eq field 'player-state)
+                  (eq field 'player_state)
                   (eq field 'playing))
-              (gethash 'player_state json))
+              ;; ...if it's not not playing, it's playing!
+              (not (eq (gethash 'is_playing status) :json-false)))
+             ((eq field 'paused)
+              ;; ...if it's not playing, it's paused?
+              ;; What about stopped or not started yet? *shrug*
+              (eq (gethash 'is_playing status) :json-false))
+
+             ((eq field 'volume)
+              (gethash 'volume_percent (gethash 'device status)))
+             ((or (eq field 'mute)
+                  (eq field 'muted))
+              (= (gethash 'volume_percent (gethash 'device status)) 0))
 
              ;; Well... we can try to get it anyways?
              (t
-              ;; gethash returns default of nil so I'm fine with blindly trying
-              (gethash field json))))))
+              ;; gethash returns default of nil so I'm fine with blindly
+              ;; trying. Warn first though.
+              (spydez/message/debug
+               nil
+               (concat "spydez/spotify/player-status: "
+                       "unknown field get attempting: %s")
+               field)
+              (or (gethash field status)
+                  (gethash field track))))
+
+          ;; if-let* fail case
+          (spydez/message/debug
+           nil
+           (concat "spydez/spotify/player-status: Something null... "
+                   "cache?:%s status?:%s track?:%s")
+           (not (null spydez/spotify/player-status/cache))
+           (not (null (nth 1 spydez/spotify/player-status/cache)))
+           (not (null (if (null (nth 1 spydez/spotify/player-status/cache))
+                          nil
+                        (gethash 'item
+                                 (nth 1 spydez/spotify/player-status/cache))))))))
       ;; (spydez/spotify/player-status 'artist)
+      ;; (spydez/spotify/player-status 'name)
+      ;; (spydez/spotify/player-status 'track-number)
+      ;; (spydez/spotify/player-status 'duration)
+      ;; (spydez/spotify/player-status 'duration-formatted)
+      ;; (spydez/spotify/player-status 'shuffling)
+      ;; (spydez/spotify/player-status 'repeating)
+      ;; (spydez/spotify/player-status 'playing)
+      ;; (spydez/spotify/player-status 'paused)
+      ;; (spydez/spotify/player-status 'volume)
+      ;; (spydez/spotify/player-status 'muted)
 
 
       (defun spydez/advice/spotify/player-status/store (callback status)
@@ -243,13 +286,9 @@ callback (which will then call correct callback)."
                            status)))))
       ;; (spydez/advice/spotify/player-status/glom '(jeff))
 
-
-      ;; (setq debug-on-error t)
-
-      ;; §-TODO-§ [2019-10-11]: not working quite yet...
-      ;; (advice-add 'spotify-api-get-player-status
-      ;;             :filter-args
-      ;;             #'spydez/advice/spotify/player-status/glom)
+      (advice-add 'spotify-api-get-player-status
+                  :filter-args
+                  #'spydez/advice/spotify/player-status/glom)
       ;; (advice-remove 'spotify-api-get-player-status
       ;;                 #'spydez/advice/spotify/player-status/glom)
 
@@ -330,13 +369,13 @@ callback (which will then call correct callback)."
                                         :idle 0.25   ;; no help for this long
                                         :hint none)  ;; no hint - just docstr
           "
-^Track^                 ^Playlists^            ^Misc^
-^-^---------------------^-^--------------------^-^-----------------
-_p_: ?p?^^^^^^^         _l m_: My Lists        _d_:   Select Device
-_b_: Back a Track       _l f_: Featured Lists
-_f_: Forward a Track    _l u_: User Lists      _v u_: Volume Up
-_M-r_: ?M-r?^^^^^^^^    _l s_: Search List     _v d_: Volume Down
-_M-s_: ?M-s?^^^^^^^^^   _l c_: Create list     _v m_: ?v m?
+^Track^                    ^Playlists^            ^Misc^
+^-^------------------------^-^--------------------^-^-----------------
+_p_: ?p?^^^^^^^            _l m_: My Lists        _d_:   Select Device
+_b_: Back a Track          _l f_: Featured Lists
+_f_: Forward a Track       _l u_: User Lists      _v u_: Volume Up
+_M-r_: ?M-r?^^^^^^^^^^^^   _l s_: Search List     _v d_: Volume Down
+_M-s_: ?M-s?^^^^^^^^^^^^^  _l c_: Create list     _v m_: ?v m?
 _C-s_: Search Track
 _C-r_: Recently Played  ^   ^                  _q_:   quit"
 
@@ -344,23 +383,25 @@ _C-r_: Recently Played  ^   ^                  _q_:   quit"
           ;; Track
           ;;---
           ("p" spotify-toggle-play
-           ;; §-TODO-§ [2019-10-07]: dynamic text for which it would toggle to
-           ;; Or Unicode. Or "[X] Shuffle"/"[ ] Shuffle"
-           "Play/Pause")
+           (if (spydez/spotify/player-status 'playing)
+               "Play Track"
+             "Pause Track"))
 
           ("b" spotify-previous-track
                :color red)
           ("f" spotify-next-track
                :color red)
 
+          ;; §-TODO-§ [2019-10-17]: this is kinda more playlist than track...
           ("M-r" spotify-toggle-repeat
-           ;; §-TODO-§ [2019-10-07]: dynamic text for which it would toggle to
-           ;; Or Unicode. Or "[X] Shuffle"/"[ ] Shuffle"
-           "Toggle Repeat")
+           (concat (if (spydez/spotify/player-status 'repeating)
+                       "[R] " "[-] ")
+                   "Toggle Repeat"))
+          ;; §-TODO-§ [2019-10-17]: this is kinda more playlist than track...
           ("M-s" spotify-toggle-shuffle
-           ;; §-TODO-§ [2019-10-07]: dynamic text for which it would toggle to
-           ;; Or Unicode. Or "[X] Shuffle"/"[ ] Shuffle"
-           "Toggle Shuffle")
+           (concat (if (spydez/spotify/player-status 'shuffling)
+                       "[S] " "[-] ")
+                   "Toggle Shuffle"))
           ("C-s" spotify-track-search)
           ("C-r" spotify-recently-played)
 
@@ -381,9 +422,9 @@ _C-r_: Recently Played  ^   ^                  _q_:   quit"
           ("v d" spotify-volume-down
                  :color red)
           ("v m" spotify-volume-mute-unmute
-           ;; §-TODO-§ [2019-10-07]: dynamic text for which it would toggle to
-           ;; Or Unicode. Or "[X] Shuffle"/"[ ] Shuffle"
-           "Toggle Mute")
+           (concat (if (spydez/spotify/player-status 'muted)
+                       "[M] " "[-] ")
+                   "Toggle Mute"))
 
           ("d"   spotify-select-device)
 
