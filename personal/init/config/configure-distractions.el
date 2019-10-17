@@ -237,9 +237,10 @@ care about how uppest to datest it is."
 calls in order to cache results. Insert our func as the
 callback (which will then call correct callback)."
         (let ((callback (nth 0 args)))
-          (list (lambda (status) (funcall #'spydez/advice/spotify/player-status/store
-                                          callback
-                                          status)))))
+          (list (lambda (status)
+                  (funcall #'spydez/advice/spotify/player-status/store
+                           callback
+                           status)))))
       ;; (spydez/advice/spotify/player-status/glom '(jeff))
 
 
