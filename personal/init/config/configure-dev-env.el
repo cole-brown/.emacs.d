@@ -168,7 +168,7 @@
 ;;     (call-interactively #'compile)))
 
 
-;; TODO: Move to configure-os.
+;; §-TODO-§ [2019-10-17]: Move to configure-shell. Move configure-shell up in priority.
 (defun spydez/shell/system-default ()
   "Returns a string from the `standard-value' property of `shell-file-name'."
   ;; Use standard windows shell.
@@ -287,12 +287,12 @@
                               (boundp 'spydez/exe/dev-env/unit-test)
                               (symbol-name 'spydez/dev-env/unit-test/args)
                               (boundp 'spydez/dev-env/unit-test/args))
-    (message "Running unit tests...")
-    (async-shell-command
+    (spydez/shell/command-async
      (concat "\"" spydez/exe/dev-env/unit-test "\" "
              (mapconcat 'identity spydez/dev-env/unit-test/args " ")
              " ")
-     (spydez/buffer/special-name "Unit Tests" "Visual Studio"))))
+     "Unit Tests" "Visual Studio"
+     "Running unit tests...")))
 ;; (spydez/dev-env/visual-studio/unit-test)
 
 

@@ -26,6 +26,62 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Shell Functions
+;;------------------------------------------------------------------------------
+
+(defun spydez/shell/command-async (command
+                                   output-title
+                                   &optional
+                                   output-subtitle
+                                   prelude-message
+                                   output-priority)
+  "Calls `async-shell-command' with COMMAND. Buffer will be named
+by `spydez/buffer/special-name' according to OUTPUT-TITLE
+and (optional) OUTPUT-SUBTITLE. Optional PRELUDE-MESSAGE is a
+message that will be printed to emacs *Messages* buffer just
+before shell command.
+
+OUTPUT-PRIORITY is also just passed through to
+`spydez/buffer/special-name'."
+
+  (when prelude-message
+    (spydez/message/info nil prelude-message))
+  (async-shell-command
+   command
+   (spydez/buffer/special-name output-title
+                               output-subtitle
+                               output-priority)))
+
+
+(defun spydez/shell-default/command (command
+                                     output-title
+                                     &optional
+                                     output-subtitle
+                                     prelude-message
+                                     output-priority)
+  "Useful on windows... Resets to default system shell for the
+COMMAND. Calls `shell-command' with COMMAND. Buffer will be named
+by `spydez/buffer/special-name' according to OUTPUT-TITLE
+and (optional) OUTPUT-SUBTITLE. Optional PRELUDE-MESSAGE is a
+message that will be printed to emacs *Messages* buffer just
+before shell command.
+
+OUTPUT-PRIORITY is also just passed through to
+`spydez/buffer/special-name'."
+
+  (when prelude-message
+    (spydez/message/info nil prelude-message))
+  ;; §-TODO-§ [2019-10-17]: move shell stuff that's in dev-env to here.
+  ;; `let' for lexically rebinding shell-file-name for this one command.
+  (let ((shell-file-name (spydez/shell/system-default)))
+    (shell-command
+     command
+     (spydez/buffer/special-name output-title
+                                 output-subtitle
+                                 output-priority))))
+
+
+;;------------------------------------------------------------------------------
 ;; Shell: Git Bash for Windows?
 ;;------------------------------------------------------------------------------
 

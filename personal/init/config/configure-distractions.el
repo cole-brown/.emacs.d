@@ -236,17 +236,19 @@ untouched return value of `spotify-api-get-player-status'.")
               (or (gethash field status)
                   (gethash field track))))
 
-          ;; if-let* fail case
-          (spydez/message/debug
-           nil
-           (concat "spydez/spotify/player-status: Something null... "
-                   "cache?:%s status?:%s track?:%s")
-           (not (null spydez/spotify/player-status/cache))
-           (not (null (nth 1 spydez/spotify/player-status/cache)))
-           (not (null (if (null (nth 1 spydez/spotify/player-status/cache))
-                          nil
-                        (gethash 'item
-                                 (nth 1 spydez/spotify/player-status/cache))))))))
+          ;; if-let* fail case. Can debug it, but so far just nil for normal
+          ;; things like no music for a while.
+          ;; (spydez/message/debug
+          ;;  nil
+          ;;  (concat "spydez/spotify/player-status: Something null... "
+          ;;          "cache?:%s status?:%s track?:%s")
+          ;;  (not (null spydez/spotify/player-status/cache))
+          ;;  (not (null (nth 1 spydez/spotify/player-status/cache)))
+          ;;  (not (null (if (null (nth 1 spydez/spotify/player-status/cache))
+          ;;                 nil
+          ;;               (gethash 'item
+          ;;                        (nth 1 spydez/spotify/player-status/cache))))))
+          nil))
       ;; (spydez/spotify/player-status 'artist)
       ;; (spydez/spotify/player-status 'name)
       ;; (spydez/spotify/player-status 'track-number)
