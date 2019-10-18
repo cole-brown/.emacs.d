@@ -11,21 +11,118 @@
 ;;-----------------------------------------------------------------------------
 
 ;; §-TODO-§ [2019-10-14]: get web bookmarks working...
-;; Derived from org-linkz:
-;; https://github.com/p-kolacz/org-linkz
+
+;;---
+;; Emacs Code
+;;---
+
+;; Original idea from org-linkz:
+;;   https://github.com/p-kolacz/org-linkz
+;; Well... Isn't really "from" or "derived from" anymore. That's super outdated
+;; and don't go there or use that or org-mode will hate you as it hates me right
+;; now... I guess "original idea from" now.
+
 ;; org-protocol set up in configure-org-mode.el
 
 (defconst spydez/file/org/web-bookmarks
-  (spydez/path/to-file spydez/dir/doc-save-secrets "web-bookmarks.org")
+  (spydez/path/to-file spydez/dir/org-docs-secrets "web-bookmarks.org")
   "Org-Mode file for web bookmarksfile.")
 
+;; org-linkz template was... old.
+;; Does this work now?
+;; https://orgmode.org/worg/org-contrib/org-protocol.html
+;; https://orgmode.org/manual/Template-expansion.html#Template-expansion
 (add-to-list 'org-capture-templates
-             `("o" "Web Bookmark Capture" entry
-                (file+headline (,spydez/file/org/web-bookmarks "INBOX"))
-                "* %a %U"
-                :immediate-finish t))
+             `("w" "Web Bookmark Capture" entry
+               (file+headline ,spydez/file/org/web-bookmarks "INBOX")
+               ,(format "* %s %s\\n\\n%s\\n  %s\\n\\n%s"
+                        "%U" ;; inactive date & time stamp
+                        "%a" ;; org-link of URL/Title
+                        "%:description" ;; title
+                        "%:link"        ;; URL
+                        "%:initial")    ;; any selected text
+               :immediate-finish t))
+;; ...no. No it does not.
+;; I get a buffer with a fucked up name that looks to be the
+;; whole org-protocol link.
+;; §-TODO-§ [2019-10-18]: Figure out web bookmarks. Still/again.
 
-(setq org-protocol-default-template-key "o")
+;; (find-file spydez/file/org/web-bookmarks)
+
+
+;;---
+;; Browser Bookmark
+;;---
+
+;; Something like this?
+;;   https://orgmode.org/worg/org-contrib/org-protocol.html#orgeda0362
+;;
+;; javascript:location.href='org-protocol://capture://w/'+
+;;       encodeURIComponent(location.href)+'/'+
+;;       encodeURIComponent(document.title||"[untitled page]")+'/'+
+;;       encodeURIComponent(window.getSelection())
+;;
+;; Ok. That's wrong (says outdated), but I got that from the org docs. :| WTF.
+
+;; This one's from org-protocol.el in emacs26, so... Maybe?
+;; javascript:location.href='org-protocol://capture?template=w&url='+
+;;       encodeURIComponent(location.href)+'&title='+
+;;       encodeURIComponent(document.title||"[untitled page]")+'&body='+
+;;       encodeURIComponent(window.getSelection())
+;; Sigh. No. Or yes and org-capture is fucking it up. IDK.
+;; §-TODO-§ [2019-10-18]: Figure out web bookmarks. Still/again.
+
+
+;;---
+;; OS Integration
+;;---
+
+;; To setup OS integration, see:
+;;   https://github.com/p-kolacz/org-linkz#add-org-protocol-support-to-os
+;;
+;; Linux:
+;;   Add ~/.local/share/applications/org-protocol.desktop file with following content:
+;;
+;;   [Desktop Entry]
+;;   Name=org-protocol
+;;   Exec=emacsclient -n %u
+;;   Type=Application
+;;   Terminal=false
+;;   Categories=System;
+;;   MimeType=x-scheme-handler/org-protocol;
+;;
+;;   Run
+;;
+;;   update-desktop-database ~/.local/share/applications/
+;;
+;; Mac:
+;;   https://github.com/xuchunyang/setup-org-protocol-on-mac
+;;
+;; Windows:
+;;   https://orgmode.org/worg/org-contrib/org-protocol.html#orgf93bb1b
+;;
+;;   Windows users may register the "org-protocol" once for all by adjusting the
+;;   following to their facts, save it as *.reg file and double-click it. This
+;;   worked for me on Windows-XP Professional and the emasc23 from
+;;   ourcomments.org (http://ourcomments.org/cgi-bin/emacsw32-dl-latest.pl). I'm
+;;   no Windows user though and enhancements are more than welcome on the
+;;   org-mode mailinglist. The original file is from
+;;   http://kb.mozillazine.org/Register_protocol.
+;;
+;;     REGEDIT4
+;;
+;;     [HKEY_CLASSES_ROOT\org-protocol]
+;;     @="URL:Org Protocol"
+;;     "URL Protocol"=""
+;;     [HKEY_CLASSES_ROOT\org-protocol\shell]
+;;     [HKEY_CLASSES_ROOT\org-protocol\shell\open]
+;;     [HKEY_CLASSES_ROOT\org-protocol\shell\open\command]
+;;     @="\"C:\\Programme\\Emacs\\emacs\\bin\\emacsclientw.exe\" \"%1\""
+;;
+;; Or here is the file:
+;; (spydez/path/to-file spydez/dir/org-docs-secrets
+;;                      "setup-org-bookmark-protocol.reg")
+;; NOTE: Open that and update path to emacs executable!!!
 
 
 ;;------------------------------------------------------------------------------
