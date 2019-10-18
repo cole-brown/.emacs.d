@@ -1,7 +1,20 @@
 ;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
 
-;; NOTE: shell and eshell are different things... apparently.
+;;------------------------------------------------------------------------------
+;; Notes and Things
+;;------------------------------------------------------------------------------
+
+;; NOTE: shell and eshell are different things...
+;;   -  shell: An actual shell, kinda. Mostly.
+;;   - eshell: An emacs-lisp shell that is mostly kinda like an actualy shell.
+;;     - Can be useful on windows, I hear, since it's fully in emacs.
+
+
+;; Don't think I need this anymore, but here.
+;; https://emacs.stackexchange.com/questions/22049/git-bash-in-emacs-on-windows
+;; (setq explicit-shell-file-name "C:/git-for-windows/bin/bash.exe")
+;; (setq explicit-bash.exe-args '("--login" "-i"))
 
 
 ;;------------------------------------------------------------------------------
@@ -29,6 +42,30 @@
 ;; Shell Functions
 ;;------------------------------------------------------------------------------
 
+(defun spydez/shell/system-default ()
+  "Returns a string from the `standard-value' property of `shell-file-name'."
+  ;; Use standard windows shell.
+  ;; May have to use a per-domain/dev setting if needed for e.g. WSL?
+
+  ;; Put os-dependent things here if needed. Or setup something in configure-os
+  ;; that gets picked up and acted on here.
+  (let ((path-to-shell (executable-find "cmdproxy")))
+    (if path-to-shell
+        ;; just return that if we have it
+        path-to-shell
+
+      ;; else try to figure something out?
+      (let ((shell-file-name/std-prop (get 'shell-file-name 'standard-value)))
+        ;; `get' doesn't say what it returns... but it's returning a list,
+        ;; so... Check/hope for that, default to "I dunno. Whatever I was given
+        ;; I guess...".
+        (cond ((listp shell-file-name/std-prop)
+               (nth 0 shell-file-name/std-prop))
+
+              (t shell-file-name/std-prop))))))
+;; (spydez/shell/system-default)
+
+
 (defun spydez/shell/command-async (command
                                    output-title
                                    &optional
@@ -53,6 +90,35 @@ OUTPUT-PRIORITY is also just passed through to
                                output-priority)))
 
 
+(defun spydez/shell/command (command
+                             output-title
+                             &optional
+                             output-subtitle
+                             prelude-message
+                             output-priority)
+  "Calls `shell-command' with COMMAND. Buffer will be named
+by `spydez/buffer/special-name' according to OUTPUT-TITLE
+and (optional) OUTPUT-SUBTITLE. Optional PRELUDE-MESSAGE is a
+message that will be printed to emacs *Messages* buffer just
+before shell command.
+
+OUTPUT-PRIORITY is also just passed through to
+`spydez/buffer/special-name'."
+
+  (when prelude-message
+    (spydez/message/info nil prelude-message))
+  (shell-command
+   command
+   (spydez/buffer/special-name output-title
+                               output-subtitle
+                               output-priority)))
+
+
+;; Initially from:
+;;   "This will set shell-file-name locally when you call
+;; [spydez/shell-default/command], which you can bind to the key of your
+;; choice."
+;;   - https://superuser.com/a/806388
 (defun spydez/shell-default/command (command
                                      output-title
                                      &optional
@@ -66,19 +132,77 @@ and (optional) OUTPUT-SUBTITLE. Optional PRELUDE-MESSAGE is a
 message that will be printed to emacs *Messages* buffer just
 before shell command.
 
+COMMAND should be properly formatted already. e.g. with escapes,
+`shell-quote-argument', or whatever's needed.
+
 OUTPUT-PRIORITY is also just passed through to
 `spydez/buffer/special-name'."
 
   (when prelude-message
     (spydez/message/info nil prelude-message))
-  ;; §-TODO-§ [2019-10-17]: move shell stuff that's in dev-env to here.
-  ;; `let' for lexically rebinding shell-file-name for this one command.
+   ;; `let' for lexically rebinding shell-file-name for this one command.
   (let ((shell-file-name (spydez/shell/system-default)))
     (shell-command
      command
      (spydez/buffer/special-name output-title
                                  output-subtitle
                                  output-priority))))
+;; (spydez/shell-default/command "dir" "test")
+
+
+;; Initially from:
+;;   "This will set shell-file-name locally when you call
+;; [spydez/shell-default/command], which you can bind to the key of your
+;; choice."
+;;   - https://superuser.com/a/806388
+(defun spydez/shell-default/command-async (command
+                                           output-title
+                                           &optional
+                                           output-subtitle
+                                           prelude-message
+                                     output-priority)
+  "Useful on windows... Resets to default system shell for the
+COMMAND. Calls `async-shell-command' with COMMAND. Buffer will be named
+by `spydez/buffer/special-name' according to OUTPUT-TITLE
+and (optional) OUTPUT-SUBTITLE. Optional PRELUDE-MESSAGE is a
+message that will be printed to emacs *Messages* buffer just
+before shell command.
+
+COMMAND should be properly formatted already. e.g. with escapes,
+`shell-quote-argument', or whatever's needed.
+
+OUTPUT-PRIORITY is also just passed through to
+`spydez/buffer/special-name'."
+
+  (if (eq system-type 'windows-nt)
+      (spydez/message/warning
+       nil :warning
+       (concat
+        "Default shell on windows (cmd.exe) doesn't support "
+        "async-shell-command like this... I'll have to add in support "
+        "for 'start -B command' or something."))
+
+       ;; 'start' with the '/B' option.
+       ;;   Start application without creating a new window. The application
+       ;;   has ^C handling ignored. Unless the application enables ^C
+       ;;   processing, ^Break is the only way to interrupt the application
+       ;; e.g.
+       ;;   start /B java -jar jarfile1.jar
+       ;;   start /B java -jar jarfile2.jar
+       ;;
+       ;; https://superuser.com/a/345605
+       ;;   - https://www.computerhope.com/starthlp.htm
+
+    (when prelude-message
+      (spydez/message/info nil prelude-message))
+    ;; `let' for lexically rebinding shell-file-name for this one command.
+    (let ((shell-file-name (spydez/shell/system-default)))
+      (async-shell-command
+       command
+       (spydez/buffer/special-name output-title
+                                   output-subtitle
+                                   output-priority)))))
+;; (spydez/shell-default/command-async "dir" "test")
 
 
 ;;------------------------------------------------------------------------------

@@ -120,79 +120,13 @@
   :type 'string)
 
 
-;; TODO: (try to) get this working maybe
-;; TODO: also try to use use-tool for vsvars?
-;;
-;; ;; Naming these?
-;; ;; Or get use-tool better and put these funcs in the tool?
-;; ;; spydez/devenv/visual-studio-2010/setup (from mbg/devenv-compile)?
-;; ;; spydez/devenv/visual-studio-201/compile (from weird-compile)?
-;;
-;; ;; TODO: make compile use windows shell instead of bash
-;; ;; https://gist.github.com/lionicsheriff/5971015
-;; ;; Usage: M-x mbg/devenv-compile
-;; ;;        M-x compile
-;; (defun mbg/devenv-compile nil
-;;   "Set up compile command for Visual Studio"
-;;   (interactive)
-;;   (let ((vsvars (shell-quote-argument "C:\\Program Files (x86)\\Microsoft Visual Studio 10.0\\Common7\\Tools\\vsvars32.bat"));; C:\\Program Files (x86)\\Microsoft Visual Studio 11.0\\Common7\\Tools\\vsvars32.bat"))
-;;           (solution-file (shell-quote-argument
-;;                               ;; awesomely, locate-dominating-file returns the directory for the file
-;;                               ;; so when you use a pattern to find a file, you need to run it again in
-;;                               ;; the directory itself to get the file name. Who knew.
-;;                               (car (directory-files
-;;                                     (locate-dominating-file default-directory
-;;                                                                   (lambda (dir)
-;;                                                                       (directory-files dir
-;;                                                                                            nil
-;;                                                                                            ".*\\.sln$"
-;;                                                                                            t)))
-;;                                     t
-;;                                     ".*\\.sln$"))))
-;;           (build-config "Debug"))
-;;     (message (concat "sln: " solution-file " @ Config: " build-config))
-;;     (setq compile-command (concat "call " vsvars " && devenv " solution-file " /Build " build-config))))
-;;
-;; ;; TODO: also try these for getting Visual Studio to compile
-;; ;; https://stackoverflow.com/a/4589933
-;;
-;; ;; TODO: try different shells? need cmd for Visual Studio?
-;; ;; https://www.reddit.com/r/emacs/comments/8qsvp9/question_is_there_a_way_to_run_different_shells/
-;; ;;
-;; ;; This one is better:
-;; ;;   "This will set shell-file-name locally when you call weird-compile, which
-;; ;; you can bind to the key of your choice."
-;; ;;   - Sean Allred: https://superuser.com/a/806388
-;; (defun weird-compile () (interactive)
-;;   (let ((shell-file-name "/bin/my-weird-sh"))
-;;     (call-interactively #'compile)))
+;; §-TODO-§ [2019-10-18]: Do I need to add these error regexps for Visual Studio
+;; compile? It seems to be catching things so far... This answer was from 2011
+;; so...
+;;  - https://stackoverflow.com/a/4589933
 
-
-;; §-TODO-§ [2019-10-17]: Move to configure-shell. Move configure-shell up in priority.
-(defun spydez/shell/system-default ()
-  "Returns a string from the `standard-value' property of `shell-file-name'."
-  ;; Use standard windows shell.
-  ;; May have to use a per-domain/dev setting if needed for e.g. WSL?
-
-  ;; cmdproxy is for windows, so... Def move this to configure-os and have
-  ;; os-dependent things happen.
-  (let ((path-to-shell (executable-find "cmdproxy")))
-    (if path-to-shell
-        ;; just return that if we have it
-        path-to-shell
-
-      ;; else try to figure something out?
-      (let ((shell-file-name/std-prop (get 'shell-file-name 'standard-value)))
-        ;; `get' doesn't say what it returns... but it's returning a list,
-        ;; so... Check/hope for that, default to "I dunno. Whatever I was given
-        ;; I guess...".
-        (cond ((listp shell-file-name/std-prop)
-               (nth 0 shell-file-name/std-prop))
-
-              (t shell-file-name/std-prop))))))
-;; (spydez/shell/system-default)
-
-
+;; Partially blood, sweat, and tears...
+;; but started from: https://gist.github.com/lionicsheriff/5971015
 (defun spydez/dev-env/visual-studio/compile/setup ()
   "Set up compile command for Visual Studio"
 ;;  (interactive)
@@ -254,9 +188,11 @@
       (message "Compile Setup: Ready for '%s' @ '%s'"
                (file-name-nondirectory solution-file)
                build-config)))))
-  ;; (spydez/dev-env/visual-studio/compile/setup)
+;; (spydez/dev-env/visual-studio/compile/setup)
 
 
+;; Partially blood, sweat, and tears...
+;; but started from: https://gist.github.com/lionicsheriff/5971015
 (defun spydez/dev-env/visual-studio/compile ()
   "Compile in Visual Studio, maybe?"
   (interactive)

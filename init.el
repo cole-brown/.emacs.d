@@ -651,6 +651,9 @@
 ;; Make sure emacs server daemon is running.
 (spydez/require 'configure-daemons)
 
+;; Setup shell things. Needs to go after configure-os, configure-emacs, probably.
+(spydez/require 'configure-shell)
+
 ;; log or large file stuff
 (spydez/require 'configure-logs)
 
@@ -770,14 +773,6 @@
 
 ;; TODO: company-mode? http://company-mode.github.io/
 ;;   How's this compete/interact with yasnippets, dabbrev, hippie, etc..?
-
-;; TODO: configure shell?
-;; will need an 'if windows'?
-;; ...and maybe an 'if git bash exists'
-;; https://emacs.stackexchange.com/questions/22049/git-bash-in-emacs-on-windows
-;; (setq explicit-shell-file-name "C:/git-for-windows/bin/bash.exe")
-;; (setq explicit-bash.exe-args '("--login" "-i"))
-(spydez/require 'configure-shell)
 
 ;; TODO: configure parenthesis
 
