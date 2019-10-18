@@ -5,9 +5,25 @@
 ;; General Settings
 ;;------------------------------------------------------------------------------
 
+;;---
+;; Line & Column Mode
+;;---
+
+;; §-TODO-§ [2019-10-18]: I really love these, but they might be causing lag
+;; from evaluating the whole modeline every keystroke, line change, etc...
+;;   - Maybe "Idle Line/Column Number Mode"? That only bothers updating on a
+;;     timer or the "emacs is now idle" indicator thingy.
+
 ;; Line and column numbers in mode line
-(column-number-mode t)
-(line-number-mode t)
+;; (column-number-mode t)
+;; (line-number-mode t)
+(column-number-mode -1)
+(line-number-mode -1)
+
+
+;;---
+;; Size Indication Mode
+;;---
 
 ;; Size indicator in mode line with position
 ;; Tried Out: [2019-03-15 Fri]
@@ -15,14 +31,91 @@
 ;;   Good info but I have it in the titlebar already and I want more space for
 ;;   other things in the modeline.
 ;; Positive to enable, negative to disable.
-;; (size-indication-mode -1) ;; 1) ;; "x%" ->  "x% of 6.5k"
+;; (size-indication-mode 1) ;; "x%" ->  "x% of 6.5k"
+(size-indication-mode -1)
 
-;; TODO: move to a use-package bootstrap or zeroth or something?
-;; TODO-TOO: make one for every package?
-;; TODO-3: make a helper where you can put the package name and it'll check
-;;   if bound-and-true-p? e.g.: (spydez/using-package 'moody) -> t/nil
-(defconst spydez/use-package/moody t
-  "True if moody should be enabled in use-package.")
+;; Change mode-line-percent-position via Customize.
+;; Set percent to nil to not sow... for now
+(customize-set-variable 'mode-line-percent-position nil)
+
+
+;;---
+;; Mode Line evaluation counter
+;;---
+
+(defcustom spydez/modeline/eval-counter/enabled t
+  "Skip eval counter setup if nil."
+  :group 'spydez/group
+  :type 'string)
+
+;; Only set it up when enabled
+(when spydez/modeline/eval-counter/enabled
+  ;; One or both of these are needed for the modeline to work:
+  ;;   1) `defvar-local'
+  ;;      or `defvar' + `make-variable-buffer-local'
+  ;;   2) `risky-local-variable'
+
+  (defvar-local spydez/modeline/eval-count 0
+    "Counting :eval")
+
+  (defvar-local spydez/modeline/eval-counter
+    '(:eval (progn
+              (setq spydez/modeline/eval-count (+ 1 spydez/modeline/eval-count))
+              (format "   (:eval'd %2d)" spydez/modeline/eval-count)))
+    "Tracks number of modeline evals.")
+
+  (put 'spydez/modeline/eval-count 'risky-local-variable t)
+  (put 'spydez/modeline/eval-counter 'risky-local-variable t)
+
+  ;; Put this at the end of the mode-line-format, before `mode-line-end-spaces'.
+  (let ((mode-line/edit (remove 'mode-line-end-spaces mode-line-format))
+        (mode-line/new nil))
+    ;; Put it before (new) end-of-line spaces.
+    (push 'mode-line-end-spaces mode-line/new)
+    (push 'spydez/modeline/eval-counter mode-line/new)
+    ;; and append the editted & new-ending together
+    (setq-default mode-line-format
+                  (append mode-line/edit mode-line/new))))
+
+
+;;---
+;; Misc
+;;---
+
+;; As of [2019-10-18]:
+;; mode-line-format
+;;   ("%e"
+;;    mode-line-front-space
+;;    mode-line-mule-info
+;;    mode-line-client
+;;    mode-line-modified
+;;    mode-line-remote
+;;    mode-line-frame-identification
+;;    moody-mode-line-buffer-identification
+;;    "   "
+;;    mode-line-position
+;;    (vc-mode moody-vc-mode)
+;;    "  "
+;;    minions-mode-line-modes
+;;    spydez/moody/mode-line-misc-info
+;;    mode-line-end-spaces)
+;;
+;; mode-line-position
+;;   (
+;;    (:propertize mode-line-percent-position local-map
+;;                 ...)
+;;    (size-indication-mode
+;;     ...)
+;;    (line-number-mode
+;;     ((column-number-mode
+;;       (column-number-indicator-zero-based
+;;        ...)
+;;       ...))
+;;     ((column-number-mode
+;;       (column-number-indicator-zero-based
+;;        ...)))))
+;;
+
 
 
 ;;------------------------------------------------------------------------------
@@ -31,18 +124,21 @@
 ;; Puts a clock down in the mode line.
 
 (defconst spydez/moody/enable-time t
-  "True if moody should manage a clock in the modeline. False if it should not.")
+  "True if moody should manage a clock in the modeline.
+  False if it should not.")
 
 (defun spydez/moody/managing-time ()
   "True if moody should manage a clock in the modeline. False if it should not."
-  (and spydez/moody/enable-time   ;; explicitly enabled
+  (and spydez/moody/enable-time   ;; time explicitly enabled
        (featurep 'moody)          ;; moody is installed
-       spydez/use-package/moody ;; moody is enabled in use-package
+       (spydez/packages/enabled-p 'moody) ;; moody is not disabled
        ))
 
+;; §-TODO-§ [2019-10-18]: Stay here, or move to date-and-time.el?
 (defconst spydez/modeline/time-format
   "%F %R"
-  "We're not full ISO 8601, but closeish. Format for time in modeline is: yyyy-mm-dd HH:MM")
+  "We're not full ISO 8601, but closeish. Format for time in
+  modeline is: yyyy-mm-dd HH:MM")
 
 ;;---
 ;; Display Time Mode
@@ -133,7 +229,7 @@
 ;; https://github.com/tarsius/moody
 ;; "Tabs" (kinda) style layout of the mode line.
 (use-package moody
-  :if spydez/use-package/moody
+  :when (spydez/packages/enabled-p 'moody)
   :demand t
 
   ;;---
