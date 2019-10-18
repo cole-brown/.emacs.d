@@ -16,9 +16,7 @@
         - Or fix use-tool to override that nonsense?
 
 
-  - [-] General To Do: [2/21]
-    - [ ] Unbind "C-x m", or rebind where "C-x C-m" is bound. I do not mail with you, emacs.
-
+  - [-] General To Do: [3/21]
     - [ ] Make a lazier line/column mode for modeline?
       - [[file:~/.emacs.d/personal/init/config/configure-modeline.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-18%5D:%20I%20really%20love%20these,%20but%20they%20might%20be%20causing%20lag][here]]
 
@@ -52,10 +50,10 @@
       - glare at use-package for being so god damn try hard about being lazy
       - [ ] Switch to General? https://github.com/noctuid/general.el
       - [ ] Just use bind-key directly?
+
     - [ ] use-package: whitespace & neatness.
       - Two blank lines between keyword sections unless very simple.
       - Sections should have ";;---" around their keywords unless very simple.
-
     - [ ] Don't beacon in the minibuffer?
 
     - [ ] package: major-mode-hydra (and pretty-hydra)
@@ -71,6 +69,7 @@
     - [ ] Look at magit-lfs? Does it do anything I want?
       - [ ] LFS first, then:
       - [ ] Look at magit-svn? Does it do anything I want?
+
     - [-] Fancy checkboxes (<- like that) lose fancy boxyness when buffer has mismatched quotations or something
       - [X] double quote def work. Take out one of these and see. ""
       - [X] Started issue at (spydez/help/issue/visit "org-mode" "prettify-symbols.org")
@@ -86,6 +85,7 @@
     - [ ] configure-crypt needs babying... again... (again... (again?..))
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
         - https://arenzana.org/2019/04/emacs-org-mode/
+    - [X] Unbind "C-x m", or rebind where "C-x C-m" is bound. I do not mail with you, emacs.
     - [X] performance tweaks?
       - [X] remove line number from modeline, see if that makes emacs any faster?
       - It did... Sigh. :/

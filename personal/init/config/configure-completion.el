@@ -71,7 +71,8 @@
    ("M-x"       . helm-M-x)
    ;; from my old emacs config, muscle memory and ultimately:
    ;;   http://steve.yegge.googlepages.com/effective-emacs
-   ("C-x C-m"   . helm-M-x) ; Invoke M-x w/o the Alt key. Useful for Dvorak.
+   ("C-x C-m"   . helm-M-x) ;; Invoke M-x w/o the Alt key. Useful for Dvorak.
+   ("C-x m"     . helm-M-x) ;; I've opened the mail buffer too often. Rebind.
 
    ("C-x c o"   . helm-occur)
    ("C-x c s"   . helm-swoop)
