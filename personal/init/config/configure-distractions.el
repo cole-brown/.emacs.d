@@ -151,7 +151,8 @@ ignore when moody is managing the time tab."
       (spotify-player-status-shuffling-text     "S")
       (spotify-player-status-not-shuffling-text "-")
 
-      ;; (spotify-player-status-truncate-length 10) ;; default: 15
+      ;; I got a lot of room in the titlebar...
+      (spotify-player-status-truncate-length 30) ;; default: 15
 
 
       ;;---
@@ -244,10 +245,11 @@ untouched return value of `spotify-api-get-player-status'.")
           ;;          "cache?:%s status?:%s track?:%s")
           ;;  (not (null spydez/spotify/player-status/cache))
           ;;  (not (null (nth 1 spydez/spotify/player-status/cache)))
-          ;;  (not (null (if (null (nth 1 spydez/spotify/player-status/cache))
-          ;;                 nil
-          ;;               (gethash 'item
-          ;;                        (nth 1 spydez/spotify/player-status/cache))))))
+          ;;  (not (null
+          ;;        (if (null (nth 1 spydez/spotify/player-status/cache))
+          ;;            nil
+          ;;          (gethash 'item
+          ;;                   (nth 1 spydez/spotify/player-status/cache))))))
           nil))
       ;; (spydez/spotify/player-status 'artist)
       ;; (spydez/spotify/player-status 'name)
@@ -294,71 +296,42 @@ callback (which will then call correct callback)."
       ;; (advice-remove 'spotify-api-get-player-status
       ;;                 #'spydez/advice/spotify/player-status/glom)
 
+
+      (defvar spydez/spotify/mute/volume nil
+        "Remember what percent the volume was when we muted.")
+      (defvar spydez/spotify/mute/volume-default 50
+        "Default in case there was no pre-mute remembered.")
+      (defun spydez/spotify/volume-mute-unmute ()
+        "It's braindead and ear drum blasting to 0/100 the volume.
+Try to not be braindead."
+        (spotify-when-device-active
+         (spotify-api-get-player-status
+          (lambda (status)
+            (let ((volume (spotify-connect-get-volume status)))
+              (if (eq volume 0)
+                  (let ((set-volume (cond
+                                     ((bound-and-true-p spydez/spotify/mute/volume)
+                                      spydez/spotify/mute/volume)
+                                     ((bound-and-true-p spydez/spotify/mute/volume-default)
+                                      spydez/spotify/mute/volume-default)
+                                     (t 100)))) ;; I guess blow their ears out as last resort...
+                    (spotify-api-set-volume (spotify-connect-get-device-id status)
+                                            set-volume
+                                            (lambda (_) (message "Volume unmuted to %s." set-volume)))
+                    ;; Save what we've set it to.
+                    (setq spydez/spotify/mute/volume set-volume))
+                ;; Save what volume we're leaving.
+                (setq spydez/spotify/mute/volume volume)
+                (spotify-api-set-volume (spotify-connect-get-device-id status) 0
+                                        (lambda (_) (message "Volume muted.")))))))))
+      (fset 'spotify-connect-volume-mute-unmute 'spydez/spotify/volume-mute-unmute)
+
+
       ;;---
       ;; Status in Title Bar (before it was a feature in spotify.el)
+      ;; (spydez/help/issue/visit "spotify" "title-bar-status.org")
       ;;---
 
-      ;; §-TODO-§ [2019-10-11]: Move this to an issue or something?.. it was
-      ;; good learnin' and I hate to see it go.
-;;       ;; Currently Playing Info:
-;;       ;;   Put in frame title? Modeline is full...
-;;       ;; Take over this, maybe: `spotify-update-player-status'
-;;       (defun spydez/frame/spotify/update-status (str)
-;;         "Sets the given str to the frame title instead of the
-;; modeline. This should take over from `spotify-update-player-status'."
-;;         (when (not (string= str spotify-player-status))
-;;           (setq spotify-player-status str)
-;;           ;; There isn't a straight-forward way to tell frame to update name
-;;           ;; based on `frame-title-format', but I did find this:
-;;           ;;   https://stackoverflow.com/questions/13667702/how-to-force-emacs-update-frame-title
-;;           (sit-for 0)
-;;           ;; This would nuke whatever `frame-title-format' last set...
-;;           ;; (modify-frame-parameters (selected-frame) (list (cons 'name title)))
-;;           ))
-;;       (setq spydez/spotify/orig-fn/spotify-update-player-status
-;;             #'spotify-update-player-status)
-
-;;       (defvar spydez/hook/spotify/entered nil
-;;         "Non-nil if `spydez/hook/spotify-mode' has been entered and setup for
-;;          `spotify-remote-mode'. Nil if it hasn't been entered yet, or if it has
-;;          been used to exit and tear-down `spotify-remote-mode'.")
-
-;;       (spydez/hook/defun-and-hooker spotify-remote-mode-hook t
-;;           nil nil "init/config/configure-distractions.el"
-;;         "Hook to enable/disable Spotify-Mode status in Frame Title."
-;;         ;; skip setup/teardown?
-;;         (unless (eq spotify-remote-mode spydez/hook/spotify/entered)
-;;           (setq spydez/hook/spotify/entered spotify-remote-mode)
-
-;;           (let ((status '(:eval (spotify-player-status-text))))
-;;             (if spotify-remote-mode
-;;                 ;; enter mode
-;;                 (progn
-;;                   (spydez/message/debug/when '(spydez debug hook)
-;;                                            "Entering spotify-remote-mode?")
-;;                   ;; Hook into the frame title
-;;                   (unless (member status frame-title-format)
-;;                     ;; Push our status string to the cdr of the last element of
-;;                     ;; the `frame-title-format'. i.e. append status to end of
-;;                     ;; list.
-;;                     (push status (cdr (last frame-title-format))))
-;;                   ;; and steal `spotify-update-player-status'
-;;                   (fset #'spotify-update-player-status
-;;                         #'spydez/frame/spotify/update-status))
-;;               ;; exit mode
-;;               (spydez/message/debug/when '(spydez debug hook)
-;;                                        "Exiting spotify-remote-mode?")
-;;               (when (member status frame-title-format)
-;;                 (setq frame-title-format (remq s frame-title-format)))
-;;               ;; and un-steal `spotify-update-player-status'
-;;               (fset #'spotify-update-player-status
-;;                     #'spydez/spotify/orig-fn/spotify-update-player-status)))))
-
-      ;; Either use spotify-remote-mode as wanted, or turn on globally:
-      ;; (progn (setq debug-on-error t) (global-spotify-remote-mode))
-      ;; (setq global-spotify-remote-mode nil)
-      ;; Not turning auto-on as part of init, though.
-      ;; Seems to work fine right now as not-turned-on and with hydra calls.
 
       ;;---
       ;; Keybinds
@@ -373,21 +346,21 @@ callback (which will then call correct callback)."
           "
 ^Track^                    ^Playlists^            ^Misc^
 ^-^------------------------^-^--------------------^-^-----------------
-_p_: ?p?^^^^^^^            _l m_: My Lists        _d_:   Select Device
+_p_: ?p?^^^^^^^^           _l m_: My Lists        _d_:   Select Device
 _b_: Back a Track          _l f_: Featured Lists
 _f_: Forward a Track       _l u_: User Lists      _v u_: Volume Up
 _M-r_: ?M-r?^^^^^^^^^^^^   _l s_: Search List     _v d_: Volume Down
 _M-s_: ?M-s?^^^^^^^^^^^^^  _l c_: Create list     _v m_: ?v m?
 _C-s_: Search Track
-_C-r_: Recently Played  ^   ^                  _q_:   quit"
+_C-r_: Recently Played     ^   ^                  _q_:   quit"
 
           ;;---
           ;; Track
           ;;---
           ("p" spotify-toggle-play
-           (if (spydez/spotify/player-status 'playing)
-               "Play Track"
-             "Pause Track"))
+           (format "%-11s" (if (spydez/spotify/player-status 'playing)
+                               "Pause Track"
+                             "Play Track")))
 
           ("b" spotify-previous-track
                :color red)

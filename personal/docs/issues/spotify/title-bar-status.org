@@ -1,0 +1,67 @@
+#+TITLE:       My Titlebar Status Code
+#+AUTHOR:      Cole Brown
+#+EMAIL:       git@spydez.com
+#+DATE:        [2019-10-18 Fri]
+
+* Notes
+
+Original version of spotify.el I was on only had modeline support, so I made titlebar support for it, only for it to be added in a week or so later... But I learned stuff about titlebars and frames.  Here's the code.
+
+* Code
+
+Was originally in configure-distractions.el in spotify's use-package's :config.
+
+      ;; it was good learnin' and I hate to see it go.
+      ;; Currently Playing Info:
+      ;;   Put in frame title? Modeline is full...
+      ;; Take over this, maybe: `spotify-update-player-status'
+      (defun spydez/frame/spotify/update-status (str)
+        "Sets the given str to the frame title instead of the
+modeline. This should take over from `spotify-update-player-status'."
+        (when (not (string= str spotify-player-status))
+          (setq spotify-player-status str)
+          ;; There isn't a straight-forward way to tell frame to update name
+          ;; based on `frame-title-format', but I did find this:
+          ;;   https://stackoverflow.com/questions/13667702/how-to-force-emacs-update-frame-title
+          (sit-for 0)
+          ;; This would nuke whatever `frame-title-format' last set...
+          ;; (modify-frame-parameters (selected-frame) (list (cons 'name title)))
+          ))
+      (setq spydez/spotify/orig-fn/spotify-update-player-status
+            #'spotify-update-player-status)
+
+      (defvar spydez/hook/spotify/entered nil
+        "Non-nil if `spydez/hook/spotify-mode' has been entered and setup for
+         `spotify-remote-mode'. Nil if it hasn't been entered yet, or if it has
+         been used to exit and tear-down `spotify-remote-mode'.")
+
+      (spydez/hook/defun-and-hooker spotify-remote-mode-hook t
+          nil nil "init/config/configure-distractions.el"
+        "Hook to enable/disable Spotify-Mode status in Frame Title."
+        ;; skip setup/teardown?
+        (unless (eq spotify-remote-mode spydez/hook/spotify/entered)
+          (setq spydez/hook/spotify/entered spotify-remote-mode)
+
+          (let ((status '(:eval (spotify-player-status-text))))
+            (if spotify-remote-mode
+                ;; enter mode
+                (progn
+                  (spydez/message/debug/when '(spydez debug hook)
+                                           "Entering spotify-remote-mode?")
+                  ;; Hook into the frame title
+                  (unless (member status frame-title-format)
+                    ;; Push our status string to the cdr of the last element of
+                    ;; the `frame-title-format'. i.e. append status to end of
+                    ;; list.
+                    (push status (cdr (last frame-title-format))))
+                  ;; and steal `spotify-update-player-status'
+                  (fset #'spotify-update-player-status
+                        #'spydez/frame/spotify/update-status))
+              ;; exit mode
+              (spydez/message/debug/when '(spydez debug hook)
+                                       "Exiting spotify-remote-mode?")
+              (when (member status frame-title-format)
+                (setq frame-title-format (remq s frame-title-format)))
+              ;; and un-steal `spotify-update-player-status'
+              (fset #'spotify-update-player-status
+                    #'spydez/spotify/orig-fn/spotify-update-player-status)))))

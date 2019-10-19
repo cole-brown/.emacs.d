@@ -26,7 +26,10 @@
     - [-] spotify - fork, pull from my repo into submodule, do changes there, push request to github?
       - [X] frame vs modeline updates
         - Is theirs acting ok? Was fucky when I first switched to it.
-      - [ ] mute/unmute smarter. unmute to 100% volume is stupid.
+      - [X] mute/unmute smarter. unmute to 100% volume is stupid.
+      - [ ] Now do it proper.
+        - [ ] Move smarter mute/unmute to spotify.el.
+        - [ ] Do pull request to main spotify repo.
 
     - [ ] package: alert?
       - https://github.com/rememberYou/.emacs.d/blob/master/config.org#alert

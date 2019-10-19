@@ -258,17 +258,6 @@ M-x list-faces-display for all defined faces. Call with a propertized string."
         (insert "\n")))))
 ;; (spydez/message/preserve-properties
 ;;  (concat
-;;   (propertize "--->    " 'face 'spydez/message/face/gutter)
-;;   " "
-;;   (propertize "├" 'face 'spydez/message/face/types-sep)
-;;   " "
-;;   (propertize "(spydez zeroth debug)" 'face 'spydez/message/face/types)
-;;   " "
-;;   (propertize "┤:" 'face 'spydez/message/face/types-sep)
-;;   " "
-;;   (propertize "early-init.el... Zeroth step." 'face 'spydez/message/face/text)))
-;; (spydez/message/preserve-properties
-;;  (concat
 ;;   (propertize "--->    " 'face 'font-lock-variable-name-face)
 ;;   " "
 ;;   (propertize "├" 'face 'font-lock-comment-delimiter-face)
@@ -292,7 +281,6 @@ M-x list-faces-display for all defined faces. Call with a propertized string."
 ;;    '(("^ *\\([-]\\) "
 ;;       (0 (prog1 () (compose-region (match-beginning 1)
 ;;                                    (match-end 1) "•")))))))
-
 
 
 ;;-----
