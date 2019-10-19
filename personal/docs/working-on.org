@@ -30,6 +30,7 @@
       - [ ] Now do it proper.
         - [ ] Move smarter mute/unmute to spotify.el.
         - [ ] Do pull request to main spotify repo.
+      - [ ] "Made for you" section playlists?
 
     - [ ] package: alert?
       - https://github.com/rememberYou/.emacs.d/blob/master/config.org#alert

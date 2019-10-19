@@ -20,6 +20,92 @@
 (column-number-mode -1)
 (line-number-mode -1)
 
+(defcustom spydez/modeline/lazy-line-and-column/enabled t
+  "Skip eval counter setup if nil."
+  :group 'spydez/group
+  :type 'boolean)
+
+;; Only set it up when enabled
+(when spydez/modeline/lazy-line-and-column/enabled
+  ;; One or both of these are needed for the modeline to work:
+  ;;   1) `defvar-local'
+  ;;      or `defvar' + `make-variable-buffer-local'
+  ;;   2) `risky-local-variable'
+
+  (defvar spydez/modeline/lazy-line-and-column/format "(%s,%s)"
+    "(LINE,COL) format. No mins, limits, padding, etc...")
+
+  (defvar-local spydez/modeline/lazy-line-and-column
+    '(:eval (format spydez/modeline/lazy-line-and-column/format
+                    (line-number-at-pos) (current-column)))
+    "Less spammy, laggy line and column number for the modeline.")
+  (put 'spydez/modeline/lazy-line-and-column 'risky-local-variable t)
+
+  (require 'cl-lib)
+
+  ;; use (default-value 'mode-line-format)
+  (defun spydez/modeline/replace-in-list (list original new &optional reverse)
+    "Walks LIST and replaces all ORIGINAL items found with NEW
+item. Vice versa if REVERSE is non-nil. Comparison is done via `equal'."
+    (if-let* ((find (if reverse new original))
+              (replace (if reverse original new))
+              (list-updated (cl-subst replace find
+                                      list
+                                      :test #'equal)))
+        (progn
+          ;; warn if nothing changed, return list anyways
+          (when (eq list-updated list)
+            (spydez/message/warning
+             nil :warning
+             "spydez/modeline/replace-in-list: No '%s' found in list: '%s'"
+             original
+             list))
+          list-updated)
+
+      ;; else warn, return nil
+      (spydez/message/warning
+       nil :warning
+       "spydez/modeline/replace-in-list: if-let* erorrs. %s %s %s %s"
+       original new reverse list)
+      nil))
+
+  ;; I want to replace both of these in `mode-line-format' just after
+  ;; `moody-mode-line-buffer-identification':
+  ;;   "   " mode-line-position
+  ;;
+  ;; eval to see: mode-line-format
+  (if-let* ((mode-line/edit (default-value 'mode-line-format))
+            (mode-line/edit (remove "   " mode-line/edit))
+            (mode-line/edit (spydez/modeline/replace-in-list
+                             mode-line/edit
+                             'mode-line-position
+                             'spydez/modeline/lazy-line-and-column)))
+      (setq-default mode-line-format mode-line/edit))
+
+  ;; All the above will update the line/column whenever a modeline update is
+  ;; triggered by other things. Now to trigger some ourselves...
+
+  (defcustom spydez/modeline/lazy-line-and-column/idle-timer 1.0
+    "Seconds to wait after emacs is idle to trigger update."
+    :group 'spydez/group
+    :type 'number)
+
+  (defun spydez/modeline/timer-triggered ()
+    "Function my timer calls. For a modeline update."
+    (force-mode-line-update t))
+
+  ;; And kick off an idle timer that will run every time emacs becomes idle.
+  (run-with-idle-timer spydez/modeline/lazy-line-and-column/idle-timer
+                       t
+                       #'spydez/modeline/timer-triggered))
+
+;; ideas:
+;;  0) Just update whenever something else triggers.
+;;     - doing this right now.
+;;  1) Just update on an idle timer. `run-with-idle-timer'
+;;  2) both?
+;;  3) Normal timer?
+
 
 ;;---
 ;; Size Indication Mode
@@ -35,7 +121,7 @@
 (size-indication-mode -1)
 
 ;; Change mode-line-percent-position via Customize.
-;; Set percent to nil to not sow... for now
+;; Set percent to nil to not show... for now
 (customize-set-variable 'mode-line-percent-position nil)
 
 
@@ -46,7 +132,7 @@
 (defcustom spydez/modeline/eval-counter/enabled t
   "Skip eval counter setup if nil."
   :group 'spydez/group
-  :type 'string)
+  :type 'boolean)
 
 ;; Only set it up when enabled
 (when spydez/modeline/eval-counter/enabled
