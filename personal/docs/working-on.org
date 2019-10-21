@@ -16,11 +16,8 @@
         - Or fix use-tool to override that nonsense?
 
 
-  - [-] General To Do: [3/22]
+  - [-] General To Do: [4/22]
     - [ ] Nice colors and things and an empty line or two to start off spydez/go-home.
-
-    - [ ] Make a lazier line/column mode for modeline?
-      - [[file:~/.emacs.d/personal/init/config/configure-modeline.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-18%5D:%20I%20really%20love%20these,%20but%20they%20might%20be%20causing%20lag][here]]
 
     - [ ] package or DIY colors or icons on modeline for file status (left-most bit)?
       - Briefly mentioned here: http://amitp.blogspot.com/2019/07/emacs-mode-line-simplified.html
@@ -60,8 +57,8 @@
     - [ ] use-package: whitespace & neatness.
       - Two blank lines between keyword sections unless very simple.
       - Sections should have ";;---" around their keywords unless very simple.
-    - [ ] Don't beacon in the minibuffer?
 
+    - [ ] Don't beacon in the minibuffer?
     - [ ] package: major-mode-hydra (and pretty-hydra)
       - https://github.com/jerrypnz/major-mode-hydra.el
 
@@ -81,6 +78,7 @@
       - [X] Started issue at (spydez/help/issue/visit "org-mode" "prettify-symbols.org")
       - [ ] See if issue is in other modes, or just org-mode?
       - [ ] Turn off for now?
+
     - [ ] "(declare)" stuff. e.g.
       - [ ] (pure t)
       - [ ] (side-effect-free t)
@@ -91,6 +89,8 @@
     - [ ] configure-crypt needs babying... again... (again... (again?..))
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
         - https://arenzana.org/2019/04/emacs-org-mode/
+    - [X] Make a lazier line/column mode for modeline?
+      - [[file:~/.emacs.d/personal/init/config/configure-modeline.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-18%5D:%20I%20really%20love%20these,%20but%20they%20might%20be%20causing%20lag][here]]
     - [X] Unbind "C-x m", or rebind where "C-x C-m" is bound. I do not mail with you, emacs.
     - [X] performance tweaks?
       - [X] remove line number from modeline, see if that makes emacs any faster?

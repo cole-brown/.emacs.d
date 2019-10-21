@@ -53,28 +53,27 @@
 (with-feature 'hydra
   ;; Our "Sigs, Org-Mode, and Misc Stuff We Do Often" hydra.
   (defhydra spydez/hydra/grab-bag (:color blue ;; default exit heads
-                                          :idle 0.75  ;; no help for x seconds
-                                          :hint none)  ;; no hint - just docstr
+                                   :idle 0.75  ;; no help for x seconds
+                                   :hint none) ;; no hint - just docstr
     "
-^Signatures^                           ^Org-Mode^              ^Search^
-^----------^---------------------------^--------^--------------^------^-----------------
-_/_: sig:  ?/?^^^^^^^^^^^^^^^^^^^^^^^  _n_: New Journal Entry  _s m_: ?s m?
-_-_: sig:  ?-?^^^^^^^^^^^^^^^^^^^^^^^  _v_: Visit Journal      _s s_: Search...
-_m_: mark: ?m?^^^^^^^^^^^^^^^^^^^^^^^
-_t_: todo: ?t?^^^^^^^^^^^^^^^^^^^^^^^  _p_: Pomodoro History
-_c_: todo: ?c?^^^^^^^^^^^^^^^^^^^^^^^  _r_: Pomodoro Start
-_h_: todo: ?h?^^^^^^^^^^^^^^^^^^^^^^^
-_g_: todo: ?g?^^^^^^^^^^^^^^^^^^^^^^^
+^Signatures^                         | ^Org-Mode^             | ^Sig/TODO Search^         | ^Align^
+^----------^-------------------------+-^--------^-------------+-^---------------^---------+-^-----^-----------------------
+_/_: sig:  ?/?^^^^^^^^^^^^^^^^^^^^^^^| _n_: New Journal Entry | _s m_: ?s m?^^^^^^^^^^^^^ | _; ;_: Align Regexp...
+_-_: sig:  ?-?^^^^^^^^^^^^^^^^^^^^^^^| _v_: Visit Journal     | _s s_: Search...          | _; q_: Complex Align Regexp...
+_m_: mark: ?m?^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    | ^   ^                     | _a_:   Align Region
+_t_: todo: ?t?^^^^^^^^^^^^^^^^^^^^^^^| _p_: Pomodoro History  | ^   ^                     | _'_:   Align Current
+_c_: todo: ?c?^^^^^^^^^^^^^^^^^^^^^^^| _r_: Pomodoro Start    |
+_h_: todo: ?h?^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    |
+_g_: todo: ?g?^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    |
 "
     ;; "%-26" for right-padded string, which should as long as these,
     ;; which should be longest signatures... Update as needed.
     ;;   (length (spydez/signature/todo/comment t))
     ;;   (length spydez/signature/name-post)
 
-
-    ;;-----------------------------------------------------------------------
+    ;;-------------------------------------------------------------------------
     ;; Signatures
-    ;;-----------------------------------------------------------------------
+    ;;-------------------------------------------------------------------------
 
     ;;---
     ;; Normal Signatures
@@ -128,10 +127,20 @@ _g_: todo: ?g?^^^^^^^^^^^^^^^^^^^^^^^
     ;;-------------------------------------------------------------------------
 
     ("s m" (spydez/signature/search spydez/signature/char)
-     (format "%-26s"
-             (format "Search for Mark: %s" spydez/signature/char)))
+     (format "Search for Mark: %s" spydez/signature/char))
     ("s s" (call-interactively #'spydez/signature/search)
-     (format "%-26s" "Search for Signature...")))
+     "Search for Signature...")
+
+    ;;-------------------------------------------------------------------------
+    ;; Alignment
+    ;;-------------------------------------------------------------------------
+    ("; ;" (call-interactively #'align-regexp))
+    ("; q"
+     (lambda () (interactive)
+       (setq current-prefix-arg '(4))
+       (call-interactively #'align-regexp)))
+    ("a" (call-interactively #'align))
+    ("'" (call-interactively #'align-current)))
 
   ;; global keybind (can override minor mode binds)
   (bind-key* "C-," #'spydez/hydra/grab-bag/body))

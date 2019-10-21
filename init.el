@@ -666,6 +666,11 @@
 ;;   - probably high enough in the order now...
 (spydez/require 'configure-hydra)
 
+;; Only up here in case I like unicode boxes and want to put them in prog-mode
+;; or something. Otherwise could be at/near very end of config.
+;; Does need to have hydra though.
+(spydez/require 'configure-art)
+
 ;; Helm/ido/etc
 (spydez/require 'configure-completion)
 

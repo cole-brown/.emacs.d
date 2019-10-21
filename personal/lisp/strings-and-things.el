@@ -12,6 +12,29 @@
 ;; General Settings
 ;;------------------------------------------------------------------------------
 
+;;---
+;; "Themed" Messages Consts & Vars
+;;---
+
+(defcustom spydez/string/type->faces
+  '(((spydez homeward) (:padding   font-lock-comment-delimiter-face
+                        :border    font-lock-comment-face
+                        :text      font-lock-builtin-face
+                        :highlight font-lock-keyword-face))
+    ((spydez koan) '(;; :whitespace nil
+                     :padding  font-lock-comment-delimiter-face
+                     :border   font-lock-comment-face
+                     :text     font-lock-keyword-face)))
+  "alist of: (types-list faces-list)
+See 'M-x list-faces-display' for all defined faces."
+  :group 'spydez/group
+  :type '(alist :key-type list :value-type list))
+
+
+;;---
+;; Centering Consts & Vars
+;;---
+
 (defcustom spydez/char/center/whitespace ?\s
   "Center with whitespace."
   :group 'spydez/group
@@ -31,6 +54,11 @@
   "'Replacement character' seems a bit appropriate. Won't exist
 outside function.")
 ;; https://en.wikipedia.org/wiki/Specials_(Unicode_block)#Replacement_character
+
+
+;;---
+;; Koan Consts & Vars
+;;---
 
 (defvar spydez/koan/list nil
   "Koans loaded up and ready to go.")
@@ -239,6 +267,37 @@ matching properties in both plists."
 ;; (spydez/string/center "")
 
 
+(defun spydez/message/propertize (type alist)
+  "Acts like `spydez/message/preserve-properties' but takes a
+ALIST of '((:symbol string) ...)'. This symbol should be defined in
+`spydez/message/type->faces' for TYPE."
+  (if-let ((faces (nth 1 (assoc type spydez/message/type->faces)))
+           ;; null check
+           (alist alist)
+           ;; '(:prop "text") -> '((:prop "text))
+           ;; (i.e. one element of alist into proper alist)
+           (alist (if (listp (nth 0 alist)) alist (list alist))))
+
+      ;; Build propertized string from alist.
+      (spydez/message/preserve-properties
+       (mapconcat 'identity
+                  (let (result)
+                    (dolist (entry alist result)
+                      (push (spydez/string/parts/build-section entry faces)
+                            result)))
+                  ""))
+
+    ;; Else didn't find in type->faces. Complain, return nil.
+    (spydez/message/warning
+     type :warning
+     (concat "Null alist (%s)? Or type not found in "
+             "`spydez/message/type->faces': %s -> %s")
+     type alist spydez/message/type->faces)
+    nil))
+;; (spydez/message/propertize '(spydez homeward) '((:text "hi")))
+;; (spydez/message/propertize '(spydez homeward) '(:text "hi"))
+
+
 ;;-----------------------------There is no spoon.-------------------------------
 ;;--                             Koan Functions                               --
 ;;------------------------------------------------------------------------------
@@ -249,6 +308,7 @@ matching properties in both plists."
         (fill-char nil)
         (border-width nil)
         (pass-through nil)
+        ;; §-TODO-§ [2019-10-21]: faces from spydez/string/type->faces.
         (faces '(;; :whitespace nil
                  :padding font-lock-comment-delimiter-face
                  :border font-lock-comment-face

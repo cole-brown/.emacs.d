@@ -16,7 +16,7 @@
 
 
 ;;-----------------------------------------------------------------------------
-;; General
+;; Indentation (init, mainly)
 ;;-----------------------------------------------------------------------------
 
 ;; just more pretty
@@ -242,6 +242,7 @@ TYPE: list with symbols; nil will become (spydez/init/step/to-type nil)"
 ;;---
 ;; Pretty Messages in *Messages* Buffer?
 ;;---
+
 
 ;; https://emacs.stackexchange.com/a/20178
 (defun spydez/message/preserve-properties (format &rest args)
