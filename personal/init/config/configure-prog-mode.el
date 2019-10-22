@@ -27,17 +27,21 @@ these functions."
 ;; Comments
 ;;------------------------------------------------------------------------------
 
-(defun spydez/prog-mode/comment/paddings ()
+(defun spydez/prog-mode/comment/paddings (&optional with-adjustments)
   "Gets comment prefix/postfix appropriate for mode. Returns a
   parts list like e.g. elisp-mode: (\";;\" nil)"
-  (let* ((pad-more   (comment-add nil))
-         (adjustment (nth 1 (assoc major-mode
-                                 spydez/prog-mode/comment/padding-adjustments)))
-         (prefix  (string-trim-right (comment-padright comment-start pad-more)))
-         (postfix (comment-padleft comment-end (comment-add pad-more)))
+  (let* ((adjustment
+          (if with-adjustments
+              (nth 1 (assoc major-mode
+                            spydez/prog-mode/comment/padding-adjustments))
+            nil))
+         (pad-more (comment-add nil))
+         (prefix   (string-trim-right (comment-padright comment-start
+                                                        pad-more)))
+         (postfix  (comment-padleft comment-end (comment-add pad-more)))
          ;; if we have an adjustment, add it onto insides of paddings
-         (prefix (concat prefix (if (and prefix adjustment) adjustment)))
-         (postfix (concat adjustment (if (and postfix adjustment) postfix))))
+         (prefix   (concat prefix (if (and prefix adjustment) adjustment)))
+         (postfix  (concat adjustment (if (and postfix adjustment) postfix))))
 
     ;; and return
     (list prefix postfix)))
@@ -47,12 +51,19 @@ these functions."
 ;; (length (nth 1 (spydez/prog-mode/comment/paddings)))
 
 
-(defun spydez/prog-mode/comment/wrap (arg &optional trim concat-sep)
+(defun spydez/prog-mode/comment/wrap (arg &optional trim concat-sep padding-adj)
   "Turns ARG into a string and then into a proper comment based
-on mode (uses `comment-*' emacs functions)."
+on mode (uses `comment-*' emacs functions).
+
+If CONCAT-SEP is non-nil, use it instead of a space.
+
+Passes PADDING-ADJ to `spydez/prog-mode/comment/paddings' as
+WITH-ADJUSTMENTS arg.
+
+If TRIM is non-nil, trims resultant string before returning."
   (let* ((string (if (stringp arg) arg (format "%s" arg)))
          (concat-sep (or concat-sep " "))
-         (comment-parts (spydez/prog-mode/comment/paddings))
+         (comment-parts (spydez/prog-mode/comment/paddings padding-adj))
          (prefix (nth 0 comment-parts))
          (postfix (nth 1 comment-parts))
          (comment (mapconcat 'identity
@@ -65,6 +76,7 @@ on mode (uses `comment-*' emacs functions)."
 ;; (spydez/prog-mode/comment/wrap "---" nil "")
 ;; (spydez/prog-mode/comment/wrap "")
 ;; (spydez/prog-mode/comment/wrap (make-string 3 ?-) t "")
+;; (spydez/prog-mode/comment/wrap (make-string 3 ?-) t "" t)
 
 
 (defun spydez/prog-mode/comment/center/parts
@@ -73,7 +85,7 @@ on mode (uses `comment-*' emacs functions)."
   "Returns a centered-comment parts list, ala
 `spydez/string/center/parts', but with prog-mode-specific
 paddings (comment delimiters) assuming nil PADDINGS."
-  (let* ((paddings (or paddings (spydez/prog-mode/comment/paddings))))
+  (let* ((paddings (or paddings (spydez/prog-mode/comment/paddings t))))
     (spydez/string/center/parts comment
                                 comment/fill-spaces?
                                 comment/fill-char
@@ -95,7 +107,7 @@ paddings (comment delimiters) assuming nil PADDINGS."
   COMMENT/FILL-SPACES? is non-nil."
 
   ;; build string from prog-mode parts section
-  (spydez/string/parts/build-section
+  (spydez/string/parts/build
    (spydez/prog-mode/comment/center/parts comment
                                           comment/fill-spaces? comment/fill-char
                                           indent borders paddings)))

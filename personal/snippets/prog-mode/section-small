@@ -4,6 +4,6 @@
 # key: spy-sm
 # --
 
-`(spydez/prog-mode/comment/wrap (make-string 3 ?-) t "")`
+`(spydez/prog-mode/comment/wrap (make-string 3 ?-) t "" t)`
 `(spydez/prog-mode/comment/wrap "" t)` `yas-selected-text`$0
-`(spydez/prog-mode/comment/wrap (make-string 3 ?-) t "")`
+`(spydez/prog-mode/comment/wrap (make-string 3 ?-) t "" t)`

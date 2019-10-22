@@ -22,8 +22,12 @@
 
     - [-] Nice colors and things and an empty line or two to start off spydez/go-home.
       - [X] Propertize message func
-      - [ ] add ability for format+args to propertize
-      - [ ] add ability to ask for a blank line or two to strings-and-things.el
+      - [-] add ability for format+args to propertize
+        - [X] add to spydez/string/parts/*
+        - [ ] add to spydez/message/propertize
+      - [-] add ability to ask for a blank line or two to strings-and-things.el
+        - [X] add to spydez/string/parts/*
+        - [ ] add to spydez/message/propertize
 
     - [ ] package or DIY colors or icons on modeline for file status (left-most bit)?
       - Briefly mentioned here: http://amitp.blogspot.com/2019/07/emacs-mode-line-simplified.html
