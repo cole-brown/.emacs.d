@@ -16,19 +16,25 @@
         - Or fix use-tool to override that nonsense?
 
 
-  - [-] General To Do: [4/22]
-    - [ ] Nice colors and things and an empty line or two to start off spydez/go-home.
+  - [-] General To Do: [5/24]
+    - [ ] Check out Cascadia Code font?
+      - https://www.reddit.com/r/programming/comments/d64aq0/microsoft_released_the_cascadia_code_font/
+
+    - [-] Nice colors and things and an empty line or two to start off spydez/go-home.
+      - [X] Propertize message func
+      - [ ] add ability for format+args to propertize
+      - [ ] add ability to ask for a blank line or two to strings-and-things.el
 
     - [ ] package or DIY colors or icons on modeline for file status (left-most bit)?
       - Briefly mentioned here: http://amitp.blogspot.com/2019/07/emacs-mode-line-simplified.html
 
-    - [-] spotify - fork, pull from my repo into submodule, do changes there, push request to github?
-      - [X] frame vs modeline updates
-        - Is theirs acting ok? Was fucky when I first switched to it.
+    - [-] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
       - [X] mute/unmute smarter. unmute to 100% volume is stupid.
       - [ ] Now do it proper.
         - [ ] Move smarter mute/unmute to spotify.el.
         - [ ] Do pull request to main spotify repo.
+
+    - [ ] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
       - [ ] "Made for you" section playlists?
 
     - [ ] package: alert?
@@ -58,10 +64,8 @@
       - Two blank lines between keyword sections unless very simple.
       - Sections should have ";;---" around their keywords unless very simple.
 
-    - [ ] Don't beacon in the minibuffer?
     - [ ] package: major-mode-hydra (and pretty-hydra)
       - https://github.com/jerrypnz/major-mode-hydra.el
-
     - [-] LSP mode for python
       - [ ] more work to get it to... useful and not annoying?
         - [ ] It has... an amazing amount of memory hogging/leaking going on...
@@ -84,17 +88,20 @@
       - [ ] (side-effect-free t)
     - [ ] Check out DumbJump:
       - https://www.reddit.com/r/emacs/comments/d33ist/dumb_jump_v053_released_adds_support_for_10_more/
-    - [ ] Check out Cascadia Code font?
-      - https://www.reddit.com/r/programming/comments/d64aq0/microsoft_released_the_cascadia_code_font/
     - [ ] configure-crypt needs babying... again... (again... (again?..))
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
         - https://arenzana.org/2019/04/emacs-org-mode/
+    - [ ] Don't beacon in the minibuffer?
+      - [2019-10-21 Mon] Can't figure out when it was happening...
     - [X] Make a lazier line/column mode for modeline?
       - [[file:~/.emacs.d/personal/init/config/configure-modeline.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-18%5D:%20I%20really%20love%20these,%20but%20they%20might%20be%20causing%20lag][here]]
     - [X] Unbind "C-x m", or rebind where "C-x C-m" is bound. I do not mail with you, emacs.
     - [X] performance tweaks?
       - [X] remove line number from modeline, see if that makes emacs any faster?
       - It did... Sigh. :/
+    - [X] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
+      - [X] frame vs modeline updates
+        - Is theirs acting ok? Was fucky when I first switched to it.
     - [X] spotify - status in hydra
 
 

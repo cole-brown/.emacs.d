@@ -16,12 +16,15 @@
 ;; "Themed" Messages Consts & Vars
 ;;---
 
+;; M-x list-faces-display
 (defcustom spydez/string/type->faces
-  '(((spydez homeward) (:padding   font-lock-comment-delimiter-face
-                        :border    font-lock-comment-face
-                        :text      font-lock-builtin-face
-                        :highlight font-lock-keyword-face))
-    ((spydez koan) '(;; :whitespace nil
+  '(((spydez homeward) (:padding    font-lock-comment-delimiter-face
+                        :border     font-lock-comment-face
+                        :text       font-lock-builtin-face
+                        :highlight  font-lock-keyword-face
+                        :highlight2 font-lock-constant-face
+                        :title      font-lock-preprocessor-face))
+    ((spydez koan) (;; :whitespace nil
                      :padding  font-lock-comment-delimiter-face
                      :border   font-lock-comment-face
                      :text     font-lock-keyword-face)))
@@ -270,8 +273,8 @@ matching properties in both plists."
 (defun spydez/message/propertize (type alist)
   "Acts like `spydez/message/preserve-properties' but takes a
 ALIST of '((:symbol string) ...)'. This symbol should be defined in
-`spydez/message/type->faces' for TYPE."
-  (if-let ((faces (nth 1 (assoc type spydez/message/type->faces)))
+`spydez/string/type->faces' for TYPE."
+  (if-let ((faces (nth 1 (assoc type spydez/string/type->faces)))
            ;; null check
            (alist alist)
            ;; '(:prop "text") -> '((:prop "text))
@@ -291,11 +294,28 @@ ALIST of '((:symbol string) ...)'. This symbol should be defined in
     (spydez/message/warning
      type :warning
      (concat "Null alist (%s)? Or type not found in "
-             "`spydez/message/type->faces': %s -> %s")
-     type alist spydez/message/type->faces)
+             "`spydez/string/type->faces': %s -> %s")
+     type alist spydez/string/type->faces)
     nil))
 ;; (spydez/message/propertize '(spydez homeward) '((:text "hi")))
 ;; (spydez/message/propertize '(spydez homeward) '(:text "hi"))
+
+
+;; (defun spydez/message/line-special (line)
+;;   "Inserts a special kind of LINE. E.g. 'line-full, 'line-empty."
+;;   (let ((string nil))
+;;     (cond
+;;      ((eq line 'line-empty)
+;;       (setq string (spydez/string/parts/build-string "\n" faces)
+;;             pass-through t))
+
+;;      ((eq line 'line-full)
+;;       (setq string ""
+;;             fill-char spydez/char/center/border
+;;             ;; This is just border line so center should just be border color.
+;;             ;; But, uh... Using just faces in plist-put fucks up our let var
+;;             ;; `faces' somehow? So be careful...
+;;             faces (plist-put (-clone faces) :text font-lock-comment-face)))
 
 
 ;;-----------------------------There is no spoon.-------------------------------
@@ -443,9 +463,20 @@ ALIST of '((:symbol string) ...)'. This symbol should be defined in
     line-empty))
 
 
+;; (spydez/koan)
+
+
 ;;------------------------------------------------------------------------------
 ;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------
+
+;; §-TODO-§ [2019-10-21]: Refactor?
+;; - Move zeroith-debug.el string/message functions into here.
+;; - Break here up into:
+;;   - strings?  (strings-and-things.el?)
+;;   - messages? (messages-and-misc.el?)
+;;   - koans?    (koans-and-spoons.el?)
+;; - `require' what's needed (or all 3?) in zeroth-debug.el
 
 
 ;;------------------------------------------------------------------------------

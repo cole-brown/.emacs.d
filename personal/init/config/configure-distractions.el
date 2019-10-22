@@ -418,6 +418,20 @@ _C-r_: Recently Played     ^   ^                  _q_:   quit"
         ;; 'm' for music? idk...
         (bind-key "C-c m" #'spydez/spotify/smart-mode-or-hydra))
 
+      (defun spydez/spotify/go-home ()
+        "Cleans up spotify for the day so it hopefully doesn't
+have 11 zombie connections to spotify api tomorrow..."
+        (interactive)
+        (condition-case-unless-debug err
+            (progn
+              (spotify-connect-player-pause)
+              (global-spotify-remote-mode -1))
+          ;; Catch signaled error 'error': downgrade to just message.
+          ;; [2019-10-22]: This is just theory as spotify can get cranky if
+          ;; connected but device was left paused...
+          (error (message
+                  "error: spydez/spotify/go-home: received error signal:" err))))
+
       ;; Don't like hercules for this. It wants clear enter/exit functions.
       ;; (hercules-def
       ;;  :toggle-funs '(spotify-remote-mode)
