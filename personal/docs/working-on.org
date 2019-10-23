@@ -41,6 +41,7 @@
         - (when (and (not (null 'jeff) (stringp 'jeff)) ,@body)
         - or maybe pass in list of things that shouldn't be nil? \*shrug*
       - There's `if-let', which helps... but with-nil is a bit different.
+        - when-let, and and-let* too...
 
     - [ ] headache tracker?
       - org-journal + default-directory -> headache entries in separate journal from primary
