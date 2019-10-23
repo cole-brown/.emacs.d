@@ -7,9 +7,9 @@
 ;; TODO: does some or all of this belong in configure-emacs? vice versa?
 
 ;; TODO: skip all or most of this:
-;;    (unless window-system (spydez/message/debug/when nil "hi"))
+;;    (unless window-system (mis/debug/when nil "hi"))
 ;; Or maybe do all/most of this:
-;;    (when window-system (spydez/message/debug/when nil "hi"))
+;;    (when window-system (mis/debug/when nil "hi"))
 
 
 ;;------------------------------------------------------------------------------
@@ -87,7 +87,7 @@
 ;; (require 'with)
 ;; (with-feature 'zenburn
 ;;   (zenburn-with-color-variables
-;;     (defface spydez/message/face/types-sep
+;;     (defface spydez/face/types-sep
 ;;       `(;; (display . plist)
 
 ;;         ;; display t matches everything...
@@ -97,7 +97,7 @@
 ;;       "my test face for finding out how to face"
 ;;       :group 'spydez/group
 ;;       )
-;;     (defface spydez/message/face/types
+;;     (defface spydez/face/types
 ;;       `(;; (display . plist)
 
 ;;         ;; display t matches everything...
@@ -107,7 +107,7 @@
 ;;       "my test face for finding out how to face"
 ;;       :group 'spydez/group
 ;;       )
-;;     (defface spydez/message/face/gutter
+;;     (defface spydez/face/gutter
 ;;       `(;; (display . plist)
 
 ;;         ;; display t matches everything...
@@ -117,7 +117,7 @@
 ;;       "my test face for finding out how to face"
 ;;       :group 'spydez/group
 ;;       )
-;;     (defface spydez/message/face/text
+;;     (defface spydez/face/text
 ;;       `(;; (display . plist)
 
 ;;         ;; display t matches everything...
@@ -128,7 +128,7 @@
 ;;       :group 'spydez/group
 ;;       )))
 
-;; see `spydez/message/preserve-properties'
+;; see `mis/message/preserve-properties'
 
 
 ;;------------------------------------------------------------------------------

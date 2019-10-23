@@ -31,7 +31,7 @@
 ;;   withs. Add a const/custom for what function to call (default error).
 ;;   Use `apply'? So as to get multiple args into there?
 ;;     e.g. `error': format string, args.
-;;     e.g. `spydez/message/warning': (spydez/message/warning nil nil "string")
+;;     e.g. `mis/warning': (mis/warning nil nil "string")
 
 
 ;;---------

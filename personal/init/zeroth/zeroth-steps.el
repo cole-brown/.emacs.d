@@ -185,8 +185,8 @@ and approximate sequence. Compare with `spydez/init/step-at',
 Always returns nil so if/and/or shenanigans can shenan."
   (let* ((type (spydez/init/step/to-type spydez/init/step/completed
                                             'step-missing)))
-    (if (functionp 'spydez/message/warning)
-        (apply #'spydez/message/warning
+    (if (functionp 'mis/warning)
+        (apply #'mis/warning
                type
                :warning
                message args)
@@ -199,7 +199,7 @@ Always returns nil so if/and/or shenanigans can shenan."
 
 (defun spydez/init/step/to-type (step &rest extras)
   "Turns list/cons STEP (or spydez/init/step/completed list if nil) into a
-'type' list appropriate for `spydez/message/*' and `lwarn'
+'type' list appropriate for `mis/{warning,debug,info,etc}' and `lwarn'
 functions. Appends any EXTRAS onto end."
   (let ((type (or step
                   ;; if defaulting, tack 'spydez' on front.
@@ -231,6 +231,10 @@ functions. Appends any EXTRAS onto end."
 ;; (spydez/init/step/to-type '(1 . 2))
 ;; (spydez/init/step/to-type '(1 2))
 
+;; and tell mis about it
+(customize-set-variable 'mis/debug/type
+                        #'spydez/init/step/to-type)
+
 
 (require 'seq)
 (defun spydez/init/step/set-completed (major minor)
@@ -252,10 +256,10 @@ functions. Appends any EXTRAS onto end."
                                    minor major minor-list)))
 
       ;; ok; set step to major/minor
-      (when (functionp 'spydez/message/init-step/done)
+      (when (functionp 'mis/init/step-done)
         ;; We'll miss out on an early one or two, but ok.
-        (spydez/message/init-step/done spydez/init/step/completed
-                                       (list major minor)))
+        (mis/init/step-done spydez/init/step/completed
+                            (list major minor)))
       (setq spydez/init/step/completed (list major minor))))
   spydez/init/step/completed)
 ;; (spydez/init/step/set-completed 'none 'none)

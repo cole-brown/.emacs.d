@@ -78,7 +78,7 @@
     "lsp-deferred" nil "init/config/configure-lsp.el"
   "General LSP hook for any mode. Defers LSP startup until buffer is visible."
   (if (not (spydez/packages/enabled-p 'lsp-mode))
-      (spydez/message/debug
+      (mis/debug
        '(spydez debug hook)
        (concat "spydez/hook/lsp-deferred: ignoring due to "
                "(spydez/packages/enabled-p 'lsp-mode) disabled flag."))
@@ -89,7 +89,7 @@
     "lsp-immediate" nil "init/config/configure-lsp.el"
   "General LSP hook for any mode. Starts LSP immediately."
   (if (not (spydez/packages/enabled-p 'lsp-mode))
-      (spydez/message/debug
+      (mis/debug
        '(spydez debug hook)
        (concat "spydez/hook/lsp-immediate: ignoring due to "
                "(spydez/packages/enabled-p 'lsp-mode) disabled flag."))

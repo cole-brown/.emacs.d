@@ -330,7 +330,7 @@ For the transition, maybe a func for checking..."
 
 (defun spydez/packages/disable (package)
   (add-to-list 'spydez/packages/disabled package)
-  (spydez/message/info/when nil
+  (mis/info/when nil
                           "Setting '%s' to disabled. Full list: %s"
                           package spydez/packages/disabled))
 ;; (spydez/packages/disable 'jeff)

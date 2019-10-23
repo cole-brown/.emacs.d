@@ -41,7 +41,7 @@ merge if junk was added meanwhile."
     ;; else, something in both... complain and merge
    (t
     ;; Complain...
-    (spydez/message/warning
+    (mis/warning
      nil nil
      (concat "Merging `file-name-handler-alist' instead of reverting back "
              "to default. It is no longer null: %s\n\norig: %s")

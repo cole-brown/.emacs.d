@@ -55,7 +55,7 @@ item. Vice versa if REVERSE is non-nil. Comparison is done via `equal'."
         (progn
           ;; warn if nothing changed, return list anyways
           (when (eq list-updated list)
-            (spydez/message/warning
+            (mis/warning
              nil :warning
              "spydez/modeline/replace-in-list: No '%s' found in list: '%s'"
              original
@@ -63,7 +63,7 @@ item. Vice versa if REVERSE is non-nil. Comparison is done via `equal'."
           list-updated)
 
       ;; else warn, return nil
-      (spydez/message/warning
+      (mis/warning
        nil :warning
        "spydez/modeline/replace-in-list: if-let* erorrs. %s %s %s %s"
        original new reverse list)
@@ -341,7 +341,7 @@ item. Vice versa if REVERSE is non-nil. Comparison is done via `equal'."
   ;; Custom: Time tab.
   ;;---
   (when (spydez/moody/managing-time)
-    (spydez/message/init 'ignore "Moody is managing time!")
+    (mis/init/message 'ignore "Moody is managing time!")
     ;; Have to get the time string replaced by moody ala `(moody-replace-vc-mode)' above.
 
     ;; It exists in the modeline like so:

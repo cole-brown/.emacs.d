@@ -6,7 +6,7 @@
 ;;------------------------------------------------------------------------------
 
 ;; os-and-tool-p exists in bootstrap-os.el now
-;; e.g. (when (spydez/tools/os-and-tool-p 'windows-nt "bash") (spydez/message/debug/when nil "hello there"))
+;; e.g. (when (spydez/tools/os-and-tool-p 'windows-nt "bash") (mis/debug/when nil "hello there"))
 
 
 ;;------------------------------------------------------------------------------

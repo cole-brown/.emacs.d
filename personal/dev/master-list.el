@@ -75,7 +75,7 @@
  ;; Fallthrough Case - nothing specified so defaults will be used
  ;;---
  (t
-  (spydez/message/warning nil nil
+  (mis/warning nil nil
         "Update 'Master List' for this system (%s) here."
         spydez/dev/system/hash)
     (setq spydez/bootstrap/system/known-p nil

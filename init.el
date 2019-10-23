@@ -41,7 +41,7 @@
 
 
 ;;(spydez/init/step/set-completed '(intermission none))
-;;(spydez/message/init 'init "init.el... Intermission.")
+;;(mis/init/message 'init "init.el... Intermission.")
 ;; TODO: emacs 27: Turn back on.
 
 ;; TODO: use-tool package, like use-package, but for external tools like git,
@@ -424,7 +424,7 @@
 ;; We're faking early-init's earlyness, so can't do these here right now.
 ;; See below for place for now.
 ;; (spydez/init/step/set-completed '(intermission interstitial-prose))
-;; (spydez/message/init 'init "init.el... Bootstrapping.")
+;; (mis/init/message 'init "init.el... Bootstrapping.")
 ;;---
 
 ;;---
@@ -458,7 +458,7 @@
 ;; Remove the load when early-init is real.
 ;; Also move this bootstrapping info message up when early-init is real.
 (spydez/init/step/set-completed 'bootstrap 'none)
-(spydez/message/init 'init "init.el... Bootstrapping.")
+(mis/init/message 'init "init.el... Bootstrapping.")
 ;;-----
 
 ;; Nothing really before system bootstrap, right now.
@@ -529,15 +529,15 @@
 ;; Load sensitive information from outside of .emacs.d
 ;;(if (bound-and-true-p spydez/dir/doc-save-common)
 ;;    (when (not (load (spydez/path/to-file spydez/dir/doc-save-common ".emacs.secrets") 'noerror))
-;;      (spydez/message/warning nil :debug "No secrets to load."))
-;;  (spydez/message/warning nil nil "No secrets loaded. Do not know where to look. '%s' undefined." 'spydez/dir/doc-save-common))
+;;      (mis/warning nil :debug "No secrets to load."))
+;;  (mis/warning nil nil "No secrets loaded. Do not know where to look. '%s' undefined." 'spydez/dir/doc-save-common))
 
 
 ;;---
 ;; Try-Load overrides (from bootstrap-this-late.el)?
 ;;---
 ;;(when (spydez/require bootstrap-this-late nil 'noerror)
-;;  (spydez/message/warning nil nil "Empty bootstrap-this-late."))
+;;  (mis/warning nil nil "Empty bootstrap-this-late."))
 ;; I'm fine if this system has no late step.
 (spydez/require 'bootstrap-this-late nil 'noerror)
 ;; I have a default, but it's a big commented out no-op right now.
@@ -573,7 +573,7 @@
 ;; commented out version here so that package.el does not add it again.
 ;; TODO: emacs 27: Figure out how true this is.
 (when (boundp 'early-init-file)
-  (spydez/message/warning nil nil
+  (mis/warning nil nil
       "TODO: figure out how early-init affects call to package-initialize"))
 
 ;; Init use-package so we can use that for the rest of the packages we use.
@@ -606,7 +606,7 @@
 ;; Configuration.
 ;;-----------------------------------------------------------------------------
 (spydez/init/step/set-completed 'config 'none)
-(spydez/message/init 'init "init.el... Configuration.")
+(mis/init/message 'init "init.el... Configuration.")
 ;; Loading and init are done - now do any more required setup.
 
 ;; If needed, could make a "configure-packages" here for disabling/enabling
@@ -622,9 +622,10 @@
 ;;   - use e.g. range for e.g. tabstops
 ;;
 ;; Also, now, useful non-interactive functions used in init.
+(spydez/require 'mis) ;; This should already be loaded by early-init, so no-op?
 (spydez/require 'strings-and-things)
 (spydez/require 'misc-functions)
-(spydez/require 'date-and-time) ;; Need datetime formats from here...
+(spydez/require 'date-and-time)
 (spydez/require 'buffer-functions)
 (spydez/init/step/set-completed 'config 'libraries)
 
@@ -919,7 +920,7 @@
 ;; The End.
 ;;-----------------------------------------------------------------------------
 (spydez/init/step/set-completed 'finalize 'none)
-(spydez/message/init 'init "init.el... Finalizing...")
+(mis/init/message 'init "init.el... Finalizing...")
 
 (spydez/init/step/set-completed 'finalize 'early)
 
@@ -961,7 +962,7 @@
 
 (spydez/require 'zzz-finalize)
 (spydez/init/step/set-completed 'finalize 'complete)
-(spydez/message/init 'init "init.el...Ok. 3 2 1, let's go.")
+(mis/init/message 'init "init.el...Ok. 3 2 1, let's go.")
 
 (spydez/init/step/set-completed 'running 'none)
 ;; init.el is done. Go home.
@@ -970,7 +971,7 @@
 ;; ...
 
 ;; Ok; one more thing - for a nice obvious end to init in messages buffer.
-(spydez/koan)
+(mis/koan)
 
 ;;------                                                               ------;;
 ;;----                                                                   ----;;

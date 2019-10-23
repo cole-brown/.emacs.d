@@ -82,7 +82,7 @@ OUTPUT-PRIORITY is also just passed through to
 `spydez/buffer/special-name'."
 
   (when prelude-message
-    (spydez/message/info nil prelude-message))
+    (mis/info nil prelude-message))
   (async-shell-command
    command
    (spydez/buffer/special-name output-title
@@ -106,7 +106,7 @@ OUTPUT-PRIORITY is also just passed through to
 `spydez/buffer/special-name'."
 
   (when prelude-message
-    (spydez/message/info nil prelude-message))
+    (mis/info nil prelude-message))
   (shell-command
    command
    (spydez/buffer/special-name output-title
@@ -139,7 +139,7 @@ OUTPUT-PRIORITY is also just passed through to
 `spydez/buffer/special-name'."
 
   (when prelude-message
-    (spydez/message/info nil prelude-message))
+    (mis/info nil prelude-message))
    ;; `let' for lexically rebinding shell-file-name for this one command.
   (let ((shell-file-name (spydez/shell/system-default)))
     (shell-command
@@ -175,7 +175,7 @@ OUTPUT-PRIORITY is also just passed through to
 `spydez/buffer/special-name'."
 
   (if (eq system-type 'windows-nt)
-      (spydez/message/warning
+      (mis/warning
        nil :warning
        (concat
         "Default shell on windows (cmd.exe) doesn't support "
@@ -194,7 +194,7 @@ OUTPUT-PRIORITY is also just passed through to
        ;;   - https://www.computerhope.com/starthlp.htm
 
     (when prelude-message
-      (spydez/message/info nil prelude-message))
+      (mis/info nil prelude-message))
     ;; `let' for lexically rebinding shell-file-name for this one command.
     (let ((shell-file-name (spydez/shell/system-default)))
       (async-shell-command

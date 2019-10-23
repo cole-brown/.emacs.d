@@ -217,12 +217,12 @@
   (interactive)
   (if (not (and (boundp 'spydez/exe/dev-env/unit-test)
                 (boundp 'spydez/dev-env/unit-test/args)))
-      (spydez/message/warning nil :error
-                              "Needed variables not found. %s: %s, %s: %s"
-                              (symbol-name 'spydez/exe/dev-env/unit-test)
-                              (boundp 'spydez/exe/dev-env/unit-test)
-                              (symbol-name 'spydez/dev-env/unit-test/args)
-                              (boundp 'spydez/dev-env/unit-test/args))
+      (mis/warning nil :error
+                   "Needed variables not found. %s: %s, %s: %s"
+                   (symbol-name 'spydez/exe/dev-env/unit-test)
+                   (boundp 'spydez/exe/dev-env/unit-test)
+                   (symbol-name 'spydez/dev-env/unit-test/args)
+                   (boundp 'spydez/dev-env/unit-test/args))
     (spydez/shell/command-async
      (concat "\"" spydez/exe/dev-env/unit-test "\" "
              (mapconcat 'identity spydez/dev-env/unit-test/args " ")

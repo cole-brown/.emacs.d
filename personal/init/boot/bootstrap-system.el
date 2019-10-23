@@ -28,7 +28,7 @@
       (spydez/init/step/set-completed 'bootstrap '(system specific))
 
     ;; needs another step done?
-    (spydez/message/warning
+    (mis/warning
      nil nil
      "  System '%s' needs additional setup! %s %s"
      spydez/dev/system/name
@@ -53,29 +53,29 @@
  ;;---------------------------------------------------------------------------
  ;; Tell user to setup up this system.
  ((not (bound-and-true-p spydez/bootstrap/system/known-p))
-  ;; Put point at end of (spydez/message/warning nil nil ...) then:
+  ;; Put point at end of (mis/warning nil nil ...) then:
   ;;   C-x C-e to evaluate these sexprs.
-  (spydez/message/warning
+  (mis/warning
    nil nil
    "Hello there from bootstrap-system. This system needs added to: '%s'"
    (spydez/path/to-file spydez/dir/personal/dev "master-list.el"))
 
   ;; Make sure these are correct:
-  (spydez/message/warning
+  (mis/warning
    nil nil
    "New computer? Make sure these are correct:")
-  (spydez/message/warning
+  (mis/warning
    nil nil
    "  system/name: %s" spydez/dev/system/name)
-  (spydez/message/warning
+  (mis/warning
    nil nil
    "  system/hash: %s" spydez/dev/system/hash)
 
   ;; Then make sure these folders/files are correct/exist:
-  (spydez/message/warning
+  (mis/warning
    nil nil
    "  dir/domain: %s" spydez/dir/dev/domain-this)
-  (spydez/message/warning
+  (mis/warning
    nil nil
    "  dir/system: %s" spydez/dir/dev/system-this)
 
@@ -93,12 +93,12 @@
 
       ;; using default - should probably warn
       ((spydez/init/step/at 'bootstrap '(system default))
-       (spydez/message/warning nil nil
+       (mis/warning nil nil
            "Specific bootstrap does not exist for this computer: %s %s"
            spydez/init/step/completed spydez/dev/system/hash))
 
       ;; fallthrough cases - nothing used
-      (t (error (spydez/message/warning nil nil
+      (t (error (mis/warning nil nil
                     "Bootstrap: No bootstrap at all for this computer?: %s %s"
                     spydez/init/step/completed spydez/dev/system/hash))))
 

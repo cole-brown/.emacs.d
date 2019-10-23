@@ -153,7 +153,7 @@ characters to it, as appropriate."
   "Turns spydez/signature/todo into a proper comment based on
 mode (uses `comment-*' emacs functions). Optionally adds a
 TIMESTAMP if non-nil."
-  (spydez/prog-mode/comment/wrap
+  (mis/comment/wrap
    (concat
     (spydez/signature/todo/timestamp timestamp)
     ":")))

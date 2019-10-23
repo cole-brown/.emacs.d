@@ -121,7 +121,7 @@ nil) with body of BODY. Then hooks it into HOOK-VAR via
 `add-hook'.
 
 If VERBOSE is non-nil on macro expansion, this will
-`spydez/message/info/when' on run with hook-fn name, and either
+`mis/info/when' on run with hook-fn name, and either
 source file defined in or (as backup) optional LOCATION string."
   (declare (indent 5) (doc-string 6))
   (let* ((hook-fn-name (concat "spydez/hook/"
@@ -136,7 +136,7 @@ source file defined in or (as backup) optional LOCATION string."
        (defun ,hook-fn () ,docstring
               (unless ,quiet
                 ;; Nice info message maybe?
-                (spydez/message/info/when
+                (mis/info/when
                  '(,@spydez/init/step/completed)
                  "Running hook `%s'%s..."
                  ,hook-fn-name
@@ -171,7 +171,7 @@ source file defined in or (as backup) optional LOCATION string."
 where <hook-name> NAME (or `(symbol-name HOOK-VAR)' if NAME is
 nil) with body of BODY. Returns the defun'd function symbol.
 
-Will `spydez/message/info/when' on run with hook-fn name, and
+Will `mis/info/when' on run with hook-fn name, and
 either source file defined in or (as backup) optional LOCATION
 string.
 
@@ -189,7 +189,7 @@ Use this over `spydez/hook/defun-and-hooker' only in cases where you aren't
     `(defun ,hook-fn () ,docstring
             ;; Nice info message maybe?
               (unless ,quiet
-                (spydez/message/info/when
+                (mis/info/when
                  '(,@spydez/init/step/completed)
                  "Running hook `%s'%s..."
                  ,hook-fn-name

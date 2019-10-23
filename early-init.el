@@ -28,6 +28,7 @@
              post-type
              "Update early-init.el for actual active duty"
              emacs-version)
+      ;; NOTE: Try to keep this lwarn roughly like the mis/debug/warning output.
 
   ;; Print out something that hopefully still conforms to nice function output
   ;; we won't have til after zeroth-debug...
@@ -45,20 +46,31 @@
 ;; Load Path: The Stuff Before The Pre-Basics
 ;;---
 
-;; Save off orginal. We're going to have a reduced set for bootstrapping, then reset and add the full monty.
+;; Save off orginal. We're going to have a reduced set for bootstrapping, then
+;; reset and add the full monty.
 (defconst spydez/dir/load-path/orig load-path)
 
-;; Ugly dirty hardcoded etc. But I want over-simple until we get some help loaded properly.
-(let ((zero (expand-file-name "zeroth"
-             (expand-file-name "init"
-                (expand-file-name "personal"
-                   (file-name-as-directory  user-emacs-directory)))))
+;; Ugly dirty hardcoded etc. But I want over-simple until we get some help
+;; loaded properly.
+(let ;; zeroith is all init code to get through early init.
+     ((zero   (expand-file-name "zeroth"
+                (expand-file-name "init"
+                  (expand-file-name "personal"
+                    (file-name-as-directory  user-emacs-directory)))))
+      ;; master is for the master-list file need to ID this device/system
       (master (expand-file-name "dev"
                 (expand-file-name "personal"
-                   (file-name-as-directory  user-emacs-directory)))))
+                  (file-name-as-directory  user-emacs-directory))))
+      ;; mis.el is my messages/string lib, and I want it ASAP for init and
+      ;; debug messages.
+      (mis    (expand-file-name "mis"
+                (expand-file-name "packages"
+                  (expand-file-name "personal"
+                    (file-name-as-directory  user-emacs-directory))))))
   ;; Toss them into load-path ASAP so we can get started.
-  (add-to-list 'load-path zero)    ;; zeroth-* files
-  (add-to-list 'load-path master)) ;; master-list file
+  (add-to-list 'load-path zero)   ;; zeroth-* files
+  (add-to-list 'load-path master) ;; master-list file
+  (add-to-list 'load-path mis))   ;; mis.el library
 
 
 ;;---
@@ -76,13 +88,14 @@
 (require 'zeroth-garbage)
 
 ;; Funcs, vars for my debugging/warning messages.
+(require 'mis)
 (require 'zeroth-debug)
 ;; debug helpers now loaded - including `spydez/require'
 (spydez/init/step/set-completed 'zeroth 'debug)
 
 ;;                                    ---
 ;;                                  -------
-;; This will be the start of actual spydez/message/init(-sequence) messages.
+;; This will be the start of actual mis-init.el messages.
 ;;                                  -------
 ;;                                    ---
 
@@ -94,7 +107,7 @@
 ;; Step... 0.5? Domains, Master List, Per Computer Stuff.
 ;;------------------------------------------------------------------------------
 ;; Need to know something about my boots so I can pull the right straps.
-(spydez/message/init 'init "early-init.el... Zeroth step.")
+(mis/init/message 'init "early-init.el... Zeroth step.")
 
 ;;---
 ;; Domain & System Setup

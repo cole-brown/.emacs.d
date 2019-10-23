@@ -77,7 +77,7 @@
   ;; ;;-----
   ;; :config
   ;; ;;-----
-  ;; (spydez/message/warning nil nil "Uh... hi? python:config")
+  ;; (mis/warning nil nil "Uh... hi? python:config")
 
   ;; ;; Language Server Protocol for Python (LSP)
   ;; ;;---

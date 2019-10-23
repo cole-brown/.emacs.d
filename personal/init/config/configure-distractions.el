@@ -75,14 +75,14 @@ ignore when moody is managing the time tab."
 
 ;; First (try to) load the auth secrets
 (if (not (spydez/require 'spotify-auth nil 'noerror))
-    (spydez/message/warning
+    (mis/warning
      nil :error
      (concat "Cannot setup Spotify.el package correctly. "
              "No `spotify-auth' feature found."))
   ;; We have loaded the file and can check for our secrets now.
   (if (not (and (boundp 'spydez/secrets/spotify/client-secret)
                 (boundp 'spydez/secrets/spotify/client-id)))
-      (spydez/message/warning
+      (mis/warning
        nil :error
        (concat "Cannot setup Spotify.el package correctly. "
                "No auth consts found. %s: %s, %s: %s")
@@ -229,7 +229,7 @@ untouched return value of `spotify-api-get-player-status'.")
              (t
               ;; gethash returns default of nil so I'm fine with blindly
               ;; trying. Warn first though.
-              (spydez/message/debug
+              (mis/debug
                nil
                (concat "spydez/spotify/player-status: "
                        "unknown field get attempting: %s")
@@ -239,7 +239,7 @@ untouched return value of `spotify-api-get-player-status'.")
 
           ;; if-let* fail case. Can debug it, but so far just nil for normal
           ;; things like no music for a while.
-          ;; (spydez/message/debug
+          ;; (mis/debug
           ;;  nil
           ;;  (concat "spydez/spotify/player-status: Something null... "
           ;;          "cache?:%s status?:%s track?:%s")
