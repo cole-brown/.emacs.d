@@ -35,6 +35,9 @@
     - [ ] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
       - [ ] "Made for you" section playlists?
 
+    - spotify
+      - [ ] all-the-icons?
+
     - [ ] package: alert?
       - https://github.com/rememberYou/.emacs.d/blob/master/config.org#alert
       - Anything else from here? https://github.com/rememberYou/.emacs.d/blob/master/config.org

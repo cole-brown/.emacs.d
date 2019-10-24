@@ -25,7 +25,21 @@ them to the *Messages* buffer as such..."
 
 ;; M-x list-faces-display
 (defcustom mis/type->faces
-  '(((spydez homeward) (:padding    font-lock-comment-delimiter-face
+  '(;;---
+    ;; General, Maybe Useful faces.
+    ;;---
+    (default (;; :padding    font-lock-comment-delimiter-face
+              ;; :border     font-lock-comment-face
+              :title       font-lock-keyword-face      ;; gold/bold
+              :attention1  font-lock-preprocessor-face ;; brightish blue
+              :attention2  font-lock-constant-face     ;; brightish green
+              :text        font-lock-builtin-face      ;; white/bold
+              :inattention font-lock-string-face))     ;; darkish red
+
+    ;;---
+    ;; My Custom Stuff
+    ;;---
+    ((spydez homeward) (:padding    font-lock-comment-delimiter-face
                         :border     font-lock-comment-face
                         :text       font-lock-builtin-face
                         :highlight  font-lock-keyword-face

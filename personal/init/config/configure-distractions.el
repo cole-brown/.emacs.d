@@ -437,7 +437,9 @@ have 11 zombie connections to spotify api tomorrow..."
         (condition-case-unless-debug err
             (progn
               (spotify-connect-player-pause)
-              (global-spotify-remote-mode -1))
+              (global-spotify-remote-mode -1)
+              ;; (spydez/buffer/kill-matching ...)?
+              )
           ;; Catch signaled error 'error': downgrade to just message.
           ;; [2019-10-22]: This is just theory as spotify can get cranky if
           ;; connected but device was left paused...

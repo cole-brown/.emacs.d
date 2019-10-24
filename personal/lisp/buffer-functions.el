@@ -39,8 +39,22 @@
 
 
 (defcustom spydez/buffer/regexp/bookend
-  (rx string-start "§" (one-or-more printing) "§" string-end)
-  "Regexp for matching a bookended buffer name string."
+  (rx
+   ;; Start Bookend
+   ;; Will need to update (or make smarter) if get more actual priority levels.
+   (or (eval (nth 0 spydez/buffer/format/bookend-normal))
+       (eval (nth 0 spydez/buffer/format/bookend-high)))
+
+   ;; Actual Buffer Name
+   (one-or-more printing)
+
+   ;; End Bookend
+   ;; Will need to update (or make smarter) if get more actual priority levels.
+   (or (eval (nth 1 spydez/buffer/format/bookend-normal))
+       (eval (nth 1 spydez/buffer/format/bookend-high))))
+
+  "Regexp for matching a bookended buffer name string.
+Will need to update (or make smarter) if get more actual priority levels."
   :group 'spydez/group
   :type 'regexp)
 
@@ -118,24 +132,46 @@ Returns buffer-name on kill, nil on no kill."
     nil))
 
 
-(defun spydez/buffer/kill-special (buffer-or-name-regexp)
-  "Kills my special(ly named) buffers, deleting any process they
-may have running.
+(defun spydez/buffer/kill-special (arg)
+  "Kills my special(ly named) buffers, and deletes any process they may have
+running.
 
-If BUFFER-OR-NAME-REGEXP is a string, the
-`spydez/buffer/regexp/bookend' is checked to see if the regexp is
-'correctly' guarded by them, adding them in if needed."
-  (if (stringp buffer-or-name-regexp)
-      ;; We have a string. Make sure it's formatted as "special-buffer",
-      ;; and then try to kill it without confirmation.
-      (let ((buffer-or-name-regexp
-             (or (string-match-p
-                  spydez/buffer/regexp/bookend buffer-or-name-regexp)
-                 (spydez/buffer/special-name buffer-or-name-regexp))))
-        (spydez/buffer/kill-matching buffer-or-name-regexp nil t t t))
-    ;; else we have a buffer, probably?
-    (spydez/buffer/delete-buffer-process buffer-or-name-regexp)
-    (kill-buffer buffer-or-name-regexp)))
+If ARG is the symbol `by-regexp', use `spydez/buffer/regexp/bookend' to kill
+special buffers.
+
+If ARG is a string, the `spydez/buffer/regexp/bookend' is checked to see if the
+stcring/regexp is 'correctly' guarded by them, adding them in if needed. It uses
+`spydez/buffer/special-name' with nil priority to add the bookends.
+
+If ARG is not a string, assume it's a buffer and try to kill it's process and it
+directly."
+
+  (cond ((null arg)
+         (mis/warning nil nil
+                      "spydez/buffer/kill-special: Cannot kill; null arg."))
+
+        ((and (symbolp arg)
+              (eq arg 'by-regexp))
+         ;; Use our regexp to try to kill them all without confirmation.
+           (spydez/buffer/kill-matching spydez/buffer/regexp/bookend nil t t t))
+
+        ((stringp arg)
+         ;; We have a string. Make sure it's formatted as "special-buffer",
+         ;; and then try to kill any matching without confirmation.
+         (let ((arg (if (string-match-p spydez/buffer/regexp/bookend arg)
+                        arg
+                      (spydez/buffer/special-name arg))))
+           (spydez/buffer/kill-matching arg nil t t t)))
+
+        (t
+         ;; Else we have a buffer, probably? Go for the kill ourselves.
+         (spydez/buffer/delete-buffer-process arg)
+         (kill-buffer arg))))
+;; (spydez/buffer/kill-special 'by-regexp)
+;; (spydez/buffer/kill-special (rx word-boundary (1+ printing) word-boundary))
+;; (spydez/buffer/kill-special "\\b[[:print:]]+\\b")
+;; (spydez/buffer/special-name "\\b[[:print:]]+\\b")
+;; (spydez/buffer/kill-special "§- \\b[[:print:]]+\\b -§")
 
 
 (defun spydez/buffer/delete-buffer-process (buffer-or-name)
@@ -169,7 +205,6 @@ unless NO-ASK is non-nil.
 
 Deletes buffer's process (if any) if DELETE-PROCESS is non-nil."
   (interactive "sKill buffers matching regex: ")
-
   ;; TODO: find all matching buffers and do a "does this look about right?"
   ;; prompt?
 
@@ -226,6 +261,10 @@ Deletes buffer's process (if any) if DELETE-PROCESS is non-nil."
                  (length killed-names)
                  regexp
                  killed-names))))))
+;; (spydez/buffer/kill-special "§- \\b[[:print:]]+\\b -§")
+;; (string-match-p "§- \\b[[:print:]]+\\b -§" "§- Kill All The Things! -§")
+;; (string-match-p "§- \\b[[:print:]]+\\b -§\\b" "§- Kill All The Things! -§")
+;; (string-match-p "§- [[:print:]]+\\b -§" "§- Kill All The Things! -§")
 
 
 ;;------------------------------------------------------------------------------
