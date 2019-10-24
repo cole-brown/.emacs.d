@@ -21,5 +21,13 @@ Current Commands:
 - Create/add:
     git submodule add git@github.com:spydez/spotify.el.git packages/submodules/spotify
 
-  - Pull/update:
+  - Pull/update from (my) master:
     Like normal git.
+
+  - Pull/update from upstream (my master's original repo, likely):
+    Assumes 'upstream' is defined in submodule's config file.
+    - optimistic
+      git pull upstream master
+    - pessimistic
+      git co -b upstream_pull
+      git pull upstream_pull

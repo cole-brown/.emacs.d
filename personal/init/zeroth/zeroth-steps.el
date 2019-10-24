@@ -197,7 +197,7 @@ Always returns nil so if/and/or shenanigans can shenan."
   nil)
 
 
-(defun spydez/init/step/to-type (step &rest extras)
+(defun spydez/init/step/to-type (&rest step extras)
   "Turns list/cons STEP (or spydez/init/step/completed list if nil) into a
 'type' list appropriate for `mis/{warning,debug,info,etc}' and `lwarn'
 functions. Appends any EXTRAS onto end."

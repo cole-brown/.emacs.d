@@ -181,10 +181,13 @@ untouched return value of `spotify-api-get-player-status'.")
             ;; if-let* success case
             (cond
              ;; known fields and some aliases - field is first
-             ((eq field 'artist)
+             ((or (eq field 'artist)
+                  (eq field 'artist-name)
+                  (eq field 'artist_name))
               (gethash 'name (car (gethash 'artists track))))
 
-             ((or (eq field 'track-name)
+             ((or (eq field 'track)
+                  (eq field 'track-name)
                   (eq field 'track_name)
                   (eq field 'name))
               (gethash 'name track))
@@ -340,10 +343,19 @@ Try to not be braindead."
       ;; Don't like the normal map... doing a hydra instead.
       (require 'with)
       (with-feature 'hydra
+        (defun spydez/spotify/now-playing ()
+          (if-let ((artist (spydez/spotify/player-status 'artist))
+                   (track (spydez/spotify/player-status 'track)))
+              ;; 64 is the length of the dashed line in the hydra
+              (s-center 64 (format "%s - %s" artist track))
+            ""))
+
+
         (defhydra spydez/hydra/spotify (:color blue ;; default exit heads
                                         :idle 0.25   ;; no help for this long
                                         :hint none)  ;; no hint - just docstr
           "
+%s(spydez/spotify/now-playing)
 ^Track^                    ^Playlists^            ^Misc^
 ^-^------------------------^-^--------------------^-^-----------------
 _p_: ?p?^^^^^^^^           _l m_: My Lists        _d_:   Select Device

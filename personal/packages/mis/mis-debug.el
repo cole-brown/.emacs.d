@@ -133,6 +133,7 @@ LEVEL: level for lwarn; nil will become `mis/warning/level'"
          (level (mis/debug/get-with-default level
                                             mis/warning/level))
          (injected-message (format "  %s:  %s" type message)))
+    (message "%s %s %s %s" type level message args)
     (apply 'lwarn type level injected-message args)
     ;; basically becomes e.g.:
     ;; (lwarn '(spydez bootstrap) :warning
@@ -162,29 +163,34 @@ be ARG if ARG is non-nil and either symbolp or functionp. Else it
 will look at the value of DEFAULT and use either that symbol, or
 call that function to get a symbol."
   (cond
+   ;; pass through - function
+   ((and (not (null arg))
+         (functionp arg))
+    (funcall arg))
    ;; pass through - symbol
    ((and (not (null arg))
          (symbolp arg))
     ;; if it has a value, use that, else use directly
     (if (symbol-value arg)
-        (symbol-value arg)
+          (symbol-value arg)
       arg))
-   ;; pass through - function
-   ((and (not (null arg))
-         (functionp arg))
-    (funcall arg))
 
+   ;; default - function to get current
+   ((and (not (null default))
+         (functionp default))
+    (funcall default))
    ;; default - symbol as default
    ((symbolp default)
-    default)
-   ;; default - function to get current
-   ((functionp default)
-    (funcall default))
+    ;; if it has a value, use that, else use directly
+    (if (and (not (null default))
+             (symbol-value default))
+          (symbol-value default)
+      default))
 
    ;; fallback to something drastic-ish
    (t
     :error)))
-;; (mis/debug/get-with-default)
+;; (mis/debug/get-with-default nil mis/debug/type)
 
 
 ;;------------------------------------------------------------------------------

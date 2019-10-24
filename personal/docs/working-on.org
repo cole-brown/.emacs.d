@@ -17,6 +17,8 @@
 
 
   - [-] General To Do: [6/24]
+    - [ ] Have mis files require each other as needed? No circles?
+
     - [ ] Check out Cascadia Code font?
       - https://www.reddit.com/r/programming/comments/d64aq0/microsoft_released_the_cascadia_code_font/
 
@@ -27,6 +29,7 @@
       - [X] mute/unmute smarter. unmute to 100% volume is stupid.
       - [ ] Now do it proper.
         - [ ] Move smarter mute/unmute to spotify.el.
+        - [ ] Think I also need to/should move cache over too...
         - [ ] Do pull request to main spotify repo.
 
     - [ ] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
