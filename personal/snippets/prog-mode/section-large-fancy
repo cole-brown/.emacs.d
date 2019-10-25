@@ -6,5 +6,4 @@
 
 ${1:`(mis/comment/center "(will center on exit)" nil mis/center/char/border)`$(when yas/moving-away-p (mis/comment/center yas-text nil mis/center/char/border))}
 ${2:`(mis/comment/center (or yas-selected-text "(will center on exit)"))`$(when yas/moving-away-p (mis/comment/center yas-text))}
-`(mis/comment/center "" nil mis/center/char/border)`
-$0
+${3:`(mis/comment/center "(will center on exit)" nil mis/center/char/border)`$(when yas/moving-away-p (mis/comment/center yas-text nil mis/center/char/border))}

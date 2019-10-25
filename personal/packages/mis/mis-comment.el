@@ -6,9 +6,10 @@
 ;;------------------------------------------------------------------------------
 
 
-;; §-TODO-§ [2019-10-23]: refactor? or is ok. Dunno. Just wanna find out.
-
 (require 'subr-x)
+
+(require 'mis-parts)
+(require 'mis-center)
 
 ;;------------------------------------------------------------------------------
 ;; Consts & Vars
@@ -89,11 +90,11 @@ If TRIM is non-nil, trims resultant string before returning."
 paddings (comment delimiters) assuming nil PADDINGS."
   (let* ((paddings (or paddings (mis/comment/paddings t))))
     (mis/center/parts comment
-                                comment/fill-spaces?
-                                comment/fill-char
-                                paddings
-                                borders
-                                indent)))
+                      comment/fill-spaces?
+                      comment/fill-char
+                      paddings
+                      borders
+                      indent)))
 ;; (mis/comment/center/parts "hello?")
 ;; (mis/comment/center/parts "hello there" t)
 ;; (mis/comment/center/parts "hello there" nil nil 4)
@@ -111,8 +112,8 @@ paddings (comment delimiters) assuming nil PADDINGS."
   ;; build string from prog-mode parts section
   (mis/parts/build
    (mis/comment/center/parts comment
-                                          comment/fill-spaces? comment/fill-char
-                                          indent borders paddings)))
+                             comment/fill-spaces? comment/fill-char
+                             indent borders paddings)))
 ;; (mis/comment/center "Hello there.")
 ;; (mis/comment/center "Hello there." t)
 ;; (mis/comment/center "Hello there." t ?x)

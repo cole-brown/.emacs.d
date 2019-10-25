@@ -6,6 +6,7 @@
 ;;------------------------------------------------------------------------------
 
 
+(require 'mis-message)
 
 ;;------------------------------------------------------------------------------
 ;; Consts & Vars
@@ -13,15 +14,15 @@
 
 ;; just more pretty
 (defcustom mis/init/indents
-  '((none . 0)
-    (default . 0)
+  '((none    0)
+    (default 0)
+    (nil     0)
 
     ;; init sequence slightly indented
-    (init . 1)
+    (init 1)
 
-    ;; require more indented, piggybacks double that
-    (require           . 3)
-    (require-piggyback . 5))
+    ;; require more indented, piggybacks double(ish) that
+    (require (3 5 7)))
   "Alist for various indent levels."
   :group 'mis
   :type 'alist)
@@ -55,6 +56,18 @@
 ;; (alist-get nil mis/init/indent-arrow/head)
 
 
+(defcustom mis/init/type '(mis default)
+  "Default type used if none provided. Types are e.g.:
+'(spydez bootstrap (system specific))
+'(spydez running none)
+etc...
+
+They will show up in *Messages* output for `mis/init/sequence'."
+  :group 'mis
+  :type '(choice (sexp :tag "list of symbols - most important first")
+                 (function :tag "function to call to get list of symbols")))
+
+
 ;;------------------------------------------------------------------------------
 ;; Main Entry Points?
 ;;------------------------------------------------------------------------------
@@ -78,7 +91,10 @@ ARGS will fill in."
              (propertize "├" 'face 'font-lock-comment-delimiter-face)
              " "
              ;; current init type via nil
-             (propertize (format "%s" (spydez/init/step/to-type nil))
+             (propertize (format "%s"
+                                 (mis/setting/get-with-default
+                                  nil
+                                  mis/init/type))
                          'face 'font-lock-comment-face)
              " "
              (propertize "┤:" 'face 'font-lock-comment-delimiter-face)
@@ -91,8 +107,8 @@ ARGS will fill in."
 ;; (mis/init/sequence 'init 'left "Test: %s" 'jeff)
 ;; (mis/init/sequence 'require nil "Test: %s" 'jeff)
 ;; (mis/init/sequence 'require 'left "Test: %s" 'jeff)
-;; (mis/init/sequence 'require-piggyback nil "Test: %s" 'jeff)
-;; (mis/init/sequence 'require-piggyback 'left "Test: %s" 'jeff)
+;; (mis/init/sequence 'require nil "Test: %s" 'jeff)
+;; (mis/init/sequence 'require 'left "Test: %s" 'jeff)
 
 
 (defun mis/init/message (indent msg-fmt &rest args)
@@ -123,16 +139,48 @@ bother with INDENT/TYPE."
 ;; Helper Functions
 ;;------------------------------------------------------------------------------
 
-(defun mis/init/get-indent (level)
+(defun mis/init/get-indent (level &optional sublevel)
   "Get an indent level. If LEVEL is a symbol, looks in
 `mis/init/indents'; will return `default' from alist if not
-found. If LEVEL is a numberp, returns LEVEL."
-  (if (numberp level)
+found. If LEVEL is a numberp, returns LEVEL.
+
+If SUBLEVEL is non-nil and indent level found in `mis/init/indents' returns a
+list, will try to get nth element in list for the indent level. E.g. if LEVEL
+becomes '(3 5 17 4), then sublevel nil/0 is 3, 1 is 5, 3 is 17, etc."
+
+  ;; early out for int level
+  (if (integerp level)
       level
-    ;; Return level if exists, else 'default.
-    (or (alist-get level mis/init/indents)
-        (alist-get 'default mis/init/indents))))
+
+    ;; Use level if exists, else 'default.
+    (let* ((indents (or (nth 1 (assoc level mis/init/indents))
+                        (nth 1 (assoc 'default mis/init/indents)))))
+
+      ;; no sublevel asked for?
+      (if (null sublevel)
+          ;; just first of the indents then
+          (or (and (listp indents)
+                   (nth 0 indents))
+              indents)
+
+        ;; They asked for a sublevel - can we find one?
+        (if (or (not (listp indents))
+                (not (integerp sublevel))
+                (< (length indents) sublevel))
+            (prog1
+                0 ;; give indent 0 in hopes it'll get noticed and fixed?
+              ;; also maybe they'll notice this...
+              (mis/warning
+               nil :warning
+               "Cannot get sublevel %s of '%s' - %s: '%s'"
+               sublevel level
+               "bad args or not enough options"
+               indents))
+          ;; give the correct sublevel
+          (nth sublevel indents))))))
+;; (mis/init/get-indent 'foo)
 ;; (mis/init/get-indent 'require)
+;; (mis/init/get-indent 'require 1)
 
 
 ;; Current arrows:

@@ -197,7 +197,7 @@ Always returns nil so if/and/or shenanigans can shenan."
   nil)
 
 
-(defun spydez/init/step/to-type (&rest step extras)
+(defun spydez/init/step/to-type (&optional step &rest extras)
   "Turns list/cons STEP (or spydez/init/step/completed list if nil) into a
 'type' list appropriate for `mis/{warning,debug,info,etc}' and `lwarn'
 functions. Appends any EXTRAS onto end."
@@ -207,7 +207,6 @@ functions. Appends any EXTRAS onto end."
     (cond
      ((spydez/consp-and-not-listp type)
       ;; convert to list... without mucking up any variables looking at step...
-      (message "hm... %s" (list (car type) (cdr type)))
       (setq type (list (car type) (cdr type))))
 
      ;; Apparently dotted-pair cons cells qualify as listp so, check after consp
@@ -230,9 +229,13 @@ functions. Appends any EXTRAS onto end."
 ;; (spydez/init/step/to-type nil 'jeff 'rob)
 ;; (spydez/init/step/to-type '(1 . 2))
 ;; (spydez/init/step/to-type '(1 2))
+;; (spydez/init/step/to-type nil)
+
 
 ;; and tell mis about it
 (customize-set-variable 'mis/debug/type
+                        #'spydez/init/step/to-type)
+(customize-set-variable 'mis/init/type
                         #'spydez/init/step/to-type)
 
 

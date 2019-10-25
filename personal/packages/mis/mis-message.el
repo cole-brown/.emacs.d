@@ -8,6 +8,8 @@
 
 (require 'subr-x)
 
+(require 'mis-parts)
+
 ;;------------------------------------------------------------------------------
 ;; Consts & Vars
 ;;------------------------------------------------------------------------------
@@ -25,11 +27,16 @@ to the *Messages* buffer.
 NOTE: Could (optionally) add TYPE to output easily enough if desired."
   (if-let ((faces (nth 1 (assoc type mis/type->faces)))
            ;; If args was a single list and got boxed by '&rest', unbox.
-           ;; e.g. '(:text "hi") -&rest-> '((:text "hi")) -> unbox
+           ;; e.g. '(:text "hi") -&rest-> '((:text "hi")) -unbox-> '(:text "hi")
            (args (or (and (listp args)
                           (= (length args) 1)
-                          (listp (nth 0 args))
                           (-flatten-n 1 args))
+                     args))
+           ;; Also need to check for a full unboxing...
+           ;; e.g. 'newline -&rest-> '(newline) -unbox-> 'newline
+           (args (or (and (listp args)
+                          (= (length args) 1)
+                          (nth 0 args))
                      args))
            ;; null check
            (valid-args (not (null args))))
@@ -43,9 +50,10 @@ NOTE: Could (optionally) add TYPE to output easily enough if desired."
      type :warning
      (concat "Null args (%s)? Or type not found in "
              "`mis/type->faces': %s -> %s")
-     arg type mis/type->faces)
+     args type mis/type->faces)
     nil))
 ;; (mis/message/propertize '(mis koan text) '(:text "hi"))
+;; (mis/message/propertize '(mis koan text) 'newline)
 
 
 ;;------------------------------------------------------------------------------

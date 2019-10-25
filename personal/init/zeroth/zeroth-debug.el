@@ -66,44 +66,55 @@
   :group 'taskspace
   :type 'string)
 
+(defvar spydez/require/recursion-level 0
+  "Keep track of depth for init sequence indents.")
 
 (defun spydez/require (symbol &optional filename noerror)
   "Print helpful `mis/init/sequence' message (if `spydez/debugging-p') at
 `mis/init/indent/require'. Then (require 'symbol). Then (require 'symbol-secret
 nil 'noerror) and print another message if anything loaded."
 
-  ;; Require the Actual Thing.
-  (mis/init/sequence (mis/init/get-indent 'require)
+  ;; Say hi.
+  (mis/init/sequence (mis/init/get-indent 'require
+                                          spydez/require/recursion-level)
                      nil
                      "(require '%s)" symbol)
-  ;; ...and return the value for the Actual Require of the Actual Thing.
-  (prog1
-      (require symbol filename noerror)
 
-    ;; Look for piggy backing/addons.
-    ;;---
-    ;;   E.g.: Say we have configure-dungeon.el in our .emacs.d, which
-    ;; configures our dungeon for adventurers.
-    ;;     (spydez/require 'configure-dungeon)
-    ;;   Some of our adventurers may have peeked at our elisp file in our public
-    ;; git repo, so maybe all the good stuff (secret rooms, treasure, loot,
-    ;; BBEG...) are in a different, secret git repo. We don't want to overwrite
-    ;; our dungeon, but we do want to add the secret stuff in after. So look for
-    ;; that secret file.
-    (when (null filename)
-      (let* ((require-name (symbol-name symbol))
-             (secret-name (format spydez/require/piggyback-format
-                                  require-name))
-             (secret-symbol (intern secret-name)))
-        ;; Want to print then load, if exists, to mirror print/require above.
-        (when (locate-library secret-name)
-          (mis/init/sequence
-           (mis/init/get-indent 'require-piggyback)
-           nil
-           "(require '%s)"
-           secret-symbol)
-          ;; Never error for piggybackers.
-          (require secret-symbol nil 'noerror))))))
+  ;; Lexically bind recursion level so it unwinds itself without bothering me.
+  ;; Does this work for both:
+  ;;   1) piggyback requires (requiring 'foo and finding/requiring 'foo-secret)
+  ;;   2) implicit recursion (requiring 'foo which requires 'foo-bar)
+  ;; Yes; yay!
+  (let ((spydez/require/recursion-level (1+ spydez/require/recursion-level)))
+    ;; Require the Actual Thing.
+    ;; ...and return the value for the Actual Require of the Actual Thing.
+    (prog1
+        (require symbol filename noerror)
+
+      ;; Look for piggy backing/addons.
+      ;;---
+      ;;   E.g.: Say we have configure-dungeon.el in our .emacs.d, which
+      ;; configures our dungeon for adventurers.
+      ;;     (spydez/require 'configure-dungeon)
+      ;;   Some of our adventurers may have peeked at our elisp file in our
+      ;; public git repo, so maybe all the good stuff (secret rooms, treasure,
+      ;; loot, BBEG...) are in a different, secret git repo. We don't want to
+      ;; overwrite our dungeon, but we do want to add the secret stuff in after.
+      ;; So look for that secret file.
+      (when (null filename)
+        (let* ((require-name (symbol-name symbol))
+               (secret-name (format spydez/require/piggyback-format
+                                    require-name))
+               (secret-symbol (intern secret-name)))
+          ;; Want to print then load, if exists, to mirror print/require above.
+          (when (locate-library secret-name)
+            (mis/init/sequence
+             (mis/init/get-indent 'require spydez/require/recursion-level)
+             nil
+             "(require '%s)"
+             secret-symbol)
+            ;; Never error for piggybackers.
+            (require secret-symbol nil 'noerror)))))))
 ;; (spydez/require 'asdf nil 'noerror)
 ;; (spydez/require 'cl)
 

@@ -7,6 +7,9 @@
 ;; Make koans while the sun shines, I guess?
 
 
+(require 'mis-parts)
+(require 'mis-center)
+(require 'mis-message)
 
 ;;-----------------------------There is no spoon.-------------------------------
 ;;--                              Koan Settings                               --

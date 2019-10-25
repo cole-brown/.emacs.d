@@ -28,7 +28,7 @@
 ;; warnings/debugs/infos messages without having to worry about where we are too
 ;; much. It will be set via `spydez/init/step/set-completed' when it changes.
 ;; Messages can just use nil as TYPE unless override is desired; nil will
-;; resolve to output from `spydez/init/step/to-type'.
+;; resolve to output from `mis/setting/get-with-default' with `mis/debug/type'.
 ;;
 ;; First type in list: always 'spydez for my stuff
 ;;
@@ -75,8 +75,8 @@ They will show up in *Messages* output or be used for warning funcs."
 (defun mis/info (type message &rest args)
   "Info message to *Messages* buffer.
 Formats MESSAGE and ARGS according to `format'.
-TYPE: list with symbols; nil will become (spydez/init/step/to-type nil)"
-  (let* ((type (mis/debug/get-with-default type mis/debug/type)))
+TYPE: list with symbols; nil will become (mis/debug/type nil)"
+  (let* ((type (mis/setting/get-with-default type mis/debug/type)))
 
     (apply #'mis/debug type message args)))
 ;;(mis/info/when nil "Test: %s %s" '(testing list) 'test-symbol)
@@ -86,7 +86,7 @@ TYPE: list with symbols; nil will become (spydez/init/step/to-type nil)"
   "Info message which obeys my global 'enable/disable debugging stuff' flag via
 `mis/debugging-p'.
 Formats MESSAGE and ARGS according to `format'.
-TYPE: list with symbols; nil will become (spydez/init/step/to-type nil)"
+TYPE: list with symbols; nil will become (mis/debug/type nil)"
   (when (mis/debugging-p) (apply #'mis/info type message args)))
 ;;(mis/info/when nil "Test: %s %s" '(testing list) 'test-symbol)
 
@@ -98,8 +98,8 @@ TYPE: list with symbols; nil will become (spydez/init/step/to-type nil)"
 (defun mis/debug (type message &rest args)
   "Debug message to *Messages* buffer.
 Formats MESSAGE and ARGS according to `format'.
-TYPE: list with symbols; nil will become (spydez/init/step/to-type nil)"
-  (let* ((type (mis/debug/get-with-default type mis/debug/type))
+TYPE: list with symbols; nil will become (mis/debug/type nil)"
+  (let* ((type (mis/setting/get-with-default type mis/debug/type))
          (injected-message (format "  %s:  %s" type message)))
     (apply 'message injected-message args)))
 ;;(mis/debug nil "Test: %s %s" '(testing list) 'test-symbol)
@@ -109,7 +109,7 @@ TYPE: list with symbols; nil will become (spydez/init/step/to-type nil)"
   "Debug message which obeys my global 'enable/disable debugging stuff' flag via
 `mis/debugging-p'.
 Formats MESSAGE and ARGS according to `format'.
-TYPE: list with symbols; nil will become (spydez/init/step/to-type nil)"
+TYPE: list with symbols; nil will become (mis/debug/type nil)"
   ;; Figured out a lisp thing.
   ;; Thanks: https://stackoverflow.com/a/26707692
   (when (mis/debugging-p) (apply #'mis/debug type message args)))
@@ -127,13 +127,12 @@ TYPE: list with symbols; nil will become (spydez/init/step/to-type nil)"
   "Prints message to *Warnings* buffer at LEVEL.
 Formats MESSAGE and ARGS according to `format'.
 
-TYPE: list with symbols; nil will become (spydez/init/step/to-type nil)
+TYPE: list with symbols; nil will become (mis/debug/type nil)
 LEVEL: level for lwarn; nil will become `mis/warning/level'"
-  (let* ((type (mis/debug/get-with-default type mis/debug/type))
-         (level (mis/debug/get-with-default level
-                                            mis/warning/level))
+  (let* ((type (mis/setting/get-with-default type mis/debug/type))
+         (level (mis/setting/get-with-default level
+                                              mis/warning/level))
          (injected-message (format "  %s:  %s" type message)))
-    (message "%s %s %s %s" type level message args)
     (apply 'lwarn type level injected-message args)
     ;; basically becomes e.g.:
     ;; (lwarn '(spydez bootstrap) :warning
@@ -155,42 +154,6 @@ LEVEL: level for lwarn; nil will become `mis/warning/level'"
     (if (functionp mis/debug/predicate)
   (funcall mis/debug/predicate)
       mis/debug/predicate)))
-
-
-(defun mis/debug/get-with-default (arg default)
-  "Figures out actual ARG by looking at ARG and DEFAULT. It will
-be ARG if ARG is non-nil and either symbolp or functionp. Else it
-will look at the value of DEFAULT and use either that symbol, or
-call that function to get a symbol."
-  (cond
-   ;; pass through - function
-   ((and (not (null arg))
-         (functionp arg))
-    (funcall arg))
-   ;; pass through - symbol
-   ((and (not (null arg))
-         (symbolp arg))
-    ;; if it has a value, use that, else use directly
-    (if (symbol-value arg)
-          (symbol-value arg)
-      arg))
-
-   ;; default - function to get current
-   ((and (not (null default))
-         (functionp default))
-    (funcall default))
-   ;; default - symbol as default
-   ((symbolp default)
-    ;; if it has a value, use that, else use directly
-    (if (and (not (null default))
-             (symbol-value default))
-          (symbol-value default)
-      default))
-
-   ;; fallback to something drastic-ish
-   (t
-    :error)))
-;; (mis/debug/get-with-default nil mis/debug/type)
 
 
 ;;------------------------------------------------------------------------------

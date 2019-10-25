@@ -35,7 +35,29 @@
                      nil nil "init/config/configure-python.el"
     "Settings for python-mode itself. Non-LSP stuff."
     ;; pycodestyle insists 79 is the One True Fill Column...
+    ;; We'll try it for all our python in general.
     (setq fill-column 79))
+
+  (spydez/hook/defun python-mode-hook t
+                     "python-lsp" nil "init/config/configure-python.el"
+    "LSP setup and stuff."
+    ;; Tell some annoying LSP messages to f right off back where
+    ;; they came from...
+    (when (spydez/packages/enabled-p 'lsp-mode)
+      ;; §-TODO-§ [2019-10-24]: more ignores?
+      (customize-set-variable 'lsp-pyls-plugins-pycodestyle-ignore
+                              ;; spaces before colon
+                              ;; I like to line things up.
+                              '("E203"))
+      ;; §-TODO-§ [2019-10-24]: this doesn't work.
+      ;; pylint complains at top of file:
+      ;; "No module named 'disabled=C0326'
+      ;; (customize-set-variable 'lsp-pyls-plugins-pylint-args
+      ;;                         ;; spaces before colon... also?
+      ;;                         ;; I like to line things up.
+      ;;                         '("disable=C0326"))
+      )
+    (spydez/hook/lsp-deferred))
 
 
   ;;-----
@@ -44,7 +66,7 @@
   ;;---
   ;; Language Server Protocol for Python (LSP)
   ;;---
-  ((python-mode . spydez/hook/lsp-deferred)
+  ((python-mode . spydez/hook/python-lsp)
    (python-mode . spydez/hook/python-mode-hook))
 
 

@@ -31,6 +31,11 @@ auto-complete to have pity is my game."
     (interactive)
     (call-interactively #'yas-insert-snippet nil))
 
+  (spydez/hook/defun snippet-mode t nil nil "init/config/configure-templates.el"
+    "Hook for yasnippet editting."
+    (setq require-final-newline nil))
+
+
   ;;---
   :custom
   ;;---
@@ -42,6 +47,12 @@ auto-complete to have pity is my game."
     "Also indent the empty lines...")
   (yas-triggers-in-field t
     "Allows snippets inside of snippets")
+
+  ;;---
+  :hook
+  ;;---
+  (snippet-mode-hook . spydez/hook/snippet-mode-hook)
+
 
   ;;---
   :config
