@@ -154,6 +154,7 @@ ignore when moody is managing the time tab."
       ;; I got a lot of room in the titlebar...
       (spotify-player-status-truncate-length 30) ;; default: 15
 
+      (spotify-player-status-cache-enabled t)
 
       ;;---
       :config
@@ -166,171 +167,6 @@ ignore when moody is managing the time tab."
       (setq spotify-oauth2-client-secret spydez/secrets/spotify/client-secret)
 
       ;;---
-      ;; Status Cache?
-      ;;---
-      (defvar spydez/spotify/player-status/cache nil
-        "Tuple of (current-time raw-status) where raw-status is
-untouched return value of `spotify-api-get-player-status'.")
-
-      (defun spydez/spotify/player-status (field)
-        "Returns value of field in cached status, or nil."
-        (if-let* ((duration-format "%m:%02s")
-                  (cache spydez/spotify/player-status/cache) ;; null check
-                  (status (nth 1 cache))
-                  (track (gethash 'item status)))
-            ;; if-let* success case
-            (cond
-             ;; known fields and some aliases - field is first
-             ((or (eq field 'artist)
-                  (eq field 'artist-name)
-                  (eq field 'artist_name))
-              (gethash 'name (car (gethash 'artists track))))
-
-             ((or (eq field 'track)
-                  (eq field 'track-name)
-                  (eq field 'track_name)
-                  (eq field 'name))
-              (gethash 'name track))
-
-             ((or (eq field 'track-number)
-                  (eq field 'track_number)
-                  (eq field 'number))
-              (gethash 'track_number track))
-
-             ((eq field 'duration)
-              (gethash 'duration_ms track))
-             ((eq field 'duration-formatted)
-              (format-seconds "%m:%02s" (/ (gethash 'duration_ms track) 1000)))
-
-             ((or (eq field 'player-shuffling)
-                  (eq field 'player_shuffling)
-                  (eq field 'shuffling))
-              (not (eq (gethash 'shuffle_state status) :json-false)))
-
-             ((or (eq field 'player-repeating)
-                  (eq field 'player_repeating)
-                  (eq field 'repeating))
-              (not (string= (gethash 'repeat_state status) "off")))
-
-             ((or (eq field 'player-state)
-                  (eq field 'player_state)
-                  (eq field 'playing))
-              ;; ...if it's not not playing, it's playing!
-              (not (eq (gethash 'is_playing status) :json-false)))
-             ((eq field 'paused)
-              ;; ...if it's not playing, it's paused?
-              ;; What about stopped or not started yet? *shrug*
-              (eq (gethash 'is_playing status) :json-false))
-
-             ((eq field 'volume)
-              (gethash 'volume_percent (gethash 'device status)))
-             ((or (eq field 'mute)
-                  (eq field 'muted))
-              (= (gethash 'volume_percent (gethash 'device status)) 0))
-
-             ;; Well... we can try to get it anyways?
-             (t
-              ;; gethash returns default of nil so I'm fine with blindly
-              ;; trying. Warn first though.
-              (mis/debug
-               nil
-               (concat "spydez/spotify/player-status: "
-                       "unknown field get attempting: %s")
-               field)
-              (or (gethash field status)
-                  (gethash field track))))
-
-          ;; if-let* fail case. Can debug it, but so far just nil for normal
-          ;; things like no music for a while.
-          ;; (mis/debug
-          ;;  nil
-          ;;  (concat "spydez/spotify/player-status: Something null... "
-          ;;          "cache?:%s status?:%s track?:%s")
-          ;;  (not (null spydez/spotify/player-status/cache))
-          ;;  (not (null (nth 1 spydez/spotify/player-status/cache)))
-          ;;  (not (null
-          ;;        (if (null (nth 1 spydez/spotify/player-status/cache))
-          ;;            nil
-          ;;          (gethash 'item
-          ;;                   (nth 1 spydez/spotify/player-status/cache))))))
-          nil))
-      ;; (spydez/spotify/player-status 'artist)
-      ;; (spydez/spotify/player-status 'name)
-      ;; (spydez/spotify/player-status 'track-number)
-      ;; (spydez/spotify/player-status 'duration)
-      ;; (spydez/spotify/player-status 'duration-formatted)
-      ;; (spydez/spotify/player-status 'shuffling)
-      ;; (spydez/spotify/player-status 'repeating)
-      ;; (spydez/spotify/player-status 'playing)
-      ;; (spydez/spotify/player-status 'paused)
-      ;; (spydez/spotify/player-status 'volume)
-      ;; (spydez/spotify/player-status 'muted)
-
-
-      (defun spydez/advice/spotify/player-status/store (callback status)
-        "Timestamp and hold onto status from
-`spotify-api-get-player-status' for when we want status and don't
-care about how uppest to datest it is."
-        ;; cache status w/ timestamp
-        (let ((time (current-time)))
-          (when (or (null spydez/spotify/player-status/cache)
-                    (time-less-p (car spydez/spotify/player-status/cache)
-                                 (current-time)))
-            (setq spydez/spotify/player-status/cache (list time status))))
-
-        ;; and return unchanged status
-        (funcall callback status))
-
-
-      (defun spydez/advice/spotify/player-status/glom (args)
-        "Function for grabbing onto spotify-api player status
-calls in order to cache results. Insert our func as the
-callback (which will then call correct callback)."
-        (let ((callback (nth 0 args)))
-          (list (lambda (status)
-                  (funcall #'spydez/advice/spotify/player-status/store
-                           callback
-                           status)))))
-      ;; (spydez/advice/spotify/player-status/glom '(jeff))
-
-      (advice-add 'spotify-api-get-player-status
-                  :filter-args
-                  #'spydez/advice/spotify/player-status/glom)
-      ;; (advice-remove 'spotify-api-get-player-status
-      ;;                 #'spydez/advice/spotify/player-status/glom)
-
-
-      (defvar spydez/spotify/mute/volume nil
-        "Remember what percent the volume was when we muted.")
-      (defvar spydez/spotify/mute/volume-default 50
-        "Default in case there was no pre-mute remembered.")
-      (defun spydez/spotify/volume-mute-unmute ()
-        "It's braindead and ear drum blasting to 0/100 the volume.
-Try to not be braindead."
-        (spotify-when-device-active
-         (spotify-api-get-player-status
-          (lambda (status)
-            (let ((volume (spotify-connect-get-volume status)))
-              (if (eq volume 0)
-                  (let ((set-volume (cond
-                                     ((bound-and-true-p spydez/spotify/mute/volume)
-                                      spydez/spotify/mute/volume)
-                                     ((bound-and-true-p spydez/spotify/mute/volume-default)
-                                      spydez/spotify/mute/volume-default)
-                                     (t 100)))) ;; I guess blow their ears out as last resort...
-                    (spotify-api-set-volume (spotify-connect-get-device-id status)
-                                            set-volume
-                                            (lambda (_) (message "Volume unmuted to %s." set-volume)))
-                    ;; Save what we've set it to.
-                    (setq spydez/spotify/mute/volume set-volume))
-                ;; Save what volume we're leaving.
-                (setq spydez/spotify/mute/volume volume)
-                (spotify-api-set-volume (spotify-connect-get-device-id status) 0
-                                        (lambda (_) (message "Volume muted.")))))))))
-      (fset 'spotify-connect-volume-mute-unmute 'spydez/spotify/volume-mute-unmute)
-
-
-      ;;---
       ;; Status in Title Bar (before it was a feature in spotify.el)
       ;; (spydez/help/issue/visit "spotify" "title-bar-status.org")
       ;;---
@@ -339,6 +175,8 @@ Try to not be braindead."
       ;;---
       ;; Keybinds
       ;;---
+
+      ;; §-TODO-§ [2019-10-25]: Move to spotify-hydra.el to show off cache?
 
       ;; Don't like the normal map... doing a hydra instead.
       (require 'with)

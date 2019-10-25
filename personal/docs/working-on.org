@@ -16,7 +16,18 @@
         - Or fix use-tool to override that nonsense?
 
 
-  - [-] General To Do: [7/26]
+  - [-] General To Do: [7/27]
+    - [-] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
+      - [X] mute/unmute smarter. unmute to 100% volume is stupid.
+      - [-] Now do it proper.
+        - [X] Move smarter mute/unmute to spotify.el.
+        - [X] Think I also need to/should move cache over too...
+        - [ ] test things
+        - [ ] fix things
+        - [ ] add hydra for a decent use-case for cache
+        - [ ] Do pull request to main spotify repo.
+    - [ ] spotify.el - make more things use the cache
+
     - [ ] Check out Cascadia Code font?
       - https://www.reddit.com/r/programming/comments/d64aq0/microsoft_released_the_cascadia_code_font/
 
@@ -27,13 +38,6 @@
 
     - [ ] package or DIY colors or icons on modeline for file status (left-most bit)?
       - Briefly mentioned here: http://amitp.blogspot.com/2019/07/emacs-mode-line-simplified.html
-
-    - [-] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
-      - [X] mute/unmute smarter. unmute to 100% volume is stupid.
-      - [ ] Now do it proper.
-        - [ ] Move smarter mute/unmute to spotify.el.
-        - [ ] Think I also need to/should move cache over too...
-        - [ ] Do pull request to main spotify repo.
 
     - [ ] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
       - [ ] "Made for you" section playlists?
