@@ -48,7 +48,10 @@
       (customize-set-variable 'lsp-pyls-plugins-pycodestyle-ignore
                               ;; spaces before colon
                               ;; I like to line things up.
-                              '("E203"))
+                              '("E203"
+                                ;; spaces after colon...
+                                "E241"
+                                ))
       ;; §-TODO-§ [2019-10-24]: this doesn't work.
       ;; pylint complains at top of file:
       ;; "No module named 'disabled=C0326'

@@ -16,12 +16,13 @@
         - Or fix use-tool to override that nonsense?
 
 
-  - [-] General To Do: [7/27]
+  - [-] General To Do: [7/28]
     - [-] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
       - [X] mute/unmute smarter. unmute to 100% volume is stupid.
       - [-] Now do it proper.
         - [X] Move smarter mute/unmute to spotify.el.
         - [X] Think I also need to/should move cache over too...
+        - [X] push things
         - [ ] test things
         - [ ] fix things
         - [ ] add hydra for a decent use-case for cache
@@ -45,7 +46,10 @@
     - spotify
       - [ ] all-the-icons?
 
-    - [ ] package: alert?
+    - [ ] Some sort of alerts... not alert/libnotify/growl type. Inside emacs.
+      - [ ] For redtick ending.
+      - [ ] Maybe in future: calendar stuff, email received(?), alarms...
+    - [ ] package: alert? (libnotify/growl style - need OS help)
       - https://github.com/rememberYou/.emacs.d/blob/master/config.org#alert
       - Anything else from here? https://github.com/rememberYou/.emacs.d/blob/master/config.org
 
