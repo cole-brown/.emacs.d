@@ -55,6 +55,15 @@
   (defhydra spydez/hydra/grab-bag (:color blue ;; default exit heads
                                    :idle 0.75  ;; no help for x seconds
                                    :hint none) ;; no hint - just docstr
+    ;; [2019-10-28]: So I have a Heisenbug right now... Calling this hydra the
+    ;; 1st (or 1st three?!) times after startup (maybe only if called w/o doing
+    ;; (much) else?) results in:
+    ;;   "Error running timer: (wrong-type-argument stringp nil)"
+    ;;
+    ;; But if I set `debug-on-error' it never happens. And I'm not sure what
+    ;; possible string is nil. Or why stringp dies on nil in whatever case it is
+    ;; dying on.
+    ;; Yay...
     "
 ^Signatures^                         | ^Org-Mode^             | ^Sig/TODO Search^         | ^Align^
 ^----------^-------------------------+-^--------^-------------+-^---------------^---------+-^-----^-----------------------
@@ -135,10 +144,9 @@ _g_: todo: ?g?^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    |
     ;; Alignment
     ;;-------------------------------------------------------------------------
     ("; ;" (call-interactively #'align-regexp))
-    ("; q"
-     (lambda () (interactive)
-       (setq current-prefix-arg '(4))
-       (call-interactively #'align-regexp)))
+    ("; q" (lambda () (interactive)
+             (setq current-prefix-arg '(4))
+             (call-interactively #'align-regexp)))
     ("a" (call-interactively #'align))
     ("'" (call-interactively #'align-current)))
 

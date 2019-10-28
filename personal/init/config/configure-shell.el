@@ -114,6 +114,30 @@ OUTPUT-PRIORITY is also just passed through to
                                output-priority)))
 
 
+(defun spydez/shell/command/redirect-output (command &optional buffer-or-name)
+  "Runs a shell command in a temp buffer, then sends the output
+to BUFFER-OR-NAME instead of leaving it in its own buffer.
+
+If BUFFER-OR-NAME is nil, sends output to \"*Messages*\" buffer."
+  (let ((output nil))
+    ;; setup temp buffer and output-redirects
+    (with-temp-buffer
+      (let ((tmp-buf (current-buffer)))
+        (with-output-to-temp-buffer tmp-buf
+          ;; run command, save output.
+          (shell-command command
+                         tmp-buf
+                         "*Messages*")
+          (setq output (buffer-string)))))
+
+    ;; and send to messages or specified buffer
+    (if (null buffer-or-name)
+        (message "%s" output)
+      (with-current-buffer buffer-or-name
+        (insert output)))))
+;; (spydez/shell/command/redirect-output "ls")
+
+
 ;; Initially from:
 ;;   "This will set shell-file-name locally when you call
 ;; [spydez/shell-default/command], which you can bind to the key of your
@@ -203,6 +227,35 @@ OUTPUT-PRIORITY is also just passed through to
                                    output-subtitle
                                    output-priority)))))
 ;; (spydez/shell-default/command-async "dir" "test")
+
+
+(defun spydez/shell-default/command/redirect-output (command &optional
+                                                             buffer-or-name)
+  "Useful on windows.... Resets to default system shell for the
+COMMAND. Calls `shell-command' with COMMAND.
+
+Runs a shell COMMAND in a temp buffer, then sends the output
+to BUFFER-OR-NAME instead of leaving it in its own buffer.
+
+If BUFFER-OR-NAME is nil, sends output to \"*Messages*\" buffer."
+  (let ((output nil))
+    ;; setup temp buffer and output-redirects
+    (with-temp-buffer
+      (let ((tmp-buf (current-buffer))
+            (shell-file-name (spydez/shell/system-default)))
+        (with-output-to-temp-buffer tmp-buf
+          ;; run command, save output.
+          (shell-command command
+                         tmp-buf
+                         "*Messages*")
+          (setq output (buffer-string)))))
+
+    ;; and send to messages or specified buffer
+    (if (null buffer-or-name)
+        (message "%s" output)
+      (with-current-buffer buffer-or-name
+        (insert output)))))
+;; (spydez/shell/command/redirect-output "ls")
 
 
 ;;------------------------------------------------------------------------------
