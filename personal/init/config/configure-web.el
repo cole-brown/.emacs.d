@@ -16,38 +16,37 @@
 ;; Emacs Code
 ;;---
 
-;; Original idea from org-linkz:
-;;   https://github.com/p-kolacz/org-linkz
-;; Well... Isn't really "from" or "derived from" anymore. That's super outdated
-;; and don't go there or use that or org-mode will hate you as it hates me right
-;; now... I guess "original idea from" now.
-
 ;; org-protocol set up in configure-org-mode.el
 
 (defconst spydez/file/org/web-bookmarks
   (spydez/path/to-file spydez/dir/org-docs-secrets "web-bookmarks.org")
   "Org-Mode file for web bookmarksfile.")
 
-;; org-linkz template was... old.
 ;; Does this work now?
 ;; https://orgmode.org/worg/org-contrib/org-protocol.html
 ;; https://orgmode.org/manual/Template-expansion.html#Template-expansion
 (add-to-list 'org-capture-templates
              `("w" "Web Bookmark Capture" entry
-               (file+headline ,spydez/file/org/web-bookmarks "INBOX")
-               ,(format "* %s %s\\n\\n%s\\n  %s\\n\\n%s"
-                        "%U" ;; inactive date & time stamp
-                        "%a" ;; org-link of URL/Title
-                        "%:description" ;; title
-                        "%:link"        ;; URL
-                        "%:initial")    ;; any selected text
-               :immediate-finish t))
-;; ...no. No it does not.
-;; I get a buffer with a fucked up name that looks to be the
-;; whole org-protocol link.
-;; §-TODO-§ [2019-10-18]: Figure out web bookmarks. Still/again.
+               (file+headline spydez/file/org/web-bookmarks "INBOX")
+               ,(concat "* %a" ;; title line: org-link of URL/Title
+                       "\n\n"  ;; blank line
 
-;; (find-file spydez/file/org/web-bookmarks)
+                       "%U"    ;; inactive date & time stamp
+                       "\n\n"  ;; blank line before title/link
+
+                       "%?"    ;; put mark here in front of title when done
+                       "%:description" ;; title
+                       "\n"
+                       "%:link"    ;; URL
+                       "\n\n"      ;; blank line before text
+
+                       "%:initial" ;; any selected text
+                       "\n\n")     ;; blank before next entry
+
+               ;; just be done - no need to edit before inserting
+               :immediate-finish t))
+
+;; Mostly works... Doesn't like a lot of unicode from the web. But whatever.
 
 
 ;;---
@@ -70,7 +69,27 @@
 ;;       encodeURIComponent(document.title||"[untitled page]")+'&body='+
 ;;       encodeURIComponent(window.getSelection())
 ;; Sigh. No. Or yes and org-capture is fucking it up. IDK.
-;; §-TODO-§ [2019-10-18]: Figure out web bookmarks. Still/again.
+
+;; alphapapa's org-protocol-capture-html's bookmarklets:
+;;   https://github.com/alphapapa/org-protocol-capture-html#firefox
+;; Nope.
+
+;;---
+;; Working Browser Bookmark
+;;--
+;;--                                Use This!
+;;--
+;; It's "DEPRECATED". It  throws a *Warning*:
+;;   "Warning (emacs): Please update your Org Protocol handler to deal with
+;;   new-style links."
+;; But at least it works?
+;;
+;; javascript:location.href='org-protocol://capture://w/' +
+;; encodeURIComponent(location.href) + '/' + encodeURIComponent(document.title)
+;; + '/' + encodeURIComponent(window.getSelection())
+;;
+;; Dunno why the "correct" way doesn't work. I'mma guess windows paths.
+;;---
 
 
 ;;---
@@ -78,25 +97,7 @@
 ;;---
 
 ;; To setup OS integration, see:
-;;   https://github.com/p-kolacz/org-linkz#add-org-protocol-support-to-os
-;;
-;; Linux:
-;;   Add ~/.local/share/applications/org-protocol.desktop file with following content:
-;;
-;;   [Desktop Entry]
-;;   Name=org-protocol
-;;   Exec=emacsclient -n %u
-;;   Type=Application
-;;   Terminal=false
-;;   Categories=System;
-;;   MimeType=x-scheme-handler/org-protocol;
-;;
-;;   Run
-;;
-;;   update-desktop-database ~/.local/share/applications/
-;;
-;; Mac:
-;;   https://github.com/xuchunyang/setup-org-protocol-on-mac
+;;   https://orgmode.org/worg/org-contrib/org-protocol.html#orgb0bf7e6
 ;;
 ;; Windows:
 ;;   https://orgmode.org/worg/org-contrib/org-protocol.html#orgf93bb1b

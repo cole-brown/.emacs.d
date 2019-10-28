@@ -14,6 +14,15 @@
 (when (featurep 'delight) ;; and shorten "Emacs-Lisp" mode text a bit if we can:
   (delight 'emacs-lisp-mode "Elisp" :major))
 
+
+(defun spydez/window/kill-or-quit (&optional bury window)
+  "The inverse of `quit-window' - defaults to kill, will quit on prefix arg QUIT."
+  (interactive "P")
+  (quit-restore-window window (if bury 'bury 'kill)))
+;; (spydez/window/kill-or-quit)
+;; (spydez/window/kill-or-quit t)
+
+
 ;;------------------------------------------------------------------------------
 ;; General Keybinds
 ;;------------------------------------------------------------------------------
@@ -106,11 +115,13 @@ Feature, if needed: Check more maps than just global?"
 ;;---
 ;; Keybinds I Want Changed
 ;;---
-;; `custom-mode-map' doesn't exist right now. Wait for it.
-(with-eval-after-load 'cus-edit
-  (bind-keys :map custom-mode-map
-             ;; Kill *Customize* buffer instead of bury on 'q'.
-             ("q" . kill-this-buffer)))
+(customize-set-variable 'custom-buffer-done-kill t
+                        "Have customize buffers kill themselves on 'q'/done.")
+;; ;; `custom-mode-map' doesn't exist right now. Wait for it.
+;; (with-eval-after-load 'cus-edit
+;;   (bind-keys :map custom-mode-map
+;;              ;; Kill *Customize* buffer instead of bury on 'q'.
+;;              ("q" . spydez/window/kill-or-quit)))
 
 
 ;;------------------------------------------------------------------------------

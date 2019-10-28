@@ -112,15 +112,17 @@ quiet arg is non-nil."
   :bind ;; helpful-mode-map
   ;;---
   (:map helpful-mode-map
-        ;; TRIAL: [2019-08-27]
-        ;; kill buffer instead of quit?
-        ("q" . kill-this-buffer))
+        ;; kill-this-buffer instead of quit (bury)
+        ;; TRIAL: [2019-10-28]
+        ;; kill-or-quit instead of original quit-or-kill?
+        ;;  - "quit" as in bury...
+        ("q" . spydez/window/kill-or-quit))
 
 
   ;;---
   :custom
   ;;---
-  (helpful-max-buffers 2
+  (helpful-max-buffers 5 ;; [2019-10-28]: 2->5
     "If this or more, kill oldest when opening another.")
   (helm-describe-function-function 'helpful-callable
     "Have Helm use Helpful for e.g. helm-apropos.")

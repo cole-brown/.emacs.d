@@ -15,14 +15,52 @@
 (when (eq system-type 'windows-nt)
 
   ;;---
+  ;; Font: NOTES
+  ;;---
+
+  ;; This is just... IDK, what the frame has available maybe?
+  ;; (fontset-list)
+  ;;
+  ;; This is all fonts installed as far as emacs knows?
+  ;; (font-family-list)
+  ;;
+  ;; This is for setting up a fontset so that fallbacks automatically happen?
+  ;; Maybe? https://emacs.stackexchange.com/a/47052
+  ;; variable: face-font-family-alternatives
+
+  ;;---
   ;; Font
   ;;---
-  ;; Default font (Courier New) has height issues between regular/bold and
-  ;; italic, which makes things shift around by a pixel annoyingly. Trying
-  ;; Consolas instead.
-  ;; Note: "Courier New" height was 98
-  (set-face-attribute 'default nil
-                      :family "Consolas" :height 100)
+
+  ;; Old Consolas-only way:
+  ;; ;; Default font (Courier New) has height issues between regular/bold and
+  ;; ;; italic, which makes things shift around by a pixel annoyingly. Trying
+  ;; ;; Consolas instead.
+  ;; ;; Note: "Courier New" height was 98
+  ;; (set-face-attribute 'default nil
+  ;;                     :family "Consolas" :height 100)
+
+  ;; Hand-Made Fallbacks
+  (cond
+   ;; Microsoft's Cascadia Code font:
+   ;;   https://github.com/microsoft/cascadia-code
+   ;;
+   ;; Well... Bold cascadia just results in blurred together chunks of word on
+   ;; my 1080p monitor... This may be a "go big, no bold, or go 4k" font.
+   ;; ((member "Cascadia Code" (font-family-list))
+   ;;  (set-face-attribute 'default nil
+   ;;                      :family "Cascadia Code" :height 90)
+   ;;  (mis/debug/when nil "Using Cascadia Code font."))
+
+   ((member "Consolas" (font-family-list))
+    (set-face-attribute 'default nil
+                        :family "Consolas" :height 100)
+    (mis/debug/when nil "Using Consolas font."))
+
+    (t
+     (mis/debug/when nil
+                     "No desired font found. Using whetever Emacs feels like.")))
+
 
   ;;---
   ;; PATH
