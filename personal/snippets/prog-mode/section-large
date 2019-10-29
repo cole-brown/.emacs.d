@@ -4,6 +4,6 @@
 # key: spy-lg
 # --
 
-`(mis/comment/center "" nil mis/center/char/border)`
+`(mis/comment/center/build "" nil mis/center/char/border)`
 `(mis/comment/wrap "" t)` `yas-selected-text`$0
-`(mis/comment/center "" nil mis/center/char/border)`
+`(mis/comment/center/build "" nil mis/center/char/border)`

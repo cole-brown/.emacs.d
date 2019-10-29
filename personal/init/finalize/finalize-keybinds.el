@@ -67,18 +67,28 @@
     "
 ^Signatures^                         | ^Org-Mode^             | ^Sig/TODO Search^         | ^Align^
 ^----------^-------------------------+-^--------^-------------+-^---------------^---------+-^-----^-----------------------
-_/_: sig:  ?/?^^^^^^^^^^^^^^^^^^^^^^^| _n_: New Journal Entry | _s m_: ?s m?^^^^^^^^^^^^^ | _; ;_: Align Regexp...
-_-_: sig:  ?-?^^^^^^^^^^^^^^^^^^^^^^^| _v_: Visit Journal     | _s s_: Search...          | _; q_: Complex Align Regexp...
-_m_: mark: ?m?^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    | ^   ^                     | _a_:   Align Region
-_t_: todo: ?t?^^^^^^^^^^^^^^^^^^^^^^^| _p_: Pomodoro History  | ^   ^                     | _'_:   Align Current
-_c_: todo: ?c?^^^^^^^^^^^^^^^^^^^^^^^| _r_: Pomodoro Start    |
-_h_: todo: ?h?^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    |
-_g_: todo: ?g?^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    |
+_/_: ?/?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _n_: New Journal Entry | _s m_: ?s m?^^^^^^^^^^^^^ | _; ;_: Align Regexp...
+_-_: ?-?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _v_: Visit Journal     | _s s_: Search...          | _; q_: Complex Align Regexp...
+_m_: ?m?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    | ^   ^                     | _a_:   Align Region
+_t_: ?t?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _p_: Pomodoro History  | ^   ^                     | _'_:   Align Current
+_c_: ?c?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _r_: Pomodoro Start    |
+_h_: ?h?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    |
+_g_: ?g?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    |
 "
     ;; "%-26" for right-padded string, which should as long as these,
     ;; which should be longest signatures... Update as needed.
     ;;   (length (spydez/signature/todo/comment t))
     ;;   (length spydez/signature/name-post)
+    ;;
+    ;; Also include signature type in "%-5s":
+    ;;   - "sig:  "  -> signature
+    ;;   - "mark: " -> one-char signature
+    ;;   - "todo: " -> TODO signature
+    ;;   - "comm: " -> TODO comment signature
+    ;;
+    ;; If comments are not relevant, they will be marked as "N/A" and do nothing
+    ;; when invoked.
+
 
     ;;-------------------------------------------------------------------------
     ;; Signatures
@@ -88,13 +98,13 @@ _g_: todo: ?g?^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    |
     ;; Normal Signatures
     ;;---
     ("/" (spydez/signature/insert spydez/signature/short-pre)
-     (format "%-26s" spydez/signature/short-pre))
+     (format "%-5s %-26s" "sig:" spydez/signature/short-pre))
     ("-" (spydez/signature/insert spydez/signature/name-post)
-     (format "%-26s" spydez/signature/name-post))
+     (format "%-5s %-26s" "sig:" spydez/signature/name-post))
 
     ;; just a mark char
     ("m" (spydez/signature/insert spydez/signature/char)
-     (format "%-26s" spydez/signature/char))
+     (format "%-5s %-26s" "mark:" spydez/signature/char))
 
     ;;---
     ;; TODO Signatures
@@ -102,15 +112,23 @@ _g_: todo: ?g?^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    |
 
     ;; Timestamped
     ("t" (insert (spydez/signature/todo/timestamp t))
-     (format "%-26s" (spydez/signature/todo/timestamp t)))
-    ("c" (insert (spydez/signature/todo/comment t))
-     (format "%-26s" (spydez/signature/todo/comment t)))
+     (format "%-5s %-26s" "sig:" (spydez/signature/todo/timestamp t)))
+    ("c" (mis/comment/unless (insert (spydez/signature/todo/comment t)))
+     (apply #'format "%-5s %-26s"
+                     (if (mis/comment/ignore)
+                         '("" "  (N/A for Major Mode)")
+                       `("comm:"
+                         ,(spydez/signature/todo/comment t)))))
 
     ;; Bare
     ("h" (insert (spydez/signature/todo/timestamp nil))
-     (format "%-26s" (spydez/signature/todo/timestamp nil)))
-    ("g" (insert (spydez/signature/todo/comment nil))
-     (format "%-26s" (spydez/signature/todo/comment nil)))
+     (format "%-5s %-26s" "sig:" (spydez/signature/todo/timestamp nil)))
+    ("g" (mis/comment/unless (insert (spydez/signature/todo/comment nil)))
+     (apply #'format "%-5s %-26s"
+                     (if (mis/comment/ignore)
+                         '("" "  (N/A for Major Mode)")
+                       `("comm:"
+                         ,(spydez/signature/todo/comment nil)))))
 
 
     ;;-----------------------------------------------------------------------

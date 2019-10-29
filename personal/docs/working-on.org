@@ -16,23 +16,31 @@
         - Or fix use-tool to override that nonsense?
 
 
-  - [-] General To Do: [8/28]
+  - [-] General To Do: [8/29]
     - [-] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
       - [X] mute/unmute smarter. unmute to 100% volume is stupid.
       - [-] Now do it proper.
         - [X] Move smarter mute/unmute to spotify.el.
         - [X] Think I also need to/should move cache over too...
         - [X] push things
-        - [ ] test things
-        - [ ] fix things
+        - [X] test things
+        - [X] fix things
         - [ ] add hydra for a decent use-case for cache
         - [ ] Do pull request to main spotify repo.
     - [ ] spotify.el - make more things use the cache
 
-    - [ ] mis/comment/recenter
-      - interactive mis/comment/recenter/region
-      - Tries to break each line into parts. Preserve padding, border and center text. Refill.
-        - Will be harderish with the border==fill lines...
+    - [ ] Can I get deadgrep working with non-ascii on windows?
+      - works fine in git bash...
+        - rg -- §-TODO-§
+
+    - [-] interactive mis commands:
+      - [X] mis/comment/center
+      - [ ] mis/comment/recenter
+        - interactive mis/comment/recenter/region
+        - Tries to break each line into parts. Preserve padding, border and center text. Refill.
+          - Will be harderish with the border==fill lines...
+      - [ ] mis/comment/wrap-region
+        - What does this do that C-c C-c doesn't (comment-or-uncomment-region)?
 
     - [ ] package or DIY colors or icons on modeline for file status (left-most bit)?
       - Briefly mentioned here: http://amitp.blogspot.com/2019/07/emacs-mode-line-simplified.html

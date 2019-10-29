@@ -156,7 +156,7 @@
     (format (concat "%s\n\n" ;; header
                     "%s\n"   ;; taskname
                     "%s")    ;; taskpath
-            "<spy/header"
+            "spy-header"
             taskname
             taskpath))
 
