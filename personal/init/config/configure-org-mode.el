@@ -415,13 +415,14 @@
   ;; https://github.com/tkf/org-mode/blob/master/contrib/lisp/org-contacts.el
   (add-to-list 'org-capture-templates
                `("c" "Contacts" entry
-                  (file ,(spydez/path/to-file
-                         spydez/dir/org-docs-secrets
-                         "contacts.org"))
+                  (file+headline (spydez/path/to-file
+                                  spydez/dir/org-docs-secrets
+                                  "contacts.org")
+                                 "INBOX")
                   ,(concat "* %(org-contacts-template-name)\n"
-                          ":PROPERTIES:\n"
-                          ":EMAIL: %(org-contacts-template-email)\n"
-                          ":END:\n"))))
+                           ":PROPERTIES:\n"
+                           ":EMAIL: %(org-contacts-template-email)\n"
+                           ":END:\n"))))
 
 ;;------------------------------------------------------------------------------
 ;; Org-Mode Headline Bullets: (Making Org-Mode Pretty)

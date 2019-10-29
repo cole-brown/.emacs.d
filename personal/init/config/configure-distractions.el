@@ -182,8 +182,8 @@ ignore when moody is managing the time tab."
       (require 'with)
       (with-feature 'hydra
         (defun spydez/spotify/now-playing ()
-          (if-let ((artist (spydez/spotify/player-status 'artist))
-                   (track (spydez/spotify/player-status 'track)))
+          (if-let ((artist (spotify-player-status-field 'artist))
+                   (track (spotify-player-status-field 'track)))
               ;; 64 is the length of the dashed line in the hydra
               (s-center 64 (format "%s - %s" artist track))
             ""))
@@ -208,7 +208,7 @@ _C-r_: Recently Played     ^   ^                  _q_:   quit"
           ;; Track
           ;;---
           ("p" spotify-toggle-play
-           (format "%-11s" (if (spydez/spotify/player-status 'playing)
+           (format "%-11s" (if (spotify-player-status-field 'playing)
                                "Pause Track"
                              "Play Track")))
 
@@ -219,12 +219,12 @@ _C-r_: Recently Played     ^   ^                  _q_:   quit"
 
           ;; §-TODO-§ [2019-10-17]: this is kinda more playlist than track...
           ("M-r" spotify-toggle-repeat
-           (concat (if (spydez/spotify/player-status 'repeating)
+           (concat (if (spotify-player-status-field 'repeating)
                        "[R] " "[-] ")
                    "Toggle Repeat"))
           ;; §-TODO-§ [2019-10-17]: this is kinda more playlist than track...
           ("M-s" spotify-toggle-shuffle
-           (concat (if (spydez/spotify/player-status 'shuffling)
+           (concat (if (spotify-player-status-field 'shuffling)
                        "[S] " "[-] ")
                    "Toggle Shuffle"))
           ("C-s" spotify-track-search)
@@ -247,7 +247,7 @@ _C-r_: Recently Played     ^   ^                  _q_:   quit"
           ("v d" spotify-volume-down
                  :color red)
           ("v m" spotify-volume-mute-unmute
-           (concat (if (spydez/spotify/player-status 'muted)
+           (concat (if (spotify-player-status-field 'muted)
                        "[M] " "[-] ")
                    "Toggle Mute"))
 
