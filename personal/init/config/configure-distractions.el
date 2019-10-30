@@ -93,7 +93,8 @@ ignore when moody is managing the time tab."
 
     ;; secrets exist and we have done all the error checking. use-package it.
     (use-package spotify
-      :load-path (lambda () (spydez/path/to-dir spydez/dir/packages/git-submodules "spotify"))
+      :load-path (lambda () (spydez/path/to-dir
+                             spydez/dir/packages/git-submodules "spotify"))
 
       ;; Checked above and error/warning message, but can do here if lazy or
       ;; want quiet load/ignore.
@@ -154,7 +155,12 @@ ignore when moody is managing the time tab."
       ;; I got a lot of room in the titlebar...
       (spotify-player-status-truncate-length 30) ;; default: 15
 
+      ;; my modified spotify stuff...
       (spotify-player-status-cache-enabled t)
+      (spotify-hydra-keybind "C-c m")
+      (spotify-hydra-player-status-format "%a - %t")
+      (spotify-hydra-player-status-truncate nil)
+      (spotify-hydra-auto-remote-mode t)
 
       ;;---
       :config
@@ -166,6 +172,7 @@ ignore when moody is managing the time tab."
       (setq spotify-oauth2-client-id     spydez/secrets/spotify/client-id)
       (setq spotify-oauth2-client-secret spydez/secrets/spotify/client-secret)
 
+
       ;;---
       ;; Status in Title Bar (before it was a feature in spotify.el)
       ;; (spydez/help/issue/visit "spotify" "title-bar-status.org")
@@ -173,100 +180,21 @@ ignore when moody is managing the time tab."
 
 
       ;;---
-      ;; Keybinds
+      ;; Misc
       ;;---
 
-      ;; §-TODO-§ [2019-10-25]: Move to spotify-hydra.el to show off cache?
+      ;; (defun spydez/spotify/smart-mode-or-hydra ()
+      ;;   "Enters `spotify-remote-mode' if not in it,
+      ;;      else calls `spydez/hydra/spotify/body'."
+      ;;   (interactive)
+      ;;   (if spotify-remote-mode
+      ;;       (call-interactively #'spydez/hydra/spotify/body)
+      ;;     (global-spotify-remote-mode)
+      ;;     (call-interactively #'spotify-select-device)))
 
-      ;; Don't like the normal map... doing a hydra instead.
-      (require 'with)
-      (with-feature 'hydra
-        (defun spydez/spotify/now-playing ()
-          (if-let ((artist (spotify-player-status-field 'artist))
-                   (track (spotify-player-status-field 'track)))
-              ;; 64 is the length of the dashed line in the hydra
-              (s-center 64 (format "%s - %s" artist track))
-            ""))
-
-
-        (defhydra spydez/hydra/spotify (:color blue ;; default exit heads
-                                        :idle 0.25   ;; no help for this long
-                                        :hint none)  ;; no hint - just docstr
-          "
-%s(spydez/spotify/now-playing)
-^Track^                    ^Playlists^            ^Misc^
-^-^------------------------^-^--------------------^-^-----------------
-_p_: ?p?^^^^^^^^           _l m_: My Lists        _d_:   Select Device
-_b_: Back a Track          _l f_: Featured Lists
-_f_: Forward a Track       _l u_: User Lists      _v u_: Volume Up
-_M-r_: ?M-r?^^^^^^^^^^^^   _l s_: Search List     _v d_: Volume Down
-_M-s_: ?M-s?^^^^^^^^^^^^^  _l c_: Create list     _v m_: ?v m?
-_C-s_: Search Track
-_C-r_: Recently Played     ^   ^                  _q_:   quit"
-
-          ;;---
-          ;; Track
-          ;;---
-          ("p" spotify-toggle-play
-           (format "%-11s" (if (spotify-player-status-field 'playing)
-                               "Pause Track"
-                             "Play Track")))
-
-          ("b" spotify-previous-track
-               :color red)
-          ("f" spotify-next-track
-               :color red)
-
-          ;; §-TODO-§ [2019-10-17]: this is kinda more playlist than track...
-          ("M-r" spotify-toggle-repeat
-           (concat (if (spotify-player-status-field 'repeating)
-                       "[R] " "[-] ")
-                   "Toggle Repeat"))
-          ;; §-TODO-§ [2019-10-17]: this is kinda more playlist than track...
-          ("M-s" spotify-toggle-shuffle
-           (concat (if (spotify-player-status-field 'shuffling)
-                       "[S] " "[-] ")
-                   "Toggle Shuffle"))
-          ("C-s" spotify-track-search)
-          ("C-r" spotify-recently-played)
-
-          ;;---
-          ;; Playlist
-          ;;---
-          ("l m" spotify-my-playlists)
-          ("l f" spotify-featured-playlists)
-          ("l u" spotify-user-playlists)
-          ("l s" spotify-playlist-search)
-          ("l c" spotify-create-playlist)
-
-          ;;---
-          ;; Volume & Misc
-          ;;---
-          ("v u" spotify-volume-up
-                 :color red)
-          ("v d" spotify-volume-down
-                 :color red)
-          ("v m" spotify-volume-mute-unmute
-           (concat (if (spotify-player-status-field 'muted)
-                       "[M] " "[-] ")
-                   "Toggle Mute"))
-
-          ("d"   spotify-select-device)
-
-          ("q"   nil))
-
-        (defun spydez/spotify/smart-mode-or-hydra ()
-          "Enters `spotify-remote-mode' if not in it,
-           else calls `spydez/hydra/spotify/body'."
-          (interactive)
-          (if spotify-remote-mode
-              (call-interactively #'spydez/hydra/spotify/body)
-            (global-spotify-remote-mode)
-            (call-interactively #'spotify-select-device)))
-
-        ;; bind onto the global map in "C-c"/user-binds section.
-        ;; 'm' for music? idk...
-        (bind-key "C-c m" #'spydez/spotify/smart-mode-or-hydra))
+      ;; ;; bind onto the global map in "C-c"/user-binds section.
+      ;; ;; 'm' for music? idk...
+      ;; (bind-key "C-c m" #'spydez/spotify/smart-mode-or-hydra))
 
       (defun spydez/spotify/go-home ()
         "Cleans up spotify for the day so it hopefully doesn't
@@ -283,13 +211,6 @@ have 11 zombie connections to spotify api tomorrow..."
           ;; connected but device was left paused...
           (error (message
                   "error: spydez/spotify/go-home: received error signal:" err))))
-
-      ;; Don't like hercules for this. It wants clear enter/exit functions.
-      ;; (hercules-def
-      ;;  :toggle-funs '(spotify-remote-mode)
-      ;;  :keymap 'spotify-remote-mode-map
-      ;;  :transient t)
-      ;; (bind-key "C-c m" #'spotify-remote-mode) ;; bind onto the global map
       )))
 
 

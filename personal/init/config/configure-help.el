@@ -74,7 +74,10 @@ quiet arg is non-nil."
 ;;   https://github.com/justbur/emacs-which-key/issues/29
 ;; Settings From:
 ;;   https://dev.to/deciduously/how-i-emacs-and-so-can-you-packages-m9p
-;; Trial: [2019-03-15 Fri]
+;;
+;; Super useful. Shows what all can be done from the buttons you just pressed.
+;; E.g. "C-h" and pausing for a sec will bring up which-key with all the
+;; commands in the help-command map.
 (use-package which-key
   :delight
 
