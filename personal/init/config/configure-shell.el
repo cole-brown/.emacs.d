@@ -126,8 +126,8 @@ If BUFFER-OR-NAME is nil, sends output to \"*Messages*\" buffer."
         (with-output-to-temp-buffer tmp-buf
           ;; run command, save output.
           (shell-command command
-                         tmp-buf
-                         "*Messages*")
+                         tmp-buf  ;; std   output to temp bufer
+                         tmp-buf) ;; error output to same buffer?
           (setq output (buffer-string)))))
 
     ;; and send to messages or specified buffer

@@ -51,6 +51,13 @@
                               '("E203"
                                 ;; spaces after colon...
                                 "E241"
+                                ;; Breaking before binary operator
+                                ;; ...Complains about valid PEP-8 things.
+                                "W503"
+                                ;; Breaking after binary operator
+                                ;; ...Complains about valid PEP-8 things.
+                                ;; Slightly less valid, still valid.
+                                "W504"
                                 ))
       ;; §-TODO-§ [2019-10-24]: this doesn't work.
       ;; pylint complains at top of file:
