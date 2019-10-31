@@ -5,7 +5,9 @@
 ;;--                          (will center on exit)                           --
 ;;------------------------------------------------------------------------------
 
-(require 's)
+;; Need s.el for `s-center', but don't want to require as we use other
+;; parts of mis very early in init before packages.
+;; (require 's)
 
 (require 'mis-parts)
 

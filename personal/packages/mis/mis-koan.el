@@ -155,6 +155,7 @@
     line-full
     line-empty))
 
+
 ;; The Programmer's Curse
 (mis/koan/add
   '(line-empty
@@ -170,8 +171,21 @@
     line-empty))
 
 
-;; (mis/koan)
+;; A Bad Koan.
+;; Not really a koan, probably...
+(mis/koan/add
+  '(line-empty
+    line-full
+         ("I was juggling and trying to come to a good stopping point," 7)
+                    ("But I had 5 balls and only two hands.." 17)
+    line-full
+                      ("So I came to a bad stopping point," 9)
+                  ("And now I'm chasing balls around instead." 7)
+    line-full
+    line-empty))
 
+
+;; (mis/koan)
 
 
 ;;------------------------------------------------------------------------------

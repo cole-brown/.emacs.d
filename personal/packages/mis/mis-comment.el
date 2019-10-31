@@ -7,7 +7,9 @@
 
 
 (require 'subr-x)
-(require 's)
+;; Want s.el for `s-trim', but don't want to require as we use other
+;; parts of mis very early in init before packages.
+;; (require 's)
 
 (require 'mis-parts)
 (require 'mis-center)
