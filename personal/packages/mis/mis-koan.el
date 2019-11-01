@@ -177,7 +177,7 @@
   '(line-empty
     line-full
          ("I was juggling and trying to come to a good stopping point," 7)
-                    ("But I had 5 balls and only two hands.." 17)
+                    ("But I had 5 balls and only two hands..." 17)
     line-full
                       ("So I came to a bad stopping point," 9)
                   ("And now I'm chasing balls around instead." 7)

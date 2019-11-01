@@ -4,6 +4,25 @@
 #+DATE:      [2019-03-05 Tue]
 
 
+* Archived from Daily Todos Journal
+
+[2019-11-01 Fri]
+- emacs
+  - spotify
+    - [ ] all-the-icons?
+  - flycheck for LSP and OmniSharp
+- emacs - move-to-column bug
+  - Submit bug report to emacs?
+    - M-x emacs-bug-report
+    - Get bestest description/repro ready?
+- emacs - prettify-symbols bug?
+  - Get a repro case - maybe for org mode and figure out a more general one.
+  - Comment out my prettify block for now?
+    - Wait for bug fix?
+    - Dunno if I have the regex patience to un-fuck this one...
+      - Assuming it is in fact a regex failing...
+
+
 * Now™ Things                                               :emacs:cole_time:
 :PROPERTIES:
 :VISIBILITY: all
@@ -19,13 +38,22 @@
   - [-] General To Do: [8/29]
     - [-] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
       - [X] mute/unmute smarter. unmute to 100% volume is stupid.
-      - [-] Now do it proper.
+      - [-] Now do it proper. [12/16]
         - [X] Move smarter mute/unmute to spotify.el.
         - [X] Think I also need to/should move cache over too...
         - [X] push things
         - [X] test things
         - [X] fix things
-        - [ ] add hydra for a decent use-case for cache
+        - [X] add hydra for a decent use-case for cache
+        - [X] test things
+        - [X] fix things
+        - [X] build translation dicts from settings
+        - [X] move player-status things from controller to player-status
+        - [X] test things
+        - [X] fix things
+        - [ ] refix hydra... again.
+        - [ ] test things
+        - [ ] fix things
         - [ ] Do pull request to main spotify repo.
     - [ ] spotify.el - make more things use the cache
 

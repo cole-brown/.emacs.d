@@ -67,12 +67,12 @@
     "
 ^Signatures^                         | ^Org-Mode^             | ^Sig/TODO Search^         | ^Align^
 ^----------^-------------------------+-^--------^-------------+-^---------------^---------+-^-----^-----------------------
-_/_: ?/?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _n_: New Journal Entry | _s m_: ?s m?^^^^^^^^^^^^^ | _; ;_: Align Regexp...
-_-_: ?-?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _v_: Visit Journal     | _s s_: Search...          | _; q_: Complex Align Regexp...
-_m_: ?m?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    | ^   ^                     | _a_:   Align Region
-_t_: ?t?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _p_: Pomodoro History  | ^   ^                     | _'_:   Align Current
-_c_: ?c?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _r_: Pomodoro Start    |
-_h_: ?h?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    |
+_/_: ?/?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _n_: New Journal Entry | _s m_: ?s m?^^^^^^^^^^^^^ | _; a_: Align Region After....
+_-_: ?-?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _v_: Visit Journal     | _s s_: Search...          | _; o_: Align Region Before...
+_m_: ?m?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    | ^   ^                     | _; ;_: Align Regexp...
+_t_: ?t?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _p_: Pomodoro History  | ^   ^                     | _; q_: Complex Align Regexp...
+_c_: ?c?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _r_: Pomodoro Start    | ^   ^                     | _a_:   Align Region
+_h_: ?h?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    | ^   ^                     | _'_:   Align Current
 _g_: ?g?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    |
 "
     ;; "%-26" for right-padded string, which should as long as these,
@@ -161,6 +161,8 @@ _g_: ?g?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    |
     ;;-------------------------------------------------------------------------
     ;; Alignment
     ;;-------------------------------------------------------------------------
+    ("; a" (call-interactively #'spydez/align-after))
+    ("; o" (call-interactively #'spydez/align-before))
     ("; ;" (call-interactively #'align-regexp))
     ("; q" (lambda () (interactive)
              (setq current-prefix-arg '(4))

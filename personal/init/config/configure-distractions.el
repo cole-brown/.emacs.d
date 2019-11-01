@@ -34,6 +34,103 @@
   ;; want to hear the clock ticking! (be careful, in windows you should clear
   ;; the "" in the sox path to allow emacs to find the executable)
 
+
+  ;;---
+  :init
+  ;;---
+
+  (defun spydez/redtick/notification (cycles &optional dings text)
+    (if (or
+         ;; bad cycles?
+         (not cycles)
+         (not (integerp cycles))
+         (not (> cycles 0))
+         ;; Or... have dings and bad dings?
+         (and (not (null dings))
+              (or (not (integerp dings))
+                  (not (> dings 0)))))
+        ;; failed validation - error out
+        (error "spydez/redtick/notification: Cannot notify. %S %S %S"
+               cycles dings text)
+
+      (let ((cycles (1- cycles)) ;; doing first cycle immediately
+            (flash-sec (/ 1.0 5)))
+        ;; First cycle on/ding
+        (invert-face 'mode-line)
+
+        (when (and dings (> dings 0))
+          (ding)
+          (setq dings (1- dings)))
+
+        ;; Revert
+        (run-with-timer flash-sec nil #'invert-face 'mode-line)
+
+        ;; Cycle timers are doubled up time-wise, so take care.
+        ;; Cycle 0: 0           -> f-sec*1
+        ;; Cycle 1: f-sec*2     -> f-sec*3
+        ;; Cycle 2: f-sec*4     -> f-sec*5
+        ;; Cycle N: f-sec*(N*2) -> f-sec*(N*2+1)
+        ;;
+        ;; Take double care because we took one out of cycles because of the
+        ;; first, immediate cycle.
+        ;; So... Cycle N where N > 1:
+        ;;  f-sec * ((N+1)*2) -> f-sec * ((N+1)*2 + 1)
+
+        ;; Rest of the cycles...
+        (dotimes (i cycles)
+          ;; Nth cycle on/ding
+          (run-with-timer (* (1+ i) 2 flash-sec)
+                          nil #'invert-face 'mode-line)
+
+          (when (and dings (> dings 0))
+            (run-with-timer (* (1+ i) 2 flash-sec)
+                            nil #'ding)
+            (setq dings (1- dings)))
+
+          ;; Revert
+          (run-with-timer (* (1+ (* (1+ i) 2)) flash-sec)
+                          nil #'invert-face 'mode-line)))
+
+      (if text
+          (message text))))
+  ;; (spydez/redtick/notification 2 1 "hi 1 ding")
+  ;; (spydez/redtick/notification 2 2 "hi 2 dings")
+  ;; (spydez/redtick/notification 4 nil "hi 0 dings")
+
+
+  (spydez/hook/defun redtick-before-work-hook t
+                     nil nil "init/config/configure-distractions.el"
+    "Hooks into redtick's before-work hook."
+    ;; Don't think I want to do anything - I invoked the thing and this
+    ;; immediately goes, right?
+    (message "Redtick Start: Good luck... You're gonna need it.")
+    (ignore))
+
+
+  (spydez/hook/defun redtick-before-rest-hook t
+                     nil nil "init/config/configure-distractions.el"
+    "Hooks into redtick's before-rest hook."
+    (spydez/redtick/notification 4 2
+                                 "Redtick: Pomodoro is done... Stop work?")
+    (ignore))
+
+
+  (spydez/hook/defun redtick-after-rest-hook t
+                     nil nil "init/config/configure-distractions.el"
+    "Hooks into redtick's before-rest hook."
+    (spydez/redtick/notification 2 1
+                                 "Redtick: Downtime is done... Go again?")
+    (ignore))
+
+
+  ;;---
+  :hook
+  ;;---
+  ((redtick-before-work . spydez/hook/redtick-before-work-hook)
+   (redtick-before-rest . spydez/hook/redtick-before-rest-hook)
+   (redtick-after-rest  . spydez/hook/redtick-after-rest-hook))
+
+
   ;;---
   :custom
   ;;---
@@ -156,7 +253,7 @@ ignore when moody is managing the time tab."
       (spotify-player-status-truncate-length 30) ;; default: 15
 
       ;; my modified spotify stuff...
-      (spotify-player-status-cache-enabled t)
+      (spotify-cache-player-status-enabled t)
       (spotify-hydra-keybind "C-c m")
       (spotify-hydra-player-status-format "%a - %t")
       (spotify-hydra-player-status-truncate nil)
