@@ -67,7 +67,7 @@
 (defun mis/koan/message (lines)
   "Prints a pretty little message to the *Messages* buffer."
   (dolist (line lines)
-    (mis/message/preserve-properties (mis/koan/process-line line))))
+    (mis/message/preserve-properties nil (mis/koan/process-line line))))
 ;; (mis/koan/message '(line-empty line-full "Hi." line-full line-empty))
 
 

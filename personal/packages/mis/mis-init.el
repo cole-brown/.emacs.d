@@ -100,7 +100,7 @@ ARGS will fill in."
              (propertize "┤:" 'face 'font-lock-comment-delimiter-face)
              " "
              (propertize msg-fmt 'face 'default))))
-      (apply 'mis/message/preserve-properties inject-msg-fmt args))))
+      (apply 'mis/message/preserve-properties t inject-msg-fmt args))))
 ;; (mis/init/sequence nil nil "Test: %s %s" nil 'symbol)
 ;; (mis/init/sequence 4 nil "Test: %s %s" '(a b c) 'symbol)
 ;; (mis/init/sequence 'init 'right "Test: %s" 'jeff)
