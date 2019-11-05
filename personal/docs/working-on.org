@@ -57,6 +57,14 @@
         - [ ] Do pull request to main spotify repo.
     - [ ] spotify.el - make more things use the cache
 
+    - [ ] restclient
+      - look at restclient-helm?
+      - look at json-mode w/ restclient?
+      - look at ob-restclient?
+      - from these:
+        - https://erick.navarro.io/blog/testing-an-api-with-emacs-and-restclient/
+          - https://www.reddit.com/r/emacs/comments/dre5dn/testing_an_api_with_emacs_and_restclient/
+
     - [ ] Can I get deadgrep working with non-ascii on windows?
       - works fine in git bash...
         - rg -- §-TODO-§

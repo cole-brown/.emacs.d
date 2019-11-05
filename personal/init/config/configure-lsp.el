@@ -15,6 +15,36 @@
 ;; General Settings
 ;;------------------------------------------------------------------------------
 
+(defun spydez/lsp/kill-all ()
+  "Interactive call to `spydez/lsp/shutdown-all'. Prints how many LSP workspaces
+were shut down.
+"
+  (interactive)
+  (mis/message/propertize t 'default
+                          :title
+                          "Killed %s LSP servers."
+                          (let ((shutdown (spydez/lsp/shutdown-all)))
+                            (if (and shutdown (listp shutdown))
+                                (len shutdown)
+                              0))))
+
+
+(defun spydez/lsp/shutdown-all ()
+  "Checks all open buffers for LSP servers. Shuts them each down
+as they are found. Returns list of kill LSP workspaces.
+"
+  ;; Couldn't just have an easy way to do this?..
+  (let ((killed))
+    (dolist (buffer (buffer-list) killed)
+      (when (and buffer (buffer-live-p buffer))
+        (save-mark-and-excursion
+          (with-current-buffer buffer
+            (lsp-foreach-workspace
+             (unless (seq-contains killed it)
+               ;; Could check for pyls vs others here if wanted.
+               (lsp-workspace-shutdown it)
+               (push it killed)))))))))
+
 
 ;;------------------------------------------------------------------------------
 ;; LSP Mode - The Main Attraction

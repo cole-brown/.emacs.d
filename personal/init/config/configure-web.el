@@ -162,7 +162,12 @@
    ("\\.restclient\\'" . restclient-mode)
    ;; restclient puts the response buffer into html mode automatically,
    ;; but sometimes I save that response as this extension.
-   ("\\.restresponse\\'" . html-mode)))
+   ("\\.restresponse\\'" . html-mode))
+
+  ;; §-TODO-§ [2019-11-04]: Look into both:
+  ;;   - restclient-helm  - for the helm integration?
+  ;;   - ob-restclient    - for putting the restclient calls into a better notes file?
+  )
 
 ;; See (spydez/path/to-file spydez/dir/personal/docs "example.restclient")
 ;; for an example file.
