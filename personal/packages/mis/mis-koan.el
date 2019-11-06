@@ -184,6 +184,13 @@
     line-full
     line-empty))
 
+;; Uh... :|
+(mis/koan/add
+  '(line-empty
+    line-full
+    "git commit -am \"fixed bugs caused by bug fixes\""
+    line-full
+    line-empty))
 
 ;; (mis/koan)
 
