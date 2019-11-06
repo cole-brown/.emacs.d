@@ -68,6 +68,15 @@ They will show up in *Messages* output for `mis/init/sequence'."
                  (function :tag "function to call to get list of symbols")))
 
 
+(defcustom mis/init/use-echo-area nil
+  "If non-nil, mis/init messages will be echoed to the minibuffer echo area
+(like calls to `message', but including messages propertizing).
+
+This can have performance impacts on startup."
+  :group 'mis
+  :type 'boolean)
+
+
 ;;------------------------------------------------------------------------------
 ;; Main Entry Points?
 ;;------------------------------------------------------------------------------
@@ -100,7 +109,9 @@ ARGS will fill in."
              (propertize "┤:" 'face 'font-lock-comment-delimiter-face)
              " "
              (propertize msg-fmt 'face 'default))))
-      (apply 'mis/message/preserve-properties t inject-msg-fmt args))))
+      (apply 'mis/message/preserve-properties
+             mis/init/use-echo-area
+             inject-msg-fmt args))))
 ;; (mis/init/sequence nil nil "Test: %s %s" nil 'symbol)
 ;; (mis/init/sequence 4 nil "Test: %s %s" '(a b c) 'symbol)
 ;; (mis/init/sequence 'init 'right "Test: %s" 'jeff)
