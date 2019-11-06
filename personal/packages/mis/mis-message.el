@@ -14,6 +14,20 @@
 ;; Consts & Vars
 ;;------------------------------------------------------------------------------
 
+(defcustom mis/message/echo-area-timeout 0
+  "See docs for `minibuffer-message-timeout'. This will lexically bind
+`minibuffer-message-timeout' to this value. If not numberp, it seems the first
+message will not clear until a non-`minibuffer-message' hits the *Messages*
+buffer, at which point it and all subsequent `minibuffer-message' messages will
+appear in *Messages* before the new message.
+
+If numberp, this is the number of seconds to display the message
+in the echo area. 0 is a good value for 'normal' `message'
+minibuffer-echo-area functionality.
+
+This can have performance impacts on startup."
+  :group 'mis
+  :type 'boolean)
 
 ;;------------------------------------------------------------------------------
 ;; Main Entry Point?
@@ -57,6 +71,7 @@ NOTE: Could (optionally) add TYPE to output easily enough if desired.
     nil))
 ;; (mis/message/propertize t '(mis koan text) '(:text "hi"))
 ;; (mis/message/propertize nil '(mis koan text) 'newline)
+;; (mis/message/propertize t '(mis koan text) :text "hi %s" there)
 
 
 ;;------------------------------------------------------------------------------
@@ -94,8 +109,10 @@ If ECHO is non-nil, also echo message to the minibuffer echo area.
         ;; *Messages* buffer from here too, which would cause our first message
         ;; to lose its properties, somehow, probably due to *Messages* stacking
         ;; identical messages.
-        (let ((message-log-max nil))
+        (let ((message-log-max nil)
+              (minibuffer-message-timeout mis/message/echo-area-timeout))
           (minibuffer-message output)))))
+
 ;; (mis/message/preserve-properties t (propertize "--->" 'face 'underline))
 ;; (mis/message/preserve-properties nil (propertize "--->" 'face 'underline))
 ;; (mis/message/preserve-properties t

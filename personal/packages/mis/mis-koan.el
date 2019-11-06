@@ -184,7 +184,9 @@
     line-full
     line-empty))
 
-;; Uh... :|
+;; Uh...
+;; True story. :|
+;; Except it was svn...
 (mis/koan/add
   '(line-empty
     line-full

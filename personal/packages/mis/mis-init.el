@@ -68,6 +68,9 @@ They will show up in *Messages* output for `mis/init/sequence'."
                  (function :tag "function to call to get list of symbols")))
 
 
+;; §-TODO-§ [2019-11-06]: change this to be another timeout setter like
+;; `mis/message/echo-area-timeout', or have a use/don't use, and also that.
+;;   - I think the both one is correct.
 (defcustom mis/init/use-echo-area nil
   "If non-nil, mis/init messages will be echoed to the minibuffer echo area
 (like calls to `message', but including messages propertizing).
