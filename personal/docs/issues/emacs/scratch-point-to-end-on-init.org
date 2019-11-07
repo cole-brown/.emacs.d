@@ -1,0 +1,261 @@
+#+TITLE:       Scratch Point To End On Init
+#+AUTHOR:      Cole Brown
+#+EMAIL:       git@spydez.com
+#+DATE:        [2019-11-07 Thu]
+
+
+Issue: Being at buffer position 0 in scratch on startup is annoying. I want to be past my custom `initial-scratch-message' and ready to type/paste/whatever.
+
+So I want to move the point to (point-max) at some point during init.
+
+It turns out this is not easy...
+
+
+* Correct, Near-Final Solution
+
+I'm going to:
+  - clean this up
+  - replace my non-working `spydez/point/to-end' with the now-working `spydez/point/hacks'
+  - figure out tighter timing than 5 secs
+  - probably do a func that runs a hook so that any other future things that
+    need to happend /after/ init is done can easily slink in.
+
+
+Code:
+
+
+;; Run x seconds after idle, only once.
+(run-with-idle-timer 5
+                     nil
+                     #'spydez/point/hacks)
+
+(defun spydez/point/hacks ()
+  (let* ((buffer (get-buffer "*scratch*"))
+         (windows (get-buffer-window-list buffer t t)))
+
+    (with-current-buffer buffer
+      ;; Advance to point-max in all windows.
+      (when windows ;; §-TODO-§ [2019-11-05]: remove?
+        (dolist (window windows)
+          (set-window-point window (point-max)))
+        ;; Buffer that doesn't have a window yet, I guess? Maybe?
+        ))
+
+    ;; Take 10.........
+    ;; Yep
+    (let ((curr-buff (current-buffer)))
+      (switch-to-buffer buffer)
+      (goto-char (point-max))
+      (switch-to-buffer curr-buff))))
+
+* Attempts
+
+** hook/timer attempts
+
+;; ;; take 1?
+;; (spydez/hook/defun-and-hooker spydez/hook-runner/finalize/final-finalities nil
+;;                               "scratch-point-to-end" nil
+;;                               "configure-window.el"
+;;   "Moves the point of the *scratch* buffer to the end of the buffer."
+;;   (spydez/point/to-end "*scratch*"))
+
+;; ;; take 2?
+;; (spydez/hook/defun-and-hooker emacs-startup-hook nil
+;;                               "scratch-point-to-end" nil
+;;                               "configure-window.el"
+;;   "Moves the point of the *scratch* buffer to the end of the buffer."
+;;   (spydez/point/to-end "*scratch*"))
+
+;; take 3 - WORKS! with spydez/point/hacks take 10.
+;; ;; Run 5 seconds after idle, only once.
+;; (run-with-idle-timer 5
+;;                      nil
+;;                      #'spydez/point/hacks)
+
+;; ;; take 4? - nope
+;; (spydez/hook/defun-and-hooker spydez/hook-runner/finalize/final-finalities nil
+;;                               "scratch-point-to-end" nil
+;;                               "configure-window.el"
+;;   "Moves the point of the *scratch* buffer to the end of the buffer."
+;;   (spydez/point/hacks ));;"*scratch*"))
+
+;; ;; take 5? - nope
+;; (spydez/hook/defun-and-hooker emacs-startup-hook nil
+;;                               "scratch-point-to-end" nil
+;;                               "configure-window.el"
+;;   "Moves the point of the *scratch* buffer to the end of the buffer."
+;;   (spydez/point/hacks ));;"*scratch*"))
+
+** "move the damn point" function attempts
+
+*** First batch (`spydez/point/to-end')
+
+;; Thanks to this for code example to shred to bits for my function:
+;; https://emacs.stackexchange.com/a/12346
+(defun spydez/point/to-end (buffer-or-name)
+  "Move the point to the end of BUFFER-OR-NAME. In all of BUFFER-OR-NAME's
+windows. If buffer has no windows, just use `goto-char' and hope.
+
+I want this for during init, so... May have to get it working for
+that then see how to get working correctly for not that?
+"
+  (interactive
+   (list (read-buffer "Move to end of buffer named: " (other-buffer
+                                                        (current-buffer) t))))
+
+  (let* ((buffer (get-buffer-create buffer-or-name))
+         (windows (get-buffer-window-list buffer t t))
+         (same-buffer (eq buffer (current-buffer))))
+    (message "spydez/buffer/set-point-to-end found windows: %S %S" windows same-buffer)
+    (with-current-buffer buffer
+      ;; Advance to point-max in all windows.
+      (if windows ;; §-TODO-§ [2019-11-05]: remove?
+          (dolist (window windows)
+            (set-window-point window (point-max)))
+        ;; Buffer that doesn't have a window yet, I guess? Maybe?
+
+        ;; Nope.
+        ;; ;; Take 5.....
+        ;; (when same-buffer
+        ;;   (goto-char (point-max)))
+
+        ;; Nope.
+        ;; ;; Take 3...
+        ;; (save-excursion
+        ;;   (switch-to-buffer buffer)
+        ;;   (goto-char (point-max)))
+
+        ;; Nope.
+        ;; ;; Take 2:.
+        ;; (save-excursion
+        ;;   (switch-to-buffer buffer t)
+        ;;   (goto-char (point-max)))
+
+        ;; Nope.
+        ;; ;; Take 1:
+        ;; (save-excursion
+        ;;   (set-buffer buffer)
+        ;;   (goto-char (point-max)))
+        ))
+
+    ;; §-TODO-§ [2019-11-05]: Figure this out - stopping here before testing take 7
+    ;; Take 7.......
+    (when same-buffer
+        (switch-to-buffer buffer)
+        (goto-char (point-max)))
+
+    ;; Nope
+    ;; ;; Take 6......
+    ;; (when same-buffer
+    ;;   (goto-char (point-max)))
+
+    ;; Meh... leaves focus on scratch...
+    ;; ;; Take 4....
+    ;; (unless windows
+    ;;   (let ((curr-buffer (current-buffer)))
+    ;;     (switch-to-buffer buffer)
+    ;;     (goto-char (point-max))
+    ;;     (switch-to-buffer curr-buffer)))
+    ))
+
+*** Second batch (`spydez/point/hacks')
+
+(defun spydez/point/hacks ()
+  (let* ((buffer (get-buffer "*scratch*"))
+         (windows (get-buffer-window-list buffer t t)))
+    (if (null buffer)
+        (message "spydez/point/hacks didn't find scratch buffer.")
+
+
+      (message "spydez/point/hacks: it is %s after init. windows: %S"
+               (format-time-string "%M:%S.%3N"
+                                   (time-subtract (current-time)
+                                                  after-init-time))
+               windows)
+
+    (with-current-buffer buffer
+      ;; Advance to point-max in all windows.
+      (if windows ;; §-TODO-§ [2019-11-05]: remove?
+          (dolist (window windows)
+            (set-window-point window (point-max)))
+        ;; Buffer that doesn't have a window yet, I guess? Maybe?
+
+        ;; else... uh...
+
+        ;; Nope
+        ;; ;; Take 9.........
+        ;; (goto-char (point-max))
+
+        ;; nope
+        ;; ;; Take 8........
+        ;; ;; works but doesn't switch back?
+        ;; ;; Oh. It thinks *scratch* /is/ current...
+        ;; ;; Oh... cuz it is cuz "with-current-buffer".
+        ;; (let ((curr-buff (current-buffer)))
+        ;;   (message "curr-buff: %S %S" curr-buff (current-buffer))
+        ;;   (switch-to-buffer buffer)
+        ;;   (message "switched: %S %S" buffer (current-buffer))
+        ;;   (goto-char (point-max))
+        ;;   (switch-to-buffer curr-buff)
+        ;;   (message "back?: %S %S" curr-buff (current-buffer))
+        ;;   )
+
+        ;; Nope.
+        ;; ;; Take 5.....
+        ;; (when same-buffer
+        ;;   (goto-char (point-max)))
+
+        ;; Nope.
+        ;; ;; Take 3...
+        ;; (save-excursion
+        ;;   (switch-to-buffer buffer)
+        ;;   (goto-char (point-max)))
+
+        ;; Nope.
+        ;; ;; Take 2:.
+        ;; (save-excursion
+        ;;   (switch-to-buffer buffer t)
+        ;;   (goto-char (point-max)))
+
+        ;; Nope.
+        ;; ;; Take 1:
+        ;; (save-excursion
+        ;;   (set-buffer buffer)
+        ;;   (goto-char (point-max)))
+        ))
+
+    ;; Take 10.........
+    (let ((curr-buff (current-buffer)))
+      (message "curr-buff: %S %S" curr-buff (current-buffer))
+      (switch-to-buffer buffer)
+      (message "switched: %S %S" buffer (current-buffer))
+      (goto-char (point-max))
+      (switch-to-buffer curr-buff)
+      (message "back?: %S %S" curr-buff (current-buffer))
+      )
+
+    ;; tried this after cleaning up function - also didn't work...
+    ;; ;; take 11?
+    ;; (set-buffer buffer)
+    ;; (goto-char (point-max))
+
+
+    ;; §-TODO-§ [2019-11-05]: Figure this out - stopping here before testing take 7
+    ;; ;; Take 7.......
+    ;; (when same-buffer
+    ;;     (switch-to-buffer buffer)
+    ;;     (goto-char (point-max)))
+
+    ;; Nope
+    ;; ;; Take 6......
+    ;; (when same-buffer
+    ;;   (goto-char (point-max)))
+
+    ;; Meh... leaves focus on scratch...
+    ;; ;; Take 4....
+    ;; (unless windows
+    ;;   (let ((curr-buffer (current-buffer)))
+    ;;     (switch-to-buffer buffer)
+    ;;     (goto-char (point-max))
+    ;;     (switch-to-buffer curr-buffer)))
+    )))

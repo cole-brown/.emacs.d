@@ -22,6 +22,21 @@
 ;; smaller inital message in *scratch* buffer
 (setq initial-scratch-message ";; Hello there.\n\n")
 
+;; Had some annoyances with this... see:
+;; (spydez/help/issue/visit "emacs" "scratch-point-to-end-on-init.org")
+(spydez/hook/defun-and-hooker
+    spydez/hook-runner/running/post-init nil
+    "scratch" "point-to-end"
+    "configure-window.el"
+  "Send point to point-max/end of *scratch* buffer."
+  (spydez/point/to-end "*scratch*"))
+
+
+
+;; §-TODO-§ [2019-11-07]: hook koan in so it runs at end of all hooks?
+
+
+
 ;; This doesn't seem to be an issue on Windows right now, but I think it was in
 ;; the past and this would have been nice to know for fixing how it would refuse
 ;; to be sane on a maximize.

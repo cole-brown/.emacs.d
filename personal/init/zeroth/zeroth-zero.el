@@ -27,10 +27,51 @@
 ;; output its message.
 
 
+;;------------------------------------------------------------------------------
+;; SpydeZ Hooks
+;;------------------------------------------------------------------------------
+
+(defvar spydez/hook-runner/finalize/boot-and-config nil
+  "Add hooks to here for running in 'finalize' step of init in
+'finalize-boot-and-config.el'.")
+
+
+(defvar spydez/hook-runner/finalize/final-finalities nil
+  "Add hooks to here for running in 'finalize' step of init in
+'zzz-finalize.el'.")
+
+(defvar spydez/hook-runner/running/post-init nil
+  "Add hooks to here for running `spydez/hook/post-init/seconds'
+seconds after Emacs is all done. And by 'all done', I mean the
+first time it's idle for that long.")
+
+(defconst spydez/hook/post-init/seconds 1.0
+  "`spydez/hook-runner/running/post-init will run this many seconds after
+Emacs is first idle.")
+
+
+;;------------------------------------------------------------------------------
+;; Post-Init Hook's Timer
+;;------------------------------------------------------------------------------
+
+(defun spydez/timer/hook/post-init ()
+  "Runs all hooks attached to our
+`spydez/hook-runner/running/post-init' variable."
+  (run-hooks 'spydez/hook-runner/running/post-init))
+
+;; Can just fire and forget post-init hook here since it's on a timer.
+;; Set up once-off idle timer for post-init hook.
+(run-with-idle-timer spydez/hook/post-init/seconds
+                     nil
+                     #'spydez/timer/hook/post-init)
+
+
 ;;-----------------------------------------------------------------------------
 ;; An Function Helper for my Init Hook Function Helper for my Init Hook Func...
 ;;-----------------------------------------------------------------------------
 
+;; §-TODO-§ [2019-11-07]: Remove this? Don't use it. Couldn't get it correct for
+;; defun-and-hook(er).
 (defun spydez/function/source (symbol &optional roots-list location)
   "Returns SYMBOL's filename relative to cars in PATH-ALIST, or
 absolute, or relative in C source, or nil if unknown.
@@ -209,14 +250,6 @@ Use this over `spydez/hook/defun-and-hooker' only in cases where you aren't
 ;; (add-hook 'test-hook 'spydez/hook/richard/mcrichard)
 ;; test-hook
 ;; (run-hooks 'test-hook)
-
-
-(defvar spydez/hook-runner/finalize/boot-and-config nil
-  "Add hooks to here for running at beginning of 'finalize' step of init.")
-
-
-(defvar spydez/hook-runner/finalize/final-finalities nil
-  "Add hooks to here for running at beginning of 'finalize' step of init.")
 
 
 ;;------------------------------------------------------------------------------

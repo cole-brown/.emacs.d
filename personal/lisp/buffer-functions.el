@@ -59,6 +59,48 @@ Will need to update (or make smarter) if get more actual priority levels."
   :type 'regexp)
 
 
+;;------------------------------------------------------------------------------
+;; Moving Around Functions
+;;------------------------------------------------------------------------------
+
+;; Got the prompt and `set-window-point' part from:
+;; https://emacs.stackexchange.com/a/12346
+(defun spydez/point/to-end (&optional buffer-or-name)
+  "Move the point to the end of BUFFER-OR-NAME. In all of
+BUFFER-OR-NAME's windows. If buffer has no windows, `set-buffer'
+and `goto-char' shenanigans + hope will get us there...
+
+I want this for during init, so... It must work for that use case firstly.
+And formostly.
+"
+  (interactive
+   (list (read-buffer "Move to end of buffer named: " (other-buffer
+                                                        (current-buffer) t))))
+
+  (let* ((buffer-or-name (or buffer-or-name "*scratch*"))
+         (buffer (get-buffer buffer-or-name))
+         (windows (get-buffer-window-list buffer t t)))
+
+    (if (null buffer)
+        (message "spydez/point/to-end: buffer %S not found." buffer-or-name)
+
+      ;; Could do an if windows: set-window-point block, else: switch-to-buffer
+      ;; block check here if this isn't great during normals Emacs operation.
+
+      (with-current-buffer buffer
+        ;; Advance to point-max in all windows, if any.
+        ;; If buffer doesn't have a window, this bit is useless...
+        (dolist (window windows)
+          (set-window-point window (point-max))))
+
+      ;; Advance point to max by buffer swap.
+      ;; Only way I've found that works during init...
+      (let ((curr-buff (current-buffer)))
+        (switch-to-buffer buffer)
+        (goto-char (point-max))
+        (switch-to-buffer curr-buff)))))
+
+
 ;;-----------------------------------------------------------------------------
 ;; Naming Functions
 ;;-----------------------------------------------------------------------------

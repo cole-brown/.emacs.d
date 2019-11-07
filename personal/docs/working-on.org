@@ -55,6 +55,11 @@
         - [ ] test things
         - [ ] fix things
         - [ ] Do pull request to main spotify repo.
+
+    - [ ] org-sticky-header?
+      - https://alhassy.github.io/init/#orge6a95a2
+      - also check that article for other things...
+
     - [ ] spotify.el - make more things use the cache
 
     - [ ] restclient
