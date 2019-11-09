@@ -971,8 +971,33 @@
 
 ;; ...
 
+
+
 ;; Ok; one more thing - for a nice obvious end to init in messages buffer.
-(mis/koan)
+;; https://github.com/zzamboni/dot-emacs/blob/master/init.org
+(spydez/hook/defun-and-hooker
+    spydez/hook-runner/running/post-init t t ;; postpend to hook list
+    "startup-message" "encore"
+    "init.el"
+  "Prints timer message to minibuf & *Messages* buffer.
+"
+  ;; Also sneaks in a calming koan...
+  (mis/koan)
+
+  ;; How long start up took, exactly.
+  (mis/message/propertize
+   t 'default
+   :attention1
+   "Emacs ready in %s with %d garbage collections."
+   (format "%.2f seconds"
+           (float-time
+            (time-subtract after-init-time before-init-time)))
+   gcs-done)
+  (mis/message/propertize nil 'default 'newline))
+;; This really should be the end for properness.
+
+
+
 
 ;;------                                                               ------;;
 ;;----                                                                   ----;;

@@ -7,6 +7,8 @@
 ;; Make koans while the sun shines, I guess?
 
 
+(require 'cl-lib)
+
 (require 'mis-parts)
 (require 'mis-center)
 (require 'mis-message)
@@ -83,6 +85,18 @@
     (mis/koan/message (nth (random (length mis/koan/list))
                               mis/koan/list))))
 
+
+;; §-TODO-§ [2019-11-08]: move to a random lib place?
+;; I have a few spydez/random funcs, but mis shouldn't depend on spydez... hm...
+;; Knuth Shuffle in lisp, from:
+;; https://stackoverflow.com/a/49505968
+(defun mis/shuffle (sequence)
+  "Performs an in-place shuffle (Knuth Shuffle algorithm) of SEQUENCE.
+"
+  (cl-loop for i from (length sequence) downto 2
+        do (cl-rotatef (elt sequence (random i))
+                    (elt sequence (1- i))))
+  sequence)
 
 
 ;;----------------------------There is only spork.------------------------------
@@ -193,6 +207,37 @@
     "git commit -am \"fixed bugs caused by bug fixes\""
     line-full
     line-empty))
+
+
+
+;;---
+;; Just for good measure, "Don't Panic."
+;;---
+
+;; Just find your towel.
+(mis/koan/add
+ '(line-empty
+   line-full
+   ("DON'T PANIC" 28)
+   ("- Hitchhiker's Guide to the Galaxy" 13)
+   line-full
+   line-empty))
+
+(mis/koan/add
+(mis/koan/message
+ '(line-empty
+   line-full
+   ("DON'T PANIC" 28)
+   line-full
+   line-empty))
+
+
+;;---
+;; Shuffle The Deck
+;;---
+
+;; Finally, shuffle the list?
+(mis/shuffle 'mis/koan/list)
 
 ;; (mis/koan)
 

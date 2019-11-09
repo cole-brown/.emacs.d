@@ -153,7 +153,7 @@ If cannot find a path for SYMBOL, will try to use LOCATION as a backup."
 ;; from here:
 ;; https://www.reddit.com/r/emacs/comments/1m7fqv/avoid_lambda_in_hooks_use_defun_instead/cc83axz/
 (defmacro spydez/hook/defun-and-hooker (hook-var quiet
-                                        &optional name postfix location docstring
+                                        &optional to-end name postfix location docstring
                                         &rest body)
   "Macro that `defun's a function called
 'spydez/hook/<hook-name>' or 'spydez/hook/<hook-name>/<POSTFIX>'
@@ -161,10 +161,13 @@ where <hook-name> NAME (or `(symbol-name HOOK-VAR)' if NAME is
 nil) with body of BODY. Then hooks it into HOOK-VAR via
 `add-hook'.
 
+TO-END is passed to `add-hook' as its 'APPEND' arg. If TO-END is
+non-nil, post-pend to end of hook list, else pre-pend.
+
 If VERBOSE is non-nil on macro expansion, this will
 `mis/info/when' on run with hook-fn name, and either
 source file defined in or (as backup) optional LOCATION string."
-  (declare (indent 5) (doc-string 6))
+  (declare (indent 6) (doc-string 7))
   (let* ((hook-fn-name (concat "spydez/hook/"
                                (if name
                                    name
@@ -187,16 +190,16 @@ source file defined in or (as backup) optional LOCATION string."
                            (spydez/path/to-relative ,location)))))
 
               ,@body)
-       (add-hook ',hook-var #',hook-fn))))
+       (add-hook ',hook-var #',hook-fn ',to-end))))
 ;; (setq test-hook nil)
 ;; (makunbound spydez/hook/test-hook)
-;; (spydez/hook/defun-and-hooker test-hook nil nil nil nil (message "Hello there."))
-;; (spydez/hook/defun-and-hooker test-hook nil nil nil nil (message "Hello there."))
+;; (spydez/hook/defun-and-hooker test-hook nil nil nil nil nil (message "Hello there."))
+;; (spydez/hook/defun-and-hooker test-hook nil nil nil nil nil (message "Hello there."))
 ;; test-hook
 ;; (run-hooks 'test-hook)
 ;; (setq debug-on-error t)
 ;; (setq test-hook nil)
-;; (spydez/hook/defun-and-hooker test-hook "jeff" "mcjefferson" "here" (message "Hello there."))
+;; (spydez/hook/defun-and-hooker test-hook nil nil "jeff" "mcjefferson" "here" (message "Hello there."))
 ;; test-hook
 ;; (run-hooks 'test-hook)
 ;; (spydez/function/source 'spydez/hook/test-hook nil "~/.emacs.d/personal/init/zeroth/zeroth-zero.el")
@@ -211,6 +214,9 @@ source file defined in or (as backup) optional LOCATION string."
 'spydez/hook/<hook-name>' or 'spydez/hook/<hook-name>/<POSTFIX>'
 where <hook-name> NAME (or `(symbol-name HOOK-VAR)' if NAME is
 nil) with body of BODY. Returns the defun'd function symbol.
+
+TO-END is passed to `add-hook' as its 'APPEND' arg. If TO-END is
+non-nil, post-pend to end of hook list, else pre-pend.
 
 Will `mis/info/when' on run with hook-fn name, and
 either source file defined in or (as backup) optional LOCATION

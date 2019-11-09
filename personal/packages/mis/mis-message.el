@@ -65,13 +65,15 @@ NOTE: Could (optionally) add TYPE to output easily enough if desired.
     ;; Complain, return nil.
     (mis/warning
      type :warning
-     (concat "Null args (%s)? Or type not found in "
-             "`mis/type->faces': %s -> %s")
+     (concat "Null args (%S)? Or type not found in "
+             "`mis/type->faces': %S -> %S")
      args type mis/type->faces)
     nil))
 ;; (mis/message/propertize t '(mis koan text) '(:text "hi"))
 ;; (mis/message/propertize nil '(mis koan text) 'newline)
-;; (mis/message/propertize t '(mis koan text) :text "hi %s" there)
+;; (mis/message/propertize t '(mis koan text) :text "hi %s" "there")
+;; (mis/message/propertize t '(spydez homeward) "  LSP: Killed %s servers." 1) ;; err: no type
+
 
 
 ;;------------------------------------------------------------------------------

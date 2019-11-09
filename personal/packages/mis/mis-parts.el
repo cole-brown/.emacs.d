@@ -79,7 +79,7 @@ plists.
                 (symbolp arg))))
       (unless (null arg)
         ;; think nil should be allowed and just ignored/returned.
-        (error "Cannot build string from arg: '%s'." arg))
+        (error "Cannot build string from arg: '%S'." arg))
 
     ;; Process and build each item in section. Importantly, build off of
     ;; processed input, not raw. Need to allow expansion of symbols into big
@@ -157,7 +157,7 @@ Returns an element from `mis/parts/type-list'."
    ;; Dunno. invalid
    (t
     (mis/warning nil :warning
-                 "Don't know how to classify type of part: '%s'"
+                 "Don't know how to classify type of part: '%S'"
                  part)
     'invalid)))
 
@@ -248,13 +248,13 @@ iteration of parts processing/building."
              ;; idk
              (mis/warning
               nil :warning
-              "Don't know how to translate symbol to part: sym: '%s' elt: '%s'"
+              "Don't know how to translate symbol to part: sym: '%S' elt: '%S'"
               symbol value)
              nil))
 
     (mis/warning
      nil :warning
-     "No symbol in `mis/parts/symbols-alist' for: '%s' '%s'"
+     "No symbol in `mis/parts/symbols-alist' for: '%S' '%S'"
      symbol mis/parts/symbols-alist)))
 ;; (mis/parts/process/symbol 'newline)
 ;; (mis/parts/process/symbol 'line-full)
@@ -354,11 +354,11 @@ Returns for:
      (t
       (mis/warning
        nil :warning
-       "Type '%s' wasn't caught by specific condition: '%s'"
+       "Type '%S' wasn't caught by specific condition: '%S'"
        type part)
       (setq result part)))
 
-    ;; (message "processed: '%s' -> '%s'" part result)
+    ;; (message "processed: '%S' -> '%S'" part result)
     result))
 ;; (mis/parts/process 'line-empty)
 ;; (mis/parts/process 'string-empty)
@@ -385,8 +385,8 @@ Returns for:
          (value    (mis/parts/value type section))
          (face-val (plist-get faces-plist prop)))
 
-    ;; (message (concat "type: '%s', prop: '%s', value: '%s'"
-    ;;                  ", face: '%s'... <-section: %s")
+    ;; (message (concat "type: '%S', prop: '%S', value: '%S'"
+    ;;                  ", face: '%S'... <-section: %S")
     ;;          type prop value face-val
     ;;          section)
 

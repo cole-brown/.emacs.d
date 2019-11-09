@@ -53,14 +53,14 @@ Code:
 ** hook/timer attempts
 
 ;; ;; take 1?
-;; (spydez/hook/defun-and-hooker spydez/hook-runner/finalize/final-finalities nil
+;; (spydez/hook/defun-and-hooker spydez/hook-runner/finalize/final-finalities nil nil
 ;;                               "scratch-point-to-end" nil
 ;;                               "configure-window.el"
 ;;   "Moves the point of the *scratch* buffer to the end of the buffer."
 ;;   (spydez/point/to-end "*scratch*"))
 
 ;; ;; take 2?
-;; (spydez/hook/defun-and-hooker emacs-startup-hook nil
+;; (spydez/hook/defun-and-hooker emacs-startup-hook nil nil
 ;;                               "scratch-point-to-end" nil
 ;;                               "configure-window.el"
 ;;   "Moves the point of the *scratch* buffer to the end of the buffer."
@@ -73,14 +73,14 @@ Code:
 ;;                      #'spydez/point/hacks)
 
 ;; ;; take 4? - nope
-;; (spydez/hook/defun-and-hooker spydez/hook-runner/finalize/final-finalities nil
+;; (spydez/hook/defun-and-hooker spydez/hook-runner/finalize/final-finalities nil nil
 ;;                               "scratch-point-to-end" nil
 ;;                               "configure-window.el"
 ;;   "Moves the point of the *scratch* buffer to the end of the buffer."
 ;;   (spydez/point/hacks ));;"*scratch*"))
 
 ;; ;; take 5? - nope
-;; (spydez/hook/defun-and-hooker emacs-startup-hook nil
+;; (spydez/hook/defun-and-hooker emacs-startup-hook nil nil
 ;;                               "scratch-point-to-end" nil
 ;;                               "configure-window.el"
 ;;   "Moves the point of the *scratch* buffer to the end of the buffer."

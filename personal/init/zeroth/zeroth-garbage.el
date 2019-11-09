@@ -18,7 +18,7 @@
 ;;   without this:   ~5.5 sec
 ;;   with:         -> 4.6 sec
 (spydez/hook/defun-and-hooker
-    spydez/hook-runner/finalize/boot-and-config nil
+    spydez/hook-runner/finalize/boot-and-config nil nil
     "spydez/file-name-handler-alist/revert"
     nil
     "init/zeroth/zeroth-garbage.el"

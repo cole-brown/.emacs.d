@@ -25,7 +25,7 @@
 ;; Had some annoyances with this... see:
 ;; (spydez/help/issue/visit "emacs" "scratch-point-to-end-on-init.org")
 (spydez/hook/defun-and-hooker
-    spydez/hook-runner/running/post-init nil
+    spydez/hook-runner/running/post-init nil nil
     "scratch" "point-to-end"
     "configure-window.el"
   "Send point to point-max/end of *scratch* buffer."

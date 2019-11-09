@@ -62,7 +62,7 @@
 ;; TODO: should put this in a common place instead of here
 ;; TODO: split frame, open these in other-window?
 (spydez/hook/defun-and-hooker
-    spydez/hook-runner/finalize/final-finalities nil
+    spydez/hook-runner/finalize/final-finalities nil nil
     "auto-open-files"
     nil
     "dev/defaults/finalize-domain.el"

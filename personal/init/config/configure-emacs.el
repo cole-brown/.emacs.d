@@ -226,12 +226,12 @@ Feature, if needed: Check more maps than just global?"
 ;; §-TODO-§ [2019-10-11]: profile these - does it add/save time, does it feel
 ;; better/laggier?
 
-(spydez/hook/defun-and-hooker minibuffer-setup-hook t
+(spydez/hook/defun-and-hooker minibuffer-setup-hook t nil
     "gc-minibuffer" "enter" "init/config/configure-emacs.el"
   "Set a high gc threshold so big minibuffers don't thrash."
   (setq gc-cons-threshold spydez/gc-cons-threshold/minibuffer))
 
-(spydez/hook/defun-and-hooker minibuffer-setup-hook t
+(spydez/hook/defun-and-hooker minibuffer-setup-hook t nil
     "gc-minibuffer" "exit" "init/config/configure-emacs.el"
   "Revert the high gc threshold when minibuffer is done."
   (setq gc-cons-threshold spydez/gc-cons-threshold/normal))

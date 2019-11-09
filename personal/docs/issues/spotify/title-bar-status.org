@@ -35,7 +35,7 @@ modeline. This should take over from `spotify-update-player-status'."
          `spotify-remote-mode'. Nil if it hasn't been entered yet, or if it has
          been used to exit and tear-down `spotify-remote-mode'.")
 
-      (spydez/hook/defun-and-hooker spotify-remote-mode-hook t
+      (spydez/hook/defun-and-hooker spotify-remote-mode-hook t nil
           nil nil "init/config/configure-distractions.el"
         "Hook to enable/disable Spotify-Mode status in Frame Title."
         ;; skip setup/teardown?
