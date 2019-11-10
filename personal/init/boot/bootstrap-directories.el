@@ -16,13 +16,13 @@
 ;;---
 
 (defconst spydez/dir/packages/all-but-mine
-  (spydez/path/to-file spydez/dir/emacs "packages")
+  (spydez/path/to-dir spydez/dir/emacs "packages")
   "Emacs 'packages' directory parent for various package sources: elpa, git
   submodules, git subtrees, manually copied files, etc.")
 
 
 (defconst spydez/dir/packages/elpa
-  (spydez/path/to-file spydez/dir/packages/all-but-mine "elpa")
+  (spydez/path/to-dir spydez/dir/packages/all-but-mine "elpa")
   "The standard Emacs Lisp Package Archive.")
 
 ;; And tell emacs we moved it.
@@ -30,19 +30,19 @@
 
 
 (defconst spydez/dir/packages/manual
-  (spydez/path/to-file spydez/dir/packages/all-but-mine "manual")
+  (spydez/path/to-dir spydez/dir/packages/all-but-mine "manual")
   "These were copy/pasted from somewhere and I don't want to fold them into my
   own code or make them my own.")
 
 
 (defconst spydez/dir/packages/git-subtrees
-  (spydez/path/to-file spydez/dir/packages/all-but-mine "subtrees")
+  (spydez/path/to-dir spydez/dir/packages/all-but-mine "subtrees")
   "These are git subtrees. Git subtree vs module is different
   enough for me to want to differentiate now so I know later...")
 
 
 (defconst spydez/dir/packages/git-submodules
-  (spydez/path/to-file spydez/dir/packages/all-but-mine "submodules")
+  (spydez/path/to-dir spydez/dir/packages/all-but-mine "submodules")
   "These are git modules. Git subtree vs module is different
   enough for me to want to differentiate now so I know later...")
 
@@ -55,7 +55,7 @@
 ;; removed all "spydez/*" and gave it a bit of love.
 
 (defconst spydez/dir/personal/packages
-  (spydez/path/to-file spydez/dir/emacs/personal "packages")
+  (spydez/path/to-dir spydez/dir/emacs/personal "packages")
   "Custom/personal emacs 'packages' directory.")
 
 
@@ -87,16 +87,16 @@
 ;;---
 
 (defconst spydez/dir/yasnippets
-  (spydez/path/to-file spydez/dir/emacs/personal "snippets")
+  (spydez/path/to-dir spydez/dir/emacs/personal "snippets")
   "My Yasnippets directory.")
 ;; Could add an override of my own snippets if needed.
 
 (defconst spydez/dir/packages/use-tool
-  (spydez/path/to-file spydez/dir/personal/packages "use-tool")
+  (spydez/path/to-dir spydez/dir/personal/packages "use-tool")
   "use-tool directory.")
 
 (defconst spydez/dir/packages/taskspace
-  (spydez/path/to-file spydez/dir/personal/packages "taskspace")
+  (spydez/path/to-dir spydez/dir/personal/packages "taskspace")
   "taskspace directory.")
 
 

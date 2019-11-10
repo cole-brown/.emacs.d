@@ -72,8 +72,19 @@ nil, returns file name."
 ;; Base Dirs
 ;;---
 
+;; All my paths are (well, try to be) relative, so we can use this as a fast way
+;; to test in other places...
+;; Just:
+;;   - copy .emacs.d to new place, e.g. /d/path/to/dir/.emacs.d
+;;   - copy .secrets.d to new place, e.g. /d/path/to/dir/.secrets.d
+;;   - etc. (just those 2 for me)
+;;   - open prompt
+;;   - > env HOME=/d/path/to/dir "/c/path/to/emacs/runemacs.exe"
+
+
 (defconst spydez/dir/home (spydez/path/to-dir "~")
   "User's $HOME directory. In native format (unix vs windows paths).")
+
 
 (defconst spydez/dir/emacs (spydez/path/to-dir user-emacs-directory)
   ;; user-init-file and user-emacs-directory can be helpful here

@@ -86,19 +86,6 @@
                               mis/koan/list))))
 
 
-;; §-TODO-§ [2019-11-08]: move to a random lib place?
-;; I have a few spydez/random funcs, but mis shouldn't depend on spydez... hm...
-;; Knuth Shuffle in lisp, from:
-;; https://stackoverflow.com/a/49505968
-(defun mis/shuffle (sequence)
-  "Performs an in-place shuffle (Knuth Shuffle algorithm) of SEQUENCE.
-"
-  (cl-loop for i from (length sequence) downto 2
-        do (cl-rotatef (elt sequence (random i))
-                    (elt sequence (1- i))))
-  sequence)
-
-
 ;;----------------------------There is only spork.------------------------------
 ;;--                             Koan Collection                              --
 ;;------------------------------------------------------------------------------
@@ -224,7 +211,6 @@
    line-empty))
 
 (mis/koan/add
-(mis/koan/message
  '(line-empty
    line-full
    ("DON'T PANIC" 28)
@@ -237,7 +223,8 @@
 ;;---
 
 ;; Finally, shuffle the list?
-(mis/shuffle 'mis/koan/list)
+;; (mis/shuffle 'mis/koan/list)
+;; I randomize the get... why did I think I need this!? -_-
 
 ;; (mis/koan)
 

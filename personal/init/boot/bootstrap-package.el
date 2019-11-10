@@ -277,35 +277,86 @@ For the transition, maybe a func for checking..."
 
 ;; Less manual. Upgrade all packages without showing *Packages* buffer.
 ;; https://emacs.stackexchange.com/questions/16398/noninteractively-upgrade-all-packages
-(defun spydez/packages/upgrade-all ()
-  "Upgrade all packages automatically without showing *Packages* buffer."
-  (interactive)
+(defun spydez/packages/upgrade-all (&optional max)
+  "Upgrade all packages automatically without showing *Packages* buffer.
+
+Will only upgrade the first MAX if MAX is numberp or can be
+converted by `string-to-number', and number to upgrade is greater
+than MAX-NUM.
+"
+  (interactive "sMax number to upgrade (optional): ")
   (package-refresh-contents)
-  (let (upgrades)
-    (cl-flet ((get-version (name where)
-                (let ((pkg (cadr (assq name where))))
-                  (when pkg
-                    (package-desc-version pkg)))))
-      (dolist (package (mapcar #'car package-alist))
-        (let ((in-archive (get-version package package-archive-contents)))
-          (when (and in-archive
-                     (version-list-< (get-version package package-alist)
-                                     in-archive))
-            (push (cadr (assq package package-archive-contents))
-                  upgrades)))))
-    (if upgrades
+  (let* ((max-num (cond
+                   ((null max)
+                    nil)
+                   ((and (stringp max)
+                         (string= "" max))
+                    nil)
+                   ((stringp max)
+                    (string-to-number max))
+                   ((numberp max)
+                    max)
+                   (t
+                    (error "spydez/packages/upgrade-all: %s: %S"
+                           "Cannot convert max to number" max))))
+         ;; 0 lurking around as a valid string-to-number for "IDK" is annoying.
+         ;; Also I guess a good spot to convert 'nil' to 'I don't care'.
+         (max-num (if (or (null max-num) (= max-num 0))
+                      most-positive-fixnum
+                    max-num))
+         upgrades-all
+         upgrades-subset
+         length-all
+         length-subset)
+
+    ;; input ok?
+    (if (and (not (null max))
+             (null max-num))
+        (error "Couldn't convert input to max-number to upgrade. %S -> %S"
+               max max-num)
+
+      ;; find packages
+      (cl-flet ((get-version (name where)
+                             (let ((pkg (cadr (assq name where))))
+                               (when pkg
+                                 (package-desc-version pkg)))))
+        (dolist (package (mapcar #'car package-alist))
+          (let ((in-archive (get-version package package-archive-contents)))
+            (when (and in-archive
+                       (version-list-< (get-version package package-alist)
+                                       in-archive))
+              (push (cadr (assq package package-archive-contents))
+                    upgrades-all)))))
+
+      (if (null upgrades-all)
+          ;; none - done
+          (message "All packages are up to date.")
+
+        ;; Have upgrades - now we need to whittle down to max-num if necessary.
+        (setq length-all (length upgrades-all))
+        (if (and (not (null max-num))
+                 (> (length upgrades-all) max-num))
+            ;; slice down to our max
+            (setq upgrades-subset (-slice upgrades-all 0 max-num))
+          ;; just take 'em all
+          (setq upgrades-subset upgrades-all))
+        (setq length-subset (length upgrades-subset))
+
         (when (yes-or-no-p
-               (message "Upgrade %d package%s (%s)? "
-                        (length upgrades)
-                        (if (= (length upgrades) 1) "" "s")
-                        (mapconcat #'package-desc-full-name upgrades ", ")))
-          (save-window-excursion
-            (dolist (package-desc upgrades)
-              (let ((old-package (cadr (assq (package-desc-name package-desc)
-                                             package-alist))))
-                (package-install package-desc)
-                (package-delete  old-package)))))
-      (message "All packages are up to date."))))
+               (message "Upgrade %s package%s (%s)? "
+                        (if (> length-all length-subset)
+                            (format "%d/%d" length-subset length-all)
+                          (format "%d" length-subset))
+                        (if (= length-subset 1) "" "s")
+                        (mapconcat #'package-desc-full-name
+                                   upgrades-subset ", ")))
+               (save-window-excursion
+                 (dolist (package-desc upgrades-subset)
+                   (let ((old-package (cadr (assq (package-desc-name
+                                                   package-desc)
+                                                  package-alist))))
+                     (package-install package-desc)
+                     (package-delete  old-package)))))))))
 
 ;; Options for auto-update, or packages for helping update:
 ;;   https://emacs.stackexchange.com/questions/31872/how-to-update-packages-installed-with-use-package

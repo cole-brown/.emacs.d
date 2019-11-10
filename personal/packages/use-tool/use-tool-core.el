@@ -111,9 +111,14 @@
       ;;---
       ;; exec-path
       ;;---
-      ;; add to exec-path unless it's already a known executable
-      (unless (executable-find exec-name)
-        (add-to-list 'exec-path cur-path t)) ;; append to end for now
+      ;; [2019-11-09]: Windows 10 has bash, but it doesn't like windows paths. I
+      ;; need to decide what to do about this... Mean time, I want to be able to
+      ;; use ripgrep.
+      ;; So... prepend to exec-path?
+      (add-to-list 'exec-path cur-path)
+      ;; ;; add to exec-path unless it's already a known executable
+      ;; (unless (executable-find exec-name)
+      ;;   (add-to-list 'exec-path cur-path t)) ;; append to end for now
 
       ;;---
       ;; PATH
