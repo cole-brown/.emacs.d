@@ -31,12 +31,6 @@
   "Send point to point-max/end of *scratch* buffer."
   (spydez/point/to-end "*scratch*"))
 
-
-
-;; §-TODO-§ [2019-11-07]: hook koan in so it runs at end of all hooks?
-
-
-
 ;; This doesn't seem to be an issue on Windows right now, but I think it was in
 ;; the past and this would have been nice to know for fixing how it would refuse
 ;; to be sane on a maximize.
@@ -65,6 +59,30 @@
 ;; set conditional on gui interface.
 ;;   Consolas is good for Windows. Or was, anyways.
 ;;   Inconsolata was FOSS equivalant?
+
+
+;;------------------------------------------------------------------------------
+;; Large Monitors / Window Splitting
+;;------------------------------------------------------------------------------
+
+;; For `split-window-sensibly'.
+;; To split "vertically" (as in a horizontal split so the new and current are
+;; now stacked vertically), must have at least this many lines visible RIGHT
+;; NOW (not after split). Or set to nil to disable.
+;;
+;; Annoying right now since my work monitors aren't big enough to bother getting
+;; used to more than 2 side-by-sides.
+(customize-set-variable 'split-height-threshold nil)
+
+;; For `split-window-sensibly'.
+;; To split "horizontally" (as in a vertical split so the new and current are
+;; now stacked side-by-side), must have at least this many columns visible RIGHT
+;; NOW (not after split). Or set to nil to disable.
+;;
+;; Annoying right now since my work monitors aren't big enough to bother getting
+;; used to more than 2 side-by-sides. 200 is big enough that it /should/ work
+;; for most situations.
+(customize-set-variable 'split-width-threshold 200)
 
 
 ;;------------------------------------------------------------------------------
