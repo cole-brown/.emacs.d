@@ -171,6 +171,9 @@ ignore when moody is managing the time tab."
 ;; helper for secrets-requiring stuff?
 
 ;; First (try to) load the auth secrets
+(when nil
+  (progn
+    (setq debug-on-error t)
 (if (not (spydez/require 'spotify-auth nil 'noerror))
     (mis/warning
      nil :error
@@ -309,7 +312,8 @@ have 11 zombie connections to spotify api tomorrow..."
           (error (message
                   "error: spydez/spotify/go-home: received error signal:" err))))
       )))
-
+)
+  )
 
 ;;------------------------------------------------------------------------------
 ;; Tasks, Wants, Feature Requests, etc.
