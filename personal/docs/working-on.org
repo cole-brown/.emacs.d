@@ -79,8 +79,8 @@
       - [X] mis/comment/center
       - [ ] mis/comment/recenter
         - interactive mis/comment/recenter/region
-        - Tries to break each line into parts. Preserve padding, border and center text. Refill.
-          - Will be harderish with the border==fill lines...
+        - Tries to break each line into parts. Preserve border, padding and center text. Refill.
+          - Will be harderish with the padding==fill lines...
       - [ ] mis/comment/wrap-region
         - What does this do that C-c C-c doesn't (comment-or-uncomment-region)?
 

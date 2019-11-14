@@ -59,6 +59,30 @@ Will need to update (or make smarter) if get more actual priority levels."
   :type 'regexp)
 
 
+(defconst spydez/buffer/search-header/boundry 1000
+  "Buffer position boundry for `spydez/buffer/search-header'.")
+
+;;------------------------------------------------------------------------------
+;; Searching Functions
+;;------------------------------------------------------------------------------
+
+(defun spydez/buffer/search-header (string)
+  "Searches for STRING in the first "
+  (interactive "s")
+  (search-forward
+     ;; search string
+     string
+
+     ;; search boundry (characters/buffer position)
+     1000
+
+     ;; NOERROR:
+     ;; - nil/default: fail w/ error msg
+     ;; -           t: fail w/ nil return value
+     ;; -       other: fail w/ nil & move point to boundry/end
+     t))
+
+
 ;;------------------------------------------------------------------------------
 ;; Moving Around Functions
 ;;------------------------------------------------------------------------------

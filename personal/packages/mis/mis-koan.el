@@ -17,6 +17,10 @@
 ;;--                              Koan Settings                               --
 ;;------------------------------------------------------------------------------
 
+(defconst mis/koan/line-width 90
+  "Line width for formatting koans.")
+
+
 (defvar mis/koan/list nil
   "Koans loaded up and ready to go.")
 
@@ -26,11 +30,26 @@
 ;;------------------------------------------------------------------------------
 
 (defun mis/koan/process-line (line)
-  "Returns a propertized line of a koan."
+  "Returns a propertized line of a koan.
+
+Will use `mis/koan/line-width' if non-nil, else `fill-column'."
   (let ((faces-text (nth 1 (assoc '(mis koan text)
                                   mis/type->faces)))
         (faces-other (nth 1 (assoc '(mis koan presence)
-                                   mis/type->faces))))
+                                   mis/type->faces)))
+        (fill-column (or mis/koan/line-width
+                         fill-column))
+        ;; §-TODO-§ [2019-11-14]: Make this more dynamic/settable.
+        ;; Maybe a plist of mis settings or something... IDK.
+        (mis/parts/symbols-alist
+         ;; redefining to get our margins in here...
+         '((newline      nil "\n")
+           (line-empty   nil "\n")
+           (string-empty nil "")
+           (line-full   mis/center/parts
+                        "" nil mis/center/char/padding ("     " "     "))
+           (string-full mis/center/parts
+                        "" nil mis/center/char/padding ("     " "     ")))))
 
     (cond
      ;; 0) specials
@@ -41,19 +60,27 @@
      ;; 1) general
      ;; a) Just a string
      ((stringp line)
-      (mis/center line faces-text))
+      (mis/center
+       (mis/center/parts
+        line
+        nil nil
+        (mis/center/margins 5)
+        nil nil)
+       faces-text))
 
-     ;; b) ("string" border-width-int)
+     ;; b) ("string" padding-width-int)
      ((and (listp line)
            (= (length line) 2)
            (stringp (nth 0 line))
            (numberp (nth 1 line)))
-      ;; center, with parts built from string and border-width
+      ;; center, with parts built from string and padding-width
       (mis/center
        (mis/center/parts
         (nth 0 line)
-        nil nil nil
-        (mis/center/borders (nth 1 line)))
+        nil nil
+        (mis/center/margins 5)
+        nil
+        (mis/center/paddings (nth 1 line)))
        faces-text))
 
      ;; 3) errors
@@ -63,7 +90,9 @@
 ;; (mis/koan/process-line 'line-empty)
 ;; (mis/koan/process-line 'line-full)
 ;; (mis/koan/process-line "Hi.")
+;; (mis/koan/process-line '("Hi." 5))
 ;; (mis/koan)
+
 
 
 (defun mis/koan/message (lines)
@@ -78,12 +107,17 @@
   (push koan mis/koan/list))
 
 
-(defun mis/koan ()
+(defun mis/koan (&optional show-buffer)
   "Prints a random koan, or the one indicated by WHICH if non-nil."
+  (interactive "p")
   (when (and mis/koan/list
              (listp mis/koan/list))
     (mis/koan/message (nth (random (length mis/koan/list))
-                              mis/koan/list))))
+                           mis/koan/list))
+    (when show-buffer
+      (pop-to-buffer "*Messages*" nil t)
+      (spydez/point/to-end "*Messages*"))))
+;; (mis/koan)
 
 
 ;;----------------------------There is only spork.------------------------------

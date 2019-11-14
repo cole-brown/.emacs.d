@@ -16,7 +16,7 @@
 
 (defcustom mis/parts/type-list
   ;; §-TODO-§ [2019-10-23]: more types, possibly a meta-type? e.g. koans have
-  ;;   '(string int) for centered string w/ border width though that could be
+  ;;   '(string int) for centered string w/ padding width though that could be
   ;;   converted to... something fancier, but we only look at keywords for faces
   ;;   right now.
   '(invalid
@@ -44,9 +44,9 @@
     ;; (SYMBOL FUNCTION FUNC-ARG-0 FUNC-ARG-1 ...)
     ;; these should fill a line as defined by `fill-column'.
     (line-full   mis/center/parts
-                 "" nil mis/center/char/border)
+                 "" nil mis/center/char/padding)
     (string-full mis/center/parts
-                 "" nil mis/center/char/border))
+                 "" nil mis/center/char/padding))
   "Known and valid symbols alist. Format is:
   (symbol-name func arg0 arg1 ...)
 or
@@ -98,18 +98,18 @@ plists.
 
       ;; put 'em back in correct order and stringify 'em.
       (mapconcat #'identity (nreverse accum) ""))))
-;; (mis/parts/build '(:padding "||" :border "----"))
+;; (mis/parts/build '(:border "||" :padding "----"))
 ;; (mis/parts/build '(:prefix
-;;                    (:whitespace "" :padding "||" :border "--")
+;;                    (:indent "" :border "||" :padding "--")
 ;;                    :center
 ;;                    (:text "xx")
 ;;                    :postfix
-;;                    (:border "==" :padding "!!")))
+;;                    (:padding "==" :border "!!")))
 ;; (mis/parts/build 'string-empty)
-;; (mis/parts/build 'string-full)
+(mis/parts/build 'string-full)
 ;; (mis/parts/build "hello")
 ;; (mis/parts/build '(:text "Hello, %s %s %s" "a" "b" "c!"))
-;; (mis/parts/build '(:whitespace "  " :padding "++" :border "=="))
+;; (mis/parts/build '(:indent "  " :border "++" :padding "=="))
 
 
 ;;------------------------------------------------------------------------------
@@ -120,7 +120,7 @@ plists.
   "Figures out part type. Types are:
  - symbol: 'newline
  - string: \"Hello, World!\"
- - pairs: (:whitespace \"    \" :padding \"+++\" :border \"===\")
+ - pairs: (:indent \"    \" :border \"+++\" :padding \"===\")
  - format: (:title \"Test v%s.%s\" ver-major ver-minor)
  - invalid: unknown type. Fix caller or update code to deal with new type.
 
@@ -135,7 +135,7 @@ Returns an element from `mis/parts/type-list'."
     'string)
 
    ;; list - more than 1 keyword, so assume 'pairs'.
-   ;;   (:whitespace "    " :padding "+++" :border "===")
+   ;;   (:indent "    " :border "+++" :padding "===")
    ((and (listp part)
          (> (-count #'keywordp part) 1))
     'pairs)
@@ -148,7 +148,7 @@ Returns an element from `mis/parts/type-list'."
     'format)
 
    ;; list - prop and str? Assume pairs.
-   ;; (:border "--")
+   ;; (:padding "--")
    ((and (listp part)
          (= (length part) 2)
          (= (-count #'keywordp part) 1))
@@ -218,7 +218,7 @@ iteration of parts processing/building."
      ((eq type 'format)
       ;; No more parts to this section.
       nil))))
-;; (mis/parts/next '(:whitespace "  " :padding "++" :border "=="))
+;; (mis/parts/next '(:indent "  " :border "++" :padding "=="))
 
 
 ;;------------------------------------------------------------------------------
@@ -262,7 +262,7 @@ iteration of parts processing/building."
 
 ;; Want all these types correctly dealt with...
 ;; Plist:
-;; (:whitespace "    " :padding "+++" :border "===")
+;; (:indent "    " :border "+++" :padding "===")
 ;;   -> pass-through
 ;; List of prop w/ format list:
 ;; (:title "Test v%s.%s" ver-major ver-minor)
@@ -286,7 +286,7 @@ Returns for:
   string: string (no change)
   plist tuple: plist tuple
     - If more than one key, unchanged. E.g.
-      (:whitespace \"    \" :padding \"+++\" :border \"===\")
+      (:indent \"    \" :border \"+++\" :padding \"===\")
     - if only one key, use other args to format string
       (:title \"Test v%s.%s\" ver-major ver-minor)
       -> (:title \"Test v5.11\")"
@@ -318,7 +318,7 @@ Returns for:
      ;; type == pairs, part 1
      ;;---
      ;; list - more than 1 keyword, so pass it through. e.g.
-     ;; (:whitespace "    " :padding "+++" :border "===")
+     ;; (:indent "    " :border "+++" :padding "===")
      ((and (listp part)
            (> (-count #'keywordp part) 1))
       (setq result part))
@@ -343,7 +343,7 @@ Returns for:
      ;;---
      ;; list - prop and str?
      ;; No formatting needed?.. Just pass through?
-     ;; (:border "--")
+     ;; (:padding "--")
      ((listp part)
       (setq result part))
 
@@ -364,9 +364,9 @@ Returns for:
 ;; (mis/parts/process 'string-empty)
 ;; (mis/parts/process 'string-full)
 ;; (mis/parts/process "hello")
-;; (mis/parts/process '(:border "----"))
+;; (mis/parts/process '(:padding "----"))
 ;; (mis/parts/process '(:text "Hello, %s %s %s" "a" "b" "c!"))
-;; (mis/parts/process '(:whitespace "  " :padding "++" :border "=="))
+;; (mis/parts/process '(:indent "  " :border "++" :padding "=="))
 
 
 (defun mis/parts/propertize (string prop &optional faces-plist)
@@ -375,7 +375,7 @@ Returns for:
     (if face-val
         (propertize string 'face face-val)
       string)))
-;; (mis/parts/propertize "    " :whitespace nil)
+;; (mis/parts/propertize "    " :indent nil)
 
 
 (defun mis/parts/section (section &optional faces-plist)

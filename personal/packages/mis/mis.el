@@ -30,8 +30,8 @@ them to the *Messages* buffer as such..."
   '(;;---
     ;; General, Maybe Useful faces.
     ;;---
-    (default (;; :padding    font-lock-comment-delimiter-face
-              ;; :border     font-lock-comment-face
+    (default (;; :border    font-lock-comment-delimiter-face
+              ;; :padding     font-lock-comment-face
               :title       font-lock-keyword-face      ;; gold/bold
               :attention1  font-lock-preprocessor-face ;; brightish blue
               :attention2  font-lock-constant-face     ;; brightish green
@@ -41,8 +41,8 @@ them to the *Messages* buffer as such..."
     ;;---
     ;; My Custom Stuff
     ;;---
-    ((spydez homeward) (:padding    font-lock-comment-delimiter-face
-                        :border     font-lock-comment-face
+    ((spydez homeward) (:border    font-lock-comment-delimiter-face
+                        :padding     font-lock-comment-face
                         :text       font-lock-builtin-face
                         :highlight  font-lock-keyword-face
                         :highlight2 font-lock-constant-face
@@ -51,14 +51,14 @@ them to the *Messages* buffer as such..."
     ;; Koans
     ;;---
     ;; text lines
-    ((mis koan text) (;; :whitespace nil
-                      :padding  font-lock-comment-delimiter-face
-                      :border   font-lock-comment-face
+    ((mis koan text) (;; :indent nil
+                      :border  font-lock-comment-delimiter-face
+                      :padding   font-lock-comment-face
                       :text     font-lock-keyword-face))
     ;; non-text lines
-    ((mis koan presence) (;; :whitespace nil
-                          :padding  font-lock-comment-delimiter-face
-                          :border   font-lock-comment-face
+    ((mis koan presence) (;; :indent nil
+                          :border  font-lock-comment-delimiter-face
+                          :padding   font-lock-comment-face
                           :text     font-lock-comment-face)))
   "alist of: (types-list faces-list)
 See 'M-x list-faces-display' for all defined faces."

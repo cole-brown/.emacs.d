@@ -4,6 +4,6 @@
 # key: spy-fan
 # --
 
-${1:`(mis/comment/center/build "(will center on exit)" nil mis/center/char/border)`$(when yas/moving-away-p (mis/comment/center/build yas-text nil mis/center/char/border))}
+${1:`(mis/comment/center/build "(will center on exit)" nil mis/center/char/padding)`$(when yas/moving-away-p (mis/comment/center/build yas-text nil mis/center/char/padding))}
 ${2:`(mis/comment/center/build (or yas-selected-text "(will center on exit)"))`$(when yas/moving-away-p (mis/comment/center/build yas-text))}
-${3:`(mis/comment/center/build "(will center on exit)" nil mis/center/char/border)`$(when yas/moving-away-p (mis/comment/center/build yas-text nil mis/center/char/border))}
+${3:`(mis/comment/center/build "(will center on exit)" nil mis/center/char/padding)`$(when yas/moving-away-p (mis/comment/center/build yas-text nil mis/center/char/padding))}

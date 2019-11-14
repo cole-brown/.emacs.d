@@ -11,23 +11,44 @@
 
 (require 'mis-parts)
 
+
+;;------------------------------------------------------------------------------
+;; Notes
+;;------------------------------------------------------------------------------
+
+;; This uses the "CSS Box Model" naming conventions, namely:
+;;   - Margin - whitespace around outside
+;;   - Border - left/right separators (e.g. comment character(s) in mis-comment)
+;;   - Padding - filler for text, with some minimum usually
+;;   - Content/Center/Text - the actual text
+
 ;;------------------------------------------------------------------------------
 ;; Consts & Vars
 ;;------------------------------------------------------------------------------
+
 (defcustom mis/center/char/whitespace ?\s
   "Center with whitespace."
   :group 'mis
   :type 'character)
 
-(defcustom mis/center/char/border ?-
-  "Center with thin border."
+
+(defcustom mis/center/char/margin ?\s
+  "Margin character."
   :group 'mis
   :type 'character)
 
-(defcustom mis/center/char/padding ?|
-  "Border for centering strings."
+
+(defcustom mis/center/char/padding ?-
+  "Center with thin padding."
   :group 'mis
   :type 'character)
+
+
+(defcustom mis/center/char/border ?|
+  "Padding for centering strings."
+  :group 'mis
+  :type 'character)
+
 
 (defconst mis/center/char/placeholder (string-to-char "\uFFFD")
   "'Replacement character' seems a bit appropriate. Won't exist
@@ -61,22 +82,26 @@ outside function.")
 ;; Centering Functions
 ;;------------------------------------------------------------------------------
 
-(defun mis/center/paddings (&optional width fill-char)
-  "Returns a 2-tuple of left and right paddings. Can be nil if no borders."
-  (let ((fill-char (or fill-char mis/center/char/padding))
-        (width (or width 2)))
+(defun mis/center/margins (&optional width fill-char)
+  "Returns a 2-tuple of left and right margin. Can be nil if no margin.
+Defaults to WIDTH of nil and FILL-CHAR of `mis/center/char/padding'
+(this nil WIDTH default means the default is no margins)."
+  (if-let ((fill-char (or fill-char mis/center/char/margin))
+           ;; default is no margins, so if-let and this or for nil return.
+           (width (or width nil)))
     (list
      ;; left:
      (make-string width fill-char)
      ;; right:
      (make-string width fill-char))))
-;; (mis/center/paddings)
+;; (mis/center/margins)
 
 
 (defun mis/center/borders (&optional width fill-char)
-  "Returns a 2-tuple of left and right borders. Can be nil if no borders."
-  (let ((fill-char (or fill-char mis/center/char/border))
-        (width (or width 2)))
+  "Returns a 2-tuple of left and right borders. Can be nil if no borders.
+Defaults to WIDTH of 2 and FILL-CHAR of `mis/center/char/border'."
+  (if-let ((fill-char (or fill-char mis/center/char/border))
+           (width (or width 2)))
     (list
      ;; left:
      (make-string width fill-char)
@@ -85,27 +110,43 @@ outside function.")
 ;; (mis/center/borders)
 
 
+(defun mis/center/paddings (&optional width fill-char)
+  "Returns a 2-tuple of left and right paddings. Can be nil if no paddings.
+Defaults to WIDTH of 2 and FILL-CHAR of `mis/center/char/padding'."
+  (if-let ((fill-char (or fill-char mis/center/char/padding))
+           (width (or width 2)))
+    (list
+     ;; left:
+     (make-string width fill-char)
+     ;; right:
+     (make-string width fill-char))))
+;; (mis/center/paddings)
+
 (defun mis/center/parts
     (string &optional string/fill-spaces? string/fill-char
-            paddings borders indent)
-  "Figures out how to center STRING with INDENT (default 0), BORDERS (default
-  `mis/center/borders') and PADDINGS (default
-  `mis/center/paddings').
+            margins borders paddings indent)
+  "Figures out how to center STRING with INDENT (default 0), PADDINGS (default
+`mis/center/paddings') and BORDERS (default
+`mis/center/borders').
 
- If STRING/FILL-SPACES? is non-nil, STRING will be filled with STRING/FILL-CHAR
-  (default `mis/center/char/border'). characters.
+Uses `fill-column' for line width, so let-bind that if a
+different line width is desired.
+
+If STRING/FILL-SPACES? is non-nil, STRING will be filled with STRING/FILL-CHAR
+(default `mis/center/char/padding'). characters.
 
 Returns a plist with tags as shown:
 (:prefix
- (:whitespace \"    \" :padding \"+++\" :border \"===\")
+ (:indent \"    \" :margin \"xx\" :border \"+++\" :padding \"===\")
  :center
  (:text \"-------------------------center plz-----------------------------\")
  :postfix
- (:border \"===\" :padding \"+++\"))"
+ (:padding \"===\" :border \"+++\" :margin \"xx\"))"
 
   (let* ((fill-char (or string/fill-char mis/center/char/whitespace))
-         (paddings  (or paddings (mis/center/paddings)))
-         (borders   (or borders (mis/center/borders)))
+         (margins   (or margins (mis/center/margins)))
+         (borders  (or borders (mis/center/borders)))
+         (paddings   (or paddings (mis/center/paddings)))
          (indent    (or indent 0))
          (indent-text (make-string indent mis/center/char/whitespace))
          (string-placeholder
@@ -116,10 +157,12 @@ Returns a plist with tags as shown:
             (make-string (length string)
                          mis/center/char/placeholder)))
          (len-left (+ indent
-                     (length (nth 0 paddings))
-                     (length (nth 0 borders))))
-         (len-right (+ (length (nth 1 paddings))
-                       (length (nth 1 borders))))
+                      (length (nth 0 margins))
+                      (length (nth 0 borders))
+                      (length (nth 0 paddings))))
+         (len-right (+ (length (nth 0 margins))
+                       (length (nth 1 borders))
+                       (length (nth 1 paddings))))
          ;; Pessimistically 1 less than fill column?
          (len-line (- fill-column (current-left-margin)));; be optimistic! 1))
          (len-fill (- len-line len-left len-right))
@@ -130,10 +173,10 @@ Returns a plist with tags as shown:
          ;; Now carve out space for left/right strings
          (centered-text (substring
                          ;; Left Side: substring len-left from left side to
-                         ;; carve out place for left padding/border
+                         ;; carve out place for left border/padding
                          (substring centered-line len-left nil)
                          ;; Right Side: save everything except truncate off a
-                         ;; len-right string for right padding/border
+                         ;; len-right string for right border/padding
                          0 (- len-right))))
 
     ;; return the parts list
@@ -141,12 +184,14 @@ Returns a plist with tags as shown:
      ;; Left prefix:
      :prefix
      (list
-      :whitespace
+      :indent
       indent-text         ;; "    "
-      :padding
-      (nth 0 paddings)    ;; "||"
+      :margin
+      (nth 0 margins)    ;; "xx"
       :border
-      (nth 0 borders))    ;; "--"
+      (nth 0 borders)    ;; "||"
+      :padding
+      (nth 0 paddings))    ;; "--"
 
      ;; centered string:  ;; "---centered---"
      :center
@@ -161,22 +206,29 @@ Returns a plist with tags as shown:
      ;; Right postfix:
      :postfix
      (list
-      :border
-      (nth 1 borders)     ;; "--"
       :padding
-      (nth 1 paddings))   ;; "||"
+      (nth 1 paddings)  ;; "--"
+      :border
+      (nth 1 borders)   ;; "||"
+      :margin
+      (nth 0 margins))  ;; "xx"
      )))
 ;; (mis/center/parts "center plz")
 ;; (mis/center/parts "center plz" t)
 ;; (mis/center/parts "center plz" t ?X)
 ;; (mis/center/parts "center plz" nil nil
-;;                   (mis/center/paddings 3 ?X))
+;;                   (mis/center/margins 3 ?.))
 ;; (mis/center/parts "center plz" nil nil
+;;                   (mis/center/margins 3 ?.)
+;;                   (mis/center/paddings 3 ?+))
+;; (mis/center/parts "center plz" nil nil
+;;                   (mis/center/margins 3 ?.)
 ;;                   (mis/center/paddings 3 ?+)
 ;;                   (mis/center/borders 3 ?=))
 ;; (mis/center/parts "center plz" nil nil
-;;                   (mis/center/paddings 3 ?+)
-;;                   (mis/center/borders 3 ?=) 4)
+;;                   (mis/center/margins 3 ?.)
+;;                   (mis/center/borders 3 ?+)
+;;                   (mis/center/paddings 3 ?=) 4)
 ;; (mis/center/parts "")
 ;; (mis/center/parts "" nil)
 

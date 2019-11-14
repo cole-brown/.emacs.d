@@ -94,6 +94,11 @@
         (0 (prog1 () (compose-region (match-beginning 1)
                                      (match-end 1) "•")))))))
 
+  (spydez/hook/defun org-mode-hook t
+      nil "jump-to-now-target" "init/config/configure-org-mode.el"
+    "Jump point to \"now\" link, if it's in the first part of the file."
+    (spydez/buffer/search-header "[[--now"))
+
   ;;   "Enable Speed Keys, which allows quick single-key commands when the
   ;; cursor is placed on a heading. Usually the cursor needs to be at the
   ;; beginning of a headline line, but defining it with this function makes them
@@ -118,7 +123,8 @@
   ;;----------------------------------------------------------------------------
   :hook
   ((org-mode . spydez/hook/org-mode-hook/checkboxes)
-   (org-mode . spydez/hook/org-mode-hook/simple-list))
+   (org-mode . spydez/hook/org-mode-hook/simple-list)
+   (org-mode . spydez/hook/org-mode-hook/jump-to-now-target))
   ;;-----------------
   ;; /':hook' section
   ;;-----------------
