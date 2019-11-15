@@ -30,9 +30,9 @@
 
 
 (defcustom spydez/buffer/format/priorities
-  '((low    . spydez/buffer/format/bookend-normal) ;; no actual low right now
-    (medium . spydez/buffer/format/bookend-normal)
-    (high   . spydez/buffer/format/bookend-high))
+  '((:low    . spydez/buffer/format/bookend-normal) ;; no actual low right now
+    (:medium . spydez/buffer/format/bookend-normal)
+    (:high   . spydez/buffer/format/bookend-high))
   "Priority (for `spydez/buffer/special-name') to bookend consts."
   :group 'spydez/group
   :type '(alist :key-type symbol :value-type symbol))
@@ -130,10 +130,19 @@ And formostly.
 ;;-----------------------------------------------------------------------------
 
 (defun spydez/buffer/special-name (title &optional desc priority)
-  "Format string for `spydez/buffer/special-name' with description."
+  "Format TITLE and DESC strings for `spydez/buffer/special-name' with PRIORITY.
+
+PRIORITIES can be: :low, :medium, or :high.
+
+TITLE and DESC are formatted by bookending with
+`spydez/buffer/format/priorities' bookends based on PRIORITY
+setting, with nil being medium priority.
+"
 
   ;; PRIORITY is either known or forced to medium
-  (let ((priority (if (memq priority '(low medium high)) priority 'medium))
+  (let ((priority (if (assoc priority spydez/buffer/format/priorities)
+                      priority
+                    :medium))
         ;; look for bookends in list, default if fail/nil
         (bookends (or (symbol-value
                        (cdr (assoc priority spydez/buffer/format/priorities)))
@@ -151,8 +160,8 @@ And formostly.
      title desc)))
 ;; (spydez/buffer/special-name "jeff")
 ;; (spydez/buffer/special-name "jeff" "is here")
-;; (spydez/buffer/special-name "jeff" nil 'high)
-;; (spydez/buffer/special-name "jeff" "is here" 'high)
+;; (spydez/buffer/special-name "jeff" nil :high)
+;; (spydez/buffer/special-name "jeff" "is here" :high)
 
 
 ;;------------------------------------------------------------------------------

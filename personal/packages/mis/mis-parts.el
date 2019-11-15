@@ -175,29 +175,31 @@ iteration of parts processing/building."
 (defun mis/parts/process/symbol (symbol)
   "Processes a SYMBOL into its parts."
   (if-let ((value (alist-get symbol mis/parts/symbols-alist)))
-      (cond ((and (null (nth 0 value))
-                  (stringp (nth 1 value)))
-             ;; Simple string - just return its value.
-             (nth 1 value))
+      (cond
+       ((and (null (nth 0 value))
+             (stringp (nth 1 value)))
+        ;; Simple string - just return its value.
+        (nth 1 value))
 
-            ((functionp (nth 0 value))
-             ;; More complex; call function w/ args and return that.
-       ;; But I didn't want to eval symbols in `mis/parts/symbols-alist' then, so I need to eval them now.
-       (let ((accum nil))
-         (dolist (element (cdr value) accum)
-     (push (if (symbolp element)
-         (symbol-value element)
-       element)
-           accum))
-               (apply (car value) (nreverse accum))))
+       ((functionp (nth 0 value))
+        ;; More complex; call function w/ args and return that. But I
+        ;; didn't want to eval symbols in `mis/parts/symbols-alist' then,
+        ;; so I need to eval them now.
+        (let ((accum nil))
+          (dolist (element (cdr value) accum)
+            (push (if (symbolp element)
+                      (symbol-value element)
+                    element)
+                  accum))
+          (apply (car value) (nreverse accum))))
 
-            (t
-             ;; idk
-             (mis/warning
-              nil :warning
-              "Don't know how to translate symbol to part: sym: '%S' elt: '%S'"
-              symbol value)
-             nil))
+       (t
+        ;; idk
+        (mis/warning
+         nil :warning
+         "Don't know how to translate symbol to part: sym: '%S' elt: '%S'"
+         symbol value)
+        nil))
 
     (mis/warning
      nil :warning
@@ -397,7 +399,7 @@ plists.
 ;;                    :postfix
 ;;                    (:padding "==" :border "!!")))
 ;; (mis/parts/build 'string-empty)
-(mis/parts/build 'string-full)
+;; (mis/parts/build 'string-full)
 ;; (mis/parts/build "hello")
 ;; (mis/parts/build '(:text "Hello, %s %s %s" "a" "b" "c!"))
 ;; (mis/parts/build '(:indent "  " :border "++" :padding "=="))
