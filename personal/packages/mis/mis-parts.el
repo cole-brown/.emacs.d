@@ -60,59 +60,6 @@ A func will get called with args; nil func will return the string instead."
 
 
 ;;------------------------------------------------------------------------------
-;; Main Entry Point?
-;;------------------------------------------------------------------------------
-
-(defun mis/parts/build (arg &optional faces-plist)
-  "Builds a string from ARG, propertized with face from
-FACES-PLIST if non-nil and can find matching properties in both
-plists.
-
-§-TODO-§ [2019-10-22]: section here about what all arg can be."
-  ;; sanity check...
-  (if (or
-       ;; no param
-       (null arg)
-       ;; or wrong type
-       (not (or (listp arg)
-                (stringp arg)
-                (symbolp arg))))
-      (unless (null arg)
-        ;; think nil should be allowed and just ignored/returned.
-        (error "Cannot build string from arg: '%S'." arg))
-
-    ;; Process and build each item in section. Importantly, build off of
-    ;; processed input, not raw. Need to allow expansion of symbols into big
-    ;; sections. >.>
-    (let ((accum nil)
-          (input (mis/parts/process arg)))
-      ;; push to accum until no more sections
-      (while input
-        ;; process first section of input
-        (push (mis/parts/section input
-                                 faces-plist)
-              accum)
-
-        ;; update loop conditional
-        (setq input (mis/parts/next input)))
-
-      ;; put 'em back in correct order and stringify 'em.
-      (mapconcat #'identity (nreverse accum) ""))))
-;; (mis/parts/build '(:border "||" :padding "----"))
-;; (mis/parts/build '(:prefix
-;;                    (:indent "" :border "||" :padding "--")
-;;                    :center
-;;                    (:text "xx")
-;;                    :postfix
-;;                    (:padding "==" :border "!!")))
-;; (mis/parts/build 'string-empty)
-(mis/parts/build 'string-full)
-;; (mis/parts/build "hello")
-;; (mis/parts/build '(:text "Hello, %s %s %s" "a" "b" "c!"))
-;; (mis/parts/build '(:indent "  " :border "++" :padding "=="))
-
-
-;;------------------------------------------------------------------------------
 ;; Info/Meta-Data Functions
 ;;------------------------------------------------------------------------------
 
@@ -401,6 +348,59 @@ Returns for:
                                faces-plist)
               prop
               faces-plist)))))
+
+
+;;------------------------------------------------------------------------------
+;; Main Entry Point?
+;;------------------------------------------------------------------------------
+
+(defun mis/parts/build (arg &optional faces-plist)
+  "Builds a string from ARG, propertized with face from
+FACES-PLIST if non-nil and can find matching properties in both
+plists.
+
+§-TODO-§ [2019-10-22]: section here about what all arg can be."
+  ;; sanity check...
+  (if (or
+       ;; no param
+       (null arg)
+       ;; or wrong type
+       (not (or (listp arg)
+                (stringp arg)
+                (symbolp arg))))
+      (unless (null arg)
+        ;; think nil should be allowed and just ignored/returned.
+        (error "Cannot build string from arg: '%S'." arg))
+
+    ;; Process and build each item in section. Importantly, build off of
+    ;; processed input, not raw. Need to allow expansion of symbols into big
+    ;; sections. >.>
+    (let ((accum nil)
+          (input (mis/parts/process arg)))
+      ;; push to accum until no more sections
+      (while input
+        ;; process first section of input
+        (push (mis/parts/section input
+                                 faces-plist)
+              accum)
+
+        ;; update loop conditional
+        (setq input (mis/parts/next input)))
+
+      ;; put 'em back in correct order and stringify 'em.
+      (mapconcat #'identity (nreverse accum) ""))))
+;; (mis/parts/build '(:border "||" :padding "----"))
+;; (mis/parts/build '(:prefix
+;;                    (:indent "" :border "||" :padding "--")
+;;                    :center
+;;                    (:text "xx")
+;;                    :postfix
+;;                    (:padding "==" :border "!!")))
+;; (mis/parts/build 'string-empty)
+(mis/parts/build 'string-full)
+;; (mis/parts/build "hello")
+;; (mis/parts/build '(:text "Hello, %s %s %s" "a" "b" "c!"))
+;; (mis/parts/build '(:indent "  " :border "++" :padding "=="))
 
 
 ;;------------------------------------------------------------------------------
