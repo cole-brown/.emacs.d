@@ -174,6 +174,17 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
    line-empty))
 
 
+;; (theme song)
+(mis/koan/add
+ '(line-empty
+   line-full
+                          "“When You Do Things Right,"
+              "People Won’t Be Sure You’ve Done Anything at All”"
+                                 "  - Futurama"
+   line-full
+   line-empty))
+
+
 ;; Spybreak! - Short One
 (mis/koan/add
   '(line-empty
@@ -219,6 +230,7 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
     line-full
     line-empty))
 
+
 ;; Uh...
 ;; True story. :|
 ;; Except it was svn...
@@ -229,6 +241,19 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
     line-full
     line-empty))
 
+
+;; Do Not Tap Glass.
+;; Do Not Handle Fork-Bomb.
+;; Do Not Startle Fork-Bomb.
+;; No Flash Photography, Please.
+(mis/koan/add
+ (mis/koan/message
+  '(line-empty
+    line-full
+    ":(){ :|:& };:"
+    line-full
+    "(kaboom)"
+    line-empty))
 
 
 ;;---
