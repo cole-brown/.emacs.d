@@ -247,7 +247,6 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 ;; Do Not Startle Fork-Bomb.
 ;; No Flash Photography, Please.
 (mis/koan/add
- (mis/koan/message
   '(line-empty
     line-full
     ":(){ :|:& };:"

@@ -101,6 +101,9 @@ as they are found. Returns list of kill LSP workspaces.
   "LSP hook helper for both deferred and regular."
   (funcall lsp-fn)
   (with-function 'flycheck-mode
+    ;; the python codebase I have has... a lot of
+    ;; PYLS/pylint/pycodestyle errors... :/
+    (customize-set-variable 'flycheck-checker-error-threshold 800)
     (flycheck-mode)))
 
 
