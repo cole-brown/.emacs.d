@@ -1,0 +1,21 @@
+# -*- mode: snippet -*-
+# contributor: Cole Brown <code@brown.dev>
+# name: spy-ert: emacs unit test (ert-deftest)
+# key: spy-ert
+# --
+;;------------------------------------------------------------------------------
+;; Test: ${1:<func-being-tested>}
+;;------------------------------------------------------------------------------
+
+;;(defun $1 ($2)
+(ert-deftest spotify-ert/$1 ()
+  "Test $3.
+"
+  ;; <maybe tests here>
+
+  (spotify-ert/util/with-json spotify-connect-ert/data/player-status-in-full
+
+    ;; <tests here>
+    $0
+
+    ))
