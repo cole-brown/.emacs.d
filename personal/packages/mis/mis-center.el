@@ -50,6 +50,88 @@
   :type 'character)
 
 
+(defcustom mis/center/regexp/recenter
+  (rx line-start
+      (0+ whitespace)
+
+      (group graphic)
+      (+? (backref 1))
+      (*? printing)
+
+      (group graphic)
+      (>= 2 (backref 2))
+      (*? printing)
+
+      ;; Main Match (center) Group!
+      (group (>= 3 printing))
+
+      ;; The rest don't actually help...
+      ;; ...with my levels of rx-fu, anyways.
+
+      ;; ;; back to yyy
+      ;; (*? printing)
+      ;; (>= 3 (backref 2))
+
+      ;; ;; back to xx
+      ;; (??
+      ;;  (minimal-match
+      ;;   (0+ printing))
+      ;;  (>= 2 (backref 1)))
+
+      ;; (*? printing)
+      ;; line-end
+      )
+  "Regexp for finding the region we care about for a recenter.")
+
+
+;; §-TODO-§ [2019-12-13]: Finish this, move down to a functions/code section.
+(defun mis/center/recenter ()
+  "Tries to recenter a line that is centered/formatted according
+to mis/center's usual layout."
+  (interactive)
+  ;; Go to start of this line. Will then save this point and also start from
+  ;; here, so dual duty.
+  (save-excursion
+    (beginning-of-line)
+    (let ((from (point))
+          ;; (from (save-excursion (beginning-of-line (point))))
+          (to   (save-excursion (end-of-line)      (point))))
+
+      ;; Do search, populate match data.
+      (re-search-forward mis/center/regexp/recenter to t)
+
+      ;; (message "groups:%S, %S, %S, line:%S, data: %S"
+      ;;          (match-string-no-properties 1)
+      ;;          (match-string-no-properties 2)
+      ;;          (match-string-no-properties 3)
+      ;;          (match-string-no-properties 0)
+      ;;          (match-data)
+      ;;          )
+
+      ;; Ok; my regexp is... suck, but seems to do the first half good, so we
+      ;; use that to chop down the target center text. It'll start where the
+      ;; regexp says it does and go to the midpoint and then that number of
+      ;; characters past it.
+      ;;
+      ;; line-*: related to start of line, line length
+      ;; text-*: related to centered text, position in buffer
+      ;; line-text-*: related to centered text, position in line
+      (let* ((line-len (- to from))
+             (line-mid (/ line-len 2))
+             (text-start (match-beginning 3))
+             (line-text-start (- text-start from))
+             (text-end (+ line-text-start (* 2 (- line-mid line-text-start)))))
+
+        (message "%S" (list :padding (buffer-substring (match-beginning 1) (match-end 1))
+              :margin  (buffer-substring (match-beginning 2) (match-end 2))
+              :text    (buffer-substring text-start text-end)))
+        ))))
+;;---------------------------------test-----------------------------------
+;;--                               test                                 --
+;;---------------------------testing-hi.hello-----------------------------
+
+
+
 (defconst mis/center/char/placeholder (string-to-char "\uFFFD")
   "'Replacement character' seems a bit appropriate. Won't exist
 outside function.")
