@@ -10,7 +10,7 @@
 ;; (require 's)
 
 (require 'mis-parts)
-
+(require 'subr-x)
 
 ;;------------------------------------------------------------------------------
 ;; Notes
@@ -89,47 +89,82 @@
   "Tries to recenter a line that is centered/formatted according
 to mis/center's usual layout."
   (interactive)
-  ;; Go to start of this line. Will then save this point and also start from
-  ;; here, so dual duty.
-  (save-excursion
-    (beginning-of-line)
-    (let ((from (point))
-          ;; (from (save-excursion (beginning-of-line (point))))
-          (to   (save-excursion (end-of-line)      (point))))
 
-      ;; Do search, populate match data.
-      (re-search-forward mis/center/regexp/recenter to t)
+  (let* ((origin (point))
+        (pieces (mis/center/decompose origin)))
 
-      ;; (message "groups:%S, %S, %S, line:%S, data: %S"
-      ;;          (match-string-no-properties 1)
-      ;;          (match-string-no-properties 2)
-      ;;          (match-string-no-properties 3)
-      ;;          (match-string-no-properties 0)
-      ;;          (match-data)
-      ;;          )
-
-      ;; Ok; my regexp is... suck, but seems to do the first half good, so we
-      ;; use that to chop down the target center text. It'll start where the
-      ;; regexp says it does and go to the midpoint and then that number of
-      ;; characters past it.
-      ;;
-      ;; line-*: related to start of line, line length
-      ;; text-*: related to centered text, position in buffer
-      ;; line-text-*: related to centered text, position in line
-      (let* ((line-len (- to from))
-             (line-mid (/ line-len 2))
-             (text-start (match-beginning 3))
-             (line-text-start (- text-start from))
-             (text-end (+ line-text-start (* 2 (- line-mid line-text-start)))))
-
-        (message "%S" (list :padding (buffer-substring (match-beginning 1) (match-end 1))
-              :margin  (buffer-substring (match-beginning 2) (match-end 2))
-              :text    (buffer-substring text-start text-end)))
-        ))))
+    (message "%S" pieces)
+    ))
 ;;---------------------------------test-----------------------------------
 ;;--                               test                                 --
 ;;---------------------------testing-hi.hello-----------------------------
 
+;; §-TODO-§ [2019-12-16]: stopped here:
+;; Top and bottom test line work.
+;; Middle does not - regex doesn't match everything.
+
+(defun mis/center/decompose (point)
+  "Tries to break apart a line into padding char, margin char, and
+centered text.
+"
+  (prog1
+      (progn
+        ;; Go to start of this line. Will then save this point and also start
+        ;; from here, so dual duty.
+        (beginning-of-line)
+        (let ((from (point))
+              ;; (from (save-excursion (beginning-of-line (point))))
+              (to   (save-excursion (end-of-line)      (point))))
+
+          ;; Do search, populate match data.
+          (re-search-forward mis/center/regexp/recenter to t)
+          (message "match-data: %S, 1: %S, 2: %S, 3: %S, line: %S" (match-data)
+                   (match-string-no-properties 1)
+                   (match-string-no-properties 2)
+                   (match-string-no-properties 3)
+                   (match-string-no-properties 0)
+                   )
+
+          ;; Ok; my regexp is... suck, but seems to do the first half good, so
+          ;; we use that to chop down the target center text. It'll start where
+          ;; the regexp says it does and go to the midpoint and then that number
+          ;; of characters past it.
+          ;;
+          ;; line-*: related to start of line, line length
+          ;; text-*: related to centered text, position in buffer
+          ;; line-text-*: related to centered text, position in line
+          (let* ((line-len        (- to from))
+                 (line-mid        (/ line-len 2))
+                 (text-start      (match-beginning 3))
+                 (line-text-start (- text-start from))
+                 (line-text-end   (+ line-text-start
+                                     (* 2 (- line-mid line-text-start))))
+                 (text-end (+ text-start line-text-end))
+                 (padding (buffer-substring-no-properties
+                           (match-beginning 1)
+                           (match-end 1)))
+                 (margin (buffer-substring-no-properties
+                          (match-beginning 2)
+                          (match-end 2))))
+
+            (message "padding: %S, margin: %S" padding margin)
+
+            ;; Now we have the data to re-build our line...
+            (list :padding padding
+                  :margin  margin
+                           ;; trim margin
+                  :text    (string-trim-right
+                            ;; end-of-line: whitespace and padding
+                            (string-trim-right
+                             (buffer-substring-no-properties
+                              text-start
+                              text-end)
+                             (rx-to-string `(one-or-more
+                                             (or whitespace ,padding))))
+                            (rx-to-string `(one-or-more ,margin)))))))
+
+    ;; go back to where we started, but return above value
+    (goto-char point)))
 
 
 (defconst mis/center/char/placeholder (string-to-char "\uFFFD")
