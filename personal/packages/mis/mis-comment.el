@@ -184,9 +184,11 @@ If TRIM is non-nil, trims resultant string before returning."
                               mis/comment/border-adjustments))
               nil))
            (pad-more (comment-add nil))
-           (prefix   (string-trim-right (comment-padright comment-start
-                                                          pad-more)))
-           (postfix  (string-trim-left (comment-padleft comment-end pad-more)))
+           ;; pad and trim as applicable
+           (prefix   (comment-padright comment-start pad-more))
+           (prefix   (if (stringp prefix) (string-trim-right prefix) prefix))
+           (postfix  (comment-padleft comment-end pad-more))
+           (postfix  (if (stringp postfix) (string-trim-left postfix) postfix))
            ;; if we have an adjustment, add it onto the insides of borders
            (prefix   (concat prefix (if (and prefix adjustment)
                                         adjustment)))
