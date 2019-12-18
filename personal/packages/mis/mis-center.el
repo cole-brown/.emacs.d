@@ -94,6 +94,8 @@ to mis/center's usual layout."
     ;;  :center (:text "test")
     ;;  :postfix (:padding "--" :border ";;" :margin nil))
 
+    ;; need to kill current line and replace with new centered
+
     ))
 
   ;;---------------------------------test-----------------------------------
