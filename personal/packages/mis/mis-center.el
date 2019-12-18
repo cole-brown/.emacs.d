@@ -50,121 +50,111 @@
   :type 'character)
 
 
-(defcustom mis/center/regexp/recenter
-  (rx line-start
-      (0+ whitespace)
-
-      (group graphic)
-      (+? (backref 1))
-      (*? printing)
-
-      (group graphic)
-      (>= 2 (backref 2))
-      (*? printing)
-
-      ;; Main Match (center) Group!
-      (group (>= 3 printing))
-
-      ;; The rest don't actually help...
-      ;; ...with my levels of rx-fu, anyways.
-
-      ;; ;; back to yyy
-      ;; (*? printing)
-      ;; (>= 3 (backref 2))
-
-      ;; ;; back to xx
-      ;; (??
-      ;;  (minimal-match
-      ;;   (0+ printing))
-      ;;  (>= 2 (backref 1)))
-
-      ;; (*? printing)
-      ;; line-end
-      )
-  "Regexp for finding the region we care about for a recenter.")
 
 
 ;; §-TODO-§ [2019-12-13]: Finish this, move down to a functions/code section.
-(defun mis/center/recenter ()
+(defun mis/recenter ()
   "Tries to recenter a line that is centered/formatted according
 to mis/center's usual layout."
   (interactive)
 
   (let* ((origin (point))
-        (pieces (mis/center/decompose origin)))
+         (decomposed (mis/center/decompose origin)))
 
-    (message "%S" pieces)
+    (message "decomp: %S" decomposed)
+
+    (message "parts:  %S"
+             (mis/center/parts (plist-get decomposed :text)
+                               nil
+                               nil
+                               nil
+                               (mis/center/borders nil (plist-get decomposed :border))
+                               (mis/center/paddings nil (plist-get decomposed :padding))
+                               (length (plist-get decomposed :whitespace))))
+    (message "center: %S"
+             (mis/center
+              (mis/center/parts (plist-get decomposed :text)
+                                nil
+                                nil
+                                nil
+                                (mis/center/borders nil (plist-get decomposed :border))
+                                (mis/center/paddings nil (plist-get decomposed :padding))
+                                (length (plist-get decomposed :whitespace)))))
+    (mis/center
+     (mis/center/parts (plist-get decomposed :text)
+                       nil
+                       nil
+                       nil
+                       (mis/center/borders nil (plist-get decomposed :border))
+                       (mis/center/paddings nil (plist-get decomposed :padding))
+                       (length (plist-get decomposed :whitespace))))
+
+    ;; need to know symmetry, so decompose probably needs to return parts list:
+    ;; (:prefix (:indent "  " :margin nil :border ";;" :padding "--")
+    ;;  :center (:text "test")
+    ;;  :postfix (:padding "--" :border ";;" :margin nil))
+
     ))
-;;---------------------------------test-----------------------------------
+
+  ;;---------------------------------test-----------------------------------
 ;;--                               test                                 --
 ;;---------------------------testing-hi.hello-----------------------------
 
-;; §-TODO-§ [2019-12-16]: stopped here:
-;; Top and bottom test line work.
-;; Middle does not - regex doesn't match everything.
 
-(defun mis/center/decompose (point)
+(defun mis/center/decompose (origin)
   "Tries to break apart a line into padding char, margin char, and
 centered text.
 "
-  (prog1
-      (progn
-        ;; Go to start of this line. Will then save this point and also start
-        ;; from here, so dual duty.
-        (beginning-of-line)
-        (let ((from (point))
-              ;; (from (save-excursion (beginning-of-line (point))))
-              (to   (save-excursion (end-of-line)      (point))))
+  ;; Regexps have broken my resolve. Let's be old fashioned...
+  ;; ...by using regexps. >.>
+  ;; But at least, differently.
 
-          ;; Do search, populate match data.
-          (re-search-forward mis/center/regexp/recenter to t)
-          (message "match-data: %S, 1: %S, 2: %S, 3: %S, line: %S" (match-data)
-                   (match-string-no-properties 1)
-                   (match-string-no-properties 2)
-                   (match-string-no-properties 3)
-                   (match-string-no-properties 0)
-                   )
+  ;; Go to start of this line. Will then save this point and also start
+  ;; from here, so dual duty.
+  (beginning-of-line)
+  (let* ((from (point))
+         (to   (save-excursion (end-of-line)      (point)))
 
-          ;; Ok; my regexp is... suck, but seems to do the first half good, so
-          ;; we use that to chop down the target center text. It'll start where
-          ;; the regexp says it does and go to the midpoint and then that number
-          ;; of characters past it.
-          ;;
-          ;; line-*: related to start of line, line length
-          ;; text-*: related to centered text, position in buffer
-          ;; line-text-*: related to centered text, position in line
-          (let* ((line-len        (- to from))
-                 (line-mid        (/ line-len 2))
-                 (text-start      (match-beginning 3))
-                 (line-text-start (- text-start from))
-                 (line-text-end   (+ line-text-start
-                                     (* 2 (- line-mid line-text-start))))
-                 (text-end (+ text-start line-text-end))
-                 (padding (buffer-substring-no-properties
-                           (match-beginning 1)
-                           (match-end 1)))
-                 (margin (buffer-substring-no-properties
-                          (match-beginning 2)
-                          (match-end 2))))
+         ;; Get line as string.
+         (line (buffer-substring-no-properties from to))
 
-            (message "padding: %S, margin: %S" padding margin)
+         ;; Will for holding whatever regex we're using at the moment.
+         (regexp "[ \\t\\n\\r]+") ;; 'whitespace' trim rx from string-trim
 
-            ;; Now we have the data to re-build our line...
-            (list :padding padding
-                  :margin  margin
-                           ;; trim margin
-                  :text    (string-trim-right
-                            ;; end-of-line: whitespace and padding
-                            (string-trim-right
-                             (buffer-substring-no-properties
-                              text-start
-                              text-end)
-                             (rx-to-string `(one-or-more
-                                             (or whitespace ,padding))))
-                            (rx-to-string `(one-or-more ,margin)))))))
+         ;; Output vars
+         whitespace
+         char-border
+         char-padding
+         text)
 
-    ;; go back to where we started, but return above value
-    (goto-char point)))
+    ;; Trim whitespace both ends / note whitespace on left
+    (re-search-forward regexp to t)
+    (if (= (match-beginning 0) from)
+        (setq whitespace (match-string-no-properties 0)))
+    (setq line (string-trim line))
+
+    ;; Note border char.
+    ;; Trim border both ends / note border both ends.
+    (setq char-border (string-to-char line))
+    (setq regexp (rx-to-string `(one-or-more ,char-border)))
+    (setq line (string-trim line regexp regexp))
+
+    ;; Note padding char.
+    ;; Trim padding both ends / note padding both ends.
+    (setq char-padding (string-to-char line))
+    (setq regexp (rx-to-string `(one-or-more ,char-padding)))
+    (setq line (string-trim line regexp regexp))
+
+    ;; End up with middle text.
+    ;; Trim middle text of whitespace both sides.
+    (setq text (string-trim line))
+
+    ;; return start whitespace, padding, border, text.
+    (list :whitespace whitespace
+          :border     char-border
+          :padding    char-padding
+          :text       text)
+    ))
 
 
 (defconst mis/center/char/placeholder (string-to-char "\uFFFD")
