@@ -10,7 +10,7 @@
 ;; (require 's)
 
 (require 'mis-parts)
-
+(require 'subr-x)
 
 ;;------------------------------------------------------------------------------
 ;; Notes
@@ -48,6 +48,115 @@
   "Padding for centering strings."
   :group 'mis
   :type 'character)
+
+
+
+
+;; §-TODO-§ [2019-12-13]: Finish this, move down to a functions/code section.
+(defun mis/recenter ()
+  "Tries to recenter a line that is centered/formatted according
+to mis/center's usual layout."
+  (interactive)
+
+  (let* ((origin (point))
+         (decomposed (mis/center/decompose origin)))
+
+    (message "decomp: %S" decomposed)
+
+    (message "parts:  %S"
+             (mis/center/parts (plist-get decomposed :text)
+                               nil
+                               nil
+                               nil
+                               (mis/center/borders nil (plist-get decomposed :border))
+                               (mis/center/paddings nil (plist-get decomposed :padding))
+                               (length (plist-get decomposed :whitespace))))
+    (message "center: %S"
+             (mis/center
+              (mis/center/parts (plist-get decomposed :text)
+                                nil
+                                nil
+                                nil
+                                (mis/center/borders nil (plist-get decomposed :border))
+                                (mis/center/paddings nil (plist-get decomposed :padding))
+                                (length (plist-get decomposed :whitespace)))))
+    (mis/center
+     (mis/center/parts (plist-get decomposed :text)
+                       nil
+                       nil
+                       nil
+                       (mis/center/borders nil (plist-get decomposed :border))
+                       (mis/center/paddings nil (plist-get decomposed :padding))
+                       (length (plist-get decomposed :whitespace))))
+
+    ;; need to know symmetry, so decompose probably needs to return parts list:
+    ;; (:prefix (:indent "  " :margin nil :border ";;" :padding "--")
+    ;;  :center (:text "test")
+    ;;  :postfix (:padding "--" :border ";;" :margin nil))
+
+    ;; need to kill current line and replace with new centered
+
+    ))
+
+  ;;---------------------------------test-----------------------------------
+;;--                               test                                 --
+;;---------------------------testing-hi.hello-----------------------------
+
+
+(defun mis/center/decompose (origin)
+  "Tries to break apart a line into padding char, margin char, and
+centered text.
+"
+  ;; Regexps have broken my resolve. Let's be old fashioned...
+  ;; ...by using regexps. >.>
+  ;; But at least, differently.
+
+  ;; Go to start of this line. Will then save this point and also start
+  ;; from here, so dual duty.
+  (beginning-of-line)
+  (let* ((from (point))
+         (to   (save-excursion (end-of-line)      (point)))
+
+         ;; Get line as string.
+         (line (buffer-substring-no-properties from to))
+
+         ;; Will for holding whatever regex we're using at the moment.
+         (regexp "[ \\t\\n\\r]+") ;; 'whitespace' trim rx from string-trim
+
+         ;; Output vars
+         whitespace
+         char-border
+         char-padding
+         text)
+
+    ;; Trim whitespace both ends / note whitespace on left
+    (re-search-forward regexp to t)
+    (if (= (match-beginning 0) from)
+        (setq whitespace (match-string-no-properties 0)))
+    (setq line (string-trim line))
+
+    ;; Note border char.
+    ;; Trim border both ends / note border both ends.
+    (setq char-border (string-to-char line))
+    (setq regexp (rx-to-string `(one-or-more ,char-border)))
+    (setq line (string-trim line regexp regexp))
+
+    ;; Note padding char.
+    ;; Trim padding both ends / note padding both ends.
+    (setq char-padding (string-to-char line))
+    (setq regexp (rx-to-string `(one-or-more ,char-padding)))
+    (setq line (string-trim line regexp regexp))
+
+    ;; End up with middle text.
+    ;; Trim middle text of whitespace both sides.
+    (setq text (string-trim line))
+
+    ;; return start whitespace, padding, border, text.
+    (list :whitespace whitespace
+          :border     char-border
+          :padding    char-padding
+          :text       text)
+    ))
 
 
 (defconst mis/center/char/placeholder (string-to-char "\uFFFD")

@@ -722,7 +722,8 @@ savages."
 
   ;; A year per file. Could do monthly if too big. Weekly and daily are also
   ;; options. Daily is the default.
-  (org-journal-file-type 'yearly)
+  ;; [2019-12-03] - A month per file. Year is getting too big...
+  (org-journal-file-type 'monthly)
 
   ;; org-journal-file-format: Make it a bit more ISO-ish (yyyy-mm-dd).
   ;;   - default:   yyyymmdd

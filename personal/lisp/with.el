@@ -18,6 +18,12 @@
 ;; Feature/Function/Executable Wrappers
 ;;------------------------------------------------------------------------------
 
+;; §-TODO-§ [2019-12-18]: Namespace these.
+;;   spydez/with/feature
+;;   spydez/with/all-features
+;;   spydez/with/___
+;;   spydez/without/___?
+
 ;; TODO: with-var, with-all-vars, with-any-vars?
 ;; TODO?: with-{any,all}-functions?
 ;; TODO?: with-all-executables?
@@ -37,17 +43,42 @@
 ;;---------
 ;; Features
 ;;---------
+
+(defmacro spydez/with/demotable-errors (demote format &rest body)
+  "Run BODY and demote any errors to simple messages if DEMOTE is non-nil.
+
+FORMAT is a string passed to message to format any error message
+if demoting them. It should contain a single %-sequence; e.g.,
+\"Error: %S\".
+
+If debug-on-error is non-nil, run BODY without catching its errors.
+
+This is the `with-demoted-errors' macro guarded/on-off'd by the demote flag.
+"
+  (declare (indent 2))
+
+  `(if ,demote
+       (with-demoted-errors ,format
+         ,@body)
+     ,@body))
+
+
+;;---------
+;; Features
+;;---------
 (defmacro with-feature (feature &rest body)
   "If FEATURE is available, load it and evaluate BODY."
   (declare (indent defun))
   `(when (require ,feature nil :noerror)
      ,@body))
 
+
 (defmacro with-all-features (features &rest body)
   "If all of FEATURES are available (via `require), evaluate BODY."
   (declare (indent defun))
   `(when (cl-every (lambda (x) (require x nil :noerror)) ,features)
      ,@body))
+
 
 ;;---------
 ;; Functions
@@ -58,6 +89,7 @@
   `(when (functionp ,function)
      ,@body))
 
+
 ;;---------
 ;; Executables
 ;;---------
@@ -66,6 +98,7 @@
   (declare (indent defun))
   `(when (executable-find (symbol-name ,executable))
      ,@body))
+
 
 (defmacro with-any-executable (executables &rest body)
   "If any of EXECUTABLES are available in the path, evaluate BODY."
