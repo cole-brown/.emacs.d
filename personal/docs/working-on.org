@@ -36,7 +36,11 @@
       - use-tool ignores (executable-find) now, but maybe using Window's bash is better? Or not... IDK.
 
 
-  - [-] General To Do: [8/31]
+  - [-] General To Do: [8/32]
+    - [ ] renames
+      - [ ] ?? spydez -> cole
+      - [ ] ?? spy -> cole
+
     - [-] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
       - [X] mute/unmute smarter. unmute to 100% volume is stupid.
       - [-] Now do it proper. [12/16]

@@ -421,9 +421,7 @@
   ;; https://github.com/tkf/org-mode/blob/master/contrib/lisp/org-contacts.el
   (add-to-list 'org-capture-templates
                `("c" "Contacts" entry
-                  (file+headline (spydez/path/to-file
-                                  spydez/dir/org-docs-secrets
-                                  "contacts.org")
+                  (file+headline org-contacts-files
                                  "INBOX")
                   ,(concat "* %(org-contacts-template-name)\n"
                            ":PROPERTIES:\n"
