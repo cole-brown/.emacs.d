@@ -37,6 +37,8 @@
 
 
   - [-] General To Do: [8/31]
+    - [ ] Timer to go along with spydez/require output.
+
     - [-] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
       - [X] mute/unmute smarter. unmute to 100% volume is stupid.
       - [-] Now do it proper. [12/16]
