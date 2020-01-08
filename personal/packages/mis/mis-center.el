@@ -63,41 +63,67 @@ to mis/center's usual layout."
 
     (message "decomp: %S" decomposed)
 
-    (message "parts:  %S"
-             (mis/center/parts (plist-get decomposed :text)
-                               nil
-                               nil
-                               nil
-                               (mis/center/borders nil (plist-get decomposed :border))
-                               (mis/center/paddings nil (plist-get decomposed :padding))
-                               (length (plist-get decomposed :whitespace))))
-    (message "center: %S"
-             (mis/center
-              (mis/center/parts (plist-get decomposed :text)
-                                nil
-                                nil
-                                nil
-                                (mis/center/borders nil (plist-get decomposed :border))
-                                (mis/center/paddings nil (plist-get decomposed :padding))
-                                (length (plist-get decomposed :whitespace)))))
-    (mis/center
-     (mis/center/parts (plist-get decomposed :text)
-                       nil
-                       nil
-                       nil
-                       (mis/center/borders nil (plist-get decomposed :border))
-                       (mis/center/paddings nil (plist-get decomposed :padding))
-                       (length (plist-get decomposed :whitespace))))
+    ;; (message "parts:  %S"
+    ;;          (mis/center/parts (plist-get decomposed :text)
+    ;;                            nil
+    ;;                            nil
+    ;;                            nil
+    ;;                            (mis/center/borders nil (plist-get decomposed :border))
+    ;;                            (mis/center/paddings nil (plist-get decomposed :padding))
+    ;;                            (length (plist-get decomposed :whitespace))))
+    ;; (message "center: %S"
+    ;;          (mis/center
+    ;;           (mis/center/parts (plist-get decomposed :text)
+    ;;                             nil
+    ;;                             nil
+    ;;                             nil
+    ;;                             (mis/center/borders nil (plist-get decomposed :border))
+    ;;                             (mis/center/paddings nil (plist-get decomposed :padding))
+    ;;                             (length (plist-get decomposed :whitespace)))))
+    (message "rebuild: \n%s" (mis/center decomposed))
+     ;; (mis/center/parts (plist-get decomposed :text)
+     ;;                   nil
+     ;;                   nil
+     ;;                   nil
+     ;;                   (mis/center/borders nil (plist-get decomposed :border))
+     ;;                   (mis/center/paddings nil (plist-get decomposed :padding))
+     ;;                   (length (plist-get decomposed :whitespace))))
 
     ;; need to know symmetry, so decompose probably needs to return parts list:
     ;; (:prefix (:indent "  " :margin nil :border ";;" :padding "--")
     ;;  :center (:text "test")
     ;;  :postfix (:padding "--" :border ";;" :margin nil))
 
+
+    ;; (message "center parts: text: %S, margin: %S, border: %S, padding: %S, indent: %S"
+    ;;  (plist-get (plist-get decomposed :center) :text)
+    ;;  (list (plist-get (plist-get decomposed :prefix) :margin)
+    ;;        (plist-get (plist-get decomposed :postfix) :margin))
+    ;;  (list (plist-get (plist-get decomposed :prefix) :border)
+    ;;        (plist-get (plist-get decomposed :postfix) :border))
+    ;;  (list (plist-get (plist-get decomposed :prefix) :padding)
+    ;;        (plist-get (plist-get decomposed :postfix) :padding))
+    ;;  (length (plist-get (plist-get decomposed :prefix) :indent)))
+
+    ;; §-TODO-§ [2020-01-07]: YOU ARE HERE: This works, need to integrate it
+    ;; with next comment about finishing function.
+    (message "output: \n%s"
+             (mis/center
+              (mis/center/parts
+               (plist-get (plist-get decomposed :center) :text)
+               nil nil ;; fill? and fill-char
+               (list (plist-get (plist-get decomposed :prefix) :margin)
+                     (plist-get (plist-get decomposed :postfix) :margin))
+               (list (plist-get (plist-get decomposed :prefix) :border)
+                     (plist-get (plist-get decomposed :postfix) :border))
+               (list (plist-get (plist-get decomposed :prefix) :padding)
+                     (plist-get (plist-get decomposed :postfix) :padding))
+               (length (plist-get (plist-get decomposed :prefix) :indent)))))
+
+
     ;; need to kill current line and replace with new centered
 
     ))
-
   ;;---------------------------------test-----------------------------------
 ;;--                               test                                 --
 ;;---------------------------testing-hi.hello-----------------------------
@@ -129,6 +155,11 @@ centered text.
          char-padding
          text)
 
+    ;; §-TODO-§ [2020-01-07]: Fill character for:
+    ;;   ;;--+++Hello, there.+++--;;
+    ;; versus:
+    ;;   ;;--   Hello, there.   --;;
+
     ;; Trim whitespace both ends / note whitespace on left
     (re-search-forward regexp to t)
     (if (= (match-beginning 0) from)
@@ -152,11 +183,14 @@ centered text.
     (setq text (string-trim line))
 
     ;; return start whitespace, padding, border, text.
-    (list :whitespace whitespace
-          :border     char-border
-          :padding    char-padding
-          :text       text)
-    ))
+    (list :prefix  (list :indent whitespace
+                         :margin nil
+                         :border char-border
+                         :padding char-padding)
+          :center  (list :text text)
+          :postfix (list :padding char-padding
+                         :border char-border
+                         :margin nil))))
 
 
 (defconst mis/center/char/placeholder (string-to-char "\uFFFD")
