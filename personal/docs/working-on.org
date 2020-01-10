@@ -36,7 +36,7 @@
       - use-tool ignores (executable-find) now, but maybe using Window's bash is better? Or not... IDK.
 
 
-  - [-] General To Do: [9/32]
+  - [-] General To Do: [10/32]
     - [-] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
       - [X] mute/unmute smarter. unmute to 100% volume is stupid.
       - [-] Now do it proper. [12/16]
@@ -57,7 +57,7 @@
         - [ ] fix things
         - [ ] Do pull request to main spotify repo.
 
-    - [ ] org-sticky-header?
+    - [X] org-sticky-header?
       - https://alhassy.github.io/init/#orge6a95a2
       - also check that article for other things...
 
@@ -526,6 +526,9 @@ Managed to do all this without remembering this section was here... >.>
   7. hi
 
 * Packages to Check Out Maybe                                         :emacs:
+
+restart-emacs
+  - https://melpa.org/#/restart-emacs
 
 compdef (mode-specific company backends):
   - https://www.reddit.com/r/emacs/comments/db8dfx/compdef_just_hit_melpa_and_handle_and/
