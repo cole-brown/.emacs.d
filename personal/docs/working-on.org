@@ -36,9 +36,7 @@
       - use-tool ignores (executable-find) now, but maybe using Window's bash is better? Or not... IDK.
 
 
-  - [-] General To Do: [8/31]
-    - [ ] Timer to go along with spydez/require output.
-
+  - [-] General To Do: [9/32]
     - [-] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
       - [X] mute/unmute smarter. unmute to 100% volume is stupid.
       - [-] Now do it proper. [12/16]
@@ -158,6 +156,7 @@
 
     - [ ] Don't beacon in the minibuffer?
       - [2019-10-21 Mon] Can't figure out when it was happening...
+    - [X] Timer to go along with spydez/require output.
     - [X] Check out Cascadia Code font?
       - https://www.reddit.com/r/programming/comments/d64aq0/microsoft_released_the_cascadia_code_font/
       - Eh... too heavy, I think. Normal is too thick and bold 'm' is just a blob, basically.
