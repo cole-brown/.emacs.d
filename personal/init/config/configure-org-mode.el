@@ -749,6 +749,23 @@ savages."
 
 
 ;;------------------------------------------------------------------------------
+;; Org Sticky Headers
+;;------------------------------------------------------------------------------
+(use-package org-sticky-header
+  ;;-----
+  :custom
+  ;;-----
+
+  ;; Child and parent headings are seperated by a /.
+  (org-sticky-header-full-path 'full)
+
+  ;;-----
+  :hook
+  ;;-----
+  (org-mode . org-sticky-header-mode))
+
+
+;;------------------------------------------------------------------------------
 ;; Calendar
 ;;------------------------------------------------------------------------------
 ;; TODO: some way to use this or something like it just to check for upcoming

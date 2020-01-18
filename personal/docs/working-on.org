@@ -36,7 +36,8 @@
       - use-tool ignores (executable-find) now, but maybe using Window's bash is better? Or not... IDK.
 
 
-  - [-] General To Do: [8/32]
+  - [-] General To Do: [0/23]
+
     - [ ] renames
       - [ ] ?? spydez -> cole
       - [ ] ?? spy -> cole
@@ -61,10 +62,6 @@
         - [ ] fix things
         - [ ] Do pull request to main spotify repo.
 
-    - [ ] org-sticky-header?
-      - https://alhassy.github.io/init/#orge6a95a2
-      - also check that article for other things...
-
     - [ ] spotify.el - make more things use the cache
 
     - [ ] restclient
@@ -78,15 +75,10 @@
     - [ ] Can I get deadgrep working with non-ascii on windows?
       - works fine in git bash...
         - rg -- §-TODO-§
+      - Might be one of my UTF-8 settings come back to bite me...
+      - Might want to upgrade to Win 10 at work first.
 
-    - [-] interactive mis commands:
-      - [X] mis/comment/center
-      - [ ] mis/comment/recenter
-        - interactive mis/comment/recenter/region
-        - Tries to break each line into parts. Preserve border, padding and center text. Refill.
-          - Will be harderish with the padding==fill lines...
-      - [ ] mis/comment/wrap-region
-        - What does this do that C-c C-c doesn't (comment-or-uncomment-region)?
+    - [ ] mis/comment/recenter 2.0
 
     - [ ] package or DIY colors or icons on modeline for file status (left-most bit)?
       - Briefly mentioned here: http://amitp.blogspot.com/2019/07/emacs-mode-line-simplified.html
@@ -160,30 +152,6 @@
 
     - [ ] Don't beacon in the minibuffer?
       - [2019-10-21 Mon] Can't figure out when it was happening...
-    - [X] Check out Cascadia Code font?
-      - https://www.reddit.com/r/programming/comments/d64aq0/microsoft_released_the_cascadia_code_font/
-      - Eh... too heavy, I think. Normal is too thick and bold 'm' is just a blob, basically.
-        - So bad for my current OS, Emacs, monitor.
-    - [X] Have mis files require each other as needed? No circles?
-    - [X] Nice colors and things and an empty line or two to start off spydez/go-home.
-      - [X] Propertize message func
-      - [X] add ability for format+args to propertize
-        - [X] add to mis/string/parts/*
-        - [X] add to mis/message/propertize
-      - [X] add ability to ask for a blank line or two to strings-and-things.el
-        - [X] add to mis/string/parts/*
-        - [X] add to mis/message/propertize
-    - [X] Make a lazier line/column mode for modeline?
-      - [[file:~/.emacs.d/personal/init/config/configure-modeline.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-18%5D:%20I%20really%20love%20these,%20but%20they%20might%20be%20causing%20lag][here]]
-    - [X] Unbind "C-x m", or rebind where "C-x C-m" is bound. I do not mail with you, emacs.
-    - [X] performance tweaks?
-      - [X] remove line number from modeline, see if that makes emacs any faster?
-      - It did... Sigh. :/
-    - [X] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
-      - [X] frame vs modeline updates
-        - Is theirs acting ok? Was fucky when I first switched to it.
-    - [X] spotify - status in hydra
-
 
 Tabs:
   [[https://melpa.org/#/?q=pager&sort=downloads&asc=false][MELPA]]
@@ -209,7 +177,44 @@ Soon™ things?
     - https://github.com/dzop/emacs-zmq
 
 
-* Completed Things [9/9]
+* Completed Things [10/10]
+
+** DONE [2020-01-09] A list of things that are done now [11/11]
+
+    - [X] interactive mis commands:
+      - [X] mis/comment/center
+      - [X] mis/comment/recenter
+        - interactive mis/comment/recenter/region
+        - Tries to break each line into parts. Preserve border, padding and center text. Refill.
+          - Will be harderish with the padding==fill lines...
+    - [X] org-sticky-header?
+      - https://alhassy.github.io/init/#orge6a95a2
+      - also check that article for other things...
+    - [X] Timer to go along with spydez/require output.
+    - [X] Check out Cascadia Code font?
+      - https://www.reddit.com/r/programming/comments/d64aq0/microsoft_released_the_cascadia_code_font/
+      - Eh... too heavy, I think. Normal is too thick and bold 'm' is just a blob, basically.
+        - So bad for my current OS, Emacs, monitor.
+    - [X] Have mis files require each other as needed? No circles?
+    - [X] Nice colors and things and an empty line or two to start off spydez/go-home.
+      - [X] Propertize message func
+      - [X] add ability for format+args to propertize
+        - [X] add to mis/string/parts/*
+        - [X] add to mis/message/propertize
+      - [X] add ability to ask for a blank line or two to strings-and-things.el
+        - [X] add to mis/string/parts/*
+        - [X] add to mis/message/propertize
+    - [X] Make a lazier line/column mode for modeline?
+      - [[file:~/.emacs.d/personal/init/config/configure-modeline.el::;;%20%C2%A7-TODO-%C2%A7%20%5B2019-10-18%5D:%20I%20really%20love%20these,%20but%20they%20might%20be%20causing%20lag][here]]
+    - [X] Unbind "C-x m", or rebind where "C-x C-m" is bound. I do not mail with you, emacs.
+    - [X] performance tweaks?
+      - [X] remove line number from modeline, see if that makes emacs any faster?
+      - It did... Sigh. :/
+    - [X] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
+      - [X] frame vs modeline updates
+        - Is theirs acting ok? Was fucky when I first switched to it.
+    - [X] spotify - status in hydra
+
 
 ** DONE [2019-10-11] A list of things that are done now [8/8]
 CLOSED: [2019-10-11 Fri 15:09]
@@ -529,6 +534,9 @@ Managed to do all this without remembering this section was here... >.>
   7. hi
 
 * Packages to Check Out Maybe                                         :emacs:
+
+restart-emacs
+  - https://melpa.org/#/restart-emacs
 
 compdef (mode-specific company backends):
   - https://www.reddit.com/r/emacs/comments/db8dfx/compdef_just_hit_melpa_and_handle_and/
