@@ -232,7 +232,7 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 
 
 ;; Uh...
-;; True story. :|
+;; True Story. :|
 ;; Except it was svn...
 (mis/koan/add
   '(line-empty
@@ -241,6 +241,23 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
     line-full
     line-empty))
 
+
+;; Uh...
+;; Also a True Story. :|
+;; Every programming test I've taken, for instance...
+(mis/koan/add
+  '(line-empty
+    line-full
+    "A task is an hour,"
+    "Only if for the whole two hours,"
+    "Nothing much goes wrong."
+    "- A Sad Programmer"
+    line-full
+    line-empty))
+
+A task is an hour,
+Only if for the whole two hours,
+Nothing much goes wrong.
 
 ;; Do Not Tap Glass.
 ;; Do Not Handle Fork-Bomb.
