@@ -50,7 +50,8 @@ nil, returns file name."
 ;; but..: aren't on melpa, haven't been updated in years, etc.
 (defun spydez/path/windows-to-mingw (dir)
   "Bad hack. Absolute minimum to change from `c:/path/to/dir' to `/c/path/to/dir'"
-  (concat "/" (replace-regexp-in-string ":" "" dir) "/"))
+  (replace-regexp-in-string "//" "/"
+                            (concat "/" (replace-regexp-in-string ":" "" dir) "/")))
 
 
 ;;------------------------------------------------------------------------------

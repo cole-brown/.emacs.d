@@ -49,10 +49,26 @@
 
 ;; TODO: there may be a way to suppress the graphical password prompt?
 ;; http://nhoffman.github.io/.emacs.d/#org78893a1
-;;   - but my env var for that is already nil: (getenv "GPG_AGENT_INFO")
+;;   - but my env var for that is already nil:
+;;     (getenv "GPG_AGENT_INFO")
+;;     (getenv "SSH_AGENT_INFO")
+;;     (setenv "GPG_AGENT_INFO" nil)
+;;     (setenv "SSH_AGENT_INFO" nil)
+
+;; https://www.emacswiki.org/emacs/EasyPG
+;; (defun wg/kludge-gpg-agent ()
+;;   (if (display-graphic-p)
+;;       ;; pretend we're on a terminal
+;;       (setenv "DISPLAY" (terminal-name))
+;;
+;;     ;; say we're on a terminal and clear out DISPLAY
+;;     (setenv "GPG_TTY" (terminal-name))
+;;     (setenv "DISPLAY")))
+;; (getenv "DISPLAY")
+;; (wg/kludge-gpg-agent)
 
 ;; Query passphrase through the minibuffer, instead of the pinentry program
-(setq epg-pinentry-mode 'loopback)
+;; (setq epg-pinentry-mode 'loopback)
 
 
 ;;------------------------------------------------------------------------------

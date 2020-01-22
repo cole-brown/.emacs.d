@@ -36,11 +36,19 @@
       - use-tool ignores (executable-find) now, but maybe using Window's bash is better? Or not... IDK.
 
 
-  - [-] General To Do: [0/23]
+  - [-] General To Do: [1/23]
+
+    - [ ] configure-crypt needs babying... again... (again... (again?..))
+      - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
+        - https://arenzana.org/2019/04/emacs-org-mode/
 
     - [ ] renames
       - [ ] ?? spydez -> cole
       - [ ] ?? spy -> cole
+
+    - [ ] Get rid of use-tool?
+      - It's not really doing much useful... and I haven't touched it since I
+        got it into a hacky, awkward, but technically working mess...
 
     - [-] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
       - [X] mute/unmute smarter. unmute to 100% volume is stupid.
@@ -81,22 +89,23 @@
 
     - [ ] mis/comment/recenter 2.0
 
-    - [ ] package or DIY colors or icons on modeline for file status (left-most bit)?
-      - Briefly mentioned here: http://amitp.blogspot.com/2019/07/emacs-mode-line-simplified.html
-
-    - [ ] spotify.el - fork, pull from my repo into submodule, do changes there, push request to github?
+    - [ ] spotify.el
       - [ ] "Made for you" section playlists?
 
     - spotify
       - [ ] all-the-icons?
+        - For play, pause, etc...
 
-    - [ ] Some sort of alerts... not alert/libnotify/growl type. Inside emacs.
+    - [-] Some sort of alerts... not alert/libnotify/growl type. Inside emacs.
       - [ ] For redtick ending.
       - [ ] Maybe in future: calendar stuff, email received(?), alarms...
+      - [X] package: alert? (libnotify/growl style - need OS help)
+        - https://github.com/rememberYou/.emacs.d/blob/master/config.org#alert
+        - Anything else from here? https://github.com/rememberYou/.emacs.d/blob/master/config.org
+        - No... that didn't work at all when I copy/pasted into scratch and eval'd buffer and then tried to test...
+      - example screenshot in major-mode-hydra has a pretty pop-up/alert type thing like I want...
+        - https://github.com/jerrypnz/major-mode-hydra.el
 
-    - [ ] package: alert? (libnotify/growl style - need OS help)
-      - https://github.com/rememberYou/.emacs.d/blob/master/config.org#alert
-      - Anything else from here? https://github.com/rememberYou/.emacs.d/blob/master/config.org
     - [ ] Add "with-nil" to with.el?
       - For e.g. (with-nil 'jeff (stringp 'jeff) ) so that becomes...
         - (when (and (not (null 'jeff) (stringp 'jeff)) ,@body)
@@ -134,12 +143,12 @@
     - [ ] Look at magit-lfs? Does it do anything I want?
       - [ ] LFS first, then:
       - [ ] Look at magit-svn? Does it do anything I want?
-
     - [-] Fancy checkboxes (<- like that) lose fancy boxyness when buffer has mismatched quotations or something
       - [X] double quote def work. Take out one of these and see. ""
       - [X] Started issue at (spydez/help/issue/visit "org-mode" "prettify-symbols.org")
       - [ ] See if issue is in other modes, or just org-mode?
       - [ ] Turn off for now?
+
     - [ ] "(declare)" stuff. e.g.
       - [ ] (pure t)
       - [ ] (side-effect-free t)
@@ -147,12 +156,13 @@
     - [ ] Check out DumbJump:
       - https://www.reddit.com/r/emacs/comments/d33ist/dumb_jump_v053_released_adds_support_for_10_more/
 
-    - [ ] configure-crypt needs babying... again... (again... (again?..))
-      - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
-        - https://arenzana.org/2019/04/emacs-org-mode/
-
     - [ ] Don't beacon in the minibuffer?
       - [2019-10-21 Mon] Can't figure out when it was happening...
+
+    - [X] package or DIY colors or icons on modeline for file status (left-most bit)?
+      - Briefly mentioned here: http://amitp.blogspot.com/2019/07/emacs-mode-line-simplified.html
+      - Meh. No.
+
 
 Tabs:
   [[https://melpa.org/#/?q=pager&sort=downloads&asc=false][MELPA]]
