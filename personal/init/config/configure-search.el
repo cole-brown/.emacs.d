@@ -10,6 +10,9 @@
 ;; e.g. from http://nhoffman.github.io/.emacs.d/#org9119f86
 ;;   - Add ".eggs" and "src" to list for python development.
 
+;; I don't like searching for "   " and finding every damn single space.
+;; Turn that off.
+(customize-set-variable 'search-whitespace-regexp nil)
 
 ;;------------------------------------------------------------------------------
 ;; ripgrep & deadgrep - grep faster
