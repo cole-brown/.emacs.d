@@ -159,6 +159,10 @@ generator functions. Taskpath is the fully expanded file path."
   :type '(alist :key-type string
                 :value-type (choice string function)))
 
+(defcustom taskspace/notes-file-name
+  "_notes.org"
+  "File for storing/recording notes about a task.")
+
 ;; Gonna need regex for this eventually, probably. But not now.
 (defcustom taskspace/dir/always-ignore
   '("." ".."
@@ -247,7 +251,6 @@ Create if none. Return if just the one. Choose from multiple."
   ;; Default to "today" if date-input isn't parsable string,
   ;; then get date, taskspaces, etc. for that numerical relative day.
   (let* ((date-input (cond
-                      ;; §-TODO-§: try `prefix-numeric-value' instead...
                       ;; no date-input is today is 0
                       ((null date-input) 0)
                       ;; strings should be converted to numbers
@@ -446,6 +449,79 @@ Shell opened can be set by modifying `taskspace/shell-fn'."
 
 
 ;; TODO: dwim <date>'s task ? (is this a dupe of taskspace/task-dir/dwim?)
+
+;;;###autoload
+(defun taskspace/notes (date-input)
+  "Interactive. Opens a taskspace's notes file.
+
+Opens:
+  - Today's notes file, if just one taskspace.
+  - Auto-complete options for today's notes files, if more than one taskspace.
+  - Auto-complete options for all notes files, if prefix arg supplied.
+"
+  ;; Numeric arg but don't let lower case "p" auto-magic nothing (no prefix arg)
+  ;; into 1. Nothing/0/nil is today. 1 is tomorrow.
+  (interactive "P")
+
+  ;; Default to "today" if date-input isn't parsable string,
+  ;; then get date, taskspaces, etc. for that numerical relative day.
+  (let* ((date-input (cond
+                      ;; no date-input is today is 0
+                      ((null date-input) 0)
+                      ;; strings should be converted to numbers
+                      ((stringp date-input)
+                       (string-to-number date-input))
+                      ;; just allow numbers through unscathed
+                      ((numberp date-input) date-input)
+                      ;; default to... today/0 I guess?
+                      (t 0)))
+         (date (taskspace/get-date date-input))
+         (taskspaces (taskspace/list-date date))
+         (length-ts (length taskspaces))
+         notes-path)
+
+    (message "%S tasks for %S: %S" length-ts date taskspaces)
+
+    (cond
+     ;; error out if we have no idea what date to dwim with...
+     ((null date) (error "Date string is nil: %s" date))
+
+     ;; if none, create one?
+     ((null taskspaces)
+      ;; call-interactively will give user prompt for description,
+      ;; etc. as if they called themselves.
+      (call-interactively #'taskspace/create)
+      ;; §-TODO-§ [2020-01-30]: Then open the notes file?
+      )
+
+     ;; If just one, open its notes file.
+     ((= length-ts 1)
+      (setq notes-path (expand-file-name taskspace/notes-file-name
+                                         (first taskspaces)))
+      (message "Only taskspace: %s" (first taskspaces)))
+
+     ;; For now, only give existing choices. User can use a non-dwim create func
+     ;; if they want new.
+     ((> length-ts 1)
+
+      ;; list available choices to user, get the taskspace they chose
+      (let ((choice (taskspace/list-choices taskspaces 'nondirectory)))
+        (setq notes-path (expand-file-name taskspace/notes-file-name
+                                           choice))
+        (message "Chose taskspace: %s" choice)))
+
+     ;; Default case... Fall through with nil.
+     (t nil))
+
+    (if (null notes-path)
+        (error "No taskspace notes found for date: %s" date)
+
+      ;; ok - open the notes file
+        (message "Opening taskspace notes: %s" notes-path)
+      (find-file notes-path))))
+;; M-x taskspace/notes
+;; (taskspace/notes)
+;; (taskspace/notes -1)
 
 
 ;;------------------------------------------------------------------------------
