@@ -159,6 +159,9 @@
 ;; (set-selection-coding-system 'utf-8)   ; please
 ;; (prefer-coding-system        'utf-8)   ; with sugar on top
 ;; (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+;; deadgrep search for this to see if we're good yet?: §
+;;   (shell-quote-argument "§")
+;;   (shell-quote-argument "argument")
 
 ;; Sticking with just the minimum until something unicode related
 ;; is wrong for me.

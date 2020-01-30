@@ -36,11 +36,22 @@
       - use-tool ignores (executable-find) now, but maybe using Window's bash is better? Or not... IDK.
 
 
-  - [-] General To Do: [1/23]
+  - [-] General To Do: [2/28]
+
+    - [ ] taskspace command
+      - taskspace/notes
+      - [ ] C-u M-x
+        - Opens "today's" notes?
+      - [ ] M-x taskspace/notes
+        - Helm auto-complete with sorted-by-date, latest-first list.
 
     - [ ] configure-crypt needs babying... again... (again... (again?..))
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
         - https://arenzana.org/2019/04/emacs-org-mode/
+      - [ ] Or some other way of locking/unlocking whole dir?
+
+    - [ ] Different scroll bar?
+      - https://github.com/emacsorphanage/yascroll
 
     - [ ] renames
       - [ ] ?? spydez -> cole
@@ -70,7 +81,14 @@
         - [ ] fix things
         - [ ] Do pull request to main spotify repo.
 
+    - [ ] Magit Forge
+      - https://github.com/magit/forge
+
     - [ ] spotify.el - make more things use the cache
+
+    - [ ] spotify.el - web server
+      - Change from python script to emacs for web server?
+      - Probably will need another emacs package dependency.
 
     - [ ] restclient
       - look at restclient-helm?
@@ -143,12 +161,12 @@
     - [ ] Look at magit-lfs? Does it do anything I want?
       - [ ] LFS first, then:
       - [ ] Look at magit-svn? Does it do anything I want?
+
     - [-] Fancy checkboxes (<- like that) lose fancy boxyness when buffer has mismatched quotations or something
       - [X] double quote def work. Take out one of these and see. ""
       - [X] Started issue at (spydez/help/issue/visit "org-mode" "prettify-symbols.org")
       - [ ] See if issue is in other modes, or just org-mode?
       - [ ] Turn off for now?
-
     - [ ] "(declare)" stuff. e.g.
       - [ ] (pure t)
       - [ ] (side-effect-free t)
@@ -159,9 +177,18 @@
     - [ ] Don't beacon in the minibuffer?
       - [2019-10-21 Mon] Can't figure out when it was happening...
 
+    - [X] taskspace notes file generator
+      - need to fix it?
+      - It's doing the old version ("<spy/header") instead of new ("spy-header")
+      - [[file:~/.emacs.d/personal/init/config/configure-project.el::("_notes.org" . spydez/taskspace/gen-org-notes)))][here]]
+
     - [X] package or DIY colors or icons on modeline for file status (left-most bit)?
       - Briefly mentioned here: http://amitp.blogspot.com/2019/07/emacs-mode-line-simplified.html
       - Meh. No.
+
+
+Links:
+  https://list.community/emacs-tw/awesome-emacs
 
 
 Tabs:

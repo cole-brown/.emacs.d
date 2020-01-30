@@ -145,7 +145,11 @@
   ;;-------
 
   (defun spydez/taskspace/gen-org-notes (taskname taskpath)
-    "Could redef later for more work-specific details."
+    "NOTE: Could be redefined later for more work-specific details, so check 
+e.g. 'finalize-domain-secret.el' for a redef. Or 'C-h f
+spydez/taskspace/gen-org-notes' and see what file it's defined
+in.
+"
     ;; Format:
     ;; <spy/header
     ;;
@@ -159,6 +163,7 @@
             "spy-header"
             taskname
             taskpath))
+  ;; (spydez/taskspace/gen-org-notes "" "")
 
 
   ;;-------
