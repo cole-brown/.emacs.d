@@ -325,11 +325,27 @@ repos."
                                            (seq-every-p #'stringp x)))))
 
 
+(defcustom spydez/dir/git/watch-locations
+  (list
+   spydez/dir/emacs
+   spydez/dir/secrets
+   spydez/dir/doc-save-vault)
+  "List of strings of directories (TODO: add allowance for single
+files?) to automatically add/commit/push in their respective git
+repos."
+  :group 'spydez/group
+  :type '(restricted-sexp :tag "String List"
+                          :match-alternatives
+                          (lambda (x) (and (listp x)
+                                           (seq-every-p #'stringp x)))))
+
+
 (defun spydez/magit/changes-in-subdir (subdir-abs)
   "Determines if magit knows of any changes (staged, unstaged, untracked), and
 if any of them are in this (absolute path to) a sub-dir of the repo. Could be
 repo root, but a subdir of the repo is what magit can't handle with e.g.
-`magit-anything-modified-p'."
+`magit-anything-modified-p'.
+"
   ;; Magit works on `default-directory', so make sure to set that.
   (let* ((default-directory subdir-abs)
          ;; these are all changes in repo, not subdir
@@ -350,8 +366,11 @@ repo root, but a subdir of the repo is what magit can't handle with e.g.
 (require 'subr-x)
 (defun spydez/magit/auto-commit ()
   "For each item in `spydez/dir/git/auto-commit-locations', use
-Magit to: add files, commit, and push."
+Magit to: add files, commit, and push.
+"
   (interactive)
+
+  ;; §-TODO-§ [2020-02-03]: replace `message' with `mis/message/propertize'
 
   ;; Either have to require magit here, or set magit to ":demand t" in
   ;; use-package. Trying out requiring here as magit isn't the fastest to start.
@@ -428,6 +447,66 @@ Magit to: add files, commit, and push."
                       results)
               "\n"))))
 ;; (spydez/magit/auto-commit)
+
+
+(defun spydez/magit/check-status (mis/minibuffer-echo mis/msg-type)
+  "For each item in `spydez/dir/git/watch-locations', use
+Magit to look for uncommitted(/unpushed?) changes.
+"
+  (interactive)
+
+  ;; Either have to require magit here, or set magit to ":demand t" in
+  ;; use-package. Trying out requiring here as magit isn't the fastest to start.
+  (require 'magit)
+
+  ;; Walk our list of auto-commit loctaions.
+  (dolist (location spydez/dir/git/watch-locations)
+    ;; Change the default-directory just for this scope...
+    (let ((default-directory (if (f-dir? location)
+                                 location
+                               (f-dirname location)))
+          (change-list (spydez/magit/changes-in-subdir location)))
+
+      (mis/message/propertize mis/minibuffer-echo
+                              mis/msg-type :highlight
+                              "Checking %s..." location)
+      ;; Magit works on `default-directory', so we are checking status
+      ;; on our repo with this.
+      (if (null change-list)
+          ;;---
+          ;; Say nothing happened here.
+          ;;---
+          (mis/message/propertize mis/minibuffer-echo
+                                  mis/msg-type :text
+                                  "  %s changes in: %s..."
+                                  "No"
+                                  default-directory)
+        ;;---
+        ;; Else, note changes.
+        ;;---
+
+        ;; Summary
+        (mis/message/propertize mis/minibuffer-echo
+                                mis/msg-type :text
+                                "  %s changes in: %s..."
+                                (length change-list)
+                                default-directory))
+
+      ;; Details
+      (dolist (change-path change-list)
+        (mis/message/propertize mis/minibuffer-echo
+                                mis/msg-type :text
+                                "    - %s"
+                                (string-remove-prefix default-directory
+                                                      change-path))))
+
+        (mis/message/propertize mis/minibuffer-echo mis/msg-type ""))
+
+  (mis/message/propertize mis/minibuffer-echo
+                          mis/msg-type :highlight
+                          "Checked status on %s locations."
+                          (length spydez/dir/git/watch-locations)))
+;; (spydez/magit/check-status t '(spydez homeward))
 
 
 ;;------------------------------------------------------------------------------
