@@ -83,6 +83,11 @@ NOTE: Could (optionally) add TYPE to output easily enough if desired.
 ;; §-TODO-§ [2019-11-01]:
 ;;   - add a mis setting for whether to allow also-echo?
 
+;; §-TODO-§ [2020-02-05]: Need a dynamically adjustable timeout, I think...
+;;   - 0 is good for non-interactive startup and funcs that have output?
+;;     - But last output would be nice to not lose?
+;;   - 2 is good for normal (interactive) usage?
+
 ;; https://emacs.stackexchange.com/a/20178
 (defun mis/message/preserve-properties (echo format &rest args)
   "Acts like `message' but preserves string properties in the *Messages* buffer.

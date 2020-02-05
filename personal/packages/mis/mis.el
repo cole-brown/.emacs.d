@@ -21,6 +21,41 @@ them to the *Messages* buffer as such..."
 
 ;; And now some settings before we include all our files...
 
+
+;;------------------------------------------------------------------------------
+;; Settings
+;;------------------------------------------------------------------------------
+
+(defcustom mis/mode/interactive nil
+  "If nil, mis echo area messages will have 0 second delay so that they don't
+slow down other output (using `mis/message/echo-area-timeout/non-interactive').
+
+If non-nil, mis echo area messages will stick around for a while
+(using `mis/message/echo-area-timeout/non-interactive').")
+
+
+;; §-TODO-§ [2020-02-05]: Do this for passing in/around more settings?
+;; Settings keyword plist:
+;;    KEYS         TYPE-or-VALUES
+;;
+;;   :interactive    t, nil
+;;      Shorthand for:
+;;        :echo to t.
+;;        :echo-delay to `mis/message/echo-area-timeout/interactive'
+;;
+;;   :startup        t, nil
+;;      Shorthand for:
+;;        :echo to t.
+;;        :echo-delay to `mis/message/echo-area-timeout/non-interactive'
+;;
+;;   :echo           t, nil
+;;   :echo-delay     nil, numberp (see `minibuffer-message-timeout')
+;;
+;; Yes or no?
+;;   :type           mis/type->faces alist key (keyword symbol or list)
+;;   :face           symbol for desired face
+
+
 ;;------------------------------------------------------------------------------
 ;; Faces
 ;;------------------------------------------------------------------------------
@@ -49,6 +84,7 @@ them to the *Messages* buffer as such..."
     ;;---
     ;; My Custom Stuff
     ;;---
+    ;; §-TODO-§ [2019-11-15]: change do (:spydez :homeward)?
     ((spydez homeward) (:border    font-lock-comment-delimiter-face
                         :padding     font-lock-comment-face
                         :text       font-lock-builtin-face
@@ -58,11 +94,13 @@ them to the *Messages* buffer as such..."
     ;;---
     ;; Koans
     ;;---
+    ;; §-TODO-§ [2019-11-15]: change do (:mis :koan :text)?
     ;; text lines
     ((mis koan text) (;; :indent nil
                       :border  font-lock-comment-delimiter-face
                       :padding   font-lock-comment-face
                       :text     font-lock-keyword-face))
+    ;; §-TODO-§ [2019-11-15]: change do (:mis :koan :presence)?
     ;; non-text lines
     ((mis koan presence) (;; :indent nil
                           :border  font-lock-comment-delimiter-face
