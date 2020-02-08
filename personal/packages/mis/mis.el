@@ -54,6 +54,32 @@ If non-nil, mis echo area messages will stick around for a while
 ;; Yes or no?
 ;;   :type           mis/type->faces alist key (keyword symbol or list)
 ;;   :face           symbol for desired face
+(defconst mis/settings/keys
+  '(:interactive :startup :echo :echo-delay)
+  "Valid keys for mis/settings plists.")
+
+
+(defun mis/settings/put (key value list)
+  "Puts VALUE into LIST under KEY, after verifying KEY is a valid mis setting.
+"
+  (if (memq key mis/settings/keys)
+      (plist-put list key value)
+    (error "Key %S not a valid mis/settings key: %S"
+           key
+           mis/settings/keys)))
+
+
+(defun mis/settings/get (key user-settings &optional mis-setting)
+  "Get a mis setting based off KEY. Setting either comes from USER-SETTINGS
+plist or from the appropriate mis setting const/var (passed in
+as MIS-SETTING).
+"
+  ;; Simply return value from user-settings or mis-setting, preferring
+  ;; user-settings. Only complication is if user-settings specifies a nil, so we
+  ;; have to check that key is a member of user-settings...
+  (if (plist-member user-settings key)
+      (plist-get user-settings key)
+    mis-setting))
 
 
 ;;------------------------------------------------------------------------------

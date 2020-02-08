@@ -164,8 +164,15 @@
                "STARTED(s!)"
                "WAITING(w@/!)"
                "|"
+               ;; Done/cancelled for task progression.
                "DONE(d!)"
-               "CANCELLED(c@)"))
+               "CANCELLED(c@)"
+               ;; Failure/success for bug hunt or investigations.
+               ;; E.g.: Where you're done exploring a possible solution thing,
+               ;; but it's a dead path that shouldn't be paid attention to:
+               ;; mark it a FAILURE.
+               "FAILURE(f@)"
+               "SUCCESS(.@)"))
    "Custom sequence of keywords & actions.")
 
   ;; `Drawer' to log to. (Property/subheading thing). "LOGBOOK" is default if

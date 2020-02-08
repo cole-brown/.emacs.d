@@ -65,15 +65,18 @@
     ;; dying on.
     ;; Yay...
     "
-^Signatures^                         | ^Org-Mode^             | ^Sig/TODO Search^         | ^Align^
-^----------^-------------------------+-^--------^-------------+-^---------------^---------+-^-----^-----------------------
-_/_: ?/?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _n_: New Journal Entry | _s m_: ?s m?^^^^^^^^^^^^^ | _; a_: Align Region After....
-_-_: ?-?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _v_: Visit Journal     | _s s_: Search...          | _; o_: Align Region Before...
-_m_: ?m?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    | ^   ^                     | _; ;_: Align Regexp...
-_t_: ?t?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _p_: Pomodoro History  | ^   ^                     | _; q_: Complex Align Regexp...
-_c_: ?c?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _r_: Pomodoro Start    | ^   ^                     | _a_:   Align Region
-_h_: ?h?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    | ^   ^                     | _'_:   Align Current
-_g_: ?g?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    |
+^Signatures^                           | ^Org-Mode^             | ^Sig/TODO Search^         | ^Align^
+^----------^---------------------------+-^--------^-------------+-^---------------^---------+-^-----^-----------------------
+_/_:   ?/?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _n_: New Journal Entry | _s m_: ?s m?^^^^^^^^^^^^^ | _; a_: Align Region After....
+_-_:   ?-?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _v_: Visit Journal     | _s s_: Search...          | _; o_: Align Region Before...
+_m_:   ?m?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    | ^   ^                     | _; ;_: Align Regexp...
+_t_:   ?t?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _p_: Pomodoro History  | ^   ^                     | _; q_: Complex Align Regexp...
+_c_:   ?c?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _r_: Pomodoro Start    | ^   ^                     | _a_:   Align Region
+_h_:   ?h?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    | ^   ^                     | _'_:   Align Current
+_g_:   ?g?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    |
+_e w_: ?e w?
+_e c_: ?e c?
+_e p_: ?e p?
 "
     ;; "%-26" for right-padded string, which should as long as these,
     ;; which should be longest signatures... Update as needed.
@@ -129,6 +132,17 @@ _g_: ?g?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    |
                          '("" "  (N/A for Major Mode)")
                        `("comm:"
                          ,(spydez/signature/todo/comment nil)))))
+
+    ;;---
+    ;; Email Addresses
+    ;;---
+    ;; Could truncate w/ "..." if not enough room to work with.
+    ("e c" (insert (spydez/signature/email/get :code))
+     (format "%-8s %-23s" "email c:" (spydez/signature/email/get :code)))
+    ("e w" (insert (spydez/signature/email/get :code))
+     (format "%-8s %-23s" "email w:" (spydez/signature/email/get :work)))
+    ("e p" (insert (spydez/signature/email/get :code))
+     (format "%-8s %-23s" "email p:" (spydez/signature/email/get :personal)))
 
 
     ;;-----------------------------------------------------------------------

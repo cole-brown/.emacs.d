@@ -14,8 +14,16 @@
 ;; Consts & Vars
 ;;------------------------------------------------------------------------------
 
-(defcustom mis/message/echo-area-timeout 0
-  "See docs for `minibuffer-message-timeout'. This will lexically bind
+
+;; 0: Emacs ready in 13.52 seconds with 8 garbage collections.
+;; 2: Emacs ready in 13.34 seconds with 8 garbage collections.
+(defcustom mis/message/echo-area-timeout '(2 2)
+  "List of 2 numbers for minibuffer echo area timeout.
+
+First element: timeout during initialization or batch type commands.
+Second element: timeout during normal running or for interactive type commands.
+
+See docs for `minibuffer-message-timeout'. This will lexically bind
 `minibuffer-message-timeout' to this value. If not numberp, it seems the first
 message will not clear until a non-`minibuffer-message' hits the *Messages*
 buffer, at which point it and all subsequent `minibuffer-message' messages will
@@ -117,7 +125,7 @@ If ECHO is non-nil, also echo message to the minibuffer echo area.
         ;; to lose its properties, somehow, probably due to *Messages* stacking
         ;; identical messages.
         (let ((message-log-max nil)
-              (minibuffer-message-timeout mis/message/echo-area-timeout))
+              (minibuffer-message-timeout (first mis/message/echo-area-timeout)))
           (minibuffer-message output)))))
 
 ;; (mis/message/preserve-properties t (propertize "--->" 'face 'underline))

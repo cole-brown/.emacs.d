@@ -36,6 +36,20 @@
   :type 'string)
 
 
+(defcustom spydez/signature/email/addresses
+  '(:work     nil   ;; work email address
+    :personal nil   ;; home/personal email address
+    :code     nil)  ;; code/git/open-source email address
+  "Email addresses for different uses."
+  :group 'spydez/group
+  ;; §-TODO-§ [2020-02-06]: Why must I always have trouble with
+  ;; complicated types?.. >.< Make this display properly. Ideally as e.g.:
+  ;;   Work/Professional: [input field]
+  :type '(group (const :tag "Work/Professional"    :work)     string
+                (const :tag "Home/Personal"        :personal) string
+                (const :tag "Code/Git/Open-Source" :code)     string))
+
+
 (defcustom spydez/signature/name-post (concat "-" spydez/signature/name)
   "Long signature for postfixing note lines or as last line of note block."
   :group 'spydez/group
@@ -62,6 +76,17 @@
 strings or functions. As the function results could change
 per-buffer, I will have to figure out buffer-local type things or
 erse just eval these every call.")
+
+
+(defun spydez/signature/email/get (key)
+  "Insert email associated with KEY from `spydez/signature/email/addresses.
+"
+  ;; Return a string if no setting in list.
+  (or (plist-get spydez/signature/email/addresses key)
+    "No Address"))
+;; (spydez/signature/email/insert :work)
+;; (spydez/signature/email/insert :personal)
+;; (spydez/signature/email/insert :code)
 
 
 (defun spydez/signature/options/add (signature)

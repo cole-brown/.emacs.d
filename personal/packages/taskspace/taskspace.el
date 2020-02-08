@@ -458,6 +458,7 @@ Opens:
   - Today's notes file, if just one taskspace.
   - Auto-complete options for today's notes files, if more than one taskspace.
   - Auto-complete options for all notes files, if prefix arg supplied.
+  - If no taskspaces are found for the DATE-INPUT, lists all options.
 "
   ;; Numeric arg but don't let lower case "p" auto-magic nothing (no prefix arg)
   ;; into 1. Nothing/0/nil is today. 1 is tomorrow.
@@ -465,19 +466,21 @@ Opens:
 
   ;; Default to "today" if date-input isn't parsable string,
   ;; then get date, taskspaces, etc. for that numerical relative day.
-  (let* ((date-input (cond
-                      ;; no date-input is today is 0
-                      ((null date-input) 0)
-                      ;; strings should be converted to numbers
-                      ((stringp date-input)
-                       (string-to-number date-input))
-                      ;; just allow numbers through unscathed
-                      ((numberp date-input) date-input)
-                      ;; default to... today/0 I guess?
-                      (t 0)))
-         (date (taskspace/get-date date-input))
-         (taskspaces (taskspace/list-date date))
-         (length-ts (length taskspaces))
+  (let* ((date-parsed (cond
+                       ;; no date-input is today is 0
+                       ((null date-input) 0)
+                       ;; strings should be converted to numbers
+                       ((stringp date-input)
+                        (string-to-number date-input))
+                       ;; just allow numbers through unscathed
+                       ((numberp date-input) date-input)
+                       ;; default to... today/0 I guess?
+                       (t 0)))
+         (date        (taskspace/get-date date-parsed))
+         (taskspaces  (taskspace/list-date date))
+         (taskspaces  (or taskspaces
+                          (taskspace/list-all)))
+         (length-ts   (length taskspaces))
          notes-path)
 
     (message "%S tasks for %S: %S" length-ts date taskspaces)
