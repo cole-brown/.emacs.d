@@ -6,6 +6,24 @@
 
 * Updating These Libs
 
+** org-roam
+
+I chose 'git subtree' for this because:
+  https://codewinsarguments.co/2016/05/01/git-submodules-vs-git-subtrees/
+
+
+Run from git root directory (.emacs.d/):
+
+Current Commands:
+
+  - Create/add:
+    git subtree add --prefix packages/subtrees/org-roam git@github.com:jethrokuan/org-roam.git master --squash
+
+  - Pull/update:
+    git subtree pull --prefix packages/subtrees/org-roam git@github.com:jethrokuan/org-roam.git master --squash
+
+
+
 ** spotify:
 
 Moved to a submodule.

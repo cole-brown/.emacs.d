@@ -625,6 +625,7 @@
 ;; Also, now, useful non-interactive functions used in init.
 (spydez/require 'mis) ;; This should already be loaded by early-init, so no-op?
 (spydez/require 'strings-and-things)
+(spydez/require 'json-and-tom)
 (spydez/require 'misc-functions)
 (spydez/require 'date-and-time)
 (spydez/require 'buffer-functions)

@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# contributor: Cole Brown <git@spydez.com>
+# name: spy-quote-app: append single quotes to start and end of region
+# key: spy-quote-app
+# --
+"'" + `yas-selected-text`$1 + "'"$0
