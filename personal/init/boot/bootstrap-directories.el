@@ -158,6 +158,10 @@
 ;; TODO-SECRETS: Change from spydez/.../secrets... to secrets/... ??
 ;;   ...not convinced.
 
+(defconst spydez/dir/roam
+  (spydez/path/to-dir spydez/dir/home ".lily.d")
+  "Location of org-roam dir on this computer.")
+
 (defconst spydez/dir/secrets
   (spydez/path/to-dir spydez/dir/home ".secrets.d")
   "Location of secrets dir on this computer.")

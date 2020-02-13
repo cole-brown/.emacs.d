@@ -12,12 +12,14 @@
   :type 'string)
 ;;(format-time-string spydez/datetime/format/yyyy-mm-dd)
 
+
 ;; best format w/ time
 (defcustom spydez/datetime/format/yyyy-mm-dd_hh-mm-ss "%Y-%m-%d %H:%M:%S"
   "My favorite, and the best, date & time format."
   :group 'spydez/group
   :type 'string)
 ;;(format-time-string spydez/datetime/format/yyyy-mm-dd)
+
 
 (defcustom spydez/datetime/format/org-inactive-derivative "[%Y-%m-%d]"
   "org-time-stamp-inactive e.g.: [2019-09-19 Thu]
@@ -26,12 +28,23 @@ mine e.g.: [2019-09-19]"
   :type 'string)
 ;;(format-time-string spydez/datetime/format/org-inactive-derivative)
 
-;; pretty ok format & ISO standard
+
+;; pretty ok format & ISO standard: 2020-02-13T11:34:10-0800
 (defcustom spydez/datetime/format/ISO-8601 "%Y-%m-%dT%T%z"
   "ISO format, used in logs and such..."
   :group 'spydez/group
   :type 'string)
 ;;(format-time-string spydez/datetime/format/ISO-8601)
+
+
+;; pretty ok format & ISO derivative
+(defcustom spydez/datetime/format/file-prefix "%Y-%m-%d-T-%H-%M-%S"
+  "ISO 8601-ish format, but works on Windows. Can strip hypens to
+get to ISO-8601 basic format (YYYYMMDDThhmmssZ)."
+  :group 'spydez/group
+  :type 'string)
+;;(format-time-string spydez/datetime/format/file-prefix)
+
 
 ;; other
 (defcustom spydez/datetime/format/yyyymmdd "%Y%m%d"
@@ -40,6 +53,7 @@ mine e.g.: [2019-09-19]"
   :type 'string)
 ;;(format-time-string spydez/datetime/format/yyyymmdd)
 
+
 ;; pretty much worst format
 (defcustom spydez/datetime/format/dd-mon-yy "%d-%b-%y"
   "Bad, ye olde human format. Trash."
@@ -47,11 +61,14 @@ mine e.g.: [2019-09-19]"
   :type 'string)
 ;;(format-time-string spydez/datetime/format/dd-mon-yy)
 
+
 ;; And... the terrible USA formats.
 (defcustom spydez/datetime/format/mm-dd-yyyy "%m-%d-%Y"
   "Bad, US American format. I am ashamed."
   :group 'spydez/group
   :type 'string)
+
+
 ;;(format-time-string spydez/datetime/format/mm-dd-yyyy)
 (defcustom spydez/datetime/format/mm-dd-yy "%m-%d-%y"
   "Extra bad, US American format. I am ashamed."

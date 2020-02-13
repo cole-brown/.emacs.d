@@ -695,6 +695,8 @@ savages."
   :after org
   :demand t
 
+  ;; §-TODO-§ [2020-02-13]: Move journals into org-roam directory if it makes
+  ;; sense to use them together?
 
   ;; ;;-----
   ;; :bind*
@@ -753,6 +755,93 @@ savages."
   ;; TODO: encryption?
   ;; https://github.com/bastibe/org-journal#encryption
   )
+
+
+;;------------------------------------------------------------------------------
+;; Org Roam (Zettelkasten Note-Taking with Org-Mode)
+;;------------------------------------------------------------------------------
+;; https://blog.jethro.dev/posts/introducing_org_roam/
+;;   https://blog.jethro.dev/posts/zettelkasten_with_org/
+;; https://github.com/jethrokuan/org-roam
+;; Trial: [2020-02-13]
+(use-package org-roam
+  :load-path (lambda () (spydez/path/to-dir
+                         spydez/dir/packages/git-subtrees "org-roam"))
+  :after org
+  :demand t
+
+  ;;-----
+  :hook
+  ;;-----
+  (org-mode . org-roam-mode)
+
+  ;;-----
+  :bind
+  ;;-----
+  ("C-c n l" . org-roam)
+  ("C-c n t" . org-roam-today)
+  ("C-c n f" . org-roam-find-file)
+  ("C-c n i" . org-roam-insert)
+  ("C-c n g" . org-roam-show-graph)
+
+  ;; Could put in grab-bag hydra if desired.
+
+  ;;-----
+  :custom
+  ;;-----
+
+  ;; Every org file within this directory tree root is part of
+  ;; the org-roam ecosystem.
+  (org-roam-directory spydez/dir/roam)
+
+  (org-roam-buffer (spydez/buffer/special-name "lily" nil :info))
+
+  ;; If 'right isn't desirable:
+  ;; (org-roam-position 'left)
+
+  ;; What % of total frame width to use.
+  ;; (org-roam-buffer-width 0.4)
+
+  ;; By default, links are inserted with the title as the link description. This
+  ;; can make them hard to distinguish from external links. If you wish, you may
+  ;; choose add special indicators for Org-roam links by tweaking
+  ;; this, for example:
+  ;; (org-roam-link-title-format "R:%s")
+
+  ;; Org-Roam filenames need to be uniquely named, but name doesn't matter much?
+  ;; Or so they say... So they can just gen file names from the current time.
+  (org-roam-timestamped-files t)
+  (org-roam-timestamp-format spydez/datetime/format/file-prefix)
+
+  ;; ;;-----
+  ;; :config
+  ;; ;;-----
+  ;; ;; move cache to no-littering's /var
+  ;; ;; TODO: remove when no-littering updates to catch this.
+  ;; (setq org-journal-cache-file
+  ;;       (no-littering-expand-var-file-name "org-journal.cache"))
+
+  ;; ;; TODO: encryption?
+  ;; ;; https://github.com/bastibe/org-journal#encryption
+  )
+
+
+;; https://github.com/jethrokuan/org-roam
+;;   - Org-Roam suggests it for working with org-roam notes.
+;;   - https://github.com/jethrokuan/org-roam/blob/develop/doc/ecosystem.md
+;; Trial: [2020-02-13]
+(use-package deft
+  :after org
+
+  :bind
+  ("C-c n d" . deft)
+
+  :custom
+  (deft-recursive t)
+  (deft-use-filter-string-for-filename t)
+  (deft-default-extension "org")
+  (deft-directory spydez/dir/roam)
+  (deft-use-filename-as-title t))
 
 
 ;;------------------------------------------------------------------------------

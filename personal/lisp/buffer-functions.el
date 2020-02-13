@@ -29,10 +29,20 @@
   :type '(list string string))
 
 
+(defcustom spydez/buffer/format/bookend-info
+  '("ⓘ-" "-ⓘ")
+  "Start/end strings for special-name formats."
+  :group 'spydez/group
+  :type '(list string string))
+
+
 (defcustom spydez/buffer/format/priorities
   '((:low    . spydez/buffer/format/bookend-normal) ;; no actual low right now
     (:medium . spydez/buffer/format/bookend-normal)
-    (:high   . spydez/buffer/format/bookend-high))
+    (:high   . spydez/buffer/format/bookend-high)
+
+    ;; un-normal priority levels
+    (:info   . spydez/buffer/format/bookend-info))
   "Priority (for `spydez/buffer/special-name') to bookend consts."
   :group 'spydez/group
   :type '(alist :key-type symbol :value-type symbol))
