@@ -67,7 +67,7 @@
       ;;                         ;; I like to line things up.
       ;;                         '("disable=C0326"))
       )
-    (spydez/hook/lsp-deferred))
+    (spydez/hook/lsp-immediate))
 
 
   ;;-----

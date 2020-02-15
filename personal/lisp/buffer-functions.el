@@ -272,6 +272,9 @@ it. BUFFER-OR-NAME must be exact."
 ;; Better Kill-Matching-Buffer
 ;;------------------------------------------------------------------------------
 
+;; §-TODO-§ [2020-02-13]: A "bury-matching in all windows" like
+;; `spydez/buffer/kill-matching'?
+
 ;; I could just grub my meaty hooks into kill-matching-buffers, but... eh.
 ;; I'd probably just forget the function that way.
 (defun spydez/buffer/kill-matching (regexp &optional
