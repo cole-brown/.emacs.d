@@ -51,6 +51,10 @@
                               '("E203"
                                 ;; spaces after colon...
                                 "E241"
+                                ;; spaces before equals...
+                                "E221"
+                                ;; spaces after equals...
+                                "E222"
                                 ;; Breaking before binary operator
                                 ;; ...Complains about valid PEP-8 things.
                                 "W503"
