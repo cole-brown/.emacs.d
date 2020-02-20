@@ -314,7 +314,8 @@
 (defcustom spydez/dir/git/auto-commit-locations
   (list
    spydez/dir/doc-save-secrets
-   spydez/dir/doc-save-vault)
+   spydez/dir/doc-save-vault
+   spydez/dir/roam)
   "List of strings of directories (TODO: add allowance for single
 files?) to automatically add/commit/push in their respective git
 repos."
