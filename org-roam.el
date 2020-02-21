@@ -1,9 +1,39 @@
 ;;; org-roam.el --- Roam Research replica with Org-mode -*- coding: utf-8; lexical-binding: t -*-
 
+;; Copyright © 2020 Jethro Kuan <jethrokuan95@gmail.com>
+
+;; Author: Jethro Kuan <jethrokuan95@gmail.com>
+;; URL: https://github.com/jethrokuan/org-roam
+;; Keywords: org-mode, roam, convenience
+;; Version: 0.1.0
+;; Package-Requires: ((emacs "26.1") (dash "2.13") (f "0.17.2") (s "1.12.0") (async "1.9.4"))
+
+;; This file is NOT part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 3, or (at your option)
+;; any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with GNU Emacs; see the file COPYING.  If not, write to the
+;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+;; Boston, MA 02110-1301, USA.
+
 ;;; Commentary:
 ;;
-
+;; This library is an attempt at injecting Roam functionality into Org-mode.
+;; This is achieved primarily through building caches for forward links,
+;; backward links, and file titles.
+;;
+;;
 ;;; Code:
+
 (eval-when-compile (require 'cl-lib))
 (require 'dash)
 (require 'org-element)
@@ -11,19 +41,24 @@
 (require 'subr-x)
 (require 's)
 (require 'f)
+(require 'org-roam-utils)
 
 ;;; Customizations
 (defgroup org-roam nil
   "Roam Research replica in Org-mode."
   :group 'org
-  :prefix "org-roam-")
+  :prefix "org-roam-"
+  :link '(url-link :tag "Github" "https://github.com/jethrokuan/org-roam")
+  :link '(url-link :tag "Online Manual" "https://org-roam.readthedocs.io/"))
 
 (defcustom org-roam-directory (expand-file-name "~/org-roam/")
-  "Org-roam directory."
-  :type 'directory
+  "Path to Org-roam files.
+
+All Org files, at any level of nesting, is considered part of the Org-roam."
+  :type 'directoy
   :group 'org-roam)
 
-(defcustom org-roam-position 'right
+(defcustom org-roam-buffer-position 'right
   "Position of `org-roam' buffer.
 
 Valid values are
@@ -33,32 +68,19 @@ Valid values are
                  (const right))
   :group 'org-roam)
 
-(defcustom org-roam-link-representation 'id
-  "The value used to represent an org-roam link.
-
-Valid values are
- * file,
- * title."
-  :type '(choice (const id)
-                 (const title))
-  :group 'org-roam)
-
-(defcustom org-roam-timestamped-files nil
-  "Whether to use timestamps to generate unique filenames."
-  :type 'boolean
-  :group 'org-roam)
-
-(defcustom org-roam-timestamp-format "%Y-%m-%d%H%M%S"
-  "The timestamp format to use filenames.")
-
-(defcustom org-roam-link-id-format "§%s"
-  "The format string used when inserting org-roam links that use id."
+(defcustom org-roam-file-format "%Y%m%d%H%M%S"
+  "The timestamp format to use filenames."
   :type 'string
   :group 'org-roam)
 
 (defcustom org-roam-link-title-format "%s"
   "The format string used when inserting org-roam links that use their title."
   :type 'string
+  :group 'org-roam)
+
+(defcustom org-roam-use-timestamp-as-filename t
+  "Whether to use timestamp as a file name. If not true, prompt for a file name each time."
+  :type 'boolean
   :group 'org-roam)
 
 (defcustom org-roam-autopopulate-title t "Whether to autopopulate the title."
@@ -130,35 +152,16 @@ If called interactively, then PARENTS is non-nil."
 (defun org-roam--org-roam-file-p ()
   "Return t if file is part of org-roam system, false otherwise."
   (and (buffer-file-name (current-buffer))
-       (f-child-of-p (file-truename (buffer-file-name (current-buffer)))
-                     org-roam-directory)))
+       (f-descendant-of-p (file-truename (buffer-file-name (current-buffer)))
+                          org-roam-directory)))
 
-(defun org-roam--get-title (file)
-  "Return title of `FILE'.
-
-It first tries the cache. If the cache does not contain the file,
-it will return the title by loading the file."
+(defun org-roam--get-title-from-cache (file)
+  "Return title of `FILE' from the cache."
   (or (gethash file org-roam-titles-cache)
-      (org-roam--extract-file-title file)))
-
-(defun org-roam--find-files (dir)
-  "Return all org-roam files in `DIR'."
-  (if (file-exists-p dir)
-      (let ((files (directory-files dir t "." t))
-            (dir-ignore-regexp (concat "\\(?:"
-                                       "\\."
-                                       "\\|\\.\\."
-                                       "\\)$"))
-            result)
-        (dolist (file files)
-          (cond
-           ((file-directory-p file)
-            (when (not (string-match dir-ignore-regexp file))
-              (setq result (append (org-roam--find-files file) result))))
-           ((and (file-readable-p file)
-                 (string= (file-name-extension file) "org"))
-            (setq result (cons (file-truename file) result)))))
-        result)))
+      (progn
+        (unless org-roam-cache-initialized
+          (user-error "The Org-Roam caches aren't built! Please run org-roam--build-cache-async"))
+        nil)))
 
 (defun org-roam--find-all-files ()
   "Return all org-roam files."
@@ -177,25 +180,21 @@ If `ABSOLUTE', return the absolute file-path. Else, return the relative file-pat
       (file-relative-name absolute-file-path
                           (file-truename org-roam-directory)))))
 
-(defun org-roam--get-id (file-path)
-  "Convert `FILE-PATH' to the org-roam id."
-  (file-name-sans-extension
-   (file-relative-name
-    (file-truename file-path)
-    (file-truename org-roam-directory))))
+(defun org-roam--get-title-or-slug (file-path)
+  "Convert `FILE-PATH' to the file title, if it exists. Else, return the path."
+  (or (org-roam--get-title-from-cache file-path)
+      (-> file-path
+          (file-relative-name (file-truename org-roam-directory))
+          (file-name-sans-extension))))
 
-(defun org-roam--get-title-or-id (file-path)
-  "Convert `FILE-PATH' to the file title, if it exists. Else, return the id."
-  (or (org-roam--get-title file-path)
-      (org-roam--get-id file-path)))
-
-(defun org-roam--title-to-id (title)
-  "Convert TITLE to id."
+(defun org-roam--title-to-slug (title)
+  "Convert TITLE to a filename-suitable slug."
   (let* ((s (s-downcase title))
          (s (replace-regexp-in-string "[^a-zA-Z0-9_ ]" "" s))
          (s (s-split " " s))
          (s (s-join "_" s)))
     s))
+
 
 ;;; Creating org-roam files
 (defun org-roam--populate-title (file &optional title)
@@ -218,7 +217,7 @@ If not provided, derive the title from the file name."
 (defun org-roam--make-file (file-path &optional title)
   "Create an org-roam file at FILE-PATH, optionally setting the TITLE attribute."
   (if (file-exists-p file-path)
-      (error (format "Aborting, file already exists at " file-path))
+      (error (format "Aborting, file already exists at %s" file-path))
     (if org-roam-autopopulate-title
         (org-roam--populate-title file-path title)
       (make-empty-file file-path))))
@@ -232,9 +231,20 @@ If not provided, derive the title from the file name."
       (org-roam--make-file file-path))
     (find-file file-path)))
 
-(defun org-roam--get-new-id ()
-  "Return a new ID, generated from the current time."
-  (format-time-string org-roam-timestamp-format (current-time)))
+(defun org-roam--get-new-id (&optional title)
+  "Return a new ID, generated from the current time.
+
+Optionally pass it the title, for a smart file name."
+  (if org-roam-use-timestamp-as-filename
+      (format-time-string org-roam-file-format (current-time))
+    (let* ((slug (read-string "Enter ID (without extension): "
+                              (if title
+                                  (org-roam--title-to-slug title)
+                                "")))
+           (file-path (org-roam--get-file-path slug t)))
+      (if (file-exists-p file-path)
+          (user-error "There's already a file at %s")
+        slug))))
 
 (defun org-roam-new-file ()
   "Quickly create a new file, using the current timestamp."
@@ -243,59 +253,40 @@ If not provided, derive the title from the file name."
 
 ;;; Inserting org-roam links
 (defun org-roam-insert ()
-  "Insert an org-roam link."
+  "Find an org-roam file, and insert a relative org link to it at point."
   (interactive)
-  (pcase org-roam-link-representation
-    ('id (org-roam--insert-id))
-    ('title (org-roam--insert-title))))
-
-(defun org-roam--insert-title ()
-  "Find `ID', and insert a relative org link to it at point."
   (let* ((completions (mapcar (lambda (file)
-                                (list (org-roam--get-title-or-id file)
-                                      (org-roam--get-id file)))
+                                (list (org-roam--get-title-or-slug file)
+                                      file))
                               (org-roam--find-all-files)))
          (title (completing-read "File: " completions))
-         (id (cadr (assoc title completions))))
-    (when (not id)
-      (if org-roam-timestamped-files
-          (setq id (org-roam--get-new-id)))
-        (read-string "Enter new file id: " (org-roam--title-to-id title)))
-    (let ((file-path (org-roam--get-file-path id)))
-      (unless (file-exists-p file-path)
-        (org-roam--make-file file-path title))
-      (insert (format "[[%s][%s]]"
-                      (concat "file:" file-path)
-                      (format org-roam-link-title-format title))))))
-
-(defun org-roam--insert-id ()
-  "Find `ID', and insert a relative org link to it at point."
-  (let* ((id (completing-read "File: " (mapcar #'org-roam--get-id (org-roam--find-all-files))))
-         (file-path (org-roam--get-file-path id)))
-    (unless (file-exists-p file-path)
-      (org-roam--make-file file-path))
+         (absolute-file-path (or (cadr (assoc title completions))
+                                 (org-roam--get-file-path (org-roam--get-new-id title) t)))
+         (current-file-path (-> (current-buffer)
+                                (buffer-file-name)
+                                (file-truename)
+                                (file-name-directory))))
+    (unless (file-exists-p absolute-file-path)
+      (org-roam--make-file absolute-file-path title))
     (insert (format "[[%s][%s]]"
-                    (concat "file:" file-path)
-                    (format org-roam-link-id-format id)))))
+                    (concat "file:" (file-relative-name absolute-file-path
+                                                        current-file-path))
+                    (format org-roam-link-title-format title)))))
 
 ;;; Finding org-roam files
 (defun org-roam-find-file ()
   "Find and open an org-roam file."
   (interactive)
   (let* ((completions (mapcar (lambda (file)
-                                (list (org-roam--get-title-or-id file) file))
+                                (list (org-roam--get-title-or-slug file) file))
                               (org-roam--find-all-files)))
-         (title-or-id (completing-read "File: " completions))
-         (file-path (cadr (assoc title-or-id completions))))
-    (unless file-path
-      (let ((id (if org-roam-timestamped-files
-                    (org-roam--get-new-id)
-                  (read-string "Enter new file id: "
-                   (org-roam--title-to-id title-or-id)))))
-        (setq file-path (org-roam--get-file-path id t))))
-    (unless (file-exists-p file-path)
-      (org-roam--make-file file-path title-or-id))
-    (find-file file-path)))
+         (title-or-slug (completing-read "File: " completions))
+         (absolute-file-path (or (cadr (assoc title-or-slug completions))
+                                 (org-roam--get-file-path
+                                  (org-roam--get-new-id title-or-slug) t))))
+    (unless (file-exists-p absolute-file-path)
+      (org-roam--make-file absolute-file-path title-or-slug))
+    (find-file absolute-file-path)))
 
 ;;; Building the org-roam cache (asynchronously)
 (defun org-roam--build-cache-async ()
@@ -303,101 +294,30 @@ If not provided, derive the title from the file name."
   (interactive)
   (async-start
    `(lambda ()
-      (require 'org)
-      (require 'org-element)
-      (require 'subr-x)                 ; temp-fix
-      (require 'cl-lib)
+      (setq load-path ',load-path)
+      (package-initialize)
+      (require 'org-roam-utils)
       ,(async-inject-variables "org-roam-directory")
       (let ((backward-links (make-hash-table :test #'equal))
             (forward-links (make-hash-table :test #'equal))
             (file-titles (make-hash-table :test #'equal)))
-        (cl-labels ((org-roam--find-files
-                     (dir)
-                     (if (file-exists-p dir)
-                         (let ((files (directory-files dir t "." t))
-                               (dir-ignore-regexp (concat "\\(?:"
-                                                          "\\."
-                                                          "\\|\\.\\."
-                                                          "\\)$"))
-                               result)
-                           (dolist (file files)
-                             (cond
-                              ((file-directory-p file)
-                               (when (not (string-match dir-ignore-regexp file))
-                                 (setq result (append (org-roam--find-files file) result))))
-                              ((and (file-readable-p file)
-                                    (string= (file-name-extension file) "org"))
-                               (setq result (cons (file-truename file) result)))))
-                           result)))
-                    (org-roam--parse-content
-                     (file)
-                     (with-temp-buffer
-                       (insert-file-contents file)
-                       (with-current-buffer (current-buffer)
-                         (org-element-map (org-element-parse-buffer) 'link
-                           (lambda (link)
-                             (let ((type (org-element-property :type link))
-                                   (path (org-element-property :path link))
-                                   (start (org-element-property :begin link)))
-                               (when (and (string= type "file")
-                                          (string= (file-name-extension path) "org"))
-                                 (goto-char start)
-                                 (let* ((element (org-element-at-point))
-                                        (content (or (org-element-property :raw-value element)
-                                                     (buffer-substring
-                                                      (or (org-element-property :content-begin element)
-                                                          (org-element-property :begin element))
-                                                      (or (org-element-property :content-end element)
-                                                          (org-element-property :end element))))))
-                                   (list :from file
-                                         :to (file-truename (expand-file-name path org-roam-directory))
-                                         :content (string-trim content))))))))))
-                    (org-roam--process-items
-                     (items)
-                     (mapcar
-                      (lambda (item)
-                        (pcase-let ((`(:from ,p-from :to ,p-to :content ,content) item))
-                          ;; Build forward-links
-                          (let ((links (gethash p-from forward-links)))
-                            (if links
-                                (puthash p-from
-                                         (if (member p-to links)
-                                             links
-                                           (cons p-to links)) forward-links)
-                              (puthash p-from (list p-to) forward-links)))
-                          ;; Build backward-links
-                          (let ((contents-hash (gethash p-to backward-links)))
-                            (if contents-hash
-                                (if-let ((contents-list (gethash p-from contents-hash)))
-                                    (let ((updated (cons content contents-list)))
-                                      (puthash p-from updated contents-hash)
-                                      (puthash p-to contents-hash backward-links))
-                                  (progn
-                                    (puthash p-from (list content) contents-hash)
-                                    (puthash p-to contents-hash backward-links)))
-                              (let ((contents-hash (make-hash-table :test #'equal)))
-                                (puthash p-from (list content) contents-hash)
-                                (puthash p-to contents-hash backward-links))))))
-                      items))
-                    (org-roam--extract-title
-                     (buffer)
-                     (with-current-buffer buffer
-                       (org-element-map
-                           (org-element-parse-buffer)
-                           'keyword
-                         (lambda (kw)
-                           (when (string= (org-element-property :key kw) "TITLE")
-                             (org-element-property :value kw)))
-                         :first-match t))))
-          (let ((org-roam-files (org-roam--find-files org-roam-directory)))
-            (mapcar #'org-roam--process-items
-                    (mapcar #'org-roam--parse-content org-roam-files))
-            (mapcar (lambda (file)
-                      (with-temp-buffer
-                        (insert-file-contents file)
-                        (when-let ((title (org-roam--extract-title (current-buffer))))
-                          (puthash file title file-titles))))
-                    org-roam-files)))
+        (let* ((org-roam-files (org-roam--find-files org-roam-directory))
+               (file-items (mapcar (lambda (file)
+                                     (with-temp-buffer
+                                       (insert-file-contents file)
+                                       (org-roam--parse-content file))) org-roam-files)))
+          (dolist (items file-items)
+            (dolist (item items)
+              (org-roam--insert-item
+               item
+               :forward forward-links
+               :backward backward-links)))
+          (mapcar (lambda (file)
+                    (with-temp-buffer
+                      (insert-file-contents file)
+                      (when-let ((title (org-roam--extract-title)))
+                        (puthash file title file-titles))))
+                  org-roam-files))
         (list
          :forward forward-links
          :backward backward-links
@@ -409,92 +329,43 @@ If not provided, derive the title from the file name."
      (setq org-roam-cache-initialized t)
      (message "Org-roam cache built!"))))
 
-(defun org-roam--insert-item (item)
-  "Insert `ITEM' into org-roam caches.
-
-`ITEM' is of the form: (:from from-path :to to-path :content preview-content)
-
-Before calling this function, `org-roam-cache' should be already populated."
-  (pcase-let ((`(:from ,p-from :to ,p-to :content ,content) item))
-    ;; Build forward-links
-    (let ((links (gethash p-from org-roam-forward-links-cache)))
-      (if links
-          (puthash p-from
-                   (if (member p-to links)
-                       links
-                     (cons p-to links)) org-roam-forward-links-cache)
-        (puthash p-from (list p-to) org-roam-forward-links-cache)))
-    ;; Build backward-links
-    (let ((contents-hash (gethash p-to org-roam-backward-links-cache)))
-      (if contents-hash
-          (if-let ((contents-list (gethash p-from contents-hash)))
-              (let ((updated (cons content contents-list)))
-                (puthash p-from updated contents-hash)
-                (puthash p-to contents-hash org-roam-backward-links-cache))
-            (progn
-              (puthash p-from (list content) contents-hash)
-              (puthash p-to contents-hash org-roam-backward-links-cache)))
-        (let ((contents-hash (make-hash-table :test #'equal)))
-          (puthash p-from (list content) contents-hash)
-          (puthash p-to contents-hash org-roam-backward-links-cache))))))
-
-(defun org-roam--parse-content ()
-  "Parse the current buffer, and return a list of items for processing."
-  (with-current-buffer (current-buffer)
-    (org-element-map (org-element-parse-buffer) 'link
-      (lambda (link)
-        (let ((type (org-element-property :type link))
-              (path (org-element-property :path link))
-              (start (org-element-property :begin link)))
-          (when (and (string= type "file")
-                     (string= (file-name-extension path) "org"))
-            (goto-char start)
-            (let* ((element (org-element-at-point))
-                   (content (or (org-element-property :raw-value element)
-                                (buffer-substring
-                                 (or (org-element-property :content-begin element)
-                                     (org-element-property :begin element))
-                                 (or (org-element-property :content-end element)
-                                     (org-element-property :end element))))))
-              (list :from (file-truename (buffer-file-name (current-buffer)))
-                    :to (file-truename (expand-file-name path org-roam-directory))
-                    :content (string-trim content)))))))))
-
-(defun org-roam--clear-cache-for-buffer (buffer)
-  "Remove any related links to the file for `BUFFER'.
+(defun org-roam--clear-cache ()
+  "Remove any related links to the file.
 
 This is equivalent to removing the node from the graph."
-  (with-current-buffer (current-buffer)
-    (let ((file (file-truename (buffer-file-name buffer))))
-      ;; Step 1: Remove all existing links for file
-      (when-let ((forward-links (gethash file org-roam-forward-links-cache)))
-        ;; Delete backlinks to file
-        (dolist (link forward-links)
-          (when-let ((backward-links (gethash link org-roam-backward-links-cache)))
-            (remhash file backward-links)
-            (puthash link backward-links org-roam-backward-links-cache)))
-        ;; Clean out forward links
-        (remhash file org-roam-forward-links-cache))
-      ;; Step 2: Remove from the title cache
-      (remhash file org-roam-titles-cache))))
+  (let ((file (file-truename (buffer-file-name (current-buffer)))))
+    ;; Step 1: Remove all existing links for file
+    (when-let ((forward-links (gethash file org-roam-forward-links-cache)))
+      ;; Delete backlinks to file
+      (dolist (link forward-links)
+        (when-let ((backward-links (gethash link org-roam-backward-links-cache)))
+          (remhash file backward-links)
+          (puthash link backward-links org-roam-backward-links-cache)))
+      ;; Clean out forward links
+      (remhash file org-roam-forward-links-cache))
+    ;; Step 2: Remove from the title cache
+    (remhash file org-roam-titles-cache)))
 
-(defun org-roam--update-cache-title (buffer)
-  "Inserts the `TITLE' of file in buffer into the cache."
-  (when-let ((title (org-roam--extract-title buffer)))
-    (puthash (file-truename (buffer-file-name buffer))
+(defun org-roam--update-cache-title ()
+  "Insert the title of the current buffer into the cache."
+  (when-let ((title (org-roam--extract-title)))
+    (puthash (file-truename (buffer-file-name (current-buffer)))
              title
              org-roam-titles-cache)))
 
 (defun org-roam--update-cache ()
   "Update org-roam caches for the current buffer file."
   (save-excursion
-    (org-roam--clear-cache-for-buffer (current-buffer))
+    (org-roam--clear-cache)
     ;; Insert into title cache
-    (org-roam--update-cache-title (current-buffer))
+    (org-roam--update-cache-title)
     ;; Insert new items
     (let ((items (org-roam--parse-content)))
       (dolist (item items)
-        (org-roam--insert-item item)))
+        (org-roam--insert-item
+         item
+         :forward org-roam-forward-links-cache
+         :backward org-roam-backward-links-cache)))
     ;; Rerender buffer
     (org-roam--maybe-update-buffer :redisplay t)))
 
@@ -516,27 +387,10 @@ This is equivalent to removing the node from the graph."
     (org-roam--new-file-named (format-time-string "%Y-%m-%d" time))))
 
 ;;; Org-roam buffer updates
-(defun org-roam--extract-title (buffer)
-  "Extract the title from `BUFFER'."
-  (with-current-buffer buffer
-    (org-element-map
-        (org-element-parse-buffer)
-        'keyword
-      (lambda (kw)
-        (when (string= (org-element-property :key kw) "TITLE")
-          (org-element-property :value kw)))
-      :first-match t)))
-
-(defun org-roam--extract-file-title (file)
-  "Extract the title from `FILE'."
-  (with-temp-buffer
-    (insert-file-contents file)
-    (org-roam--extract-title (current-buffer))))
-
 (defun org-roam-update (file-path)
   "Show the backlinks for given org file for file at `FILE-PATH'."
   (org-roam--ensure-cache-built)
-  (let ((buffer-title (org-roam--get-title-or-id file-path)))
+  (let ((buffer-title (org-roam--get-title-or-slug file-path)))
     (with-current-buffer org-roam-buffer
       (let ((inhibit-read-only t))
         (erase-buffer)
@@ -553,7 +407,7 @@ This is equivalent to removing the node from the graph."
               (maphash (lambda (file-from contents)
                          (insert (format "** [[file:%s][%s]]\n"
                                          file-from
-                                         (org-roam--get-title-or-id file-from)))
+                                         (org-roam--get-title-or-slug file-from)))
                          (dolist (content contents)
                            (insert (concat (propertize (s-trim (s-replace "\n" " " content))
                                                        'font-lock-face 'org-block)
@@ -586,11 +440,11 @@ Valid states are 'visible, 'exists and 'none."
         (enlarge-window-horizontally (- w (window-width))))))))
 
 (defun org-roam--setup-buffer ()
-  "Setup the `org-roam' buffer at the `org-roam-position'."
+  "Setup the `org-roam' buffer at the `org-roam-buffer-position'."
   (let ((window (get-buffer-window)))
     (-> (get-buffer-create org-roam-buffer)
         (display-buffer-in-side-window
-         `((side . ,org-roam-position)))
+         `((side . ,org-roam-buffer-position)))
         (select-window))
     (org-roam--set-width
      (round (* (frame-width)
@@ -654,19 +508,17 @@ This needs to be quick/infrequent, because this is run at
   (org-roam--ensure-cache-built)
   (with-temp-buffer
     (insert "digraph {\n")
-    (mapcar (lambda (file)
-              (insert
-               (format "  \"%s\" [URL=\"roam://%s\"];\n"
-                       (org-roam--get-id file)
-                       file)))
-            (org-roam--find-all-files))
+    (dolist (file (org-roam--find-all-files))
+      (insert
+       (format "  \"%s\" [URL=\"roam://%s\"];\n"
+               (org-roam--get-title-or-slug file)
+               file)))
     (maphash
      (lambda (from-link to-links)
        (dolist (to-link to-links)
          (insert (format "  \"%s\" -> \"%s\";\n"
-                         (org-roam--get-id from-link)
-                         (org-roam--get-id to-link))))
-       )
+                         (org-roam--get-title-or-slug from-link)
+                         (org-roam--get-title-or-slug to-link)))))
      org-roam-forward-links-cache)
     (insert "}")
     (buffer-string)))
@@ -686,7 +538,6 @@ This needs to be quick/infrequent, because this is run at
       (insert graph))
     (call-process org-roam-graphviz-executable nil 0 nil temp-dot "-Tsvg" "-o" temp-graph)
     (call-process org-roam-graph-viewer nil 0 nil temp-graph)))
-
 
 (provide 'org-roam)
 
