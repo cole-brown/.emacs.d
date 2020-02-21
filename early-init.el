@@ -90,6 +90,22 @@
 ;; Funcs, vars for my debugging/warning messages.
 (require 'mis)
 (require 'zeroth-debug)
+
+;; Setup mis for init. First hook into a final step for reverting to more normal
+;; settings...
+(spydez/hook/defun-and-hooker
+    spydez/hook-runner/finalize/final-finalities nil nil
+    "mis/reset"
+    nil
+    "early-init.el"
+  "Resets some mis settings back to a 'running interactively' state."
+  (customize-set-variable 'mis/message/echo-area-timeout
+                          (copy-sequence mis/message/echo-area-timeout)))
+;; And second set mis/messages to clear out quickly during init.
+;; §-TODO-§ [2020-02-20]: 0.1 good? Try actual 0.0?
+(customize-set-variable 'mis/message/echo-area-timeout '(0.1 0.1))
+
+
 ;; debug helpers now loaded - including `spydez/require'
 (spydez/init/step/set-completed 'zeroth 'debug)
 
