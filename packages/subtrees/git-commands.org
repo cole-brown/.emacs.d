@@ -6,7 +6,12 @@
 
 * Updating These Libs
 
-** org-roam
+** CANCELLED org-roam
+CLOSED: [2020-02-21 Fri 18:23]
+:LOGBOOK:
+- State "CANCELLED"  from              [2020-02-21 Fri 18:23] \\
+  Moved to submodule.
+:END:
 
 I chose 'git subtree' for this because:
   https://codewinsarguments.co/2016/05/01/git-submodules-vs-git-subtrees/
@@ -24,7 +29,12 @@ Current Commands:
 
 
 
-** spotify:
+** CANCELLED spotify:
+CLOSED: [2020-02-21 Fri 18:23]
+:LOGBOOK:
+- State "CANCELLED"  from              [2020-02-21 Fri 18:23] \\
+  moved to submodule
+:END:
 
 Moved to a submodule.
 

@@ -6,12 +6,39 @@
 
 * Updating These Libs
 
+** org-roam:
+
+I chose 'git submodule' for this because:
+  https://codewinsarguments.co/2016/05/01/git-submodules-vs-git-subtrees/
+Initially chose subtree but may want to do bug fixes in a way I can pull-request back to owner.
+  - my fork: git@github.com:cole-brown/org-roam.el.git
+  - owner:   git@github.com:danielfm/org-roam.el.git
+
+Run from git root directory (.emacs.d/):
+
+Current Commands:
+
+- Create/add:
+    git submodule add git@github.com:cole-brown/org-roam.el.git packages/submodules/org-roam
+
+  - Pull/update from (my) master:
+    Like normal git.
+
+  - Pull/update from upstream (my master's original repo, likely):
+    Assumes 'upstream' is defined in submodule's config file.
+    - optimistic
+      git pull upstream master
+    - pessimistic
+      git co -b upstream_pull
+      git pull upstream_pull
+
+
 ** spotify:
 
 I chose 'git submodule' for this because:
   https://codewinsarguments.co/2016/05/01/git-submodules-vs-git-subtrees/
 Initially chose subtree but may want to do bug fixes in a way I can pull-request back to owner.
-  - my fork: git@github.com:spydez/spotify.el.git
+  - my fork: git@github.com:cole-brown/spotify.el.git
   - owner:   git@github.com:danielfm/spotify.el.git
 
 Run from git root directory (.emacs.d/):
@@ -19,7 +46,7 @@ Run from git root directory (.emacs.d/):
 Current Commands:
 
 - Create/add:
-    git submodule add git@github.com:spydez/spotify.el.git packages/submodules/spotify
+    git submodule add git@github.com:cole-brown/spotify.el.git packages/submodules/spotify
 
   - Pull/update from (my) master:
     Like normal git.
