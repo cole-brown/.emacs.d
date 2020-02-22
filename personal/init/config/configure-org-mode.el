@@ -695,9 +695,6 @@ savages."
   :after org
   :demand t
 
-  ;; §-TODO-§ [2020-02-13]: Move journals into org-roam directory if it makes
-  ;; sense to use them together?
-
   ;; ;;-----
   ;; :bind*
   ;; ;;-----
@@ -766,7 +763,7 @@ savages."
 ;; Trial: [2020-02-13]
 (use-package org-roam
   :load-path (lambda () (spydez/path/to-dir
-                         spydez/dir/packages/git-subtrees "org-roam"))
+                         spydez/dir/packages/git-submodules "org-roam"))
   :after org
   :demand t
 
