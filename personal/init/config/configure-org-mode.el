@@ -768,6 +768,19 @@ savages."
   :demand t
 
   ;;-----
+  :init
+  ;;-----
+  (defun spydez/org-roam/file-name/timestamp-title (title)
+    "Return a file name (without extension) for new files.
+
+It uses TITLE and the current timestamp to form a unique title."
+    (let ((timestamp (format-time-string spydez/datetime/format/file-prefix
+                                         (current-time)))
+          (slug (org-roam--title-to-slug title)))
+      (format "%s_%s" timestamp slug)))
+
+
+  ;;-----
   :hook
   ;;-----
   (org-mode . org-roam-mode)
@@ -799,16 +812,17 @@ savages."
   ;; What % of total frame width to use.
   ;; (org-roam-buffer-width 0.4)
 
+  ;; Org-Roam filenames need to be uniquely named, but name doesn't matter much?
+  ;; Or so they say... So they can just gen file names from the current time.
+  (org-roam-filename-noconfirm t)
+  (org-roam-file-name-function #'spydez/org-roam/file-name/timestamp-title)
+
   ;; By default, links are inserted with the title as the link description. This
   ;; can make them hard to distinguish from external links. If you wish, you may
   ;; choose add special indicators for Org-roam links by tweaking
   ;; this, for example:
   ;; (org-roam-link-title-format "R:%s")
 
-  ;; Org-Roam filenames need to be uniquely named, but name doesn't matter much?
-  ;; Or so they say... So they can just gen file names from the current time.
-  (org-roam-timestamped-files t)
-  (org-roam-timestamp-format spydez/datetime/format/file-prefix)
 
   ;; ;;-----
   ;; :config

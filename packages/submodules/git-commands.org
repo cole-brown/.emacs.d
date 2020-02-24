@@ -4,9 +4,33 @@
 #+DATE:        [2019-10-02 Wed]
 
 
+* Setup the Upstream
+
+** Configure a Remote
+
+cole@cole-PC MINGW64 ~/.emacs.d/packages/submodules/org-roam (develop)
+$ git remote -v
+origin  git@github.com:cole-brown/org-roam.git (fetch)
+origin  git@github.com:cole-brown/org-roam.git (push)
+
+cole@cole-PC MINGW64 ~/.emacs.d/packages/submodules/org-roam (develop)
+$ git remote add upstream https://github.com/jethrokuan/org-roam.git
+
+cole@cole-PC MINGW64 ~/.emacs.d/packages/submodules/org-roam (develop)
+$ git remote -v
+origin  git@github.com:cole-brown/org-roam.git (fetch)
+origin  git@github.com:cole-brown/org-roam.git (push)
+upstream        https://github.com/jethrokuan/org-roam.git (fetch)
+upstream        https://github.com/jethrokuan/org-roam.git (push)
+
+
 * Updating These Libs
 
 ** org-roam:
+
+!!!NOTE!!!
+  - On 'develop' branch ATM.
+  - git pull upstream develop
 
 I chose 'git submodule' for this because:
   https://codewinsarguments.co/2016/05/01/git-submodules-vs-git-subtrees/
