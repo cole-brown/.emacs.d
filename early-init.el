@@ -91,20 +91,26 @@
 (require 'mis)
 (require 'zeroth-debug)
 
-;; Setup mis for init. First hook into a final step for reverting to more normal
-;; settings...
-(spydez/hook/defun-and-hooker
-    spydez/hook-runner/finalize/final-finalities nil nil
-    "mis/reset"
-    nil
-    "early-init.el"
-  "Resets some mis settings back to a 'running interactively' state."
-  (customize-set-variable 'mis/message/echo-area-timeout
-                          (copy-sequence mis/message/echo-area-timeout)))
-;; And second set mis/messages to clear out quickly during init.
-;; §-TODO-§ [2020-02-20]: 0.1 good? Try actual 0.0?
-(customize-set-variable 'mis/message/echo-area-timeout '(0.1 0.1))
-
+;; Don't (currently) need to set up mis timeouts. Init step of emacs ignores
+;; them anyways, it seems...
+;;
+;; ;; Setup mis for init. First hook into a final step for reverting to more
+;; ;; normal settings...
+;; (let ((seq-cpy (copy-sequence mis/message/echo-area-timeout)))
+;;   (spydez/hook/defun-and-hooker
+;;       spydez/hook-runner/finalize/final-finalities nil nil
+;;       "mis/reset"
+;;       nil
+;;       "early-init.el"
+;;     "Resets some mis settings back to a 'running interactively' state."
+;;
+;;     (message "mis hook resetting: %S" seq-cpy)
+;;     (customize-set-variable 'mis/message/echo-area-timeout
+;;                             seq-cpy)))
+;; ;; And second set mis/messages to clear out quickly during init.
+;; ;; §-TODO-§ [2020-02-20]: 0.1 good? Try actual 0.0?
+;; (customize-set-variable 'mis/message/echo-area-timeout '(0.1 0.1))
+;; ;; mis/message/echo-area-timeout
 
 ;; debug helpers now loaded - including `spydez/require'
 (spydez/init/step/set-completed 'zeroth 'debug)
