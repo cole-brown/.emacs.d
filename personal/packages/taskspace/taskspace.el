@@ -4,7 +4,7 @@
 ;; License: MIT License
 ;; Author: Cole Brown <git@spydez.com>
 ;; Created: 2019-04-24
-;; Version: 0.3
+;; Version: 0.4
 
 ;; Package-Requires: ((emacs "26.1"))
 
@@ -27,6 +27,19 @@
 
 ;; It can open the taskspace dir itself (or the taskspace parent dir)
 ;; in a buffer.
+
+;; It can 'deal' with these kind of taskspaces:
+;;   - Self-Contained
+;;;    - Taskspace dir contains:
+;;       - notes,
+;;       - data,
+;;       - etc.
+;;    - No other directories or files.
+;;   - Split (taskspace notes are separate; taskspace dir contains data, etc)
+;;;    - Taskspace dir contains:
+;;       - data,
+;;       - etc.
+;;    - Notes file exists separately.
 
 
 ;;---------------
@@ -111,9 +124,12 @@
 ;;--                   Simple Taskspace / Task Management                     --
 ;;------------------------------------------------------------------------------
 
+;; §-TODO-§ [2020-02-25]: cleanup pass?
+;; §-TODO-§ [2020-02-25]: find/do the todos here?
 
 (require 'cl) ;; for `some'
 (require 'seq) ;; for `seq-contains'
+
 
 ;;------------------------------------------------------------------------------
 ;; General Settings
@@ -124,15 +140,43 @@
 bug investigation, log munging, or whatever."
   :group 'convenience)
 
+
+(defcustom taskspace/type :whole
+  "What kind of taskspace to create by default.
+
+It can 'deal' with these kind of taskspaces:
+  - `:whole' - Self-Contained (taskspace contains everything)
+    - Taskspace dir contains:
+      - notes,
+      - data,
+      - etc.
+   - No other directories or files.
+  - `:noteless' - Split (taskspace notes are separate from rest)
+    - Taskspace dir contains:
+      - data,
+      - etc.
+   - Notes file exists separately.
+"
+  :group 'taskspace
+  :type 'symbol)
+
+
+(defcustom taskspace/config/defaults
+  '((:notes taskspace/file-name/notes))
+  "Default values for possible taskspace-specific config settings.")
+
+
 (defcustom taskspace/datetime/format "%Y-%m-%d"
   "Date format for parsing/naming taskspace directory names."
   :group 'taskspace
   :type 'string)
 
+
 (defcustom taskspace/shell-fn #'shell
   "Function to call to open shell buffer. `shell' and `eshell' work."
   :group 'taskspace
   :type 'function)
+
 
 (defcustom taskspace/dir
   (file-name-as-directory (expand-file-name "taskspace" user-emacs-directory))
@@ -140,13 +184,14 @@ bug investigation, log munging, or whatever."
   :group 'taskspace
   :type 'directory)
 
+
 (defcustom taskspace/dir/copy-files-src
   (file-name-as-directory (expand-file-name "taskspace-new" taskspace/dir))
   "User's folder for files to copy into new taskspaces."
   :group 'taskspace
   :type 'directory)
 
-;;(defun taskspace/test-gen (taskname taskpath) (format "%s" "testing the file gen func"))
+
 (defcustom taskspace/gen-files-alist
   '((".projectile" . "") ;; empty file
     ("_notes.org" . "")) ;; also empty
@@ -158,10 +203,20 @@ generator functions. Taskpath is the fully expanded file path."
   :group 'taskspace
   :type '(alist :key-type string
                 :value-type (choice string function)))
+;; §-TODO-§ [2020-02-25]: Put `taskspace/file-name/notes' in here instead of
+;; hardcoded.
 
-(defcustom taskspace/notes-file-name
+
+(defcustom taskspace/file-name/notes
   "_notes.org"
   "File for storing/recording notes about a task.")
+
+
+(defcustom taskspace/file-name/metadata
+  ".taskspace"
+  "File for storing/recording notes about a taskspace. E.g. where
+the notes file is for a split/noteless taskspace.")
+
 
 ;; Gonna need regex for this eventually, probably. But not now.
 (defcustom taskspace/dir/always-ignore
@@ -172,15 +227,18 @@ generator functions. Taskpath is the fully expanded file path."
   :group 'taskspace
   :type 'sexp)
 
+
 ;; directory name format: <date>_<#>_<description>
 ;;   - <date>: yyyy-mm-dd format
 ;;   - <#>:    two digit number starting at zero, for multiple tasks per day
 ;;   - <description>: don't care - human info
 
+
 (defcustom taskspace/dir-name/separator "_"
   "Split directory name on this to extract date, dedup number, and description."
   :group 'taskspace
   :type 'string)
+
 
 ;; TODO: Turn these into regexes w/ capture groups, I think?..
 ;; Have make-name and split-name use the regexes to make/split.
@@ -202,6 +260,7 @@ First one of the correct length is used currently."
   :group 'taskspace
   :type 'sexp)
 ;; (cdr (assoc 'date (nth 0 taskspace/dir-name/parts-alists)))
+
 
 (defcustom taskspace/dir-name/valid-desc-regexp "^[[:alnum:]_\\-]\\{3,\\}$"
   "Letters, numbers, underscore, and hypen are valid."
@@ -499,7 +558,7 @@ Opens:
 
      ;; If just one, open its notes file.
      ((= length-ts 1)
-      (setq notes-path (expand-file-name taskspace/notes-file-name
+      (setq notes-path (expand-file-name taskspace/file-name/notes
                                          (first taskspaces)))
       (message "Only taskspace: %s" (first taskspaces)))
 
@@ -509,7 +568,7 @@ Opens:
 
       ;; list available choices to user, get the taskspace they chose
       (let ((choice (taskspace/list-choices taskspaces 'nondirectory)))
-        (setq notes-path (expand-file-name taskspace/notes-file-name
+        (setq notes-path (expand-file-name taskspace/file-name/notes
                                            choice))
         (message "Chose taskspace: %s" choice)))
 
@@ -530,7 +589,6 @@ Opens:
 ;;------------------------------------------------------------------------------
 ;; Taskspace Utils
 ;;------------------------------------------------------------------------------
-
 
 (defun taskspace/generate-files (taskpath file-alist)
   "Generates each file in alist into the new taskpath. Expects
@@ -790,6 +848,7 @@ requested part. Part can be one of: '(date number description)."
 ;; TODO: make work with 3+ where date is 1, number is 2, 3+ are all desc that had "_" in it...
 ;; (taskspace/split-name "2000_0_zort_jeff" 'number)
 
+
 (defun taskspace/dir= (name dir part)
   "True if `name' is equal to the split-name `part' of `dir'.
 Else nil."
@@ -893,6 +952,90 @@ Returns nil or a string in `taskspaces'."
                       (string-match-p (regexp-quote input) taskname)))
       )))
 ;; (taskspace/list-choices (taskspace/list-all) 'nondirectory)
+
+
+;;------------------------------------------------------------------------------
+;; Per-Taskspace Config
+;;------------------------------------------------------------------------------
+
+(defun taskspace/config/get (symbol config-alist defaults-alist)
+  "Gets config value for SYMBOL from CONFIG-ALIST, or DEFAULTS-ALIST if no config supplied.
+
+If DEFAULTS-ALIST is nil, `taskspace/config/defaults' is used.
+"
+  (let (defaults (or defaults-alist
+                     taskspace/config/defaults))
+    (if (or (null config-alist)
+            (not (listp config-alist)))
+        (alist-get symbol defaults)
+      (alist-get symbol config-alist))))
+
+
+(defmacro taskspace/with/config (path &rest body)
+  "Tries to get taskspace-specific config settings from PATH's metadata or by
+inference. Then runs BODY.
+
+Taskspace config is expected to be an elisp list in the file like so:
+(:taskspace/config ((:notes \"_notes.org\")
+                    (:test \"hello there?\")))
+
+Taskspace-Specific Config Settings are:
+  - `:notes': location of `taskspace/file-name/notes'
+"
+  (declare (indent 1))
+
+  ;; Search upwards for config, or just in taskspace?
+  ;; For now, just in taskspace.
+  ;; For search up, see:
+  ;;   http://sodaware.sdf.org/notes/emacs-lisp-find-file-upwards/
+  `(let ((config-file-path (expand-file-name taskspace/file-name/metadata
+                                             ,path))
+         (type-at-point 'list)
+         (taskspace/config '()))
+
+     ;; Load the file... This should overwrite `taskspace/config'.
+     (when (and config-file-path
+                (file-exists-p config-file-path))
+       (with-temp-buffer
+         (insert-file-contents config-file-path)
+
+         ;; Setup walking file - need to enhance `end-of-thing' as it's wonky
+         ;; for some things... So also check for having moved at all.
+         (let ((thing nil)
+               (point-prev nil)
+               (point-moved t))
+           ;; Loop through config file, getting things out of it one at a time
+           ;; until we find our config.
+           (while (and (not (eobp))
+                       point-moved
+                       (null taskspace/config))
+             ;; init loop conditionals we'll use later
+             (setq point-prev (point))
+
+             ;; Get and process the actual thing.
+             (setq thing (first (read-from-string
+                                 (thing-at-point type-at-point t))))
+             (when (eq (first thing) :taskspace/config)
+               (setq taskspace/config (second thing)))
+
+             ;; Get point moved to next line for next loop.
+             (condition-case-unless-debug err
+                 (progn
+                   ;; Go to end of thing we read, then go to next line. Thing
+                   ;; can be multi-line, but also next thing tends to not start
+                   ;; right at end of first. Newlines and all.
+                   (end-of-thing type-at-point)
+                   (forward-line))
+               ;; Ignore error? Empty line or end of buffer or something.
+               (error (forward-line)))
+
+             ;; Update sanity checks in case `end-of-thing' wants to not behave.
+             (setq point-moved (not (= point-prev (point)))))))
+
+     ,@body))
+;; (taskspace/with/config
+;;     "C:/home/cole/ocean/taskspace/2020-02-06_2_find-broken-accounts"
+;;   (message "hi: %S" (taskspace/config/get :notes taskspace/config t)))
 
 
 ;;------------------------------------------------------------------------------
