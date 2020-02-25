@@ -74,7 +74,8 @@
 ;;   Other Commands:
 ;;     `taskspace/create'
 ;;       - Create a new taskspace. Will prompt for the short description.
-;;         - e.g. description of "2019-01-01_2_some-task-name" is "some-task-name".
+;;         - e.g. description of "2019-01-01_2_some-task-name" is
+;;           "some-task-name".
 ;;     `taskspace/parent-dired'
 ;;       - Opens the directory of all tasks in emacs (aka `taskspace/dir')
 ;;         (uses find-file, so defaults to dired-mode buffer).
@@ -275,8 +276,9 @@ First one of the correct length is used currently."
 
 ;;;###autoload
 (defun taskspace/task-name/dwim ()
-  "Interactive. DWIM to clipboard and return today's task string (partial/final path)...
-Create if none. Return if just the one. Choose from multiple."
+  "Interactive. DWIM to clipboard and return today's task string
+(partial/final path)... Create if none. Return if just the one.
+Choose from multiple."
   (interactive)
 
   ;; Get task's full path, reduce to just task directory...
@@ -299,8 +301,8 @@ Create if none. Return if just the one. Choose from multiple."
 
 ;;;###autoload
 (defun taskspace/task-dir/dwim (date-input)
-  "Interactive. DWIM to clipboard and return today's task dir string (full path)...
-Create if none. Return if just the one. Choose from multiple."
+  "Interactive. DWIM to clipboard and return today's task dir string
+(full path)... Create if none. Return if just the one. Choose from multiple."
   ;; Numeric arg but don't let lower case "p" auto-magic nothing (no prefix arg)
   ;; into 1. Nothing/0/nil is today. 1 is tomorrow.
   (interactive "P")
@@ -343,7 +345,8 @@ Create if none. Return if just the one. Choose from multiple."
       ;; return it
       (first taskspaces))
 
-     ;; For now, only give existing choices. User can use a non-dwim create func if they want new.
+     ;; For now, only give existing choices. User can use a non-dwim create func
+     ;; if they want new.
      ((> length-ts 1)
 
       ;; list available choices to user, get the taskspace they chose
@@ -364,10 +367,11 @@ Create if none. Return if just the one. Choose from multiple."
 ;; (taskspace/task-dir/dwim -1)
 
 
-;; TODO: support creating for non-today dates
+;; TODO: support creating for non-today dates?
 ;;;###autoload
 (defun taskspace/create (desc)
-  "Interactive. Creates a new taskspace for today with the description supplied."
+  "Interactive. Creates a new taskspace for today with the description
+supplied."
   ;; Do we need a max len? Leaving out until I feel otherwise.
   (interactive "sNew Task Short Description: ")
 
@@ -385,8 +389,9 @@ Create if none. Return if just the one. Choose from multiple."
     ;; create the dir/project for today
     (let ((taskpath (taskspace/create-dir desc 'today)))
       (if (null taskpath)
-          ;; couldn't create it for some reason...
-          ;; TODO: Better reasons if known. "already exists" would be nice for that case.
+          ;; Couldn't create it for some reason...
+          ;; TODO: Better reasons if known. "already exists" would be nice for
+          ;; that case.
           (error "Error creating taskspace directory for: %s" desc)
 
         ;; else:
@@ -415,7 +420,8 @@ Create if none. Return if just the one. Choose from multiple."
         ;; Just name it: .projectile
         ;;   See: https://projectile.readthedocs.io/en/latest/projects/#ignoring-files
 
-        ;; Can also put skeleton org file. Or just org file with yasnippet ready to go...
+        ;; Can also put skeleton org file. Or just org file with yasnippet ready
+        ;; to go...
         ;; TODO: dynamic names for files?
         ;;   - notes.<desc>.org?
         ;;   - _notes.<desc>.org?
@@ -485,7 +491,8 @@ Shell opened can be set by modifying `taskspace/shell-fn'."
   (interactive)
 
   (if (not (functionp taskspace/shell-fn))
-      (error "`taskspace/shell-fn' is not bound to a fuction. %s" taskspace/shell-fn)
+      (error "`taskspace/shell-fn' is not bound to a fuction. %s"
+             taskspace/shell-fn)
 
     ;; prompt user for the taskspace with an attempt at DWIM
     (let ((task (call-interactively #'taskspace/task-dir/dwim)))
@@ -622,7 +629,6 @@ Error is all files not generated in alist: ((filename . 'reason')...)"
 
          ;; HAPPY!
          (t
-          ;; (message "for '%s', copying '%s' to '%s'" taskpath path (expand-file-name (file-name-nondirectory path) taskpath))
           (with-temp-file filepath
             (if (stringp str-or-func)
                 (insert str-or-func)
@@ -680,9 +686,12 @@ files not copied in alist: ((filepath . 'reason')...)"
     ;; Only create if:
     ;;   - valid description input and
     ;;   - no dupes or accidental double creates
-    ;;   - it doesn't exist (this is probably redundant if verify-description works right)
+    ;;   - it doesn't exist (this is probably redundant if verify-description
+    ;;     works right)
     (when (and (taskspace/verify-description description)
-               (not (some (lambda (x) (taskspace/dir= description x 'description)) date-dirs))
+               (not (some (lambda (x) (taskspace/dir= description x
+                                                      'description))
+                          date-dirs))
                (not (file-exists-p dir-full-path)))
 
       ;; Make it.
@@ -713,7 +722,8 @@ files not copied in alist: ((filepath . 'reason')...)"
     (1+ number)))
 ;; (taskspace/get-number '("zort/troz/2000_0_baz"))
 ;; (taskspace/get-number '())
-;; (taskspace/get-number '("zort/troz/2000_0_baz" "zort/troz/2000_qux" "zort/troz/2000_qux_jeff" "zort/troz/2000_8_quux"))
+;; (taskspace/get-number '("zort/troz/2000_0_baz" "zort/troz/2000_qux"
+;;                         "zort/troz/2000_qux_jeff" "zort/troz/2000_8_quux"))
 
 
 (defun taskspace/get-date (arg)
@@ -764,10 +774,13 @@ Returns date requested by arg, or nil."
         (dir-sep-check (file-name-nondirectory name))
         (valid-name (string-match taskspace/dir-name/valid-desc-regexp name)))
 
-    ;; check for bad input, fail if so... Bad if:
-    (if (or matched-invalid                    ;; - DOES match /invalid/ filename regexp
-            (not (string= name dir-sep-check)) ;; - or non-dir name DOES NOT match input name
-            (null valid-name))                 ;; - or DOES NOT match /valid/ name regexp
+    ;; Check for bad input, fail if so... Bad if:
+    ;;   - DOES match /invalid/ filename regexp
+    (if (or matched-invalid
+            ;; - or non-dir name DOES NOT match input name
+            (not (string= name dir-sep-check))
+            ;; - or DOES NOT match /valid/ name regexp
+            (null valid-name))
         ;; Just return nil for fail.
         nil
 
@@ -788,12 +801,16 @@ Returns date requested by arg, or nil."
 (defun taskspace/make-name (date number description)
   "Creates a full name from inputs obeying first formatting order
 found in parts-alists."
-        ;; How long is the parts-alist we're looking for
-  (let* ((name-parts (seq-map (lambda (x) (format "%s" x)) ;; stringify each (don't want nulls here...)
-                              (seq-remove #'null ;; but take out nulls?
-                                          (list date number description)))) ;; turn inputs into list
+  ;; How long is the parts-alist we're looking for?
+  ;;   - Stringify each (don't want nulls here...)
+  (let* ((name-parts (seq-map (lambda (x) (format "%s" x))
+                              ;; But take out nulls?
+                              (seq-remove #'null
+                                          ;; turn inputs into list
+                                          (list date number description))))
          (name-len (length name-parts))
          split-alist)
+
     ;; find the right alist for building the dir string
     ;; TODO: pull this out of here and split-name and make func maybe?
     (dolist (alist taskspace/dir-name/parts-alists split-alist)
@@ -806,8 +823,8 @@ found in parts-alists."
     ;;          split-alist (null split-alist))
 
     (unless (null split-alist)
-      (mapconcat #'identity (seq-remove #'null name-parts) taskspace/dir-name/separator)
-        )))
+      (mapconcat #'identity (seq-remove #'null name-parts)
+                 taskspace/dir-name/separator))))
 ;; (taskspace/make-name "2000" "1" "hi")
 ;; (taskspace/make-name "2000" nil "hi")
 ;; (taskspace/make-name "hi" nil nil)
@@ -843,7 +860,10 @@ requested part. Part can be one of: '(date number description)."
 ;; (taskspace/split-name "2000_0_zort" nil)
 ;; (taskspace/split-name "2000_0_zort" 'number)
 ;; (taskspace/split-name "2000_zort" 'number)
-;; TODO: make work with 3+ where date is 1, number is 2, 3+ are all desc that had "_" in it...
+;;
+;; TODO: make work with 3+ where date is 1, number is 2, 3+ are all desc that
+;; had "_" in it...
+;;
 ;; (taskspace/split-name "2000_0_zort_jeff" 'number)
 
 
@@ -868,7 +888,8 @@ Else nil."
 ;; Get children directories of taskspace/dir, ignoring
 ;; taskspace/dir/always-ignore.
 (defun taskspace/list-all ()
-  "Get children directories of taskspace/dir, ignoring taskspace/dir/always-ignore."
+  "Get children directories of taskspace/dir, ignoring
+`taskspace/dir/always-ignore'."
 
   (let (task-dirs) ;; empty list for return value
     ;; loop on each file in the directory
@@ -1041,7 +1062,8 @@ Taskspace-Specific Config Settings are:
 ;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------
 
-;; TODO: Make empty dirs when creating task? (e.g. "archive" or "done" or something)
+;; TODO: Make empty dirs when creating task?
+;; (e.g. "archive" or "done" or something)
 
 ;; TODO-PKG:
 ;;   - Comments/layout like a real package.
