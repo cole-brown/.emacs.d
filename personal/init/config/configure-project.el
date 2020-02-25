@@ -178,9 +178,9 @@ in.
 
   (taskspace/gen-files-alist
    ;; projectile: empty file
-   '((".projectile" . "")
+   '((".projectile" "")
      ;; notes.org: setup with org header snippet ready to go
-     ("_notes.org" . spydez/taskspace/gen-org-notes)))
+     (taskspace/file-name/notes spydez/taskspace/gen-org-notes)))
 
   ;; (taskspace/dir/always-ignore ...) ;; may have to adjust soon?
 

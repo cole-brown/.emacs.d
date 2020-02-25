@@ -105,7 +105,7 @@
 ;;     ;; projectile: empty file
 ;;     '((".projectile" . "")
 ;;       ;; notes.org: setup with my org header snippet ready to go
-;;       ("_notes.org" . "<org/header")))
+;;       (taskspace/file-name/notes . "org-header-snippet")))
 ;;
 ;;    ;; others to consider:
 ;;    ;; (taskspace/dir/copy-files-src ...)
@@ -193,8 +193,8 @@ It can 'deal' with these kind of taskspaces:
 
 
 (defcustom taskspace/gen-files-alist
-  '((".projectile" . "") ;; empty file
-    ("_notes.org" . "")) ;; also empty
+  '((taskspace/file-name/notes "") ;; empty file
+    (".projectile" "")) ;; also empty
   "Files to generate for new taskspaces. Expects an alist like:
 '(('file1.name' . 'contents') ('file2.name' . your-gen-function))
 
@@ -203,8 +203,6 @@ generator functions. Taskpath is the fully expanded file path."
   :group 'taskspace
   :type '(alist :key-type string
                 :value-type (choice string function)))
-;; §-TODO-§ [2020-02-25]: Put `taskspace/file-name/notes' in here instead of
-;; hardcoded.
 
 
 (defcustom taskspace/file-name/notes
@@ -959,7 +957,8 @@ Returns nil or a string in `taskspaces'."
 ;;------------------------------------------------------------------------------
 
 (defun taskspace/config/get (symbol config-alist defaults-alist)
-  "Gets config value for SYMBOL from CONFIG-ALIST, or DEFAULTS-ALIST if no config supplied.
+  "Gets config value for SYMBOL from CONFIG-ALIST, or DEFAULTS-ALIST if no
+config supplied.
 
 If DEFAULTS-ALIST is nil, `taskspace/config/defaults' is used.
 "
@@ -1030,7 +1029,7 @@ Taskspace-Specific Config Settings are:
                (error (forward-line)))
 
              ;; Update sanity checks in case `end-of-thing' wants to not behave.
-             (setq point-moved (not (= point-prev (point)))))))
+             (setq point-moved (not (= point-prev (point))))))))
 
      ,@body))
 ;; (taskspace/with/config
