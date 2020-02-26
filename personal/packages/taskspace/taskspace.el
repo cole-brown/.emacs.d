@@ -557,6 +557,7 @@ Opens:
          (taskspaces  (or taskspaces
                           (taskspace/list-all)))
          (length-ts   (length taskspaces))
+         task-path
          notes-path)
 
     (message "%S tasks for %S: %S" length-ts date taskspaces)
@@ -575,9 +576,8 @@ Opens:
 
      ;; If just one, open its notes file.
      ((= length-ts 1)
-      (setq notes-path (expand-file-name taskspace/file-name/notes
-                                         (first taskspaces)))
-      (message "Only taskspace: %s" (first taskspaces)))
+      (setq task-path (first taskspaces))
+      (message "Only taskspace: %s" task-path))
 
      ;; For now, only give existing choices. User can use a non-dwim create func
      ;; if they want new.
@@ -585,17 +585,24 @@ Opens:
 
       ;; list available choices to user, get the taskspace they chose
       (let ((choice (taskspace/list-choices taskspaces 'nondirectory)))
-        (setq notes-path (expand-file-name taskspace/file-name/notes
-                                           choice))
+        (setq task-path choice)
         (message "Chose taskspace: %s" choice)))
 
      ;; Default case... Fall through with nil.
      (t nil))
 
-    (if (null notes-path)
+    (if (null task-path)
         (error "No taskspace notes found for date: %s" date)
 
-      ;; ok - open the notes file
+      ;; ok - find and open the notes file
+      ;; assume local first
+      (setq notes-path (expand-file-name taskspace/file-name/notes
+                                         task-path))
+      ;; Not right? Take another stab w/ the config file.
+      (unless (f-file? notes-path)
+        (taskspace/with/config task-path
+          (setq notes-path
+                (taskspace/config/get :notes taskspace/config))))
         (message "Opening taskspace notes: %s" notes-path)
       (find-file notes-path))))
 ;; M-x taskspace/notes
@@ -620,22 +627,19 @@ file will be elsewhere.
     ;; Notes files may or may not go in taskspace.
 
     ;; binds config for this task to `taskspace/config'
-    (taskspace/with/config taskpath
+    (if (eq taskspace/type :self-contained)
+        ;; Local file name is just provided name.
+        (expand-file-name file-name taskpath)
 
-      (if (eq (taskspace/config/get :notes taskspace/config)
-              :self-contained)
-          ;; Local file name is just provided name.
-          (expand-file-name file-name taskpath)
-
-        ;; Remote file name could be different - may want task name in it.
-        (expand-file-name (concat ;; remote file name:
-                           ;; Task Name
-                           (file-name-nondirectory taskpath)
-                           ;; Plus a dot...
-                           "."
-                           ;; Plus filename, sans 'sort to top' stuff...
-                           (string-trim file-name "_" "_"))
-                          taskspace/dir/remote-notes)))))
+      ;; Remote file name could be different - may want task name in it.
+      (expand-file-name (concat ;; remote file name:
+                         ;; Task Name
+                         (file-name-nondirectory taskpath)
+                         ;; Plus a dot...
+                         "."
+                         ;; Plus filename, sans 'sort to top' stuff...
+                         (string-trim file-name "_" "_"))
+                        taskspace/dir/remote-notes))))
 ;; (taskspace/generate-file-path "c:/path/to/2020-20-20_20_Twenty" "_notes.org")
 ;; (taskspace/generate-file-path "c:/path/to/2020-20-20_20_Twenty" "jeff.data")
 
@@ -1050,11 +1054,13 @@ config supplied.
 If DEFAULTS-ALIST is nil, `taskspace/config/defaults' is used.
 "
   (let ((defaults (or defaults-alist
-                     taskspace/config/defaults)))
-    (if (or (null config-alist)
+                      taskspace/config/defaults)))
+    ;; Using list-as-alist structure, so pare down to result from '(result).
+    (first
+     (if (or (null config-alist)
             (not (listp config-alist)))
         (alist-get symbol defaults)
-      (alist-get symbol config-alist))))
+      (alist-get symbol config-alist)))))
 
 
 (defun taskspace/config/set (symbol value config-alist)
