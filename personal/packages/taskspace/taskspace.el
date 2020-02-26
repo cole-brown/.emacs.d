@@ -130,6 +130,7 @@
 
 (require 'cl) ;; for `some'
 (require 'seq) ;; for `seq-contains'
+(require 'f) ;; for nicer file api
 
 
 ;;------------------------------------------------------------------------------
@@ -142,11 +143,11 @@ bug investigation, log munging, or whatever."
   :group 'convenience)
 
 
-(defcustom taskspace/type :whole
+(defcustom taskspace/type :self-contained
   "What kind of taskspace to create by default.
 
 It can 'deal' with these kind of taskspaces:
-  - `:whole' - Self-Contained (taskspace contains everything)
+  - `:self-contained' - Self-Contained (taskspace contains everything)
     - Taskspace dir contains:
       - notes,
       - data,
@@ -159,7 +160,8 @@ It can 'deal' with these kind of taskspaces:
    - Notes file exists separately.
 "
   :group 'taskspace
-  :type 'symbol)
+  :type '(radio (const :tag "All-in-One (:self-contained)" :self-contained)
+                (const :tag "Split-out Notes (:noteless)" :noteless)))
 
 
 (defcustom taskspace/config/defaults
@@ -182,6 +184,13 @@ It can 'deal' with these kind of taskspaces:
 (defcustom taskspace/dir
   (file-name-as-directory (expand-file-name "taskspace" user-emacs-directory))
   "User's folder for small work tasks."
+  :group 'taskspace
+  :type 'directory)
+
+
+(defcustom taskspace/dir/remote-notes
+  (file-name-as-directory (expand-file-name "taskspace" user-emacs-directory))
+  "User's folder for all notes that are in `:noteless' taskspaces."
   :group 'taskspace
   :type 'directory)
 
@@ -211,7 +220,7 @@ generator functions. Taskpath is the fully expanded file path."
   "File for storing/recording notes about a task.")
 
 
-(defcustom taskspace/file-name/metadata
+(defcustom taskspace/file-name/config
   ".taskspace"
   "File for storing/recording notes about a taskspace. E.g. where
 the notes file is for a split/noteless taskspace.")
@@ -412,7 +421,9 @@ supplied."
 
         ;; gen files into new taskspace
         (unless (not taskspace/gen-files-alist)
-          (let ((gen-errors (taskspace/generate-files taskpath taskspace/gen-files-alist)))
+          (let ((gen-errors (taskspace/generate-files
+                             taskpath
+                             taskspace/gen-files-alist)))
             (when gen-errors
               (error "Taskspace file generation errors: %s" gen-errors))))
 
@@ -473,7 +484,8 @@ supplied."
     ;; ok - message and open (probably in dired but let emacs decide)
     (find-file taskspace/dir)
     ;; say something
-    (message "Opening taskspace parent: %s" (file-name-nondirectory taskspace/dir))
+    (message "Opening taskspace parent: %s" (file-name-nondirectory
+                                             taskspace/dir))
     ;; return the top dir?
     taskspace/dir
     ))
@@ -595,6 +607,39 @@ Opens:
 ;; Taskspace Utils
 ;;------------------------------------------------------------------------------
 
+(defun taskspace/generate-file-path (taskpath file-name)
+  "Generates a file path for FILE-NAME and taskspace's TASKPATH.
+
+This can be outside of the taskspace for e.g. :noteless taskspaces - the note
+file will be elsewhere.
+"
+  (if (not (string= file-name taskspace/file-name/notes))
+      ;; Non-note files just go in taskspace...
+      (expand-file-name file-name taskpath)
+
+    ;; Notes files may or may not go in taskspace.
+
+    ;; binds config for this task to `taskspace/config'
+    (taskspace/with/config taskpath
+
+      (if (eq (taskspace/config/get :notes taskspace/config)
+              :self-contained)
+          ;; Local file name is just provided name.
+          (expand-file-name file-name taskpath)
+
+        ;; Remote file name could be different - may want task name in it.
+        (expand-file-name (concat ;; remote file name:
+                           ;; Task Name
+                           (file-name-nondirectory taskpath)
+                           ;; Plus a dot...
+                           "."
+                           ;; Plus filename, sans 'sort to top' stuff...
+                           (string-trim file-name "_" "_"))
+                          taskspace/dir/remote-notes)))))
+;; (taskspace/generate-file-path "c:/path/to/2020-20-20_20_Twenty" "_notes.org")
+;; (taskspace/generate-file-path "c:/path/to/2020-20-20_20_Twenty" "jeff.data")
+
+
 (defun taskspace/generate-files (taskpath file-alist)
   "Generates each file in alist into the new taskpath. Expects
 ((filename . string-or-func)...) from alist. Creates 'filename' in taskspace
@@ -607,13 +652,13 @@ Error is all files not generated in alist: ((filename . 'reason')...)"
         ;; Get taskname from path to supply to any file content gen funcs.
         (taskname (file-name-nondirectory taskpath)))
     (dolist (entry file-alist errors-alist)
-      (let* ((file (file-name-nondirectory (car entry)))
-             (filepath (expand-file-name file taskpath))
-             (str-or-func (cdr entry)))
+      (let* ((file (file-name-nondirectory (eval (first entry))))
+             (filepath (taskspace/generate-file-path taskpath file))
+             (str-or-func (second entry)))
 
         (cond
          ;; ERROR: already exists...
-         ((file-exists-p filepath)
+         ((f-file? filepath)
           (push `(,filepath . "file already exist") errors-alist))
 
 ;;         ;; ERROR: generator not bound
@@ -632,10 +677,18 @@ Error is all files not generated in alist: ((filename . 'reason')...)"
           (with-temp-file filepath
             (if (stringp str-or-func)
                 (insert str-or-func)
-              (insert (funcall str-or-func taskname taskpath)))))
+              (insert (funcall str-or-func taskname taskpath))))))
 
-         ;; dolist returns the errors
-         )))))
+        ;; If made a remote notes file, make a .taskspace config now.
+        (when (and (string= file taskspace/file-name/notes)
+                   (not (f-parent-of? taskpath filepath)))
+          (taskspace/with/config taskpath
+            (setq taskspace/config
+                  (taskspace/config/set :notes filepath taskspace/config))
+            (taskspace/config/write taskspace/config taskpath)))
+
+        ;; dolist returns the errors
+        ))))
 
 
 (defun taskspace/copy-files (taskpath &rest filepaths)
@@ -669,7 +722,19 @@ files not copied in alist: ((filepath . 'reason')...)"
 
 
 (defun taskspace/create-dir (description date-arg)
-  "Creates dir w/ description, date, and (generated) number, if valid & unused description."
+  "Creates dir w/ description, date, and (generated) number, if valid &
+unused description."
+
+  ;; Make sure basic folders exist.
+  (unless (f-directory? taskspace/dir)
+    (message "Taskspace: Making root directory... %s"
+             taskspace/dir)
+    (make-directory taskspace/dir))
+  (unless (f-directory? taskspace/dir/remote-notes)
+    (message "Taskspace: Making remote notes directory... %s"
+             taskspace/dir/remote-notes)
+    (make-directory taskspace/dir/remote-notes))
+
          ;; Get today's date.
   (let* ((date (taskspace/get-date date-arg))
          ;; Get today's dirs.
@@ -767,7 +832,8 @@ Returns date requested by arg, or nil."
 (defun taskspace/verify-description (name)
   "Verifies that `name' is an allowable part of the directory name."
 
-  ;; Sanity check 1: `name' must be a valid filename, for a very loose definition.
+  ;; Sanity check 1: `name' must be a valid filename, for a very loose
+  ;;                 definition of valid.
   ;; Sanity check 2: Not a path sep in there?
   ;; Valid check:    Verify name obeys my regexp.
   (let ((matched-invalid (string-match file-name-invalid-regexp name))
@@ -977,22 +1043,40 @@ Returns nil or a string in `taskspaces'."
 ;; Per-Taskspace Config
 ;;------------------------------------------------------------------------------
 
-(defun taskspace/config/get (symbol config-alist defaults-alist)
+(defun taskspace/config/get (symbol config-alist &optional defaults-alist)
   "Gets config value for SYMBOL from CONFIG-ALIST, or DEFAULTS-ALIST if no
 config supplied.
 
 If DEFAULTS-ALIST is nil, `taskspace/config/defaults' is used.
 "
-  (let (defaults (or defaults-alist
-                     taskspace/config/defaults))
+  (let ((defaults (or defaults-alist
+                     taskspace/config/defaults)))
     (if (or (null config-alist)
             (not (listp config-alist)))
         (alist-get symbol defaults)
       (alist-get symbol config-alist))))
 
 
+(defun taskspace/config/set (symbol value config-alist)
+  "Sets config VALUE for SYMBOL into CONFIG-ALIST.
+
+Returns updated CONFIG-ALIST.
+"
+  (setq config-alist (assq-delete-all symbol config-alist))
+  (push (list symbol value) config-alist)
+  config-alist)
+;; (taskspace/config/set 'hello 42 '((test jeff) (hi hi) (hello there)))
+;; (taskspace/config/set 'hello 42 nil)
+
+
+(defun taskspace/config/write (config-alist taskpath)
+  "Writes config-alist out to taskpath's config file."
+  (with-temp-file (expand-file-name taskspace/file-name/config taskpath)
+    (insert (format "%S" (list :taskspace/config config-alist)))))
+
+
 (defmacro taskspace/with/config (path &rest body)
-  "Tries to get taskspace-specific config settings from PATH's metadata or by
+  "Tries to get taskspace-specific config settings from PATH's config file or by
 inference. Then runs BODY.
 
 Taskspace config is expected to be an elisp list in the file like so:
@@ -1008,10 +1092,10 @@ Taskspace-Specific Config Settings are:
   ;; For now, just in taskspace.
   ;; For search up, see:
   ;;   http://sodaware.sdf.org/notes/emacs-lisp-find-file-upwards/
-  `(let ((config-file-path (expand-file-name taskspace/file-name/metadata
+  `(let ((config-file-path (expand-file-name taskspace/file-name/config
                                              ,path))
          (type-at-point 'list)
-         (taskspace/config '()))
+         (taskspace/config nil))
 
      ;; Load the file... This should overwrite `taskspace/config'.
      (when (and config-file-path
@@ -1056,7 +1140,7 @@ Taskspace-Specific Config Settings are:
 ;; (taskspace/with/config
 ;;     "C:/home/cole/ocean/taskspace/2020-02-06_2_find-broken-accounts"
 ;;   (message "hi: %S" (taskspace/config/get :notes taskspace/config t)))
-
+;; (makunbound 'taskspace/config)
 
 ;;------------------------------------------------------------------------------
 ;; Tasks, Wants, Feature Requests, etc.
