@@ -99,13 +99,19 @@ as MIS-SETTING).
               :attention2  font-lock-constant-face     ;; brightish green
               :text        font-lock-builtin-face      ;; white/bold
               :inattention font-lock-string-face))     ;; darkish red
-    (:default (;; :border    font-lock-comment-delimiter-face
-              ;; :padding     font-lock-comment-face
-              :title       font-lock-keyword-face      ;; gold/bold
+    (:default (;; Text Things
+              :title       font-lock-preprocessor-face ;; brightish blue
+              :highlight   font-lock-keyword-face      ;; gold/bold
+              :highlight2  font-lock-constant-face     ;; brightish green
+              :text        font-lock-builtin-face      ;; white/bold
+              :inattention font-lock-string-face       ;; darkish red
               :attention1  font-lock-preprocessor-face ;; brightish blue
               :attention2  font-lock-constant-face     ;; brightish green
-              :text        font-lock-builtin-face      ;; white/bold
-              :inattention font-lock-string-face))     ;; darkish red
+
+              ;; Non-texty Things:
+              :border      font-lock-comment-delimiter-face
+              :padding     font-lock-comment-face
+              ))
 
     ;;---
     ;; My Custom Stuff

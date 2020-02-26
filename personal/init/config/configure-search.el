@@ -43,7 +43,6 @@
 ;;-----
 ;; https://github.com/Wilfred/deadgrep
 ;; "Deadgrep is the fast, beautiful text search that your Emacs deserves."
-;; Trial: [2019-08-30]
 (use-package deadgrep
   :demand t
 
@@ -70,7 +69,15 @@
   (:map projectile-command-map
         ;; Also map into the projectile search group
         ;; (projectile-grep, projectile-deadgrep, et al):
-        ("s d" . deadgrep)))
+        ("s d" . deadgrep))
+
+  ;;---
+  ;; Project Root Overrides
+  ;;---
+  ;; Search per-comp configs for `deadgrep-project-root' to find what's set.
+  ;;   - `deadgrep-project-root-overrides'
+  ;;   - `deadgrep-project-root-function'
+  )
 
 
 ;;------------------------------------------------------------------------------

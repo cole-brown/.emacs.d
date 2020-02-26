@@ -171,9 +171,10 @@ ignore when moody is managing the time tab."
 ;; helper for secrets-requiring stuff?
 
 ;; First (try to) load the auth secrets
-(when nil
+(when t ;; nil ;; back to nil if you want to disable spotify again...
   (progn
-    (setq debug-on-error t)
+    ;; (setq debug-on-error t) ;; and maybe turn back on if needed too.
+
 (if (not (spydez/require 'spotify-auth nil 'noerror))
     (mis/warning
      nil :error
@@ -312,7 +313,9 @@ have 11 zombie connections to spotify api tomorrow..."
           (error (message
                   "error: spydez/spotify/go-home: received error signal:" err))))
       )))
+;; §-TODO-§ [2020-02-26]: foo eval this one:
 )
+;; this one ends '(when nil':
   )
 
 ;;------------------------------------------------------------------------------

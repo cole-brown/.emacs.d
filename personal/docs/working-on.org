@@ -36,14 +36,12 @@
       - use-tool ignores (executable-find) now, but maybe using Window's bash is better? Or not... IDK.
 
 
-  - [-] General To Do: [2/28]
+  - [-] General To Do: [3/29]
 
-    - [ ] taskspace command
-      - taskspace/notes
-      - [ ] C-u M-x
-        - Opens "today's" notes?
-      - [ ] M-x taskspace/notes
-        - Helm auto-complete with sorted-by-date, latest-first list.
+    - [ ] Deadgrep Improvements
+      - Transient interface for adding stuff to ripgrep commands (e.g. an ignore file option)?
+      - Magit-Section interface for matches found in files?
+      - Figure out my issue searching for '§'
 
     - [ ] configure-crypt needs babying... again... (again... (again?..))
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
@@ -176,6 +174,14 @@
 
     - [ ] Don't beacon in the minibuffer?
       - [2019-10-21 Mon] Can't figure out when it was happening...
+
+    - [X] taskspace command
+      - taskspace/notes
+      - [X] C-u M-x
+        - Opens "today's" notes?
+          - Today's opened if no others, else list others.
+      - [X] M-x taskspace/notes
+        - Helm auto-complete with sorted-by-date, latest-first list.
 
     - [X] taskspace notes file generator
       - need to fix it?

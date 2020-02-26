@@ -403,6 +403,7 @@ plists.
 ;; (mis/parts/build "hello")
 ;; (mis/parts/build '(:text "Hello, %s %s %s" "a" "b" "c!"))
 ;; (mis/parts/build '(:indent "  " :border "++" :padding "=="))
+;; (mis/parts/build '(:john (:title "Test?") :text (:title " %s %s %s" "a" "b" "c!")))
 
 
 ;;------------------------------------------------------------------------------

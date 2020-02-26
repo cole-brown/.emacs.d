@@ -9,10 +9,13 @@
 ;; Line & Column Mode
 ;;---
 
-;; §-TODO-§ [2019-10-18]: I really love these, but they might be causing lag
+;; §-TODO-§ [2020-02-26]: Move this out into its own thing like taskspace?
+;;   - Put on MELPA?
+
+;; I really love these, but they might be causing lag
 ;; from evaluating the whole modeline every keystroke, line change, etc...
-;;   - Maybe "Idle Line/Column Number Mode"? That only bothers updating on a
-;;     timer or the "emacs is now idle" indicator thingy.
+;;
+;; So DO NOT use them. Instead make our own thing.
 
 ;; Line and column numbers in mode line
 ;; (column-number-mode t)
@@ -20,8 +23,15 @@
 (column-number-mode -1)
 (line-number-mode -1)
 
+;; Enable or disable the
 (defcustom spydez/modeline/lazy-line-and-column/enabled t
-  "Skip eval counter setup if nil."
+  "Setup lazy-line-and-column modeline setup if non-nil.
+
+'lazy-line-and-column' is like `column-number-mode' and `line-number-mode' both
+enabled, except instead of updating the modeline every time anything happens, it
+is very lazy. It will update when other things trigger the modeline, and when an
+idle timer triggers. See `spydez/modeline/lazy-line-and-column/idle-timer' for
+tweaking that."
   :group 'spydez/group
   :type 'boolean)
 
@@ -101,10 +111,15 @@ item. Vice versa if REVERSE is non-nil. Comparison is done via `equal'."
 
 ;; ideas:
 ;;  0) Just update whenever something else triggers.
-;;     - doing this right now.
+;;     - Doing this right now.
 ;;  1) Just update on an idle timer. `run-with-idle-timer'
-;;  2) both?
+;;     - Also doing this now.
+;;  2) Both?
+;;     - Yes.
 ;;  3) Normal timer?
+;;     - Not really needed. Idle timer is easier to account for as it's from
+;;       when you stopped timing anyways. So I think the current
+;;       lazy-line-and-column thing works pretty good.
 
 
 ;;---
@@ -312,6 +327,10 @@ item. Vice versa if REVERSE is non-nil. Comparison is done via `equal'."
 ;;------------------------------------------------------------------------------
 ;; Moody - Appearance
 ;;------------------------------------------------------------------------------
+
+;; §-TODO-§ [2020-02-26]: Look into different, more popular modeline prettifier
+;; packages?
+
 ;; https://github.com/tarsius/moody
 ;; "Tabs" (kinda) style layout of the mode line.
 (use-package moody

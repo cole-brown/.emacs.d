@@ -330,6 +330,7 @@ repos."
   (list
    spydez/dir/emacs
    spydez/dir/secrets
+   spydez/dir/roam
    spydez/dir/doc-save-vault)
   "List of strings of directories (TODO: add allowance for single
 files?) to automatically add/commit/push in their respective git
@@ -450,63 +451,110 @@ Magit to: add files, commit, and push.
 ;; (spydez/magit/auto-commit)
 
 
-(defun spydez/magit/check-status (mis/minibuffer-echo mis/msg-type)
+(defun spydez/magit/check-status (&optional mis/minibuffer-echo mis/msg-type)
   "For each item in `spydez/dir/git/watch-locations', use
 Magit to look for uncommitted(/unpushed?) changes.
 "
   (interactive)
 
-  ;; Either have to require magit here, or set magit to ":demand t" in
-  ;; use-package. Trying out requiring here as magit isn't the fastest to start.
-  (require 'magit)
+  (let (;; Defaults that we don't really care about probably in interactive mode.
+        (mis/minibuffer-echo (or mis/minibuffer-echo
+                                 t))
+        (mis/msg-type (or mis/msg-type
+                          :default))
 
-  ;; Walk our list of auto-commit loctaions.
-  (dolist (location spydez/dir/git/watch-locations)
-    ;; Change the default-directory just for this scope...
-    (let ((default-directory (if (f-dir? location)
-                                 location
-                               (f-dirname location)))
-          (change-list (spydez/magit/changes-in-subdir location)))
+        ;; speed up mis/message clearing out of minibuffer echo area
+        (mis/message/echo-area-timeout '(0.2 0.5)))
 
-      (mis/message/propertize mis/minibuffer-echo
-                              mis/msg-type :highlight
-                              "Checking %s..." location)
-      ;; Magit works on `default-directory', so we are checking status
-      ;; on our repo with this.
-      (if (null change-list)
+    ;; Only show *Messages* buffer when user called this interactively directly
+    ;; (not via a macro or whatever).
+    (when (called-interactively-p 'interactive)
+      (view-echo-area-messages)
+      (mis/message/propertize mis/minibuffer-echo mis/msg-type 'newline))
+
+    ;; Either have to require magit here, or set magit to ":demand t" in
+    ;; use-package. Trying out requiring here as magit isn't the fastest to
+    ;; start.
+    (require 'magit)
+
+    ;; Walk our list of auto-commit loctaions.
+    (dolist (location spydez/dir/git/watch-locations)
+      (let* ((repo-path (if (f-dir? location)
+                            location
+                          (f-dirname location)))
+             (repo-name (f-filename repo-path))
+             (path-above-name (f-slash (f-dirname repo-path)))
+             ;; Change the default-directory just for this scope...
+             (default-directory repo-path)
+             (change-list (spydez/magit/changes-in-subdir location)))
+
+        (mis/message/propertize mis/minibuffer-echo
+                                mis/msg-type
+                                `(:part
+                                  (:highlight "Checking ")
+                                  :part
+                                  (:highlight "%s" ,path-above-name)
+                                  :part
+                                  (:inattention "%s" ,repo-name)
+                                  :part
+                                  (:highlight "...")))
+
+        ;; Magit works on `default-directory', so we are checking status
+        ;; on our repo with this.
+        (if (null change-list)
+            ;;---
+            ;; Say nothing happened here.
+            ;;---
+            (mis/message/propertize
+             mis/minibuffer-echo
+             mis/msg-type
+             `(:part
+               ;; Say 'No changes' or 'x changes', depending.
+               (:text "  %s " "No")
+               :part
+               (:text "changes in: ")
+               :part
+               (:text "%s" ,path-above-name)
+               :part
+               (:inattention "%s" ,repo-name)
+               :part
+               (:text "...")))
+
           ;;---
-          ;; Say nothing happened here.
+          ;; Else, note changes.
           ;;---
+
+          ;; Summary
+          (mis/message/propertize
+           mis/minibuffer-echo
+           mis/msg-type
+           `(:part
+             ;; Say 'No changes' or 'x changes', depending.
+             (:inattention "  %s " ,(length change-list))
+             :part
+             (:text "changes in: ")
+
+             :part
+             (:text "%s" ,path-above-name)
+             :part
+             (:inattention "%s" ,repo-name)
+             :part
+             (:text "..."))))
+
+        ;; Details
+        (dolist (change-path change-list)
           (mis/message/propertize mis/minibuffer-echo
                                   mis/msg-type :text
-                                  "  %s changes in: %s..."
-                                  "No"
-                                  default-directory)
-        ;;---
-        ;; Else, note changes.
-        ;;---
+                                  "    - %s"
+                                  (string-remove-prefix default-directory
+                                                        change-path))))
 
-        ;; Summary
-        (mis/message/propertize mis/minibuffer-echo
-                                mis/msg-type :text
-                                "  %s changes in: %s..."
-                                (length change-list)
-                                default-directory))
+      (mis/message/propertize mis/minibuffer-echo mis/msg-type ""))
 
-      ;; Details
-      (dolist (change-path change-list)
-        (mis/message/propertize mis/minibuffer-echo
-                                mis/msg-type :text
-                                "    - %s"
-                                (string-remove-prefix default-directory
-                                                      change-path))))
-
-        (mis/message/propertize mis/minibuffer-echo mis/msg-type ""))
-
-  (mis/message/propertize mis/minibuffer-echo
-                          mis/msg-type :highlight
-                          "Checked status on %s locations."
-                          (length spydez/dir/git/watch-locations)))
+    (mis/message/propertize mis/minibuffer-echo
+                            mis/msg-type :highlight
+                            "Checked status on %s locations."
+                            (length spydez/dir/git/watch-locations))))
 ;; (spydez/magit/check-status t '(spydez homeward))
 
 
