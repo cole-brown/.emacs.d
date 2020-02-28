@@ -3,6 +3,6 @@
 # name: spy-fan: org-mode large, fancy block title comment thing
 # key: spy-fan
 # --
-     ┌┬┬┬──────────────────────────────────────────────────────────────┬┬┬┐
-     ├┼┼┤                         Hello There.                         ├┼┼┤
-     └┴┴┴──────────────────────────────────────────────────────────────┴┴┴┘
+${1:`(mis/parts/build (mis/center/parts "─" t ?─ '("     " nil) '("┌┬┬┬" "┬┬┬┐") '("─" "─") nil))`$(when yas/moving-away-p (mis/parts/build (mis/center/parts yas-text t ?─ '("     " nil) '("┌┬┬┬" "┬┬┬┐") '("─" "─") nil)))}
+${2:`(mis/parts/build (mis/center/parts "(will center on exit)" nil nil '("     " nil) '("├┼┼┼" "┼┼┼┤") '("─" "─") nil))`$(when yas/moving-away-p (mis/parts/build (mis/center/parts yas-text nil nil '("     " nil) '("├┼┼┼" "┼┼┼┤") '("─" "─") nil)))}
+${3:`(mis/parts/build (mis/center/parts "─" t ?─ '("     " nil) '("└┴┴┴" "┴┴┴┘") '("─" "─") nil))`$(when yas/moving-away-p (mis/parts/build (mis/center/parts yas-text t ?─ '("     " nil) '("└┴┴┴" "┴┴┴┘") '("─" "─") nil)))}

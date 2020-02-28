@@ -211,7 +211,7 @@ Returns a plist with tags as shown:
       :border
       (nth 1 borders)   ;; "||"
       :margin
-      (nth 0 margins))  ;; "xx"
+      (nth 1 margins))  ;; "xx"
      )))
 ;; (mis/center/parts "center plz")
 ;; (mis/center/parts "center plz" t)
