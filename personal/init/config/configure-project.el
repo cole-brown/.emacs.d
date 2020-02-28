@@ -151,18 +151,31 @@ spydez/taskspace/gen-org-notes' and see what file it's defined
 in.
 "
     ;; Format:
-    ;; <spy/header
+    ;; spy-header snippet key
     ;;
     ;; taskname
     ;; taskpath
     ;;
     ;; 'mkdir cmd'
-    (format (concat "%s\n\n" ;; header
-                    "%s\n"   ;; taskname
-                    "%s")    ;; taskpath
+    ;;
+    ;; fancy box to separate this stuff from start of normal notes
+    (format (concat "%s\n" ;; header
+                    "\n"
+                    "%s\n" ;; taskname
+                    "%s\n" ;; taskpath
+                    "\n"
+                    "%s\n" ;; fancy box top
+                    "%s\n" ;; fancy box middle
+                    "%s\n" ;; fancy box bottom
+                    "\n\n")
             "spy-header"
             taskname
-            taskpath))
+            taskpath
+            (format "mkdir ~/temp/%s" taskname)
+            "┌┬┬┬──────────────────────────────────────────────────────────────┬┬┬┐"
+            "├┼┼┤                             ...                              ├┼┼┤"
+            "└┴┴┴──────────────────────────────────────────────────────────────┴┴┴┘"
+            ))
   ;; (spydez/taskspace/gen-org-notes "" "")
 
 

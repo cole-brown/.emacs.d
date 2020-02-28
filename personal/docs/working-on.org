@@ -43,6 +43,10 @@
       - Magit-Section interface for matches found in files?
       - Figure out my issue searching for '§'
 
+    - [ ] look at 'bufler.el'?
+      - https://www.reddit.com/r/emacs/comments/fatjdw/annrfc_buflerel_group_buffers_into_workspaces/
+      - Does it work with Helm?
+
     - [ ] configure-crypt needs babying... again... (again... (again?..))
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
         - https://arenzana.org/2019/04/emacs-org-mode/

@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# contributor: Cole Brown <code@brown.dev>
+# name: spy-fan: org-mode large, fancy block title comment thing
+# key: spy-fan
+# --
+     ┌┬┬┬──────────────────────────────────────────────────────────────┬┬┬┐
+     ├┼┼┤                         Hello There.                         ├┼┼┤
+     └┴┴┴──────────────────────────────────────────────────────────────┴┴┴┘
