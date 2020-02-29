@@ -117,12 +117,14 @@ as MIS-SETTING).
     ;; My Custom Stuff
     ;;---
     ;; §-TODO-§ [2019-11-15]: change do (:spydez :homeward)?
-    ((spydez homeward) (:border    font-lock-comment-delimiter-face
+    ((spydez homeward) (:border      font-lock-comment-delimiter-face
                         :padding     font-lock-comment-face
-                        :text       font-lock-builtin-face
-                        :highlight  font-lock-keyword-face
-                        :highlight2 font-lock-constant-face
-                        :title      font-lock-preprocessor-face))
+                        :text        font-lock-builtin-face
+                        :highlight   font-lock-keyword-face
+                        :highlight2  font-lock-constant-face
+                        :title       font-lock-preprocessor-face
+                        :inattention font-lock-string-face))
+
     ;;---
     ;; Koans
     ;;---

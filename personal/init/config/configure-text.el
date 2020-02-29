@@ -144,8 +144,13 @@
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Recognize-Coding.html
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Output-Coding.html
 
-;; May need a way of checking for smart quotes and em dashes and stuff when we don't want utf-8...
+;; May need a way of checking for smart quotes and em dashes and stuff when we
+;; don't want utf-8...
 (prefer-coding-system 'utf-8)
+;; Scripts written on my comp and uploaded to a linux server are annoying as
+;; they start off as Windows/DOS CRLF and then don't run on the server... So
+;; default to Unix LF instead.
+(setq-default buffer-file-coding-system 'utf-8-unix)
 (when (display-graphic-p)
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 
@@ -153,15 +158,42 @@
 ;; places... Like, many. Small sample (from http://emacs-bootstrap.com/ ):
 ;; ;; UTF-8 please
 ;; (set-charset-priority 'unicode)
-;; (setq locale-coding-system   'utf-8)   ; pretty
+;; (setq-default locale-coding-system   'utf-8)   ; pretty
 ;; (set-terminal-coding-system  'utf-8)   ; pretty
 ;; (set-keyboard-coding-system  'utf-8)   ; pretty
 ;; (set-selection-coding-system 'utf-8)   ; please
 ;; (prefer-coding-system        'utf-8)   ; with sugar on top
 ;; (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+;; (setq-default buffer-file-coding-system 'utf-8-unix)
+;; (setq-default default-buffer-file-coding-system 'utf-8-unix)
+;; (set-default-coding-systems 'utf-8-unix)
+;; (prefer-coding-system 'utf-8-unix)
 ;; deadgrep search for this to see if we're good yet?: §
 ;;   (shell-quote-argument "§")
 ;;   (shell-quote-argument "argument")
+
+
+;; (let ((args '("S" symbol1 symbolB)))
+;;   (cl-flet (((symbol-function 'shell-quote-argument) #'identity))
+;;     (message "args: %s, first: %s, 'quoted': %s"
+;;              args (nth 0 args) (shell-quote-argument (first args)))))
+;;
+;; [2020-02-28] This is just deadgrep ignoring that I've
+;;              fset shell-quote argument. :|
+;; (when nil
+;;   (fset 'spydez/emacs/original-fn/shell-quote-argument (symbol-function 'shell-quote-argument))
+;;   (defun spydez/advice/deadgrep--format-command (orig-func &rest args)
+;;     (message "hello there?")
+;;     (cl-flet (((symbol-function 'shell-quote-argument) #'identity))
+;;       (message "args: %s, first: %s, 'quoted': %s"
+;;                args (nth 0 args) (shell-quote-argument (first args)))
+;;       (apply orig-func args)))
+;;   (advice-add 'deadgrep--format-command :around #'spydez/advice/deadgrep--format-command)
+;;   (deadgrep "§")
+;;   (advice-remove 'deadgrep--format-command #'spydez/advice/deadgrep--format-command)
+;;   )
+
+
 
 ;; Sticking with just the minimum until something unicode related
 ;; is wrong for me.
