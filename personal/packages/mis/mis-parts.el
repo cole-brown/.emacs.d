@@ -14,6 +14,7 @@
 ;; Consts & Vars
 ;;------------------------------------------------------------------------------
 
+;; §-TODO-§ [2020-03-02]: Convert to :keywords from 'symbols.
 (defcustom mis/parts/type-list
   ;; §-TODO-§ [2019-10-23]: more types, possibly a meta-type? e.g. koans have
   ;;   '(string int) for centered string w/ padding width though that could be
@@ -29,6 +30,7 @@
   :type 'sexp)
 
 
+;; §-TODO-§ [2020-03-02]: Convert to :keywords from 'symbols.
 (defcustom mis/parts/symbols-alist
   '(;;---
     ;; strings, simple substitution

@@ -987,14 +987,14 @@
 
   ;; How long start up took, exactly.
   (mis/message/propertize
-   t 'default
+   t :default
    :attention1
    "Emacs ready in %s with %d garbage collections."
    (format "%.2f seconds"
            (float-time
             (time-subtract after-init-time before-init-time)))
    gcs-done)
-  (mis/message/propertize nil 'default 'newline))
+  (mis/message/propertize nil :default 'newline))
 ;; This really should be the end for properness.
 
 

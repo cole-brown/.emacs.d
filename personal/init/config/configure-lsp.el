@@ -20,7 +20,7 @@
 were shut down.
 "
   (interactive)
-  (mis/message/propertize t 'default
+  (mis/message/propertize t :default
                           :title
                           "Killed %s LSP servers."
                           (let ((shutdown (spydez/lsp/shutdown-all)))
