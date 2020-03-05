@@ -629,6 +629,7 @@
 (spydez/require 'misc-functions)
 (spydez/require 'date-and-time)
 (spydez/require 'buffer-functions)
+(spydez/require 'with)
 (spydez/init/step/set-completed 'config 'libraries)
 
 ;; Stuff that affects emacs itself, like garbage collection.

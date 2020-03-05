@@ -164,7 +164,7 @@ OUTPUT-PRIORITY is also just passed through to
 
   (when prelude-message
     (mis/info nil prelude-message))
-   ;; `let' for lexically rebinding shell-file-name for this one command.
+  ;; `let' for lexically rebinding shell-file-name for this one command.
   (let ((shell-file-name (spydez/shell/system-default)))
     (shell-command
      command
@@ -184,7 +184,7 @@ OUTPUT-PRIORITY is also just passed through to
                                            &optional
                                            output-subtitle
                                            prelude-message
-                                     output-priority)
+                                           output-priority)
   "Useful on windows... Resets to default system shell for the
 COMMAND. Calls `async-shell-command' with COMMAND. Buffer will be named
 by `spydez/buffer/special-name' according to OUTPUT-TITLE
@@ -206,16 +206,16 @@ OUTPUT-PRIORITY is also just passed through to
         "async-shell-command like this... I'll have to add in support "
         "for 'start -B command' or something."))
 
-       ;; 'start' with the '/B' option.
-       ;;   Start application without creating a new window. The application
-       ;;   has ^C handling ignored. Unless the application enables ^C
-       ;;   processing, ^Break is the only way to interrupt the application
-       ;; e.g.
-       ;;   start /B java -jar jarfile1.jar
-       ;;   start /B java -jar jarfile2.jar
-       ;;
-       ;; https://superuser.com/a/345605
-       ;;   - https://www.computerhope.com/starthlp.htm
+    ;; 'start' with the '/B' option.
+    ;;   Start application without creating a new window. The application
+    ;;   has ^C handling ignored. Unless the application enables ^C
+    ;;   processing, ^Break is the only way to interrupt the application
+    ;; e.g.
+    ;;   start /B java -jar jarfile1.jar
+    ;;   start /B java -jar jarfile2.jar
+    ;;
+    ;; https://superuser.com/a/345605
+    ;;   - https://www.computerhope.com/starthlp.htm
 
     (when prelude-message
       (mis/info nil prelude-message))
@@ -308,16 +308,50 @@ If BUFFER-OR-NAME is nil, sends output to \"*Messages*\" buffer."
 
 ;; TODO: figure out how to integrate this into use-tool
 ;; Set shell command to use git bash.
+(defvar spydez/shells-alist
+  (list
+   (list :default system-type
+         :var (list 'explicit-shell-file-name (with/void explicit-shell-file-name))
+         :var (list 'shell-file-name shell-file-name)))
+  "Alist of known/available shells.
+
+Layout:
+  ((:shell0-tag-name system-type-symbol
+    :<var | func> <list>
+    :<var | func> <list>
+    ...)
+   (:shell1-tag-name ...))
+
+  - Tag name can be any symbol.
+  - `:var' tag indicates the next element in the list contains a
+    symbol name and value to set for that symbol.
+  - `:func' indicates the next element in the list contains a
+    function symbol name and the args to call it with.")
+
+
 (when (use-tool-os-and-tool-p 'windows-nt "bash")
   (let ((bash-path (executable-find "bash")))
     (when bash-path
-      (setq explicit-shell-file-name bash-path)
-      (setq shell-file-name "bash")
-      (setq explicit-bash.exe-args '("--login" "-i"))
-      (setenv "SHELL" shell-file-name)
-      ;; todo strip ctrl m?
-      ;; todo fix error and MSYS line cruft
-      ;;   - https://emacs.stackexchange.com/questions/22049/git-bash-in-emacs-on-windows
+      (push (list :bash system-type
+                  :var (list 'explicit-shell-file-name bash-path)
+                  :var (list 'shell-file-name "bash")
+                  :var (list 'explicit-bash.exe-args '("--login" "-i"))
+                  :func '(setenv "SHELL" shell-file-name))
+            spydez/shells-alist)
+
+      ;; This fucks with deadgrep (as does some UTF-8 stuff in configure-text).
+      ;; The two of them combined make it hard to track shit like this down...
+      ;; Deadgrep/ripgrep error when just this was at fault:
+      ;;   /usr/bin/bash: rg --color=ansi --line-number --no-heading --with-filename --fixed-strings --smart-case   -- \Â§ .: No such file or directory
+      ;;   exited abnormally with code 127
+
+      ;; (setq explicit-shell-file-name bash-path)
+      ;; (setq shell-file-name "bash")
+      ;; (setq explicit-bash.exe-args '("--login" "-i"))
+      ;; (setenv "SHELL" shell-file-name)
+      ;; ;; todo strip ctrl m?
+      ;; ;; todo fix error and MSYS line cruft
+      ;; ;;   - https://emacs.stackexchange.com/questions/22049/git-bash-in-emacs-on-windows
       )))
 
 

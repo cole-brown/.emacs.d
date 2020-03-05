@@ -144,15 +144,25 @@
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Recognize-Coding.html
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Output-Coding.html
 
-;; May need a way of checking for smart quotes and em dashes and stuff when we
-;; don't want utf-8...
-(prefer-coding-system 'utf-8)
+;; ;; May need a way of checking for smart quotes and em dashes and stuff when we
+;; ;; don't want utf-8...
+;; (prefer-coding-system 'utf-8)
+;; ;; This fucks with deadgrep (as does some stuff in configure-shell).
+;; ;; The two of them combined make it hard to track shit like this down...
+;; ;; Deadgrep/ripgrep error when just this was at fault:
+;; ;;   - It only picks up these bad greps for the wrongly munged unicode glyph.
+;; ;;     345        ;;   /usr/bin/bash: rg --color=ansi --line-number --no-heading --with-filename --fixed-strings --smart-case   -- \Â§ .: No such file or directory
+
+
 ;; Scripts written on my comp and uploaded to a linux server are annoying as
 ;; they start off as Windows/DOS CRLF and then don't run on the server... So
 ;; default to Unix LF instead.
 (setq-default buffer-file-coding-system 'utf-8-unix)
-(when (display-graphic-p)
-  (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
+
+;; Forget what this is for and I didn't comment about it so... *shrugs*
+;; Try without and see if anything breaks.
+;; (when (display-graphic-p)
+;;   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 
 ;; There are many many more ways of asking Emacs for utf-8 in many many more
 ;; places... Like, many. Small sample (from http://emacs-bootstrap.com/ ):
@@ -171,29 +181,6 @@
 ;; deadgrep search for this to see if we're good yet?: §
 ;;   (shell-quote-argument "§")
 ;;   (shell-quote-argument "argument")
-
-
-;; (let ((args '("S" symbol1 symbolB)))
-;;   (cl-flet (((symbol-function 'shell-quote-argument) #'identity))
-;;     (message "args: %s, first: %s, 'quoted': %s"
-;;              args (nth 0 args) (shell-quote-argument (first args)))))
-;;
-;; [2020-02-28] This is just deadgrep ignoring that I've
-;;              fset shell-quote argument. :|
-;; (when nil
-;;   (fset 'spydez/emacs/original-fn/shell-quote-argument (symbol-function 'shell-quote-argument))
-;;   (defun spydez/advice/deadgrep--format-command (orig-func &rest args)
-;;     (message "hello there?")
-;;     (cl-flet (((symbol-function 'shell-quote-argument) #'identity))
-;;       (message "args: %s, first: %s, 'quoted': %s"
-;;                args (nth 0 args) (shell-quote-argument (first args)))
-;;       (apply orig-func args)))
-;;   (advice-add 'deadgrep--format-command :around #'spydez/advice/deadgrep--format-command)
-;;   (deadgrep "§")
-;;   (advice-remove 'deadgrep--format-command #'spydez/advice/deadgrep--format-command)
-;;   )
-
-
 
 ;; Sticking with just the minimum until something unicode related
 ;; is wrong for me.
