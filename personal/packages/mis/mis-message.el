@@ -58,7 +58,7 @@ NOTE: Could (optionally) add TYPE to output easily enough if desired.
                           (-flatten-n 1 args))
                      args))
            ;; Also need to check for a full unboxing...
-           ;; e.g. 'newline -&rest-> '(newline) -unbox-> 'newline
+           ;; e.g. :newline -&rest-> '(:newline) -unbox-> :newline
            (args (or (and (listp args)
                           (= (length args) 1)
                           (nth 0 args))
@@ -78,7 +78,7 @@ NOTE: Could (optionally) add TYPE to output easily enough if desired.
      args type mis/type->faces)
     nil))
 ;; (mis/message/propertize t '(mis koan text) '(:text "hi"))
-;; (mis/message/propertize nil '(mis koan text) 'newline)
+;; (mis/message/propertize nil '(mis koan text) :newline)
 ;; (mis/message/propertize t '(mis koan text) :text "hi %s" "there")
 ;; (mis/message/propertize t '(spydez homeward) "  LSP: Killed %s servers." 1) ;; err: no type
 

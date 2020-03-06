@@ -14,41 +14,39 @@
 ;; Consts & Vars
 ;;------------------------------------------------------------------------------
 
-;; §-TODO-§ [2020-03-02]: Convert to :keywords from 'symbols.
 (defcustom mis/parts/type-list
   ;; §-TODO-§ [2019-10-23]: more types, possibly a meta-type? e.g. koans have
   ;;   '(string int) for centered string w/ padding width though that could be
   ;;   converted to... something fancier, but we only look at keywords for faces
   ;;   right now.
-  '(invalid
-    symbol
-    string
-    pairs
-    format)
+  '(:invalid
+    :symbol
+    :string
+    :pairs
+    :format)
   "Known and valid parts types."
   :group 'mis
   :type 'sexp)
 
 
-;; §-TODO-§ [2020-03-02]: Convert to :keywords from 'symbols.
 (defcustom mis/parts/symbols-alist
   '(;;---
     ;; strings, simple substitution
     ;;---
     ;; (SYMBOL NIL STRING-SUBSTITUTION)
-    (newline      nil "\n")
-    (line-empty   nil "\n")
-    (string-empty nil "")
+    (:newline      nil "\n")
+    (:line-empty   nil "\n")
+    (:string-empty nil "")
 
     ;;---
     ;; strings, less simple
     ;;---
     ;; (SYMBOL FUNCTION FUNC-ARG-0 FUNC-ARG-1 ...)
     ;; these should fill a line as defined by `fill-column'.
-    (line-full   mis/center/parts
-                 "" nil mis/center/char/padding)
-    (string-full mis/center/parts
-                 "" nil mis/center/char/padding))
+    (:line-full   mis/center/parts
+                  "" nil mis/center/char/padding)
+    (:string-full mis/center/parts
+                  "" nil mis/center/char/padding))
   "Known and valid symbols alist. Format is:
   (symbol-name func arg0 arg1 ...)
 or
@@ -57,8 +55,8 @@ or
 A func will get called with args; nil func will return the string instead."
   :group 'mis
   :type '(alist :key-type symbol :value-type sexp))
-;; (alist-get 'newline mis/parts/symbols-alist)
-;; (alist-get 'string-full mis/parts/symbols-alist)
+;; (alist-get :newline mis/parts/symbols-alist)
+;; (alist-get :string-full mis/parts/symbols-alist)
 
 
 ;;------------------------------------------------------------------------------
@@ -67,7 +65,7 @@ A func will get called with args; nil func will return the string instead."
 
 (defun mis/parts/type (part)
   "Figures out part type. Types are:
- - symbol: 'newline
+ - symbol: :newline
  - string: \"Hello, World!\"
  - pairs: (:indent \"    \" :border \"+++\" :padding \"===\")
  - format: (:title \"Test v%s.%s\" ver-major ver-minor)
@@ -78,37 +76,37 @@ See `mis/parts/type-list' for list.
 Returns an element from `mis/parts/type-list'."
   (cond
    ((symbolp part)
-    'symbol)
+    :symbol)
 
    ((stringp part)
-    'string)
+    :string)
 
    ;; list - more than 1 keyword, so assume 'pairs'.
    ;;   (:indent "    " :border "+++" :padding "===")
    ((and (listp part)
          (> (-count #'keywordp part) 1))
-    'pairs)
+    :pairs)
 
    ;; list - 1 keyword, multiple other things. Assume format.
    ;;  (:text "Hello, %s %s %s" "World!" "And Mars..." "......(and jeff.)")
    ((and (listp part)
          (> (length part) 2) ;; (:keyword "fmt-str" extra stuff)
          (= (-count #'keywordp part) 1)) ;; only the one
-    'format)
+    :format)
 
    ;; list - prop and str? Assume pairs.
    ;; (:padding "--")
    ((and (listp part)
          (= (length part) 2)
          (= (-count #'keywordp part) 1))
-    'pairs)
+    :pairs)
 
    ;; Dunno. invalid
    (t
     (mis/warning nil :warning
                  "Don't know how to classify type of part: '%S'"
                  part)
-    'invalid)))
+    :invalid)))
 
 
 (defun mis/parts/property (type part)
@@ -123,20 +121,20 @@ Returns an element from `mis/parts/type-list'."
 (defun mis/parts/value (type part)
   "Returns value from PART based on TYPE."
   (cond
-   ((eq type 'invalid)
+   ((eq type :invalid)
     ;; type complained, so... just return nil?
     nil)
 
-   ((or (eq type 'symbol)
-        (eq type 'string))
+   ((or (eq type :symbol)
+        (eq type :string))
     ;; value is the part itself
     part)
 
-   ((eq type 'pairs)
+   ((eq type :pairs)
     ;; value is 2nd element. Extract with nth.
     (nth 1 part))
 
-   ((eq type 'format)
+   ((eq type :format)
     ;; value is everything except property, which should be 1st.
     ;; Exclude prop and return "the rest".
     (cdr part))))
@@ -148,23 +146,23 @@ iteration of parts processing/building."
 
   (let ((type (mis/parts/type section)))
     (cond
-     ((eq type 'invalid)
+     ((eq type :invalid)
       ;; type complained, so... just return nil?
       nil)
 
-     ((eq type 'symbol)
+     ((eq type :symbol)
       ;; No more parts to this section.
       nil)
 
-     ((eq type 'string)
+     ((eq type :string)
       ;; No more parts to this section.
       nil)
 
-     ((eq type 'pairs)
+     ((eq type :pairs)
       ;; Jump over this pair.
       (cddr section))
 
-     ((eq type 'format)
+     ((eq type :format)
       ;; No more parts to this section.
       nil))))
 ;; (mis/parts/next '(:indent "  " :border "++" :padding "=="))
@@ -207,8 +205,8 @@ iteration of parts processing/building."
      nil :warning
      "No symbol in `mis/parts/symbols-alist' for: '%S' '%S'"
      symbol mis/parts/symbols-alist)))
-;; (mis/parts/process/symbol 'newline)
-;; (mis/parts/process/symbol 'line-full)
+;; (mis/parts/process/symbol :newline)
+;; (mis/parts/process/symbol :line-full)
 
 
 ;; Want all these types correctly dealt with...
@@ -219,7 +217,7 @@ iteration of parts processing/building."
 ;; (:title "Test v%s.%s" ver-major ver-minor)
 ;;   -> process to: (:title "Test v5.11")
 ;; Special Case Symbols:
-;; 'line-empty
+;; :line-empty
 ;;   -> process to: "\n"
 ;; String:
 ;; "hello there"
@@ -228,7 +226,7 @@ iteration of parts processing/building."
   "Checks for special processing for PART. Handles a few types:
 
 PART is:
-  symbol: special string type e.g. 'string-empty, 'string-full
+  symbol: special string type e.g. :string-empty, :string-full
   string: un-special string type - will not get propertized or anything
   plist tuple: string that will probably get propertized
 
@@ -248,14 +246,14 @@ Returns for:
      ;;---
      ;; type == invalid
      ;;---
-     ((eq type 'invalid)
+     ((eq type :invalid)
       ;; `mis/parts/type' already complained - just pass nil as part.
       nil)
 
      ;;---
      ;; type == symbol
      ;;---
-     ((eq type 'symbol)
+     ((eq type :symbol)
       (setq result (mis/parts/process/symbol part)))
 
      ;;---
@@ -311,9 +309,9 @@ Returns for:
 
     ;; (message "processed: '%S' -> '%S'" part result)
     result))
-;; (mis/parts/process 'line-empty)
-;; (mis/parts/process 'string-empty)
-;; (mis/parts/process 'string-full)
+;; (mis/parts/process :line-empty)
+;; (mis/parts/process :string-empty)
+;; (mis/parts/process :string-full)
 ;; (mis/parts/process "hello")
 ;; (mis/parts/process '(:padding "----"))
 ;; (mis/parts/process '(:text "Hello, %s %s %s" "a" "b" "c!"))
@@ -400,8 +398,8 @@ plists.
 ;;                    (:text "xx")
 ;;                    :postfix
 ;;                    (:padding "==" :border "!!")))
-;; (mis/parts/build 'string-empty)
-;; (mis/parts/build 'string-full)
+;; (mis/parts/build :string-empty)
+;; (mis/parts/build :string-full)
 ;; (mis/parts/build "hello")
 ;; (mis/parts/build '(:text "Hello, %s %s %s" "a" "b" "c!"))
 ;; (mis/parts/build '(:indent "  " :border "++" :padding "=="))

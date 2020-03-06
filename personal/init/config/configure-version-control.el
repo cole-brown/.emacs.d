@@ -470,7 +470,7 @@ Magit to look for uncommitted(/unpushed?) changes.
     ;; (not via a macro or whatever).
     (when (called-interactively-p 'interactive)
       (view-echo-area-messages)
-      (mis/message/propertize mis/minibuffer-echo mis/msg-type 'newline))
+      (mis/message/propertize mis/minibuffer-echo mis/msg-type :newline))
 
     ;; Either have to require magit here, or set magit to ":demand t" in
     ;; use-package. Trying out requiring here as magit isn't the fastest to

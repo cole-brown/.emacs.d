@@ -995,7 +995,7 @@
            (float-time
             (time-subtract after-init-time before-init-time)))
    gcs-done)
-  (mis/message/propertize nil :default 'newline))
+  (mis/message/propertize nil :default :newline))
 ;; This really should be the end for properness.
 
 

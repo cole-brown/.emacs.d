@@ -87,7 +87,7 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
      (t
       (error "unknown line type: %s" line)
       nil))))
-;; (mis/koan/process-line 'line-empty)
+;; (mis/koan/process-line :line-empty)
 ;; (mis/koan/process-line 'line-full)
 ;; (mis/koan/process-line "Hi.")
 ;; (mis/koan/process-line '("Hi." 5))
@@ -134,53 +134,53 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 ;; A Bad Koan.
 ;; Not really a koan, probably...
 (mis/koan/add
- '(line-empty
-   line-full
+ '(:line-empty
+   :line-full
    ("I was juggling and trying to come to a good stopping point," 7)
    ("But I had 5 balls and only two hands..." 17)
-   line-full
+   :line-full
    ("So I came to a bad stopping point," 9)
    ("And now I'm chasing balls around instead." 7)
    ("- Programmer's Guide to the Void" 13)
    ;; There was no time scheduled to learn juggling...
-   line-full
-   line-empty))
+   :line-full
+   :line-empty))
 
 
 ;; Uh...
 ;; True Story. :|
 ;; Except it was svn...
 (mis/koan/add
- '(line-empty
-   line-full
+ '(:line-empty
+   :line-full
    "git commit -am \"fixed bugs caused by bug fixes\""
    "- Programmer's Guide to the Void"
-   line-full
-   line-empty))
+   :line-full
+   :line-empty))
 
 
 ;; Uh...
 ;; Also a True Story. :|
 ;; Every programming test I've taken, for instance...
 (mis/koan/add
- '(line-empty
-   line-full
+ '(:line-empty
+   :line-full
    "A task is an hour,"
    "Only if little goes wrong..."
    "For the first two hours."
    "- Programmer's Guide to the Void"
-   line-full
-   line-empty))
+   :line-full
+   :line-empty))
 
 
 ;; Just find your towel.
 (mis/koan/add
- '(line-empty
-   line-full
+ '(:line-empty
+   :line-full
    ("Mh... Panic?" 28)
    ("- Programmer's Guide to the Void" 13)
-   line-full
-   line-empty))
+   :line-full
+   :line-empty))
 
 
 ;;---
@@ -189,92 +189,92 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 
 ;; General Kenobi!
 (mis/koan/add
- '(line-empty
-   line-full
+ '(:line-empty
+   :line-full
    "Hello there."
-   line-full
-   line-empty))
+   :line-full
+   :line-empty))
 
 
 ;; Such language...
 (mis/koan/add
- '(line-empty
-   line-full
+ '(:line-empty
+   :line-full
    "You can't say 'fuck' in the source code..."
-   line-full
-   line-empty))
+   :line-full
+   :line-empty))
 
 
 ;; §-TODO-§ [2019-10-15]: get more from here? http://www.catb.org/~esr/writings/unix-koans/
 ;; http://www.catb.org/~esr/writings/unix-koans/
 (mis/koan/add
- '(line-empty
-   line-full
+ '(:line-empty
+   :line-full
    ("“Even the hacker who works alone" 13)
    ("collaborates with others," 9)
    ("and must constantly communicate clearly to them," 7)
    ("lest his work become confused and lost,”" 9)
    ("said the Master." 13)
-   line-full
+   :line-full
 
    "“Of what others do you speak?” the Prodigy demanded."
-   line-full
+   :line-full
    ("Master Foo said: “All your future selves.”" 13)
-   line-full
-   line-empty))
+   :line-full
+   :line-empty))
 
 
 ;; (theme song)
 (mis/koan/add
- '(line-empty
-   line-full
+ '(:line-empty
+   :line-full
    "Standby for Reincarnation..."
    "  - Futurama"
-   line-full
-   line-empty))
+   :line-full
+   :line-empty))
 
 
 ;; (theme song)
 (mis/koan/add
- '(line-empty
-   line-full
+ '(:line-empty
+   :line-full
    "“When You Do Things Right,"
    "People Won’t Be Sure You’ve Done Anything at All”"
    "  - Futurama"
-   line-full
-   line-empty))
+   :line-full
+   :line-empty))
 
 
 ;; Spybreak! - Short One
 (mis/koan/add
- '(line-empty
-   line-full
+ '(:line-empty
+   :line-full
    ("“Do not try and bend the spoon," 13)
    ("that’s impossible." 9)
    ("Instead, only try to realize the truth..." 7)
-   line-full
+   :line-full
    "There is no spoon."
-   line-full
+   :line-full
    ("Then you’ll see that it is not the spoon that bends," 7)
    ("it is only yourself.”" 9)
    ("    - Spoon Boy to Neo" 13)
-   line-full
-   line-empty))
+   :line-full
+   :line-empty))
 
 
 ;; The Programmer's Curse
 (mis/koan/add
- '(line-empty
-   line-full
+ '(:line-empty
+   :line-full
    ("~♫~99 Little Bugs In The Code!~♫~" 13)
    ("~♫~99 ♪~Little~♪ Bugs!~♫~" 15)
    ("~♫~Take One Down and Patch It Around...~♫~" 7)
    ("~♫~127 Little Bugs in the Code.~♫~" 13)
-   line-full
+   :line-full
    ("..." 28)
    ("(programmer sobs in binary...)" 3)
-   line-full
-   line-empty))
+   :line-full
+   :line-empty))
 
 
 ;; Do Not Tap Glass.
@@ -282,12 +282,12 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 ;; Do Not Startle Fork-Bomb.
 ;; No Flash Photography, Please.
 (mis/koan/add
- '(line-empty
-   line-full
+ '(:line-empty
+   :line-full
    ":(){ :|:& };:"
-   line-full
+   :line-full
    "(kaboom)"
-   line-empty))
+   :line-empty))
 
 
 ;;---
@@ -296,19 +296,19 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 
 ;; Just find your towel.
 (mis/koan/add
- '(line-empty
-   line-full
+ '(:line-empty
+   :line-full
    ("DON'T PANIC" 28)
    ("- Hitchhiker's Guide to the Galaxy" 13)
-   line-full
-   line-empty))
+   :line-full
+   :line-empty))
 
 (mis/koan/add
- '(line-empty
-   line-full
+ '(:line-empty
+   :line-full
    ("DON'T PANIC" 28)
-   line-full
-   line-empty))
+   :line-full
+   :line-empty))
 
 
 ;;---
