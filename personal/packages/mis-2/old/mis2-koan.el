@@ -9,19 +9,19 @@
 
 (require 'cl-lib)
 
-(require 'mis-parts)
-(require 'mis-center)
-(require 'mis-message)
+(require 'mis2-parts)
+(require 'mis2-center)
+(require 'mis2-message)
 
 ;;-----------------------------There is no spoon.-------------------------------
 ;;--                              Koan Settings                               --
 ;;------------------------------------------------------------------------------
 
-(defconst mis/koan/line-width 90
+(defconst mis2/koan/line-width 90
   "Line width for formatting koans.")
 
 
-(defvar mis/koan/list nil
+(defvar mis2/koan/list nil
   "Koans loaded up and ready to go.")
 
 
@@ -29,42 +29,42 @@
 ;;--                             Koan Functions                               --
 ;;------------------------------------------------------------------------------
 
-(defun mis/koan/process-line (line)
+(defun mis2/koan/process-line (line)
   "Returns a propertized line of a koan.
 
-Will use `mis/koan/line-width' if non-nil, else `fill-column'."
-  (let ((faces-text (nth 1 (assoc '(mis koan text)
-                                  mis/type->faces)))
-        (faces-other (nth 1 (assoc '(mis koan presence)
-                                   mis/type->faces)))
-        (fill-column (or mis/koan/line-width
+Will use `mis2/koan/line-width' if non-nil, else `fill-column'."
+  (let ((faces-text (nth 1 (assoc '(mis2 koan text)
+                                  mis2/type->faces)))
+        (faces-other (nth 1 (assoc '(mis2 koan presence)
+                                   mis2/type->faces)))
+        (fill-column (or mis2/koan/line-width
                          fill-column))
         ;; §-TODO-§ [2019-11-14]: Make this more dynamic/settable.
-        ;; Maybe a plist of mis settings or something... IDK.
-        (mis/parts/symbols-alist
+        ;; Maybe a plist of mis2 settings or something... IDK.
+        (mis2/parts/symbols-alist
          ;; redefining to get our margins in here...
          '((:newline      nil "\n")
            (:line-empty   nil "\n")
            (:string-empty nil "")
-           (:line-full    mis/center/parts
-                          "" nil mis/center/char/padding ("     " "     "))
-           (:string-full  mis/center/parts
-                          "" nil mis/center/char/padding ("     " "     ")))))
+           (:line-full    mis2/center/parts
+                          "" nil mis2/center/char/padding ("     " "     "))
+           (:string-full  mis2/center/parts
+                          "" nil mis2/center/char/padding ("     " "     ")))))
 
     (cond
      ;; 0) specials
      ((and (symbolp line)
-           (alist-get line mis/parts/symbols-alist))
-      (mis/parts/build line faces-other))
+           (alist-get line mis2/parts/symbols-alist))
+      (mis2/parts/build line faces-other))
 
      ;; 1) general
      ;; a) Just a string
      ((stringp line)
-      (mis/center
-       (mis/center/parts
+      (mis2/center
+       (mis2/center/parts
         line
         nil nil
-        (mis/center/margins 5)
+        (mis2/center/margins 5)
         nil nil)
        faces-text))
 
@@ -74,57 +74,57 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
            (stringp (nth 0 line))
            (numberp (nth 1 line)))
       ;; center, with parts built from string and padding-width
-      (mis/center
-       (mis/center/parts
+      (mis2/center
+       (mis2/center/parts
         (nth 0 line)
         nil nil
-        (mis/center/margins 5)
+        (mis2/center/margins 5)
         nil
-        (mis/center/paddings (nth 1 line)))
+        (mis2/center/paddings (nth 1 line)))
        faces-text))
 
      ;; 3) errors
      (t
       (error "unknown line type: %s" line)
       nil))))
-;; (mis/koan/process-line :line-empty)
-;; (mis/koan/process-line :line-full)
-;; (mis/koan/process-line "Hi.")
-;; (mis/koan/process-line '("Hi." 5))
-;; (mis/koan)
+;; (mis2/koan/process-line :line-empty)
+;; (mis2/koan/process-line :line-full)
+;; (mis2/koan/process-line "Hi.")
+;; (mis2/koan/process-line '("Hi." 5))
+;; (mis2/koan)
 
 
 
-(defun mis/koan/message (lines)
+(defun mis2/koan/message (lines)
   "Prints a pretty little message to the *Messages* buffer."
   (dolist (line lines)
-    (mis/message/preserve-properties nil (mis/koan/process-line line))))
-;; (mis/koan/message '(:line-empty :line-full "Hi." :line-full :line-empty))
+    (mis2/message/preserve-properties nil (mis2/koan/process-line line))))
+;; (mis2/koan/message '(:line-empty :line-full "Hi." :line-full :line-empty))
 
 
-(defun mis/koan/add (koan)
-  "Pushes KOAN into `mis/koan/list'."
-  (push koan mis/koan/list))
+(defun mis2/koan/add (koan)
+  "Pushes KOAN into `mis2/koan/list'."
+  (push koan mis2/koan/list))
 
 
-(defun mis/koan (&optional show-buffer)
+(defun mis2/koan (&optional show-buffer)
   "Prints a random koan, or the one indicated by WHICH if non-nil."
   (interactive "p")
-  (when (and mis/koan/list
-             (listp mis/koan/list))
-    (mis/koan/message (nth (random (length mis/koan/list))
-                           mis/koan/list))
+  (when (and mis2/koan/list
+             (listp mis2/koan/list))
+    (mis2/koan/message (nth (random (length mis2/koan/list))
+                           mis2/koan/list))
     (when show-buffer
       (pop-to-buffer "*Messages*" nil t)
       (spydez/point/to-end "*Messages*"))))
-;; (mis/koan)
+;; (mis2/koan)
 
 
 ;;----------------------------There is only spork.------------------------------
 ;;--                             Koan Collection                              --
 ;;------------------------------------------------------------------------------
 
-;; (mis/koan/message '(:line-empty :line-full "Hi." :line-full :line-empty))
+;; (mis2/koan/message '(:line-empty :line-full "Hi." :line-full :line-empty))
 
 
 ;;---
@@ -133,7 +133,7 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 
 ;; A Bad Koan.
 ;; Not really a koan, probably...
-(mis/koan/add
+(mis2/koan/add
  '(:line-empty
    :line-full
    ("I was juggling and trying to come to a good stopping point," 7)
@@ -150,7 +150,7 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 ;; Uh...
 ;; True Story. :|
 ;; Except it was svn...
-(mis/koan/add
+(mis2/koan/add
  '(:line-empty
    :line-full
    "git commit -am \"fixed bugs caused by bug fixes\""
@@ -162,7 +162,7 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 ;; Uh...
 ;; Also a True Story. :|
 ;; Every programming test I've taken, for instance...
-(mis/koan/add
+(mis2/koan/add
  '(:line-empty
    :line-full
    "A task is an hour,"
@@ -174,7 +174,7 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 
 
 ;; Just find your towel.
-(mis/koan/add
+(mis2/koan/add
  '(:line-empty
    :line-full
    ("Mh... Panic?" 28)
@@ -188,7 +188,7 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 ;;---
 
 ;; General Kenobi!
-(mis/koan/add
+(mis2/koan/add
  '(:line-empty
    :line-full
    "Hello there."
@@ -197,7 +197,7 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 
 
 ;; Such language...
-(mis/koan/add
+(mis2/koan/add
  '(:line-empty
    :line-full
    "You can't say 'fuck' in the source code..."
@@ -207,7 +207,7 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 
 ;; §-TODO-§ [2019-10-15]: get more from here? http://www.catb.org/~esr/writings/unix-koans/
 ;; http://www.catb.org/~esr/writings/unix-koans/
-(mis/koan/add
+(mis2/koan/add
  '(:line-empty
    :line-full
    ("“Even the hacker who works alone" 13)
@@ -225,7 +225,7 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 
 
 ;; (theme song)
-(mis/koan/add
+(mis2/koan/add
  '(:line-empty
    :line-full
    "Standby for Reincarnation..."
@@ -235,7 +235,7 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 
 
 ;; (theme song)
-(mis/koan/add
+(mis2/koan/add
  '(:line-empty
    :line-full
    "“When You Do Things Right,"
@@ -246,7 +246,7 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 
 
 ;; Spybreak! - Short One
-(mis/koan/add
+(mis2/koan/add
  '(:line-empty
    :line-full
    ("“Do not try and bend the spoon," 13)
@@ -263,7 +263,7 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 
 
 ;; The Programmer's Curse
-(mis/koan/add
+(mis2/koan/add
  '(:line-empty
    :line-full
    ("~♫~99 Little Bugs In The Code!~♫~" 13)
@@ -281,7 +281,7 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 ;; Do Not Handle Fork-Bomb.
 ;; Do Not Startle Fork-Bomb.
 ;; No Flash Photography, Please.
-(mis/koan/add
+(mis2/koan/add
  '(:line-empty
    :line-full
    ":(){ :|:& };:"
@@ -295,7 +295,7 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 ;;---
 
 ;; Just find your towel.
-(mis/koan/add
+(mis2/koan/add
  '(:line-empty
    :line-full
    ("DON'T PANIC" 28)
@@ -303,7 +303,7 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
    :line-full
    :line-empty))
 
-(mis/koan/add
+(mis2/koan/add
  '(:line-empty
    :line-full
    ("DON'T PANIC" 28)
@@ -316,10 +316,10 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 ;;---
 
 ;; Finally, shuffle the list?
-;; (mis/shuffle 'mis/koan/list)
+;; (mis2/shuffle 'mis2/koan/list)
 ;; I randomize the get... why did I think I need this!? -_-
 
-;; (mis/koan)
+;; (mis2/koan)
 
 
 ;;------------------------------------------------------------------------------
@@ -330,7 +330,7 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 ;; - Move zeroith-debug.el string/message functions into here.
 ;; - Break here up into:
 ;;   - strings?  (strings-and-things.el?)
-;;   - messages? (messages-and-misc.el?)
+;;   - messages? (messages-and-mis2c.el?)
 ;;   - koans?    (koans-and-spoons.el?)
 ;; - `require' what's needed (or all 3?) in zeroth-debug.el
 ;;
@@ -345,4 +345,4 @@ Will use `mis/koan/line-width' if non-nil, else `fill-column'."
 ;;------------------------------------------------------------------------------
 ;; The End.
 ;;------------------------------------------------------------------------------
-(provide 'mis-koan)
+(provide 'mis2-koan)
