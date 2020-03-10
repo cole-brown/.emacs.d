@@ -11,9 +11,13 @@
 ;; Settings
 ;;------------------------------------------------------------------------------
 
-;; Package-level, or overall, mis settings are elsewhere. This is for the more
-;; fine-grain stuff. Setting up what font, echo setting, what have you, then
-;; passing into a few messages during whatever function you're doing.
+;; §-TODO-§ [2020-03-09]: Is this true? Or should they also be here for less
+;; confusion?
+;;
+;; Package-level, or overall, mis settings are elsewhere (e.g. mis.el). This is
+;; for the more fine-grain stuff. Setting up what font, echo setting, what have
+;; you, then passing into a few messages during whatever function you're doing.
+
 
 ;; mis per-output settings are a plist passed into the functions. Build them
 ;; yourself or use these functions to help.
@@ -41,7 +45,7 @@
 ;;        :echo to t.
 ;;        :echo-delay to `mis2/message/echo-area-timeout/interactive'
 ;;
-;;   :startup        t, nil
+;;   :batch          t, nil
 ;;      Shorthand for:
 ;;        :echo to t.
 ;;        :echo-delay to `mis2/message/echo-area-timeout/non-interactive'
@@ -55,7 +59,8 @@
 
 
 (defconst mis2/settings/meta/keys
-  '(:interactive :batch)
+  '((:interactive :const nil)
+    (:batch :const nil))
   "10,000 foot view: calls are either intended to be in an interactive manner,
 or as automatic output flung out as soon as it's reached. The main difference is
 how long the echo area timeout is changes between the two.
@@ -68,7 +73,10 @@ Settings:
 
 
 (defconst mis2/settings/keys
-  '(:echo :echo-delay :type :buffer)
+  '((:echo       :const     '(t nil))
+    (:echo-delay :float     '(0.0 100.0))
+    (:type       :key-alist 'mis2/type->faces)
+    (:buffer     :string))
   "10,000 foot view: calls are either intended to be in an interactive manner,
 or as automatic output flung out as soon as it's reached. The main difference is
 how long the echo area timeout is changes between the two.
@@ -130,12 +138,18 @@ If a keyword exists twice, the later one in the list wins.
           (setq value (mis2/settings/check-value value))
 
           ;; And now check for errors.
-          (if (or (eq key :*bad-key-error*)
-                  (eq key :*bad-value-error*))
-              ;; complain about the bad thing.
-              (ignore) ;; §-TODO-§ [2020-03-06]: this - don't use mis as it may not work...
+          (cond
+           ;; Complain about the bad thing.
+           ((eq key :*bad-key-error*)
+            (error "Bad key. %S is not a known mis/settings key." key))
+
+           ;; Complain about the bad thing.
+           ((eq key :*bad-value-error*)
+            (error "Bad value. %S is not a valid value for %S." value key))
+
+          (t
             ;; Use plist-put so we only have one key for this in the plist.
-            (setq settings (plist-put settings key value)))))
+            (setq settings (plist-put settings key value))))))
 
       ;; Still have args? Didn't end up with a pair - complain?
       (when args
@@ -151,14 +165,40 @@ If a keyword exists twice, the later one in the list wins.
 (defun mis2/setings/check-key (key)
   "Checks that KEY is a known mis/settings keyword.
 "
-  ;; §-TODO-§ [2020-03-06]: this
-  )
+  (cond ((memq key mis2/settings/meta/keys)
+         (alist-get key mis2/settings/meta/keys))
+
+        ((memq key mis2/settings/keys)
+         (alist-get key mis2/settings/keys))
+
+        (t
+         :*bad-key-error*))
+  :*bad-key-error*)
 
 (defun mis2/setings/check-value (key value)
   "Checks that VALUE is a valid value for the mis/settings keyword KEY.
 "
-  ;; §-TODO-§ [2020-03-06]: this
-  )
+  (let ((key-info (mis2/settings/check-key key)))
+    (if (eq key-info :*bad-key-error*)
+        ;; Return bad value if we have a bad key.
+        :*bad-value-error*
+
+      ;; Otherwise, use key-info to check our value.
+      ;; We'll have a cdr list like...:
+      ;;   '(:const     '(t nil))
+      ;;   '(:float     '(0.0 100.0))
+      ;;   '(:key-alist 'mis2/type->faces)
+      ;;   '(:string)
+      (cond ((eq :const (first key-info))
+             )
+            ((eq :float (first key-info))
+             )
+            ((eq :key-alist (first key-info))
+             )
+            ((eq :string (first key-info))
+             )
+      ))
+  :*bad-value-error*)
 
 
 (defun mis2/settings/get (key user-settings &optional mis2-setting)
