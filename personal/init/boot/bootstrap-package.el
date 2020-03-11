@@ -275,6 +275,12 @@ For the transition, maybe a func for checking..."
 ;;   M-x package-autoremove
 ;;   May need `M-x list-packages' first if custom-file doesn't exist right now.
 
+
+;; §-TODO-§ [2020-03-11]: spydez/packages/upgrade-all change?
+;;   - instead of a max number, just do X at a time with some
+;;     (yasnippet-snippets) on their own, because they can cause too many files
+;;     to open and that'll fail the package upgrade.
+
 ;; Less manual. Upgrade all packages without showing *Packages* buffer.
 ;; https://emacs.stackexchange.com/questions/16398/noninteractively-upgrade-all-packages
 (defun spydez/packages/upgrade-all (&optional max)
