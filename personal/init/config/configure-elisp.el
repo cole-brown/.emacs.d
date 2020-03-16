@@ -2,16 +2,13 @@
 
 
 ;;------------------------------------------------------------------------------
-;; TODO: General Settings?
+;; Keybinds
 ;;------------------------------------------------------------------------------
-
 
 ;;---
 ;; Jumping to code
 ;;---
-;; TODO: put these in elisp hook?
-;; (define-key emacs-lisp-mode-map (kbd "C-c .") 'find-function-at-point)
-;; (bind-key "C-c f" 'find-function) ;; TODO: is this useful in other modes?
+(bind-key "M-\\" 'find-function-at-point emacs-lisp-mode-map)
 
 
 ;;------------------------------------------------------------------------------
