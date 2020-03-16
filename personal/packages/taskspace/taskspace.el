@@ -316,6 +316,17 @@ Choose from multiple."
   ;; into 1. Nothing/0/nil is today. 1 is tomorrow.
   (interactive "P")
 
+  ;; §-TODO-§ [2020-03-16]: If in notes file, open that specific notes' folder.
+  ;; Erm, but how to know what note goes to what file? We only have the
+  ;; reverse...
+  ;;   - Use org-mode? Some sort of property or something for taskspace's
+  ;;     folder?
+  ;;   - defcustom for letting people sub in their own func for finding a folder
+  ;;     given a file?
+  ;; http://joelmccracken.github.io/entries/org-mode-specifying-document-variables-and-keywords/
+  ;;   - http://orgmode.org/worg/dev/org-syntax.html#Keywords
+  ;;   - http://orgmode.org/manual/In_002dbuffer-settings.html#In_002dbuffer-settings
+
   ;; Default to "today" if date-input isn't parsable string,
   ;; then get date, taskspaces, etc. for that numerical relative day.
   (let* ((date-input (cond
