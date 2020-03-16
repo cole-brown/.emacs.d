@@ -54,32 +54,6 @@ If non-nil, mis2 echo area messages will stick around for a while
 ;; Yes or no?
 ;;   :type           mis2/type->faces alist key (keyword symbol or list)
 ;;   :face           symbol for desired face
-(defconst mis2/settings/keys
-  '(:interactive :startup :echo :echo-delay)
-  "Valid keys for mis2/settings plists.")
-
-
-(defun mis2/settings/put (key value list)
-  "Puts VALUE into LIST under KEY, after verifying KEY is a valid mis2 setting.
-"
-  (if (memq key mis2/settings/keys)
-      (plist-put list key value)
-    (error "Key %S not a valid mis2/settings key: %S"
-           key
-           mis2/settings/keys)))
-
-
-(defun mis2/settings/get (key user-settings &optional mis2-setting)
-  "Get a mis2 setting based off KEY. Setting either comes from USER-SETTINGS
-plist or from the appropriate mis2 setting const/var (passed in
-as MIS2-SETTING).
-"
-  ;; Simply return value from user-settings or mis2-setting, preferring
-  ;; user-settings. Only complication is if user-settings specifies a nil, so we
-  ;; have to check that key is a member of user-settings...
-  (if (plist-member user-settings key)
-      (plist-get user-settings key)
-    mis2-setting))
 
 
 ;;------------------------------------------------------------------------------
@@ -142,40 +116,6 @@ See 'M-x list-faces-display' for all defined faces."
 ;; Helper for optional arg/custom settings.
 ;;------------------------------------------------------------------------------
 
-(defun mis2/setting/get-with-default (arg default)
-  "Figures out actual ARG by looking at ARG and DEFAULT. It will
-be ARG if ARG is non-nil and either symbolp or functionp. Else it
-will look at the value of DEFAULT and use either that symbol, or
-call that function to get a symbol."
-  (cond
-   ;; pass through - function
-   ((and (not (null arg))
-         (functionp arg))
-    (funcall arg))
-   ;; pass through - symbol
-   ((and (not (null arg))
-         (symbolp arg))
-    ;; if it has a value, use that, else use directly
-    (if (symbol-value arg)
-          (symbol-value arg)
-      arg))
-
-   ;; default - function to get current
-   ((and (not (null default))
-         (functionp default))
-    (funcall default))
-   ;; default - symbol as default
-   ((symbolp default)
-    ;; if it has a value, use that, else use directly
-    (if (and (not (null default))
-             (symbol-value default))
-          (symbol-value default)
-      default))
-
-   ;; fallback to something drastic-ish
-   (t
-    :error)))
-;; (mis2/setting/get-with-default nil mis2/debug/type)
 
 
 ;;------------------------------------------------------------------------------

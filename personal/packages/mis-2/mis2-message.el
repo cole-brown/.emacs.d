@@ -35,6 +35,138 @@ minibuffer-echo-area functionality."
   :group 'mis2
   :type 'boolean)
 
+
+;;------------------------------------------------------------------------------
+;; Formatting?
+;;------------------------------------------------------------------------------
+
+;; Should I keep what I had?
+;; Try to do something super smart?
+;; Imitate another markup language?
+;; Be lispy when trying to imitate another markup language?
+
+;; Formatting ideas?
+(while nil
+  ;; LispyML:
+  (let ((symbol0 "test")
+        (symbol1 '(thing1 thing2))
+        (settings '(:echo t :type :default)))
+    (mis2/message/propertize
+     settings
+     '(("test %S" symbol0 :face :title) ;; format w/ face from :default :title.
+       :center  nil             ;; center (nil == whatever fill-column is)
+       :margins '(">>" "<<")    ;; Use these strings for center's margins
+       :borders '("|" "|")      ;; Use these strings for center's borders
+       :padding '(?- :empty 3)  ;; Use '-' character for filling padding,
+                                ;; leave 3 empty spaces before/after
+                                ;; centered text.
+       )))
+
+  ;; Html-ish?
+  ;; Terrible on the auto-indenting... :|
+  (let ((symbol0 "test")
+        (symbol1 '(thing1 thing2))
+        (settings '(:echo t :type :default)))
+    (mis2/message/propertize
+     settings
+
+     '(:center nil             ;; center (nil == whatever fill-column is)
+               (:margins '(">>" "<<")    ;; Use these strings for center's margins
+                         (:borders '("|" "|")      ;; Use these strings for center's borders
+                                   (:padding '(?- :empty 3)  ;; Use '-' character for filling padding,
+                                             ;; leave 3 empty spaces before/after
+                                             ;; centered text.
+                                             ("test %S" symbol0 :face :title) ;; format w/ face from :default :title.
+                                             ))))))
+
+  ;; Html-ish v2
+  (let ((symbol0 "test")
+        (symbol1 '(thing1 thing2))
+        (settings '(:echo t :type :default))
+        (message "test %S"))
+
+    ;; Put '(:center nil) into mis/settings plist on symbol 'message.
+    (mis2/message/style message
+                        :center nil)
+    (mis2/message/style message
+                        :margins '(">>" "<<"))
+    (mis2/message/style message
+                        :borders '("|" "|"))
+    (mis2/message/style message
+                        :padding '(?- :empty 3))
+    (mis2/message/style message
+                        :face :title)
+    ;; Output message now that it has property list all set up on it?
+    (mis2/message settings message symbol0))
+
+  ;; Html-ish v3?
+  (let ((symbol0 "test")
+        (symbol1 '(thing1 thing2))
+        (settings (mis2/settings :echo t :type :default))
+        style
+        (message "test %S"))
+
+    ;; Put '(:center nil) into mis/settings plist on symbol 'message.
+    (mis2/settings/style style
+                         :center nil)
+    (mis2/settings/style style
+                        :margins '(">>" "<<"))
+    (mis2/settings/style style
+                        :borders '("|" "|"))
+    (mis2/settings/style style
+                        :padding '(?- :empty 3))
+    (mis2/settings/style style
+                        :face :title)
+    ;; Output messages with settings and style lists.
+    (mis2/message :settings settings :style style message symbol0)
+    (mis2/message :settings settings
+                  :style style
+                  "test 2: %S" symbol1))
+
+
+  ;; But I need to be able to do multiple styles on one output line...
+
+  ;; Html-ish v3?
+  (let ((symbol0 "test")
+        (symbol1 '(thing1 thing2))
+        (settings (mis2/settings :echo t :type :default))
+        style
+        (message "test %S"))
+
+    ;; Put '(:center nil) into mis/settings plist on symbol 'message.
+    (mis2/settings/style/update style
+                                :center nil)
+    (mis2/settings/style/update style
+                                :margins '(">>" "<<"))
+    (mis2/settings/style/update style
+                                :borders '("|" "|"))
+    (mis2/settings/style/update style
+                                :padding '(?- :empty 3))
+    (mis2/settings/style/update style
+                                :face :title)
+    ;; Output messages with settings and style lists.
+    (mis2/message :settings settings :style style message symbol0)
+    (mis2/message :settings settings
+                  :style style
+                  "test 2: "
+                  ;; Think I need a tag to separate a recursion level from, say,
+                  ;; format args. So... `:r'? `:recurse'? `:mis'?
+                  :mis '(:style (mis2/settings/style style :face :attention)
+                                "%S" symbol1))
+    ;; So... I want a non-destructive `mis2/settings/style' for this one.
+
+    ;; This version would also let me hang on to settings/styles and just use
+    ;; them all over.
+
+    ;; lazy version?
+    (mis2/message :settings (mis2/settings :echo t :type :default)
+                  :style (mis2/settings/style
+                  message symbol0)
+
+    )
+  )
+
+
 ;;------------------------------------------------------------------------------
 ;; Main Entry Point?
 ;;------------------------------------------------------------------------------
