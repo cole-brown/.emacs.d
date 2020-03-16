@@ -36,7 +36,7 @@
       - use-tool ignores (executable-find) now, but maybe using Window's bash is better? Or not... IDK.
 
 
-  - [-] General To Do: [3/29]
+  - [ ] General To Do: [3/29]
 
     - [ ] Deadgrep Improvements
       - Transient interface for adding stuff to ripgrep commands (e.g. an ignore file option)?
@@ -46,6 +46,11 @@
     - [ ] look at 'bufler.el'?
       - https://www.reddit.com/r/emacs/comments/fatjdw/annrfc_buflerel_group_buffers_into_workspaces/
       - Does it work with Helm?
+
+    - more paren matching?
+      - https://www.reddit.com/r/emacs/comments/fh1bpg/a_variant_of_elisp_matching_paren_display/
+      - (Should) work with current paren matching...
+
 
     - [ ] configure-crypt needs babying... again... (again... (again?..))
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
@@ -631,6 +636,9 @@ Company-Jedi:
 Undohist
   - persistant, per-file undo history
   - https://melpa.org/#/undohist
+
+Kubel - for controlling Kubernetes
+  - https://github.com/abrochard/kubel
 
 * Soon™ Things [0/2]                                             :valve_time:
 

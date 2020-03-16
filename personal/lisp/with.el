@@ -67,8 +67,8 @@ This is the `with-demoted-errors' macro guarded/on-off'd by the demote flag.
 ;; Variables
 ;;---------
 (defmacro with/void (value &optional undef-default)
-  "1) If SYMBOL is defined, returns its value. 
-2) Otherwise, if UNDEF-DEFAULT is defined, return its value. 
+  "1) If SYMBOL is defined, returns its value.
+2) Otherwise, if UNDEF-DEFAULT is defined, return its value.
 3) Finally, return nil.
 
 CAVEAT: Haven't figured out a way to differentiate between undefined and defined-but-set-to-nil lexically scoped variables.
@@ -76,11 +76,11 @@ CAVEAT: Haven't figured out a way to differentiate between undefined and defined
   `(condition-case value-err
        (or ,value nil)
      ;; error signal: we'll just assume it's not bound either lexically or otherwise and fallback.
-     (void-variable 
+     (void-variable
       (condition-case undef-default-err
-	  (or ,undef-default nil)
-	;; error signal, final fallback: return nil
-	(void-variable nil)))))
+    (or ,undef-default nil)
+  ;; error signal, final fallback: return nil
+  (void-variable nil)))))
 ;; (setq dyn-set 42)
 ;; (setq dyn-null nil)
 ;; dyn-void, lex-void
