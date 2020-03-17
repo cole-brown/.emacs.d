@@ -650,6 +650,50 @@ savages."
       (goto-char (point-min)))))
 
 
+;;---
+;; Get "#+KEYWORD: VALUE" from org-mode file
+;;---
+
+(defun spydez/org/keywords/list (&optional to-lower)
+  "Get keyword elements from this org document. Elements (return value) will
+be an alist of (key . value).
+
+'Keyword elements' are lines like this in org-mode files:
+#+PROPERTY: value
+
+If TO-LOWER is not nil, converts all keys to lowercase. DOES NOT CHANGE VALUES!
+"
+  ;; map func to elements...
+  (org-element-map
+      (org-element-parse-buffer 'element) ;; parse this buffer at 'element level
+      'keyword ;; we only care about keywords
+    ;; for each keyword element, get it's key and value into the return.
+    (lambda (keyword) (cons
+                       (if to-lower
+                           (downcase (org-element-property :key keyword))
+                         (org-element-property :key keyword))
+                       (org-element-property :value keyword)))))
+
+
+(defun spydez/org/keyword/get (keyword &optional to-lower)
+  "Gets the specified KEYWORD (case insensitive if TO-LOWER is not nil) from
+this org document. If there are more than one, it will return whatever is first
+in `spydez/org/keywords/list' return.
+
+'Keyword elements' are lines like this in org-mode files:
+#+PROPERTY: value
+
+So in the non-nil TO-LOWER case, we will return 'value' if asked for:
+  'PROPERTY', 'property', 'PrOpeRtY', etc...
+"
+  (alist-get (if to-lower
+                 (downcase keyword)
+               keyword)
+             (spydez/org/keywords/list to-lower)
+             nil nil
+             #'string=))
+
+
 ;;------------------------------------------------------------------------------
 ;; Org Navigation
 ;;------------------------------------------------------------------------------

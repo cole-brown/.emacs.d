@@ -161,8 +161,8 @@ in.
     ;; fancy box to separate this stuff from start of normal notes
     (format (concat "%s\n" ;; header
                     "\n"
+                    "#+TASKSPACE: %s\n" ;; taskpath
                     "%s\n" ;; taskname
-                    "%s\n" ;; taskpath
                     "\n"
                     "%s\n" ;; mkdir
                     "\n"
@@ -171,8 +171,8 @@ in.
                     "%s\n" ;; fancy box bottom
                     "\n\n")
             "spy-header"
-            taskname
             taskpath
+            taskname
             (format "mkdir ~/temp/%s" taskname)
             "     ┌┬┬┬──────────────────────────────────────────────────────────────┬┬┬┐"
             "     ├┼┼┤                             ...                              ├┼┼┤"

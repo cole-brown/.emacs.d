@@ -206,10 +206,14 @@ It can 'deal' with these kind of taskspaces:
   '((taskspace/file-name/notes "") ;; empty file
     (".projectile" "")) ;; also empty
   "Files to generate for new taskspaces. Expects an alist like:
-'(('file1.name' . 'contents') ('file2.name' . your-gen-function))
+'(('file1.name' 'contents') ('file2.name' #'your-gen-function))
 
 Note: `taskname' and `taskpath' are supplied as the args to the
-generator functions. Taskpath is the fully expanded file path."
+generator functions. Taskpath is the fully expanded file path.
+Should return a string of the file's contents.
+e.g.: (defun my/taskspace/gen-org-notes (taskname taskpath)
+        (format ...))
+"
   :group 'taskspace
   :type '(alist :key-type string
                 :value-type (choice string function)))
@@ -276,6 +280,19 @@ First one of the correct length is used currently."
   :type 'regexp)
 
 
+(defcustom taskspace/org/keyword/task-dir "TASKSPACE"
+  "Name of the Property/Keyword that might hold a pointer to the
+taskspace directory in a taskspace's org notes file.
+
+e.g.: if this line is in the '_notes.org':
+#+TASKSPACE: ~/path/to/taskspace/2020-03-17_0_example
+...then `taskspace/org/keyword/get' can be used to get it for
+`taskspace/task-dir/dwim'.
+"
+  :group 'taskspace
+  :type 'string)
+
+
 ;;------------------------------------------------------------------------------
 ;; Taskspace Commands
 ;;------------------------------------------------------------------------------
@@ -285,7 +302,7 @@ First one of the correct length is used currently."
 
 ;;;###autoload
 (defun taskspace/task-name/dwim ()
-  "Interactive. DWIM to clipboard and return today's task string
+  "Interactive. DWIM to kill-ring and return today's task string
 (partial/final path)... Create if none. Return if just the one.
 Choose from multiple."
   (interactive)
@@ -294,10 +311,11 @@ Choose from multiple."
   (let* ((fullpath (call-interactively #'taskspace/task-dir/dwim))
          (taskname (file-name-nondirectory fullpath)))
 
-    ;; copy to clipboard
+    ;; copy to kill-ring
     (kill-new taskname)
 
-    ;; We'd need another return from task-dir/dwim to know what it did...
+    ;; §-TODO-§ [2020-03-17]: We'd need another return from task-dir/dwim to
+    ;; know what it did...
     ;; ;; say what we did
     ;; (message "Existing taskspace: %s" taskname)
 
@@ -310,12 +328,22 @@ Choose from multiple."
 
 ;;;###autoload
 (defun taskspace/task-dir/dwim (date-input)
-  "Interactive. DWIM to clipboard and return today's task dir string
-(full path)... Create if none. Return if just the one. Choose from multiple."
+  "Interactive. DWIM to kill-ring and return today's task dir string...
+
+If in an org-mode doc with `taskspace/org/keyword/task-dir' defined and dir it
+specifices exists:
+  - Return the full path'd version of that org-mode keyword's value.
+Else:
+  - Create if none.
+  - Return if just the one.
+  - Choose from multiple.
+"
   ;; Numeric arg but don't let lower case "p" auto-magic nothing (no prefix arg)
   ;; into 1. Nothing/0/nil is today. 1 is tomorrow.
   (interactive "P")
 
+  (let (task-dir-shortcut
+        task-msg-shortcut)
   ;; §-TODO-§ [2020-03-16]: If in notes file, open that specific notes' folder.
   ;; Erm, but how to know what note goes to what file? We only have the
   ;; reverse...
@@ -326,62 +354,78 @@ Choose from multiple."
   ;; http://joelmccracken.github.io/entries/org-mode-specifying-document-variables-and-keywords/
   ;;   - http://orgmode.org/worg/dev/org-syntax.html#Keywords
   ;;   - http://orgmode.org/manual/In_002dbuffer-settings.html#In_002dbuffer-settings
+  ;; Here's code for org keyword getter:
+    ;;   - http://kitchingroup.cheme.cmu.edu/blog/2013/05/05/Getting-keyword-options-in-org-files/
 
-  ;; Default to "today" if date-input isn't parsable string,
-  ;; then get date, taskspaces, etc. for that numerical relative day.
-  (let* ((date-input (cond
-                      ;; no date-input is today is 0
-                      ((null date-input) 0)
-                      ;; strings should be converted to numbers
-                      ((stringp date-input)
-                       (string-to-number date-input))
-                      ;; just allow numbers through unscathed
-                      ((numberp date-input) date-input)
-                      ;; default to... today/0 I guess?
-                      (t 0)))
-         (date (taskspace/get-date date-input))
-         (taskspaces (taskspace/list-date date))
-         (length-ts (length taskspaces)))
+    ;; Check for a taskspace keyword if we're in an org-mode buffer. Just use
+    ;; that and skip the rest if we find it and it's a directory that exists and
+    ;; stuff.
+    (when (eq major-mode 'org-mode)
+      (let ((task-dir (taskspace/org/keyword/get
+                      taskspace/org/keyword/task-dir)))
+        (when (and (not (null task-dir))
+                   (f-directory? task-dir))
+          (setq task-dir-shortcut (f-full task-dir))
+          (setq task-msg-shortcut
+                (format "Got Taskspace from org-mode keyword (#+%s). %s"
+                        taskspace/org/keyword/task-dir
+                        task-dir-shortcut)))))
 
-    (cond
-     ;; error out if we have no idea what date to dwim with...
-     ((null date) (error "Date string is nil: %s" date))
+    ;; Do we have a shortcut out, or do we go looking for the task-dir?
+    (if (not (null task-dir-shortcut))
+        (taskspace/kill-and-return task-dir-shortcut task-msg-shortcut)
 
-     ;; if none, create one.
-     ((null taskspaces)
-      ;; call-interactively will give user prompt for description,
-      ;; etc. as if they called themselves.
-      (call-interactively #'taskspace/create))
+      ;; No short cut. Start looking at DWIM things in DWIM-y order...
 
-     ;; If just one, return it.
-     ;; How to create second in that case? Use a non-dwim create func?
-     ;;   - I think yes.
-     ((= length-ts 1)
+      ;; Default to "today" if date-input isn't parsable string,
+      ;; then get date, taskspaces, etc. for that numerical relative day.
+      (let* ((date-input (cond
+                          ;; no date-input is today is 0
+                          ((null date-input) 0)
+                          ;; strings should be converted to numbers
+                          ((stringp date-input)
+                           (string-to-number date-input))
+                          ;; just allow numbers through unscathed
+                          ((numberp date-input) date-input)
+                          ;; default to... today/0 I guess?
+                          (t 0)))
+             (date (taskspace/get-date date-input))
+             (taskspaces (taskspace/list-date date))
+             (length-ts (length taskspaces)))
 
-      ;; copy to clipboard
-      (kill-new (first taskspaces))
-      ;; say what we did
-      (message "Existing taskspace: %s" (first taskspaces))
-      ;; return it
-      (first taskspaces))
+        (cond
+         ;; error out if we have no idea what date to dwim with...
+         ((null date) (error "Date string is nil: %s" date))
 
-     ;; For now, only give existing choices. User can use a non-dwim create func
-     ;; if they want new.
-     ((> length-ts 1)
+         ;; if none, create one.
+         ((null taskspaces)
+          ;; call-interactively will give user prompt for description,
+          ;; etc. as if they called themselves.
+          (call-interactively #'taskspace/create))
 
-      ;; list available choices to user, get the taskspace they chose
-      (let ((choice (taskspace/list-choices taskspaces 'nondirectory)))
-        ;; copy to clipboard
-        (kill-new choice)
-        ;; say what we did
-        (message "Chose taskspace: %s" choice)
-        ;; return it
-        choice
-        ))
+         ;; If just one, return it.
+         ;; How to create second in that case? Use a non-dwim create func?
+         ;;   - I think yes.
+         ((= length-ts 1)
 
-     ;; Don't need a default case... Fall through with nil.
-     ;;(t nil)
-     )))
+          ;; copy & return
+          (taskspace/kill-and-return (first taskspaces)
+                                     "Existing taskspace: %s"
+                                     (first taskspaces)))
+
+         ;; For now, only give existing choices. User can use a non-dwim create
+         ;; func if they want new.
+         ((> length-ts 1)
+
+          ;; list available choices to user, get the taskspace they chose
+          (let ((choice (taskspace/list-choices taskspaces 'nondirectory)))
+            (taskspace/kill-and-return choice
+                                       "Chose taskspace: %s"
+                                       choice)))
+
+         ;; Don't need a default case... Fall through with nil.
+         ;;(t nil)
+         )))))
 ;; M-x taskspace/task-dir/dwim
 ;; (taskspace/task-dir/dwim)
 ;; (taskspace/task-dir/dwim -1)
@@ -448,7 +492,7 @@ supplied."
         ;;   - notes.<desc>.org?
         ;;   - _notes.<desc>.org?
 
-        ;; copy taskpath to clipboard
+        ;; copy taskpath to kill-ring
         (kill-new taskpath)
         ;; say something
         (message "Created taskspace: %s" (file-name-nondirectory taskpath))
@@ -1158,6 +1202,66 @@ Taskspace-Specific Config Settings are:
 ;;     "C:/home/cole/ocean/taskspace/2020-02-06_2_find-broken-accounts"
 ;;   (message "hi: %S" (taskspace/config/get :notes taskspace/config t)))
 ;; (makunbound 'taskspace/config)
+
+
+;;------------------------------------------------------------------------------
+;; Org-Mode Helpers
+;;------------------------------------------------------------------------------
+
+(defun taskspace/org/keywords/list (&optional to-lower)
+  "Get keyword elements from this org document. Elements (return value) will
+be an alist of (key . value).
+
+'Keyword elements' are lines like this in org-mode files:
+#+PROPERTY: value
+
+If TO-LOWER is not nil, converts all keys to lowercase. DOES NOT CHANGE VALUES!
+"
+  ;; map func to elements...
+  (org-element-map
+      (org-element-parse-buffer 'element) ;; parse this buffer at 'element level
+      'keyword ;; we only care about keywords
+    ;; for each keyword element, get it's key and value into the return.
+    (lambda (keyword) (cons
+                       (if to-lower
+                           (downcase (org-element-property :key keyword))
+                         (org-element-property :key keyword))
+                       (org-element-property :value keyword)))))
+
+
+(defun taskspace/org/keyword/get (keyword &optional to-lower)
+  "Gets the specified KEYWORD (case insensitive if TO-LOWER is not nil) from
+this org document. If there are more than one, it will return whatever is first
+in `taskspace/org/keywords/list' return.
+
+'Keyword elements' are lines like this in org-mode files:
+#+PROPERTY: value
+
+So in the non-nil TO-LOWER case, we will return 'value' if asked for:
+  'PROPERTY', 'property', 'PrOpeRtY', etc...
+"
+  (alist-get (if to-lower
+                 (downcase keyword)
+               keyword)
+             (taskspace/org/keywords/list to-lower)
+             nil nil
+             #'string=))
+
+
+;;------------------------------------------------------------------------------
+;; Taskspace Helpers
+;;------------------------------------------------------------------------------
+
+(defun taskspace/kill-and-return (string &optional msg msg-args)
+  "Copy STRING to kill-ring, optionally output MSG via `message' with MSG-ARGS,
+and returns string.
+"
+  ;; copy to kill-ring
+  (kill-new string)
+  ;; say what we did
+  (message msg msg-args)
+  ;; return it
+  string)
 
 ;;------------------------------------------------------------------------------
 ;; Tasks, Wants, Feature Requests, etc.
