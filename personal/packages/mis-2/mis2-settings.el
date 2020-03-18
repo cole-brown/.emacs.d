@@ -6,6 +6,9 @@
 ;;------------------------------------------------------------------------------
 
 
+(require 'dash)
+(require 's)
+
 ;;------------------------------------------------------------------------------
 ;; Customization, Consts, Vars, et ceteras...
 ;;------------------------------------------------------------------------------
@@ -75,6 +78,57 @@ Settings:
 ")
 
 
+;;---
+;; Style Consts
+;;---
+
+(defconst mis2/style/keys
+  '(;; Alignment
+    (:center :const (t nil))
+    (:left   :const (t nil))
+    (:right  :const (t nil))
+
+    ;; Text
+    (:face :key-alist :type) ;; indirect... got to get :type alist, then get
+                             ;; :face's key out of that.
+
+    ;; Box Model...ish Thing.
+    (:margins (:list (:string :string)))
+    (:borders (:list (:string :string)))
+    ;; Can be either, e.g.:
+    ;;   :padding '(">>" "<<")   ;; use the strings exactly
+    ;;   :padding '(?- :empty 3) ;; Build from char, leaving 3 empties.
+    ;;   :padding '(?- :fill 3)  ;; Build from char, to max of 3 long.
+    (:padding (:or (:list (:string :string))
+                   (:list (:char (:const (:empty :fill)) :integer)))))
+  "Style for a part of a mis2 message. Alignment, text properties, border,
+margin, padding...
+
+;; §-TODO-§ [2020-03-06]: explain each of these
+Styles:
+
+  Alignment:
+    :center
+      (mis2/settings/style/update style :center nil)
+    :left
+    :right
+
+
+  Text:
+    :face
+      (mis2/settings/style/update style :face :title)
+
+
+  Box Model:
+    :margins
+      (mis2/settings/style/update style :margins '(\">>\" \"<<\"))
+    :borders
+      (mis2/settings/style/update style :borders '(\"|\" \"|\"))
+    :padding
+      (mis2/settings/style/update style :padding '(?- :empty 3))
+      (mis2/settings/style/update style :padding '(\"---\" \"---\"))
+")
+
 ;;------------------------------------------------------------------------------
 ;; Settings
 ;;------------------------------------------------------------------------------
@@ -101,10 +155,13 @@ Examples:
     the latest key/value pair will be used for the duplicated setting key.
 "
   ;; Copy the list, feed into `update' for all the logic, then return and done.
-  (apply #'mis2/settings/update (copy-sequence plist) args))
+  ;; Can't use `apply' or `funcall' because update is a macro...
+  (let ((new-plist (copy-sequence plist)))
+    (mis2/settings/update new-plist (-flatten-n 1 args))))
 ;; (let (settings) (mis2/settings/set settings :jeff "jill"))
 ;; (let (settings) (mis2/settings/set settings :echo t))
 ;; (mis2/settings/set nil :echo t)
+;; (let (settings) (mis2/settings/update settings :echo t))
 
 
 (defmacro mis2/settings/update (plist &rest args)
@@ -222,7 +279,6 @@ Examples:
 ;; (let ((settings '(:test "an test str"))) (mis2/settings/update settings :echo t :type :default))
 ;; (let (settings) (mis2/settings/update settings :echo t :type :default) (message "%S" settings))
 ;; (let (settings) (macroexpand '(mis2/settings/update settings :echo t :type :default)))
-
 
 
 (defun mis2/settings/check-key (key)
