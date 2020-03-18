@@ -162,7 +162,6 @@ minibuffer-echo-area functionality."
     (mis2/message :settings (mis2/settings :echo t :type :default)
                   :style (mis2/settings/style
                   message symbol0)
-
     )
   )
 

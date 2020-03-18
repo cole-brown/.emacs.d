@@ -9,6 +9,10 @@
 (require 'dash)
 (require 's)
 
+;; §-TODO-§ [2020-03-18]: Rename this mis2-configuration.el? mis2-config.el?
+;; Break into 2 files? Keep all here?
+
+
 ;;------------------------------------------------------------------------------
 ;; Customization, Consts, Vars, et ceteras...
 ;;------------------------------------------------------------------------------
@@ -18,6 +22,24 @@
 ;;---
 ;; Consts that we want available to the user to change.
 
+
+
+;;---
+;; General Consts
+;;---
+
+(defconst mis2/validity/types
+  '((:number  numberp)
+    (:integer floatp)
+    (:float   integerp)
+    (:string  stringp)
+    (:char    characterp)
+    (:list    listp))
+  "Validity checkers for basic types and anything else that doesn't change
+based on context.
+
+E.g. a :float is always a float, but a :range could be 0 to 100 or -0.5 to 0.5.
+")
 
 
 ;;---
@@ -138,9 +160,6 @@ Styles:
 Returns new list (PLIST will be unchanged).
 
 Expects ARGS to be: key0 value0 key1 value1 ...
-E.G.
-  (mis2/settings/set set-list :type value0 :echo value2 ...)
-  args == (:type value0 :echo value2 ...)
 
 Takes ARGS, checks them as best as possible for validity, and returns a
 mis/settings plist.
@@ -169,9 +188,6 @@ Examples:
 Updates PLIST in place.
 
 Expects ARGS to be: key0 value0 key1 value1 ...
-E.G.
-  (mis2/settings/set set-list :type value0 :echo value2 ...)
-  args == (:type value0 :echo value2 ...)
 
 Takes ARGS, checks them as best as possible for validity, and returns a
 mis/settings plist.
@@ -185,15 +201,12 @@ Examples:
   - If `mis2/settings/set' is called multiple times to build settings, only
     the latest key/value pair will be used for the duplicated setting key.
 "
-  (message "u2 inputs: %S %S null?%S" plist args (null plist))
   ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Surprising-Local-Vars.html#Surprising-Local-Vars
   (let (;;(temp-plist (make-symbol "settings-list"))
         (temp-args (make-symbol "settings-args")))
     ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Argument-Evaluation.html#Argument-Evaluation
     `(let (;;(,temp-plist ,plist)
            (,temp-args (list ,@args)))
-       (message "u2 plist: %S" ,plist)
-       (message "u2 temp-args: %S" ,temp-args)
 
        ;; If &rest is a list of 1 element, strip it out of the list. Probably
        ;; was something like:
@@ -250,7 +263,6 @@ Examples:
               (t
                ;; Use plist-put so we only have one key for this in the plist.
                (setq ,plist (plist-put ,plist key value))
-               (message "settings: %S = %S => %S" key value ,plist)
                ))))
 
          ;; Still have ,temp-args? Didn't end up with a pair - complain?
@@ -356,6 +368,7 @@ Examples:
 ;; Style
 ;;------------------------------------------------------------------------------
 
+
 (defun mis2/style/set (plist &rest args)
   "Add one or more mis styles in ARGS to whatever is already in PLIST.
 Returns new list (PLIST will be unchanged).
@@ -364,12 +377,238 @@ Returns new list (PLIST will be unchanged).
   )
 
 
-(defun mis2/style/update (plist &rest args)
-  "Add one or more mis styles in ARGS to whatever is already in PLIST.
+(defmacro mis2/style/update (plist &rest args)
+  "Add one or more mis style in ARGS to whatever is already in PLIST.
 Updates PLIST in place.
-"
 
-  )
+Expects ARGS to be: key0 value0 key1 value1 ...
+
+Takes ARGS, checks them as best as possible for validity, and returns a
+mis/style plist.
+
+If a keyword exists twice, the later one 'wins'.
+Examples:
+  - If a setting already in PLIST is also in ARGS, the ARGS one will overwrite
+    the PLIST one for the return value.
+  - If a setting is in ARGS twice, only the last one will be in the returned
+    value.
+  - If `mis2/style/set' is called multiple times to build style, only
+    the latest key/value pair will be used for the duplicated setting key.
+"
+  (message "u2 inputs: %S %S null?%S" plist args (null plist))
+  ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Surprising-Local-Vars.html#Surprising-Local-Vars
+  (let (;;(temp-plist (make-symbol "style-list"))
+        (temp-args (make-symbol "style-args")))
+    ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Argument-Evaluation.html#Argument-Evaluation
+    `(let (;;(,temp-plist ,plist)
+           (,temp-args (list ,@args)))
+       (message "u2 plist: %S" ,plist)
+       (message "u2 temp-args: %S" ,temp-args)
+
+       ;; §-TODO-§ [2020-03-18]: allow solo keys, like ':center'?
+       ;; If &rest is a list of 1 element, strip it out of the list. Probably
+       ;; was something like:
+       ;;   (mis2/style/update style :interactive)
+       ;; Or something that evaluated out to be...
+       ;;   (mis2/style/update style nil)
+       ;; Which we want to check for here.
+       (when (and (not (null ,temp-args))
+                  (listp ,temp-args)
+                  (= 1 (length ,temp-args)))
+         (setq ,temp-args (first ,temp-args)))
+
+       ;; Now look at the args and do the key and value checking.
+       (cond
+        ;; No args: No style; no worries.
+        ((or (null ,temp-args)
+             (and (= 1 (length ,temp-args))
+                  (null (first ,temp-args))))
+         ;; Give them back their list.
+         ;; No update to it because no change.
+         ,plist)
+
+        ;; Normal Case: check keys and values, add to copy of list, return copy.
+        ((listp ,temp-args)
+         ;; Our return is our input plist. Need to make sure we set it;
+         ;; `plist-put' may or may not update in place.
+         ;; Loop over list while we have at least 2 elements left.
+         (while (and ,temp-args
+                     (listp (cdr ,temp-args)))
+           ;; Pop a pair off to process.
+           (let* ((key (pop ,temp-args))
+                  (value (pop ,temp-args))
+                  key-valid
+                  value-valid)
+
+             ;; Check our key! This will either return the key or an error
+             ;; symbol, so always save.
+             (setq key-valid (mis2/style/check-key key))
+
+             ;; Check our value! This will either return the value or an error
+             ;; symbol, so always save.
+             (setq value-valid (mis2/style/check-value key value))
+
+             ;; And now check for errors.
+             (cond
+              ;; Complain about the bad thing.
+              ((eq key-valid :*bad-key-error*)
+               (error "Bad key. %S is not a known mis/style key." key))
+
+              ;; Complain about the bad thing.
+              ((eq value-valid :*bad-value-error*)
+               (error "Bad value. %S is not a valid value for %S." value key))
+
+              (t
+               ;; Use plist-put so we only have one key for this in the plist.
+               (setq ,plist (plist-put ,plist key value))
+               (message "style: %S = %S => %S" key value ,plist)
+               ))))
+
+         ;; Still have ,temp-args? Didn't end up with a pair - complain?
+         (when ,temp-args
+           (error "Uneven list; no value for last element: %s" (first ,temp-args)))
+
+         ;; ...and return the list.
+         ,plist)
+
+        ;; Otherwise, uh... *shrug*
+        (t
+         (error
+          "Don't know how to process args into style - not a list or nil.")))
+       )))
+;; (let ((style '(:test "an test str"))) (macroexpand '(mis2/style/update style :jeff "jill")))
+;; (let ((style '(:test "an test str"))) (mis2/style/update style nil))
+;; (let ((style '(:test "an test str"))) (mis2/style/update style :jeff "jill"))
+;; (let ((style '(:test "an test str"))) (mis2/style/update style :echo "jill"))
+;; (let ((style '(:test "an test str"))) (mis2/style/update style :echo t))
+;; (let ((style '(:test "an test str"))) (mis2/style/update style :echo t) (message "%S" style))
+;; (let ((style '(:test "an test str"))) (mis2/style/update style :echo nil))
+;; (let ((style '(:test "an test str"))) (mis2/style/update style :echo-delay 0))
+;; (let ((style '(:test "an test str"))) (mis2/style/update style :echo-delay -1))
+;; (let ((style '(:test "an test str"))) (mis2/style/update style :echo-delay 101))
+;; (let ((style '(:test "an test str"))) (mis2/style/update style :echo-delay "jeff"))
+;; (let ((style '(:test "an test str"))) (mis2/style/update style :echo t :type :default))
+;; (let (style) (mis2/style/update style :echo t :type :default) (message "%S" style))
+;; (let (style) (macroexpand '(mis2/style/update style :echo t :type :default)))
+
+
+;; §-TODO-§ [2020-03-18]: pull apart into common validity func, then make
+;; specific callers for style vs settings. Because settings is out of date and
+;; can't do basic validity.
+(defun mis2/style/check-key (key)
+  "Checks that KEY is a known mis/style keyword.
+"
+  (let ((info (alist-get key mis2/style/keys))
+        (basic-validity (first (alist-get key mis2/validity/types))))
+
+    ;; Check basic validity first - it takes care of str, int, etc.
+    (cond ((and (not (null basic-validity))
+                (functionp basic-validity))
+           basic-validity)
+
+          ;; Next, do we have info on the style element (since it
+          ;; isn't a basic type)?
+          ((null info)
+           ;; Already bad - can just return.
+           :*bad-key-error*)
+
+           ;; We do have info, so return it...
+           ;; We can use the truthiness of the info for a yes/no, and the info
+           ;; itself for `check-value', so there's that little sillyness of the
+           ;; return.
+           (t
+            info))))
+;; (mis2/style/check-key :string)
+;; (mis2/style/check-key :center)
+
+;; '(;; Alignment
+;;   (:center :const (t nil))
+;;   (:left   :const (t nil))
+;;   (:right  :const (t nil))
+;;
+;;   ;; Text
+;;   (:face :key-alist :type) ;; indirect... got to get :type alist, then get
+;;                            ;; :face's key out of that.
+;;
+;;   ;; Box Model...ish Thing.
+;;   (:margins (:list (:string :string)))
+;;   (:borders (:list (:string :string)))
+;;   ;; Can be either, e.g.:
+;;   ;;   :padding '(">>" "<<")   ;; use the strings exactly
+;;   ;;   :padding '(?- :empty 3) ;; Build from char, leaving 3 empties.
+;;   ;;   :padding '(?- :fill 3)  ;; Build from char, to max of 3 long.
+;;   (:padding (:or (:list (:string :string))
+;;                  (:list (:char (:const (:empty :fill)) :integer)))))
+
+;; §-TODO-§ [2020-03-18]: pull apart into common validity func, then make
+;; specific callers for style vs settings. Because settings is out of date and
+;; can't do basic validity.
+(defun mis2/style/check-value (key value)
+  "Checks that VALUE is a valid value for the mis/style keyword KEY.
+"
+  (let* ((key-info (mis2/style/check-key key))
+         (type (and (listp key-info) (first key-info)))
+         (value-checker (and (listp key-info) (second key-info)))
+         (basic-validity (alist-get key mis2/validity/types)))
+
+    ;; Easy first case before we get into shenanigans... is it a basic type?
+    (cond ((and (not (null basic-validity))
+                (functionp basic-validity))
+           (let ((success (apply basic-validity value)))
+             (if (or (not success)
+                     (not (eq :list key)))
+                 ;; Failed already or don't need to recurse to check members;
+                 ;; done.
+                 success
+               ;; Else we have a list, and we need to make sure it conforms to
+               ;; its validity requirements.
+               (setq key-info (alist-get key mis2/style/keys))
+
+
+               ;; §-TODO-§ [2020-03-18]: YOU ARE HERE!!!!
+
+
+           )))
+
+          ;; Easy #2: ...or is it a bad key?
+          ((eq key-info :*bad-key-error*)
+           ;; Return bad value if we have a bad key.
+           :*bad-value-error*)
+
+          ;; Otherwise, use key-info to check our value.
+          ;; We'll have a cdr list like...:
+          ;;   '(:const     '(t nil))
+          ;;   '(:key-alist 'mis2/type->faces)
+          ;;   '(:range     '(0.0 100.0))
+          ;;   '(:or (<option> ...))
+          ;; and we have to do the check for the type.
+          ((eq :const type)
+           (if (memq value value-checker)
+               value
+             :*bad-value-error*))
+
+          ((eq :range type)
+           ;; Range must be a number (float or int) and must be in the range
+           ;; specified (inclusive).
+           (if (and (numberp value)
+                    (<= (first value-checker) value)
+                    (>= (second value-checker) value))
+               value
+             :*bad-value-error*))
+
+          ;; Find it in the alist? Valid.
+          ((eq :key-alist type)
+           (if (and (not (null value))
+                    (not (null value-checker))
+                    (alist-get value (symbol-value value-checker)))
+               value
+             :*bad-value-error*))
+
+
+          ;; *shrugs*
+          (t
+           :*bad-value-error*))))
+;; (mis2/style/check-value :string "hi")
 
 
 ;;         ------------------------------------------------------------
@@ -381,108 +620,61 @@ Updates PLIST in place.
 ;;         ------------------------------------------------------------
 
 
-;;------------------------------------------------------------------------------
-;; Settings
-;;------------------------------------------------------------------------------
+;; (defun mis2/settings/get (key user-settings &optional mis2-setting)
+;;   "Get a mis2 setting based off KEY. Setting either comes from USER-SETTINGS
+;; plist or from the appropriate mis2 setting const/var (passed in
+;; as MIS2-SETTING).
+;; "
+;;   ;; Simply return value from user-settings or mis2-setting, preferring
+;;   ;; user-settings. Only complication is if user-settings specifies a nil, so we
+;;   ;; have to check that key is a member of user-settings...
+;;   (if (plist-member user-settings key)
+;;       (plist-get user-settings key)
+;;     mis2-setting))
 
-;; §-TODO-§ [2020-03-09]: Is this true? Or should they also be here for less
-;; confusion?
-;;
-;; Package-level, or overall, mis settings are elsewhere (e.g. mis.el). This is
-;; for the more fine-grain stuff. Setting up what font, echo setting, what have
-;; you, then passing into a few messages during whatever function you're doing.
+;; (defun mis2/setting/get-with-default (arg default)
+;;   "Figures out actual ARG by looking at ARG and DEFAULT. It will
+;; be ARG if ARG is non-nil and either symbolp or functionp. Else it
+;; will look at the value of DEFAULT and use either that symbol, or
+;; call that function to get a symbol."
+;;   (cond
+;;    ;; pass through - function
+;;    ((and (not (null arg))
+;;          (functionp arg))
+;;     (funcall arg))
+;;    ;; pass through - symbol
+;;    ((and (not (null arg))
+;;          (symbolp arg))
+;;     ;; if it has a value, use that, else use directly
+;;     (if (symbol-value arg)
+;;           (symbol-value arg)
+;;       arg))
 
+;;    ;; default - function to get current
+;;    ((and (not (null default))
+;;          (functionp default))
+;;     (funcall default))
+;;    ;; default - symbol as default
+;;    ((symbolp default)
+;;     ;; if it has a value, use that, else use directly
+;;     (if (and (not (null default))
+;;              (symbol-value default))
+;;           (symbol-value default)
+;;       default))
 
-;; mis per-output settings are a plist passed into the functions. Build them
-;; yourself or use these functions to help.
+;;    ;; fallback to something drastic-ish
+;;    (t
+;;     :error)))
+;; ;; (mis2/setting/get-with-default nil mis2/debug/type)
 
-
-;;------------------------------------------------------------------------------
-;; Customization
-;;------------------------------------------------------------------------------
-
-;; Consts that we want available to the user to change.
-;; (defcustom mis2/settings
-;;   '((:interactive (
-
-
-;;------------------------------------------------------------------------------
-;; Consts & Vars
-;;------------------------------------------------------------------------------
-
-
-
-;;------------------------------------------------------------------------------
-;; Settings Layout
-;;------------------------------------------------------------------------------
-
-;; '(:echo t :echo-delay 0.1 :type :default)
-
-;; More examples? already explained well enough in doc strings?
-;; Actual runnable code snippets?
-;;   - This sounds good...
-
-
-;;------------------------------------------------------------------------------
-;; Functions
-;;------------------------------------------------------------------------------
-
-
-(defun mis2/settings/get (key user-settings &optional mis2-setting)
-  "Get a mis2 setting based off KEY. Setting either comes from USER-SETTINGS
-plist or from the appropriate mis2 setting const/var (passed in
-as MIS2-SETTING).
-"
-  ;; Simply return value from user-settings or mis2-setting, preferring
-  ;; user-settings. Only complication is if user-settings specifies a nil, so we
-  ;; have to check that key is a member of user-settings...
-  (if (plist-member user-settings key)
-      (plist-get user-settings key)
-    mis2-setting))
-
-(defun mis2/setting/get-with-default (arg default)
-  "Figures out actual ARG by looking at ARG and DEFAULT. It will
-be ARG if ARG is non-nil and either symbolp or functionp. Else it
-will look at the value of DEFAULT and use either that symbol, or
-call that function to get a symbol."
-  (cond
-   ;; pass through - function
-   ((and (not (null arg))
-         (functionp arg))
-    (funcall arg))
-   ;; pass through - symbol
-   ((and (not (null arg))
-         (symbolp arg))
-    ;; if it has a value, use that, else use directly
-    (if (symbol-value arg)
-          (symbol-value arg)
-      arg))
-
-   ;; default - function to get current
-   ((and (not (null default))
-         (functionp default))
-    (funcall default))
-   ;; default - symbol as default
-   ((symbolp default)
-    ;; if it has a value, use that, else use directly
-    (if (and (not (null default))
-             (symbol-value default))
-          (symbol-value default)
-      default))
-
-   ;; fallback to something drastic-ish
-   (t
-    :error)))
-;; (mis2/setting/get-with-default nil mis2/debug/type)
-
-(defun mis2/settings/put (key value list)
-  "Puts VALUE into LIST under KEY, after verifying KEY is a valid mis2 setting.
-"
-  (if (memq key mis2/settings/keys)
-      (plist-put list key value)
-    (error "Key %S not a valid mis2/settings key: %S"
-           key
-           mis2/settings/keys)))
+;; (defun mis2/settings/put (key value list)
+;;   "Puts VALUE into LIST under KEY, after verifying KEY is a valid mis2 setting.
+;; "
+;;   (if (memq key mis2/settings/keys)
+;;       (plist-put list key value)
+;;     (error "Key %S not a valid mis2/settings key: %S"
+;;            key
+;;            mis2/settings/keys)))
 
 
 ;;------------------------------------------------------------------------------
