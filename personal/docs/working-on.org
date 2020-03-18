@@ -36,7 +36,7 @@
       - use-tool ignores (executable-find) now, but maybe using Window's bash is better? Or not... IDK.
 
 
-  - [ ] General To Do: [3/29]
+  - [ ] General To Do: [0/2]
 
     - [ ] Deadgrep Improvements
       - Transient interface for adding stuff to ripgrep commands (e.g. an ignore file option)?
@@ -63,6 +63,15 @@
     - [ ] renames
       - [ ] ?? spydez -> cole
       - [ ] ?? spy -> cole
+
+    - [ ] emacs themes
+      - [ ] Look at (light):
+        - [ ] modus operandi https://peach-melpa.org/themes/modus-operandi-theme
+      - [ ] Look at (dark):
+        - [ ] modus vevendi https://peach-melpa.org/themes/modus-vivendi-theme
+        - [ ] labburn (zenburn w/ better colors?)
+          - https://peach-melpa.org/themes/labburn-theme
+          - https://github.com/ksjogo/labburn-theme
 
     - [ ] Get rid of use-tool?
       - It's not really doing much useful... and I haven't touched it since I

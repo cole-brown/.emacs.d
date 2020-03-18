@@ -440,6 +440,89 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Bufler - Buffer Management
+;;------------------------------------------------------------------------------
+;; https://www.reddit.com/r/emacs/comments/fatjdw/annrfc_buflerel_group_buffers_into_workspaces/
+;; https://github.com/alphapapa/bufler.el#commands
+;; Trial [2020-03-18]
+(use-package bufler
+  :after helm
+  :demand t
+  ;; bufler is opening an interactive window for something my init is doing right now...
+  ;; :disabled
+
+  ;; ;;---
+  ;; :custom
+  ;; ;;---
+
+
+  ;;---
+  :config
+  ;;---
+
+  ;; bufler-defgroups should go here...
+  ;; (setf bufler-groups (bufler-defgroups ...))
+
+  ;; hook into Helm
+  (require 'helm-bufler)
+  ;; (helm :sources '(helm-bufler-source))
+  (setq helm-mini-default-sources '(helm-source-buffers-list
+                                    helm-bufler-source
+                                    helm-source-recentf
+                                    helm-source-buffer-not-found)))
+
+;; Commands:    https://github.com/alphapapa/bufler.el#commands
+;;   bufler
+;;       Show the Bufler buffer list.
+;;
+;;   bufler-mode
+;;       Enable the Bufler workspace mode, which allows each frame to have a
+;;       chosen workspace from Bufler’s groups.
+;;
+;;   bufler-tabs-mode
+;;       Enable the Bufler workspace tabs mode, which uses tab-bar-mode and
+;;       tab-line-mode from Emacs 27+ to display Bufler workspaces and buffers.
+;;
+;;   bufler-switch-buffer
+;;       Switch to a buffer selected from the frame’s workspace. With prefix,
+;;       select from all buffers. With two prefixes, also set the frame’s
+;;       workspace.
+;;
+;;   bufler-workspace-frame-set
+;;       Set the frame’s workspace. Setting the workspace may be done
+;;       automatically by bufler-switch-buffer, but this command may be used to
+;;       set the workspace to a group containing other groups, after which
+;;       bufler-switch-buffer will present buffers from the selected group and
+;;       its subgroups.
+;;
+;;   bufler-workspace-buffer-set
+;;       Set the current buffer’s workspace name. With prefix, unset it. Note
+;;       that, in order for a buffer to appear in a named workspace, the buffer
+;;       must be matched by an auto-workspace group before any other group.
+
+;; Bindings
+;;
+;; In the Bufler buffer list, these keys are available (use C-h m to get the
+;; most up-to-date listing). They operate on all buffers in the section at
+;; point.
+;;
+;;   ?         : Show key bindings Hydra.
+;;   1 – 4     : Cycle section levels at point.
+;;   M-1 – M-4 : Cycle top-level sections.
+;;   RET       : Switch to buffer.
+;;   SPC       : Peek at buffer, keeping focus in buffer list.
+;;   g         : Refresh Bufler list (with prefix, force updating
+;;             : buffers’ VC state and grouping).
+;;   f         : Set the current frame’s workspace to the group
+;;             : at point (with prefix, unset).
+;;   F         : Make a new frame whose workspace is the group at point.
+;;   N         : Add buffers to named workspace (with prefix, remove from it).
+;;   k         : Kill buffers.
+;;   s         : Save buffers.
+
+
+
+;;------------------------------------------------------------------------------
 ;; Provide this.
 ;;------------------------------------------------------------------------------
 (provide 'configure-completion)

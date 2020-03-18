@@ -99,7 +99,14 @@ auto-complete to have pity is my game."
 ;; Some people have this inside of (use-package yasnippet)
 (use-package yasnippet-snippets
   :after yasnippet
-  :demand t)
+  :demand t
+
+  ;; Trial [2020-03-18]
+  ;; This triggers on single/dual letters way too often when I wanted to just
+  ;; autocomplete a word/name that's used a lot in current context. I don't
+  ;; think I'm using many of the snippets, if any, anyways, so... disable
+  ;; for now.
+  :disabled)
 
 
 ;;------------------------------------------------------------------------------
