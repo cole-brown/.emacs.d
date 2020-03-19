@@ -30,8 +30,8 @@
 
 (defconst mis2/validity/types
   '((:number  numberp)
-    (:integer floatp)
-    (:float   integerp)
+    (:integer integerp)
+    (:float   floatp)
     (:string  stringp)
     (:char    characterp)
     (:list    listp))
@@ -111,17 +111,17 @@ Settings:
     (:right  :const (t nil))
 
     ;; Text
-    (:face :key-alist :type) ;; indirect... got to get :type alist, then get
-                             ;; :face's key out of that.
+    (:face :key-alist ':type) ;; indirect... got to get :type alist, then get
+                              ;; :face's key out of that.
 
     ;; Box Model...ish Thing.
-    (:margins (:list (:string :string)))
-    (:borders (:list (:string :string)))
+    (:margins :list (:string :string))
+    (:borders :list (:string :string))
     ;; Can be either, e.g.:
     ;;   :padding '(">>" "<<")   ;; use the strings exactly
     ;;   :padding '(?- :empty 3) ;; Build from char, leaving 3 empties.
     ;;   :padding '(?- :fill 3)  ;; Build from char, to max of 3 long.
-    (:padding (:or (:list (:string :string))
+    (:padding :or ((:list (:string :string))
                    (:list (:char (:const (:empty :fill)) :integer)))))
   "Style for a part of a mis2 message. Alignment, text properties, border,
 margin, padding...
@@ -520,6 +520,7 @@ Examples:
             info))))
 ;; (mis2/style/check-key :string)
 ;; (mis2/style/check-key :center)
+;; (mis2/style/check-key nil)
 
 ;; '(;; Alignment
 ;;   (:center :const (t nil))
@@ -543,72 +544,138 @@ Examples:
 ;; §-TODO-§ [2020-03-18]: pull apart into common validity func, then make
 ;; specific callers for style vs settings. Because settings is out of date and
 ;; can't do basic validity.
-(defun mis2/style/check-value (key value)
+(defun mis2/style/check-value (key value &optional key-info)
   "Checks that VALUE is a valid value for the mis/style keyword KEY.
 "
-  (let* ((key-info (mis2/style/check-key key))
+  ;; sometimes need to override key-info in a recursion (e.g. :or case)
+  (let* ((key-info (or key-info (mis2/style/check-key key)))
          (type (and (listp key-info) (first key-info)))
          (value-checker (and (listp key-info) (second key-info)))
-         (basic-validity (alist-get key mis2/validity/types)))
+         (basic-validity (or (first (alist-get key mis2/validity/types))
+                             (first (alist-get type mis2/validity/types))))
+         success)
 
-    ;; Easy first case before we get into shenanigans... is it a basic type?
-    (cond ((and (not (null basic-validity))
-                (functionp basic-validity))
-           (let ((success (apply basic-validity value)))
-             (if (or (not success)
-                     (not (eq :list key)))
-                 ;; Failed already or don't need to recurse to check members;
-                 ;; done.
-                 success
-               ;; Else we have a list, and we need to make sure it conforms to
-               ;; its validity requirements.
-               (setq key-info (alist-get key mis2/style/keys))
+    ;; This may be a bug in check-key rather than a special edge case here...
+    (when (eq :const key)
+      (setq type :const
+            value-checker key-info))
 
+    (message "k: %S, v: %S, ki: %S, t: %S, vc: %S, bv: %S"
+             key value key-info type value-checker basic-validity)
 
-               ;; §-TODO-§ [2020-03-18]: YOU ARE HERE!!!!
-
-
-           )))
-
-          ;; Easy #2: ...or is it a bad key?
-          ((eq key-info :*bad-key-error*)
+    (cond
+     ;; Easy out: is it a bad key?
+     ((eq key-info :*bad-key-error*)
            ;; Return bad value if we have a bad key.
-           :*bad-value-error*)
+      :*bad-value-error*)
 
-          ;; Otherwise, use key-info to check our value.
-          ;; We'll have a cdr list like...:
-          ;;   '(:const     '(t nil))
-          ;;   '(:key-alist 'mis2/type->faces)
-          ;;   '(:range     '(0.0 100.0))
-          ;;   '(:or (<option> ...))
-          ;; and we have to do the check for the type.
-          ((eq :const type)
-           (if (memq value value-checker)
-               value
-             :*bad-value-error*))
+     ;; Is it an :or? Got to check each option in value-checker and see
+     ;; if any pass.
+     ((eq type :or)
+      ;; Check each recursively in the value-checker against this value.
+      ;; Init to false/failure, then any true/success will pass 'or' test.
+      (setq success :*bad-value-error*)
+      (dotimes (i (length value-checker))
+        (message "k: %S, v: %S, i: %S, vc: %S"
+                 key value i (nth i value-checker))
+        ;; Ask sub-us to check this sub-key-info/sub-value.
+        (when (not (eq :*bad-value-error*
+                       (mis2/style/check-value
+                        ;; Pass key and whole value in;
+                        ;; only change value-checker.
+                        key value
+                        ;; override key-info with the or's key-info
+                        (nth i value-checker))))
+          ;; Any success - passes 'or' test.
+          (setq success value)))
+      success)
 
-          ((eq :range type)
-           ;; Range must be a number (float or int) and must be in the range
-           ;; specified (inclusive).
-           (if (and (numberp value)
-                    (<= (first value-checker) value)
-                    (>= (second value-checker) value))
-               value
-             :*bad-value-error*))
+     ;; Is it a basic type? Basic check, or some possible shenanigans needed in
+     ;; the :list case(s).
+     ((and (not (null basic-validity))
+           (functionp basic-validity))
+      (setq success (funcall basic-validity value))
+      ;; Failed already or don't need to recurse to check members; done.
+      (cond ((not success)
+             :*bad-value-error*)
 
-          ;; Find it in the alist? Valid.
-          ((eq :key-alist type)
-           (if (and (not (null value))
-                    (not (null value-checker))
-                    (alist-get value (symbol-value value-checker)))
-               value
-             :*bad-value-error*))
+            ;; Do we have a list? We need to make sure it conforms
+            ;; to its validity requirements.
+            ((eq :list type)
+             (if (not (= (length value) (length value-checker)))
+                 :*bad-value-error*
+               ;; basic sanity passed - check each in list
+               (setq success value)
+               (dotimes (i (length value))
+                 ;; If (mis2/style/check-value :margins '("hi" "hello")):
+                 ;;  (nth i value)         - "hi" (sub-value)
+                 ;;  (nth i value-checker) - :string (sub-key)
+                 ;; So ask sub-us to check this sub-key/sub-value.
+                 (when (eq :*bad-value-error*
+                           (if (and (listp (nth i value-checker))
+                                    (keywordp (first (nth i value-checker))))
+                               ;; e.g. (:const (:empty :fill)) as a
+                               ;; value-checker for a list item.
+                               (mis2/style/check-value
+                                (first (nth i value-checker))
+                                (nth i value)
+                                (second (nth i value-checker)))
 
+                             ;; e.g. :string as a value-checker for a list item.
+                             (mis2/style/check-value (nth i value-checker)
+                                                     (nth i value))))
+                   ;; failure - set success to a big nope
+                   (setq success :*bad-value-error*)))
+               ;; Done checking. `success' is either still the value, or
+               ;; it's been replaced with :*bad-value-error*, so return it.
+               success))
 
-          ;; *shrugs*
-          (t
-           :*bad-value-error*))))
-;; (mis2/style/check-value :string "hi")
+            ;; Not a list, so no need to loop/recurse... But did succeed,
+            ;; so return value
+            (t
+             value)))
+
+     ;; Otherwise, use key-info to check our value.
+     ;; We'll have a cdr list like...:
+     ;;   '(:const     '(t nil))
+     ;;   '(:key-alist 'mis2/type->faces)
+     ;;   '(:range     '(0.0 100.0))
+     ;;   '(:or (<option> ...))
+     ;; and we have to do the check for the type.
+     ((eq :const type)
+      (if (memq value value-checker)
+          value
+        :*bad-value-error*))
+
+     ((eq :range type)
+      ;; Range must be a number (float or int) and must be in the range
+      ;; specified (inclusive).
+      (if (and (numberp value)
+               (<= (first value-checker) value)
+               (>= (second value-checker) value))
+          value
+        :*bad-value-error*))
+
+     ;; Find it in the alist? Valid.
+     ((eq :key-alist type)
+      (if (and (not (null value))
+               (not (null value-checker))
+               (alist-get value (symbol-value value-checker)))
+          value
+        :*bad-value-error*))
+
+     ;; *shrugs* Bad key or someone added a key type and didn't code in the
+     ;; *handling yet.
+     (t
+      :*bad-value-error*))))
+;; (mis2/style/check-value :string "string-value")
+;; (mis2/style/check-value "string-value" :string)
+;; (mis2/style/check-value :margins '("hi" "hello"))
+;;   padding is:
+;;     (:or (:list (:string :string))
+;;          (:list (:char (:const (:empty :fill)) :integer)))
+;; (mis2/style/check-value :padding '("hi" "hello"))
+;; (mis2/style/check-value :padding '(?- :empty 3))
 
 
 ;;         ------------------------------------------------------------
