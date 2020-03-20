@@ -244,11 +244,11 @@ Examples:
 
              ;; Check our key! This will either return the key or an error
              ;; symbol, so always save.
-             (setq key-valid (mis2/settings/check-key key))
+             (setq key-valid (mis2//settings/check-key key))
 
              ;; Check our value! This will either return the value or an error
              ;; symbol, so always save.
-             (setq value-valid (mis2/settings/check-value key value))
+             (setq value-valid (mis2//settings/check-value key value))
 
              ;; And now check for errors.
              (cond
@@ -293,75 +293,16 @@ Examples:
 ;; (let (settings) (macroexpand '(mis2/settings/update settings :echo t :type :default)))
 
 
-(defun mis2/settings/check-key (key)
+(defun mis2//settings/check-key (key)
   "Checks that KEY is a known mis/settings keyword.
 "
-  (let ((info (or (alist-get key mis2/settings/meta/keys)
-                  (alist-get key mis2/settings/keys))))
-    (if (null info)
-        ;; Already bad - can just return.
-        :*bad-key-error*
-
-      ;; Have info for checking validity... of value. Nothing left to check, I
-      ;; think, for validity of key. It exists, so ok; go. However... we can use
-      ;; the truthiness of the info for a yes/no, and the info itself for
-      ;; `check-value', so there's that little sillyness of the return.
-      info)))
+  (mis2//internal/check-key key mis2/settings/keys mis2/settings/meta/keys))
 
 
-(defun mis2/settings/check-value (key value)
+(defun mis2//settings/check-value (key value)
   "Checks that VALUE is a valid value for the mis/settings keyword KEY.
 "
-  (let* ((key-info (mis2/settings/check-key key))
-         (type (and (listp key-info) (first key-info)))
-         (value-checker (and (listp key-info) (second key-info))))
-
-    (if (eq key-info :*bad-key-error*)
-        ;; Return bad value if we have a bad key.
-        :*bad-value-error*
-
-      ;; Otherwise, use key-info to check our value.
-      ;; We'll have a cdr list like...:
-      ;;   '(:const     '(t nil))
-      ;;   '(:range     '(0.0 100.0))
-      ;;   '(:number    #'numberp)
-      ;;   '(:integer   #'floatp)
-      ;;   '(:float     #'integerp)
-      ;;   '(:string    #'stringp)
-      ;;   '(:key-alist 'mis2/type->faces)
-      (cond ((eq :const type)
-             (if (memq value value-checker)
-                 value
-               :*bad-value-error*))
-
-            ((eq :range type)
-             ;; Range must be a number (float or int) and must be in the range
-             ;; specified (inclusive).
-             (if (and (numberp value)
-                      (<= (first value-checker) value)
-                      (>= (second value-checker) value))
-                 value
-               :*bad-value-error*))
-
-            ;; Find it in the list? Valid.
-            ((eq :key-alist type)
-             (if (and (not (null value))
-                      (not (null value-checker))
-                      (alist-get value (symbol-value value-checker)))
-                 value
-               :*bad-value-error*))
-
-            ;; If get more that're just funcs, just add to the list.
-            ((memq type '(:number :integer :float :string))
-             ;; Check value by using predicate function.
-             (if (and (functionp value-checker)
-                      (apply value-checker value))
-                 value
-               :*bad-value-error*))
-
-            ;; *shrugs*
-            (t
-             :*bad-value-error*)))))
+  (mis2//internal/check-value key value #'mis2//settings/check-key))
 
 
 ;;------------------------------------------------------------------------------
@@ -372,9 +313,27 @@ Examples:
 (defun mis2/style/set (plist &rest args)
   "Add one or more mis styles in ARGS to whatever is already in PLIST.
 Returns new list (PLIST will be unchanged).
-"
 
-  )
+Expects ARGS to be: key0 value0 key1 value1 ...
+
+Takes ARGS, checks them as best as possible for validity, and returns a
+mis/style plist.
+
+If a keyword exists twice, the later one 'wins'.
+Examples:
+  - If a style already in PLIST is also in ARGS, the ARGS one will overwrite
+    the PLIST one for the return value.
+  - If a style is in ARGS twice, only the last one will be in the returned
+    value.
+  - If `mis2/style/set' is called multiple times to build a style, only
+    the latest key/value pair will be used for the duplicated style key.
+"
+  ;; Copy the list, feed into `update' for all the logic, then return and done.
+  ;; Can't use `apply' or `funcall' because update is a macro...
+  (let ((new-plist (copy-sequence plist)))
+    (mis2/style/update new-plist args)))
+    ;; (mis2/style/update new-plist (-flatten-n 1 args))))
+
 
 
 (defmacro mis2/style/update (plist &rest args)
@@ -395,15 +354,12 @@ Examples:
   - If `mis2/style/set' is called multiple times to build style, only
     the latest key/value pair will be used for the duplicated setting key.
 "
-  (message "u2 inputs: %S %S null?%S" plist args (null plist))
   ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Surprising-Local-Vars.html#Surprising-Local-Vars
   (let (;;(temp-plist (make-symbol "style-list"))
         (temp-args (make-symbol "style-args")))
     ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Argument-Evaluation.html#Argument-Evaluation
     `(let (;;(,temp-plist ,plist)
            (,temp-args (list ,@args)))
-       (message "u2 plist: %S" ,plist)
-       (message "u2 temp-args: %S" ,temp-args)
 
        ;; §-TODO-§ [2020-03-18]: allow solo keys, like ':center'?
        ;; If &rest is a list of 1 element, strip it out of the list. Probably
@@ -442,11 +398,11 @@ Examples:
 
              ;; Check our key! This will either return the key or an error
              ;; symbol, so always save.
-             (setq key-valid (mis2/style/check-key key))
+             (setq key-valid (mis2//style/check-key key))
 
              ;; Check our value! This will either return the value or an error
              ;; symbol, so always save.
-             (setq value-valid (mis2/style/check-value key value))
+             (setq value-valid (mis2//style/check-value key value))
 
              ;; And now check for errors.
              (cond
@@ -461,7 +417,6 @@ Examples:
               (t
                ;; Use plist-put so we only have one key for this in the plist.
                (setq ,plist (plist-put ,plist key value))
-               (message "style: %S = %S => %S" key value ,plist)
                ))))
 
          ;; Still have ,temp-args? Didn't end up with a pair - complain?
@@ -476,51 +431,16 @@ Examples:
          (error
           "Don't know how to process args into style - not a list or nil.")))
        )))
-;; (let ((style '(:test "an test str"))) (macroexpand '(mis2/style/update style :jeff "jill")))
-;; (let ((style '(:test "an test str"))) (mis2/style/update style nil))
-;; (let ((style '(:test "an test str"))) (mis2/style/update style :jeff "jill"))
-;; (let ((style '(:test "an test str"))) (mis2/style/update style :echo "jill"))
-;; (let ((style '(:test "an test str"))) (mis2/style/update style :echo t))
-;; (let ((style '(:test "an test str"))) (mis2/style/update style :echo t) (message "%S" style))
-;; (let ((style '(:test "an test str"))) (mis2/style/update style :echo nil))
-;; (let ((style '(:test "an test str"))) (mis2/style/update style :echo-delay 0))
-;; (let ((style '(:test "an test str"))) (mis2/style/update style :echo-delay -1))
-;; (let ((style '(:test "an test str"))) (mis2/style/update style :echo-delay 101))
-;; (let ((style '(:test "an test str"))) (mis2/style/update style :echo-delay "jeff"))
-;; (let ((style '(:test "an test str"))) (mis2/style/update style :echo t :type :default))
-;; (let (style) (mis2/style/update style :echo t :type :default) (message "%S" style))
-;; (let (style) (macroexpand '(mis2/style/update style :echo t :type :default)))
 
 
-;; §-TODO-§ [2020-03-18]: pull apart into common validity func, then make
-;; specific callers for style vs settings. Because settings is out of date and
-;; can't do basic validity.
-(defun mis2/style/check-key (key)
+(defun mis2//style/check-key (key)
   "Checks that KEY is a known mis/style keyword.
 "
-  (let ((info (alist-get key mis2/style/keys))
-        (basic-validity (first (alist-get key mis2/validity/types))))
+  (mis2//internal/check-key key mis2/style/keys nil))
+;; (mis2//style/check-key :string)
+;; (mis2//style/check-key :center)
+;; (mis2//style/check-key nil)
 
-    ;; Check basic validity first - it takes care of str, int, etc.
-    (cond ((and (not (null basic-validity))
-                (functionp basic-validity))
-           basic-validity)
-
-          ;; Next, do we have info on the style element (since it
-          ;; isn't a basic type)?
-          ((null info)
-           ;; Already bad - can just return.
-           :*bad-key-error*)
-
-           ;; We do have info, so return it...
-           ;; We can use the truthiness of the info for a yes/no, and the info
-           ;; itself for `check-value', so there's that little sillyness of the
-           ;; return.
-           (t
-            info))))
-;; (mis2/style/check-key :string)
-;; (mis2/style/check-key :center)
-;; (mis2/style/check-key nil)
 
 ;; '(;; Alignment
 ;;   (:center :const (t nil))
@@ -541,14 +461,17 @@ Examples:
 ;;   (:padding (:or (:list (:string :string))
 ;;                  (:list (:char (:const (:empty :fill)) :integer)))))
 
-;; §-TODO-§ [2020-03-18]: pull apart into common validity func, then make
-;; specific callers for style vs settings. Because settings is out of date and
-;; can't do basic validity.
-(defun mis2/style/check-value (key value &optional key-info)
+(defun mis2//style/check-value (key value &optional key-info)
   "Checks that VALUE is a valid value for the mis/style keyword KEY.
 "
+  (mis2//internal/check-value key value #'mis2//style/check-key))
+
+
+(defun mis2//internal/check-value (key value check-key-fn &optional key-info)
+  "Checks that VALUE is a valid value for the keyword KEY.
+"
   ;; sometimes need to override key-info in a recursion (e.g. :or case)
-  (let* ((key-info (or key-info (mis2/style/check-key key)))
+  (let* ((key-info (or key-info (funcall check-key-fn key)))
          (type (and (listp key-info) (first key-info)))
          (value-checker (and (listp key-info) (second key-info)))
          (basic-validity (or (first (alist-get key mis2/validity/types))
@@ -559,9 +482,6 @@ Examples:
     (when (eq :const key)
       (setq type :const
             value-checker key-info))
-
-    (message "k: %S, v: %S, ki: %S, t: %S, vc: %S, bv: %S"
-             key value key-info type value-checker basic-validity)
 
     (cond
      ;; Easy out: is it a bad key?
@@ -576,14 +496,12 @@ Examples:
       ;; Init to false/failure, then any true/success will pass 'or' test.
       (setq success :*bad-value-error*)
       (dotimes (i (length value-checker))
-        (message "k: %S, v: %S, i: %S, vc: %S"
-                 key value i (nth i value-checker))
         ;; Ask sub-us to check this sub-key-info/sub-value.
         (when (not (eq :*bad-value-error*
-                       (mis2/style/check-value
+                       (mis2//internal/check-value
                         ;; Pass key and whole value in;
                         ;; only change value-checker.
-                        key value
+                        key value check-key-fn
                         ;; override key-info with the or's key-info
                         (nth i value-checker))))
           ;; Any success - passes 'or' test.
@@ -607,7 +525,7 @@ Examples:
                ;; basic sanity passed - check each in list
                (setq success value)
                (dotimes (i (length value))
-                 ;; If (mis2/style/check-value :margins '("hi" "hello")):
+                 ;; If (mis2//style/check-value :margins '("hi" "hello")):
                  ;;  (nth i value)         - "hi" (sub-value)
                  ;;  (nth i value-checker) - :string (sub-key)
                  ;; So ask sub-us to check this sub-key/sub-value.
@@ -616,14 +534,16 @@ Examples:
                                     (keywordp (first (nth i value-checker))))
                                ;; e.g. (:const (:empty :fill)) as a
                                ;; value-checker for a list item.
-                               (mis2/style/check-value
+                               (mis2//internal/check-value
                                 (first (nth i value-checker))
                                 (nth i value)
+                                check-key-fn
                                 (second (nth i value-checker)))
 
                              ;; e.g. :string as a value-checker for a list item.
-                             (mis2/style/check-value (nth i value-checker)
-                                                     (nth i value))))
+                             (mis2//internal/check-value (nth i value-checker)
+                                                         (nth i value)
+                                                         check-key-fn)))
                    ;; failure - set success to a big nope
                    (setq success :*bad-value-error*)))
                ;; Done checking. `success' is either still the value, or
@@ -668,15 +588,45 @@ Examples:
      ;; *handling yet.
      (t
       :*bad-value-error*))))
-;; (mis2/style/check-value :string "string-value")
-;; (mis2/style/check-value "string-value" :string)
-;; (mis2/style/check-value :margins '("hi" "hello"))
+
+;; (mis2//style/check-value :string "string-value")
+;; (mis2//style/check-value "string-value" :string)
+;; (mis2//style/check-value :margins '("hi" "hello"))
 ;;   padding is:
 ;;     (:or (:list (:string :string))
 ;;          (:list (:char (:const (:empty :fill)) :integer)))
-;; (mis2/style/check-value :padding '("hi" "hello"))
-;; (mis2/style/check-value :padding '(?- :empty 3))
+;; (mis2//style/check-value :padding '("hi" "hello"))
+;; (mis2//style/check-value :padding '(?- :empty 3))
 
+
+;;------------------------------------------------------------------------------
+;; mis2 Settings & Style Internals
+;;------------------------------------------------------------------------------
+
+(defun mis2//internal/check-key (key valid-key-info valid-meta-key-info)
+  "Internal helper function for checking keys for mis2/settings and mis2/style.
+"
+  (let ((info (or (alist-get key valid-key-info)
+                  (alist-get key valid-meta-key-info)))
+        (basic-validity (first (alist-get key mis2/validity/types))))
+
+    ;; Check basic validity first - it takes care of str, int, etc.
+    (cond ((and (not (null basic-validity))
+                (functionp basic-validity))
+           basic-validity)
+
+          ;; Next, do we have info on the style element (since it
+          ;; isn't a basic type)?
+          ((null info)
+           ;; Already bad - can just return.
+           :*bad-key-error*)
+
+           ;; We do have info, so return it...
+           ;; We can use the truthiness of the info for a yes/no, and the info
+           ;; itself for `check-value', so there's that little sillyness of the
+           ;; return.
+           (t
+            info))))
 
 ;;         ------------------------------------------------------------
 ;;   ------------------------------------------------------------------------
