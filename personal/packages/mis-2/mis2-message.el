@@ -17,7 +17,7 @@
 (require 'dash)
 (require 's)
 
-(require 'mis2-parts)
+;; (require 'mis2-parts)
 
 ;;------------------------------------------------------------------------------
 ;; Consts & Vars
@@ -191,11 +191,11 @@ Returns: '(:mis2//settings settings-element
         settings style done)
     (while (not done)
       ;; We require our keys to go first, so just check the first element.
-      (if (and (keyword (first parts))
+      (if (and (keywordp (first parts))
                (memq (first parts) mis2/custom/keywords))
           ;; Get keyword (if it's our keyword) and val; save to settings/style.
-          (-if-let (mis2--kwd (plist-get (first parts) mis2/custom/keywords))
-              (let ((mis2-val (plist-get (first parts) parts)))
+          (-if-let (mis2--kwd (plist-get mis2/custom/keywords (first parts)))
+              (let ((mis2-val (plist-get parts (first parts))))
                 ;; settings and style should update their lists, and drop
                 ;; key/value from parts.
                 (cond ((eq mis2--kwd :mis2//settings)
@@ -211,9 +211,9 @@ Returns: '(:mis2//settings settings-element
         (setq done t)))
 
     ;; and now return a tuple of parsed args.
-    '(:mis2//settings settings
-      :mis2//style style
-      :mis2//parts parts)))
+    (list :mis2//settings settings
+          :mis2//style style
+          :mis2//parts parts)))
 
 
 ;;------------------------------------------------------------------------------
@@ -244,133 +244,133 @@ These keys must be at the front of the list - before any message args.
     )
 
 
-;;------------------------------------------------------------------------------
-;; Main Entry Point?
-;;------------------------------------------------------------------------------
+;; ;;------------------------------------------------------------------------------
+;; ;; Main Entry Point?
+;; ;;------------------------------------------------------------------------------
 
-(defun mis2/message/propertize (echo type &rest args)
-  "Given TYPE, figure out a faces alist from `mis2/type->faces' to use, then
-build ARGS into propertized string via `mis2/parts/build' and output it
-to the *Messages* buffer.
+;; (defun mis2/message/propertize (echo type &rest args)
+;;   "Given TYPE, figure out a faces alist from `mis2/type->faces' to use, then
+;; build ARGS into propertized string via `mis2/parts/build' and output it
+;; to the *Messages* buffer.
 
-If ECHO is non-nil, also echo message to the minibuffer echo area.
+;; If ECHO is non-nil, also echo message to the minibuffer echo area.
 
-NOTE: Could (optionally) add TYPE to output easily enough if desired.
-"
-  (if-let ((faces (nth 1 (assoc type mis2/type->faces)))
-           ;; If args was a single list and got boxed by '&rest', unbox.
-           ;; e.g. '(:text "hi") -&rest-> '((:text "hi")) -unbox-> '(:text "hi")
-           (args (or (and (listp args)
-                          (= (length args) 1)
-                          (-flatten-n 1 args))
-                     args))
-           ;; Also need to check for a full unboxing...
-           ;; e.g. :newline -&rest-> '(:newline) -unbox-> :newline
-           (args (or (and (listp args)
-                          (= (length args) 1)
-                          (nth 0 args))
-                     args))
-           ;; null check
-           (valid-args (not (null args))))
+;; NOTE: Could (optionally) add TYPE to output easily enough if desired.
+;; "
+;;   (if-let ((faces (nth 1 (assoc type mis2/type->faces)))
+;;            ;; If args was a single list and got boxed by '&rest', unbox.
+;;            ;; e.g. '(:text "hi") -&rest-> '((:text "hi")) -unbox-> '(:text "hi")
+;;            (args (or (and (listp args)
+;;                           (= (length args) 1)
+;;                           (-flatten-n 1 args))
+;;                      args))
+;;            ;; Also need to check for a full unboxing...
+;;            ;; e.g. :newline -&rest-> '(:newline) -unbox-> :newline
+;;            (args (or (and (listp args)
+;;                           (= (length args) 1)
+;;                           (nth 0 args))
+;;                      args))
+;;            ;; null check
+;;            (valid-args (not (null args))))
 
-      ;; Build propertized string and output it.
-      (mis2/message/preserve-properties echo (mis2/parts/build args faces))
+;;       ;; Build propertized string and output it.
+;;       (mis2/message/preserve-properties echo (mis2/parts/build args faces))
 
-    ;; Else didn't find in type in type->faces or null args.
-    ;; Complain, return nil.
-    (mis2/warning
-     type :warning
-     (concat "Null args (%S)? Or type not found in "
-             "`mis2/type->faces': %S -> %S")
-     args type mis2/type->faces)
-    nil))
-;; (mis2/message/propertize t '(mis2 koan text) '(:text "hi"))
-;; (mis2/message/propertize nil '(mis2 koan text) :newline)
-;; (mis2/message/propertize t '(mis2 koan text) :text "hi %s" "there")
-;; (mis2/message/propertize t '(spydez homeward) "  LSP: Killed %s servers." 1) ;; err: no type
-
-
-
-;;------------------------------------------------------------------------------
-;; Pretty Messages in *Messages* Buffer?
-;;------------------------------------------------------------------------------
-
-;; §-TODO-§ [2019-11-01]:
-;;   - add a mis2 setting for whether to allow also-echo?
-
-;; §-TODO-§ [2020-02-05]: Need a dynamically adjustable timeout, I think...
-;;   - 0 is good for non-interactive startup and funcs that have output?
-;;     - But last output would be nice to not lose?
-;;   - 2 is good for normal (interactive) usage?
-
-;; https://emacs.stackexchange.com/a/20178
-(defun mis2/message/preserve-properties (echo format &rest args)
-  "Acts like `message' but preserves string properties in the *Messages* buffer.
-M-x list-faces-display for all defined faces. Call with a propertized string.
-
-If ECHO is non-nil, also echo message to the minibuffer echo area.
-"
-  (let ((output (apply 'format format args)))
-    (with-current-buffer (get-buffer "*Messages*")
-      ;;   "Manually inserts the propertized string at the end of the messages
-      ;; buffer by lexically-binding inhibit-read-only to t in
-      ;; the message buffer."
-      (save-excursion
-        (goto-char (point-max))
-        (let ((inhibit-read-only t))
-          ;; Before insert, do a newline if needed.
-          (unless (zerop (current-column)) (insert "\n"))
-          ;; Actual propertized string put into *Messages* buffer
-          (insert output)
-          ;; And... insert a final newline if needed.
-          (insert "\n"))))
-
-    ;; String also goes into echo area, maybe.
-    (if echo
-        ;; But temp bind `message-log-max' to nil so it doesn't go into the
-        ;; *Messages* buffer from here too, which would cause our first message
-        ;; to lose its properties, somehow, probably due to *Messages* stacking
-        ;; identical messages.
-        (let ((message-log-max nil)
-              (minibuffer-message-timeout
-               (first mis2/message/echo-area-timeout)))
-          (minibuffer-message output)))))
-
-(dotimes (i 10)
-  (minibuffer-message ["hi %s"] i))
-;; (mis2/message/preserve-properties t (propertize "--->" 'face 'underline))
-;; (mis2/message/preserve-properties nil (propertize "--->" 'face 'underline))
-;; (mis2/message/preserve-properties t
-;;  (concat
-;;   (propertize "--->    " 'face 'font-lock-variable-name-face)
-;;   " "
-;;   (propertize "├" 'face 'font-lock-comment-delimiter-face)
-;;   " "
-;;   (propertize "(mis2 zeroth debug)" 'face 'font-lock-comment-face)
-;;   " "
-;;   (propertize "┤:" 'face 'font-lock-comment-delimiter-face)
-;;   " "
-;;   (propertize "early-init.el... Zeroth step." 'face 'default)))
+;;     ;; Else didn't find in type in type->faces or null args.
+;;     ;; Complain, return nil.
+;;     (mis2/warning
+;;      type :warning
+;;      (concat "Null args (%S)? Or type not found in "
+;;              "`mis2/type->faces': %S -> %S")
+;;      args type mis2/type->faces)
+;;     nil))
+;; ;; (mis2/message/propertize t '(mis2 koan text) '(:text "hi"))
+;; ;; (mis2/message/propertize nil '(mis2 koan text) :newline)
+;; ;; (mis2/message/propertize t '(mis2 koan text) :text "hi %s" "there")
+;; ;; (mis2/message/propertize t '(spydez homeward) "  LSP: Killed %s servers." 1) ;; err: no type
 
 
 
-;;------------------------------------------------------------------------------
-;; Tasks, Wants, Feature Requests, etc.
-;;------------------------------------------------------------------------------
+;; ;;------------------------------------------------------------------------------
+;; ;; Pretty Messages in *Messages* Buffer?
+;; ;;------------------------------------------------------------------------------
 
-;; §-TODO-§ [2019-10-11]: Try font-lock mode instead of string properties?
-;; Could add auto detect of my file names, maybe.
-;; And other "arrorws"...
-;; and 'require'...
-;;
-;; (mis2/hook/defun example-hook t
-;;     nil "simple-list" "init/config/configure-jeff.el"
-;;   "Nice up simple lists - replacing hypen with a unicode middle dot."
-;;   (font-lock-add-keywords
-;;    nil ;; if in a derived mode, doing font lock in a hook could be easier...
-;;    '(("^ *\\([-]\\) "
-;;       (0 (prog1 () (compose-region (match-beginning 1)
-;;                                    (match-end 1) "•")))))))
+;; ;; §-TODO-§ [2019-11-01]:
+;; ;;   - add a mis2 setting for whether to allow also-echo?
+
+;; ;; §-TODO-§ [2020-02-05]: Need a dynamically adjustable timeout, I think...
+;; ;;   - 0 is good for non-interactive startup and funcs that have output?
+;; ;;     - But last output would be nice to not lose?
+;; ;;   - 2 is good for normal (interactive) usage?
+
+;; ;; https://emacs.stackexchange.com/a/20178
+;; (defun mis2/message/preserve-properties (echo format &rest args)
+;;   "Acts like `message' but preserves string properties in the *Messages* buffer.
+;; M-x list-faces-display for all defined faces. Call with a propertized string.
+
+;; If ECHO is non-nil, also echo message to the minibuffer echo area.
+;; "
+;;   (let ((output (apply 'format format args)))
+;;     (with-current-buffer (get-buffer "*Messages*")
+;;       ;;   "Manually inserts the propertized string at the end of the messages
+;;       ;; buffer by lexically-binding inhibit-read-only to t in
+;;       ;; the message buffer."
+;;       (save-excursion
+;;         (goto-char (point-max))
+;;         (let ((inhibit-read-only t))
+;;           ;; Before insert, do a newline if needed.
+;;           (unless (zerop (current-column)) (insert "\n"))
+;;           ;; Actual propertized string put into *Messages* buffer
+;;           (insert output)
+;;           ;; And... insert a final newline if needed.
+;;           (insert "\n"))))
+
+;;     ;; String also goes into echo area, maybe.
+;;     (if echo
+;;         ;; But temp bind `message-log-max' to nil so it doesn't go into the
+;;         ;; *Messages* buffer from here too, which would cause our first message
+;;         ;; to lose its properties, somehow, probably due to *Messages* stacking
+;;         ;; identical messages.
+;;         (let ((message-log-max nil)
+;;               (minibuffer-message-timeout
+;;                (first mis2/message/echo-area-timeout)))
+;;           (minibuffer-message output)))))
+
+;; (dotimes (i 10)
+;;   (minibuffer-message ["hi %s"] i))
+;; ;; (mis2/message/preserve-properties t (propertize "--->" 'face 'underline))
+;; ;; (mis2/message/preserve-properties nil (propertize "--->" 'face 'underline))
+;; ;; (mis2/message/preserve-properties t
+;; ;;  (concat
+;; ;;   (propertize "--->    " 'face 'font-lock-variable-name-face)
+;; ;;   " "
+;; ;;   (propertize "├" 'face 'font-lock-comment-delimiter-face)
+;; ;;   " "
+;; ;;   (propertize "(mis2 zeroth debug)" 'face 'font-lock-comment-face)
+;; ;;   " "
+;; ;;   (propertize "┤:" 'face 'font-lock-comment-delimiter-face)
+;; ;;   " "
+;; ;;   (propertize "early-init.el... Zeroth step." 'face 'default)))
+
+
+
+;; ;;------------------------------------------------------------------------------
+;; ;; Tasks, Wants, Feature Requests, etc.
+;; ;;------------------------------------------------------------------------------
+
+;; ;; §-TODO-§ [2019-10-11]: Try font-lock mode instead of string properties?
+;; ;; Could add auto detect of my file names, maybe.
+;; ;; And other "arrorws"...
+;; ;; and 'require'...
+;; ;;
+;; ;; (mis2/hook/defun example-hook t
+;; ;;     nil "simple-list" "init/config/configure-jeff.el"
+;; ;;   "Nice up simple lists - replacing hypen with a unicode middle dot."
+;; ;;   (font-lock-add-keywords
+;; ;;    nil ;; if in a derived mode, doing font lock in a hook could be easier...
+;; ;;    '(("^ *\\([-]\\) "
+;; ;;       (0 (prog1 () (compose-region (match-beginning 1)
+;; ;;                                    (match-end 1) "•")))))))
 
 
 ;;------------------------------------------------------------------------------

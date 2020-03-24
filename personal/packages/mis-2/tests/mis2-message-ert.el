@@ -35,13 +35,13 @@
 (defun mis2-ert/mis2-message/setup ()
   "Calls `mis2-ert/setup' for general setup then does setup
 specific to this test suite."
-  (mis2-ert/setup))
+  (mis2-ert/setup/setup))
 
 
 (defun mis2-ert/mis2-message/teardown ()
   "Calls `mis2-ert/teardown' for general setup then does setup
 specific to this test suite."
-  (mis2-ert/teardown))
+  (mis2-ert/setup/teardown))
 
 
 ;;------------------------------------------------------------------------------
@@ -53,6 +53,442 @@ specific to this test suite."
 
 ;; ;; A replacement  for the final output call to the echo area?
 ;; (defun mis2-ert/mock/xx (f &rest a) (message "zz: %S" (format f a)))
+
+
+;;------------------------------------------------------------------------------
+;; Test: mis2//message/parse
+;;------------------------------------------------------------------------------
+;; (defun mis2//message/parse (&rest args)
+
+;;---
+;; Test Case 000
+;;---
+(ert-deftest mis2-ert/message/parse/valid/parts-only ()
+  "Test that `mis2//message/parse' pulls inputs out into settings/style/parts
+correctly. These tests are for cases:
+  - that are valid
+  - that are without settings or style
+"
+  (mis2-ert/mis2-message/setup)
+
+  ;; Test that nothing gives back proper parsed list of nothings.
+  (let ((parsed (mis2//message/parse nil)))
+    ;; Should have a resulting list that is 6 elements.
+    (should-not (null parsed))
+    (should (listp parsed))
+    (should (= (length parsed) 6))
+
+    ;; Elements should be:
+    ;;   (:mis2//settings settings
+    ;;    :mis2//style style
+    ;;    :mis2//parts parts)
+
+    ;; First pair should be settings key and nil (no settings).
+    (should (eq       (first  parsed) :mis2//settings))
+    (should (null     (second parsed)))
+
+    ;; Second pair should be style key and nil (no style).
+    (should (eq       (third  parsed) :mis2//style))
+    (should (null     (fourth parsed)))
+
+    ;; Third pair should be parts key and a list
+    ;; (of the non-settings/styles given to parse).
+    ;; ...or (nil) in this specific case (list with nil as only member).
+    (should (eq       (fifth  parsed) :mis2//parts))
+    (should-not (null (sixth  parsed)))
+    (should (listp    (sixth  parsed)))
+    (should (= (length (sixth  parsed)) 1))
+
+    ;; and in our list should be our nil.
+    (should (null (first (sixth parsed)))))
+
+
+  ;; Test that simple string gives back proper parsed list.
+  (let ((parsed (mis2//message/parse "hello there")))
+    ;; Should have a resulting list that is 6 elements.
+    (should-not (null parsed))
+    (should (listp parsed))
+    (should (= (length parsed) 6))
+
+    ;; Elements should be:
+    ;;   (:mis2//settings settings
+    ;;    :mis2//style style
+    ;;    :mis2//parts parts)
+
+    ;; First pair should be settings key and nil (no settings).
+    (should (eq       (first  parsed) :mis2//settings))
+    (should (null     (second parsed)))
+
+    ;; Second pair should be style key and nil (no style).
+    (should (eq       (third  parsed) :mis2//style))
+    (should (null     (fourth parsed)))
+
+    ;; Third pair should be parts key and a list
+    ;; (of the non-settings/styles given to parse).
+    (should (eq       (fifth  parsed) :mis2//parts))
+    (should-not (null (sixth  parsed)))
+    (should (listp    (sixth  parsed)))
+    (should (= (length (sixth  parsed)) 1))
+
+    ;; and in our list should be our string
+    (should (string= (first (sixth parsed)) "hello there")))
+
+
+  ;; Test that all parts gives back in proper parsed list.
+  (let ((parsed (mis2//message/parse "hello %S" "there" 'symbol0)))
+    ;; Should have a resulting list that is 6 elements.
+    (should-not (null parsed))
+    (should (listp parsed))
+    (should (= (length parsed) 6))
+
+    ;; Elements should be:
+    ;;   (:mis2//settings settings
+    ;;    :mis2//style style
+    ;;    :mis2//parts parts)
+
+    ;; First pair should be settings key and nil (no settings).
+    (should (eq       (first  parsed) :mis2//settings))
+    (should (null     (second parsed)))
+
+    ;; Second pair should be style key and nil (no style).
+    (should (eq       (third  parsed) :mis2//style))
+    (should (null     (fourth parsed)))
+
+    ;; Third pair should be parts key and a list
+    ;; (of the non-settings/styles given to parse).
+    (should (eq       (fifth  parsed) :mis2//parts))
+    (should-not (null (sixth  parsed)))
+    (should (listp    (sixth  parsed)))
+    (should (= (length (sixth  parsed)) 3))
+
+    ;; and in our list should be our strings and symbol
+    (should (string= (first (sixth parsed)) "hello %S"))
+    (should (string= (second (sixth parsed)) "there"))
+    (should (eq (third (sixth parsed)) 'symbol0)))
+
+  (mis2-ert/mis2-message/teardown))
+
+
+;;---
+;; Test Case 001
+;;---
+(ert-deftest mis2-ert/message/parse/valid/all-inputs ()
+  "Test that `mis2//message/parse' pulls inputs out into settings/style/parts
+correctly. These tests are for cases:
+  - that are valid
+  - that have settings and/or style
+"
+  (mis2-ert/mis2-message/setup)
+
+  ;; Test that nothing gives back proper parsed list when no parts.
+  (let ((parsed (mis2//message/parse :settings 'symbol0 :style 'symbol1)))
+    ;; Should have a resulting list that is 6 elements.
+    (should-not (null parsed))
+    (should (listp parsed))
+    (should (= (length parsed) 6))
+
+    ;; Elements should be:
+    ;;   (:mis2//settings settings
+    ;;    :mis2//style style
+    ;;    :mis2//parts parts)
+
+    ;; First pair should be settings key and our "settings".
+    (should (eq       (first  parsed) :mis2//settings))
+    (should (eq       (second parsed) 'symbol0))
+
+    ;; Second pair should be style key and our "style".
+    (should (eq       (third  parsed) :mis2//style))
+    (should (eq       (fourth parsed) 'symbol1))
+
+    ;; Third pair should be parts key and a list
+    ;; (of the non-settings/styles given to parse).
+    ;; ...nil in this specific case.
+    (should (eq       (fifth  parsed) :mis2//parts))
+    (should (null (sixth  parsed))))
+
+
+  ;; Test that simple string gives back proper parsed list.
+  (let ((parsed (mis2//message/parse :settings 'symbol0 :style 'symbol1 "hello there")))
+    ;; Should have a resulting list that is 6 elements.
+    (should-not (null parsed))
+    (should (listp parsed))
+    (should (= (length parsed) 6))
+
+    ;; Elements should be:
+    ;;   (:mis2//settings settings
+    ;;    :mis2//style style
+    ;;    :mis2//parts parts)
+
+    ;; First pair should be settings key and our "settings".
+    (should (eq       (first  parsed) :mis2//settings))
+    (should (eq       (second parsed) 'symbol0))
+
+    ;; Second pair should be style key and our "style".
+    (should (eq       (third  parsed) :mis2//style))
+    (should (eq       (fourth parsed) 'symbol1))
+
+    ;; Third pair should be parts key and a list
+    ;; (of the non-settings/styles given to parse).
+    (should (eq       (fifth  parsed) :mis2//parts))
+    (should-not (null (sixth  parsed)))
+    (should (listp    (sixth  parsed)))
+    (should (= (length (sixth  parsed)) 1))
+
+    ;; and in our list should be our string
+    (should (string= (first (sixth parsed)) "hello there")))
+
+
+  ;; Test that all parts gives back in proper parsed list.
+  (let ((parsed (mis2//message/parse :settings 'symbol0
+                                     :style 'symbol1
+                                     "hello %S" "there" 'symbol2)))
+    ;; Should have a resulting list that is 6 elements.
+    (should-not (null parsed))
+    (should (listp parsed))
+    (should (= (length parsed) 6))
+
+    ;; Elements should be:
+    ;;   (:mis2//settings settings
+    ;;    :mis2//style style
+    ;;    :mis2//parts parts)
+
+    ;; First pair should be settings key and our "settings".
+    (should (eq       (first  parsed) :mis2//settings))
+    (should (eq       (second parsed) 'symbol0))
+
+    ;; Second pair should be style key and our "style".
+    (should (eq       (third  parsed) :mis2//style))
+    (should (eq       (fourth parsed) 'symbol1))
+
+    ;; Third pair should be parts key and a list
+    ;; (of the non-settings/styles given to parse).
+    (should (eq       (fifth  parsed) :mis2//parts))
+    (should-not (null (sixth  parsed)))
+    (should (listp    (sixth  parsed)))
+    (should (= (length (sixth  parsed)) 3))
+
+    ;; and in our list should be our strings and symbol
+    (should (string= (first (sixth parsed)) "hello %S"))
+    (should (string= (second (sixth parsed)) "there"))
+    (should (eq (third (sixth parsed)) 'symbol2)))
+
+  (mis2-ert/mis2-message/teardown))
+
+
+;;---
+;; Test Case 002
+;;---
+(ert-deftest mis2-ert/message/parse/valid/settings-or-style ()
+  "Test that `mis2//message/parse' pulls inputs out into settings/style/parts
+correctly. These tests are for cases:
+  - that are valid
+  - that have settings and/or style
+"
+  (mis2-ert/mis2-message/setup)
+
+  ;; Test that nothing gives back proper parsed list when no parts.
+  (let ((parsed (mis2//message/parse :settings 'symbol0)))
+    ;; Should have a resulting list that is 6 elements.
+    (should-not (null parsed))
+    (should (listp parsed))
+    (should (= (length parsed) 6))
+
+    ;; Elements should be:
+    ;;   (:mis2//settings settings
+    ;;    :mis2//style style
+    ;;    :mis2//parts parts)
+
+    ;; First pair should be settings key and our "settings".
+    (should (eq       (first  parsed) :mis2//settings))
+    (should (eq       (second parsed) 'symbol0))
+
+    ;; Second pair should be style key and our "style".
+    (should (eq       (third  parsed) :mis2//style))
+    (should (null     (fourth parsed)))
+
+    ;; Third pair should be parts key and a list
+    ;; (of the non-settings/styles given to parse).
+    ;; ...nil in this specific case.
+    (should (eq       (fifth  parsed) :mis2//parts))
+    (should (null     (sixth  parsed))))
+
+
+  ;; Test that nothing gives back proper parsed list when no parts.
+  (let ((parsed (mis2//message/parse :style 'symbol1)))
+    ;; Should have a resulting list that is 6 elements.
+    (should-not (null parsed))
+    (should (listp parsed))
+    (should (= (length parsed) 6))
+
+    ;; Elements should be:
+    ;;   (:mis2//settings settings
+    ;;    :mis2//style style
+    ;;    :mis2//parts parts)
+
+    ;; First pair should be settings key and our "settings".
+    (should (eq       (first  parsed) :mis2//settings))
+    (should (null     (second parsed)))
+
+    ;; Second pair should be style key and our "style".
+    (should (eq       (third  parsed) :mis2//style))
+    (should (eq       (fourth parsed) 'symbol1))
+
+    ;; Third pair should be parts key and a list
+    ;; (of the non-settings/styles given to parse).
+    ;; ...nil in this specific case.
+    (should (eq       (fifth  parsed) :mis2//parts))
+    (should (null     (sixth  parsed))))
+
+
+  ;; Test that parse gives back proper parsed list when no style.
+  (let ((parsed (mis2//message/parse :settings 'symbol0 "hello there")))
+    ;; Should have a resulting list that is 6 elements.
+    (should-not (null parsed))
+    (should (listp parsed))
+    (should (= (length parsed) 6))
+
+    ;; Elements should be:
+    ;;   (:mis2//settings settings
+    ;;    :mis2//style style
+    ;;    :mis2//parts parts)
+
+    ;; First pair should be settings key and our "settings".
+    (should (eq       (first  parsed) :mis2//settings))
+    (should (eq       (second parsed) 'symbol0))
+
+    ;; Second pair should be style key and our "style".
+    (should (eq       (third  parsed) :mis2//style))
+    (should (null     (fourth parsed)))
+
+    ;; Third pair should be parts key and a list
+    ;; (of the non-settings/styles given to parse).
+    (should (eq       (fifth  parsed) :mis2//parts))
+    (should-not (null (sixth  parsed)))
+    (should (listp    (sixth  parsed)))
+    (should (= (length (sixth  parsed)) 1))
+
+    ;; and in our list should be our string
+    (should (string= (first (sixth parsed)) "hello there")))
+
+
+  ;; Test that nothing gives back proper parsed list when no parts.
+  (let ((parsed (mis2//message/parse :style 'symbol1 "hello there")))
+    ;; Should have a resulting list that is 6 elements.
+    (should-not (null parsed))
+    (should (listp parsed))
+    (should (= (length parsed) 6))
+
+    ;; Elements should be:
+    ;;   (:mis2//settings settings
+    ;;    :mis2//style style
+    ;;    :mis2//parts parts)
+
+    ;; First pair should be settings key and our "settings".
+    (should (eq       (first  parsed) :mis2//settings))
+    (should (null     (second parsed)))
+
+    ;; Second pair should be style key and our "style".
+    (should (eq       (third  parsed) :mis2//style))
+    (should (eq       (fourth parsed) 'symbol1))
+
+    ;; Third pair should be parts key and a list
+    ;; (of the non-settings/styles given to parse).
+    (should (eq       (fifth  parsed) :mis2//parts))
+    (should-not (null (sixth  parsed)))
+    (should (listp    (sixth  parsed)))
+    (should (= (length (sixth  parsed)) 1))
+
+    ;; and in our list should be our string
+    (should (string= (first (sixth parsed)) "hello there")))
+
+  (mis2-ert/mis2-message/teardown))
+
+
+;;---
+;; Test Case 003
+;;---
+(ert-deftest mis2-ert/message/parse/invalid/mis-keys-not-first ()
+  "Test that `mis2//message/parse' pulls inputs out into settings/style/parts
+correctly. These tests are for cases:
+  - that are 'invalid' (as far as getting settings/style parsed out)
+  - that 'have' settings and/or style
+
+By 'invalid' and 'have', I mean these are valid mis2 messages, but they have the
+':settings' and/or ':style' keywords in the wrong place(s) and won't get parsed
+out into mis2 settings/style.
+"
+  (mis2-ert/mis2-message/setup)
+
+    ;; Invalid:
+    ;;   (mis2/message \"%S %S\" :settings 'symbol)
+
+  ;; Test that nothing gives back proper parsed list when no parts.
+  (let ((parsed (mis2//message/parse "hello there" :settings 'symbol0)))
+    ;; Should have a resulting list that is 6 elements.
+    (should-not (null parsed))
+    (should (listp parsed))
+    (should (= (length parsed) 6))
+
+    ;; Elements should be:
+    ;;   (:mis2//settings settings
+    ;;    :mis2//style style
+    ;;    :mis2//parts parts)
+
+    ;; First pair should be settings key and nil because ':settings' is not in
+    ;; front of 'parts'.
+    (should (eq       (first  parsed) :mis2//settings))
+    (should (eq       (second parsed) nil))
+
+    ;; Second pair should be style key and nil.
+    (should (eq       (third  parsed) :mis2//style))
+    (should (null     (fourth parsed)))
+
+    ;; Third pair should be parts key and a list
+    ;; (of the non-settings/styles given to parse).
+    ;; ...Everything passed in, in this case.
+    (should (eq       (fifth  parsed) :mis2//parts))
+    (should (listp    (sixth  parsed)))
+    (should (= (length (sixth  parsed)) 3))
+
+    ;; and in our list should be our string
+    (should (string= (first (sixth parsed)) "hello there"))
+    (should (eq (second (sixth parsed)) :settings))
+    (should (eq (third (sixth parsed)) 'symbol0)))
+
+  ;; Test that nothing gives back proper parsed list when no parts.
+  (let ((parsed (mis2//message/parse "%S %S" :style 'symbol0)))
+    ;; Should have a resulting list that is 6 elements.
+    (should-not (null parsed))
+    (should (listp parsed))
+    (should (= (length parsed) 6))
+
+    ;; Elements should be:
+    ;;   (:mis2//settings settings
+    ;;    :mis2//style style
+    ;;    :mis2//parts parts)
+
+    ;; First pair should be settings key and nil because ':settings' is not in
+    ;; front of 'parts'.
+    (should (eq       (first  parsed) :mis2//settings))
+    (should (null     (second parsed)))
+
+    ;; Second pair should be style key and nil.
+    (should (eq       (third  parsed) :mis2//style))
+    (should (null     (fourth parsed)))
+
+    ;; Third pair should be parts key and a list
+    ;; (of the non-settings/styles given to parse).
+    ;; ...Everything passed in, in this case.
+    (should (eq       (fifth  parsed) :mis2//parts))
+    (should (listp    (sixth  parsed)))
+    (should (= (length (sixth  parsed)) 3))
+
+    ;; and in our list should be our string
+    (should (string= (first (sixth parsed))  "%S %S"))
+    (should (eq (second (sixth parsed)) :style))
+    (should (eq (third (sixth parsed)) 'symbol0)))
+
+  (mis2-ert/mis2-message/teardown))
 
 
 ;;------------------------------------------------------------------------------
