@@ -1,12 +1,21 @@
 ;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
+;; Mis2 Naming:
+;;   namespace name:   "mis2"
+;;   public:           mis2/...
+;;   private/internal: mis2//...
+;;
+;; In a function, 'mis2-' vs 'mis2--' refers to a var holding a public-related
+;; symbol-name or value vs one holding a private/internal related symbol-name
+;; or value.
 
 ;;----------------------------------...---...-----------------------------------
 ;;--                   We're all fine here... How are you?                    --
 ;;------------------------------------------------------------------------------
 
 
-(require 'subr-x)
+(require 'dash)
+(require 's)
 
 (require 'mis2-parts)
 
@@ -15,35 +24,18 @@
 ;;------------------------------------------------------------------------------
 
 
-;; 0: Emacs ready in 13.52 seconds with 8 garbage collections.
-;; 2: Emacs ready in 13.34 seconds with 8 garbage collections.
-(defcustom mis2/message/echo-area-timeout '(2 2)
-  "List of 2 numbers for minibuffer echo area timeout.
-
-First element: timeout during initialization or batch type commands.
-Second element: timeout during normal running or for interactive type commands.
-
-See docs for `minibuffer-message-timeout'. This will lexically bind
-`minibuffer-message-timeout' to this value. If not numberp, it seems the first
-message will not clear until a non-`minibuffer-message' hits the *Messages*
-buffer, at which point it and all subsequent `minibuffer-message' messages will
-appear in *Messages* before the new message.
-
-If numberp, this is the number of seconds to display the message
-in the echo area. 0 is a good value for 'normal' `message'
-minibuffer-echo-area functionality."
-  :group 'mis2
-  :type 'boolean)
-
-
 ;;------------------------------------------------------------------------------
 ;; Formatting?
 ;;------------------------------------------------------------------------------
 
-;; Should I keep what I had?
+;; Should I keep what I had in mis1?
+;;  - No. That was one of the reasons for mis2.
 ;; Try to do something super smart?
 ;; Imitate another markup language?
 ;; Be lispy when trying to imitate another markup language?
+
+
+;; §-TODO-§ [2020-03-23]: move this to a comment or docstring...
 
 ;; Formatting ideas?
 (while nil
@@ -61,6 +53,8 @@ minibuffer-echo-area functionality."
                                 ;; leave 3 empty spaces before/after
                                 ;; centered text.
        )))
+  ;; Would have to be smart to tell what's message, what's formatting args,
+  ;; what's settings, what's styling, etc...
 
   ;; Html-ish?
   ;; Terrible on the auto-indenting... :|
@@ -123,7 +117,6 @@ minibuffer-echo-area functionality."
                   :style style
                   "test 2: %S" symbol1))
 
-
   ;; But I need to be able to do multiple styles on one output line...
 
   ;; Html-ish v3?
@@ -161,9 +154,94 @@ minibuffer-echo-area functionality."
     ;; lazy version?
     (mis2/message :settings (mis2/settings :echo t :type :default)
                   :style (mis2/settings/style
-                  message symbol0)
+                  message symbol0))))
+
+
+;;------------------------------------------------------------------------------
+;; Pop settings and style off front of list.
+;;------------------------------------------------------------------------------
+
+(defun mis2//message/parse (&rest args)
+  "Parses args, looking for `:settings' and `:style' keys.
+ - If `:settings' key is in ARGS, the next element is mis2 settings.
+ - If `:style' key is in ARGS, the next element is mis2 style.
+
+These keys must be at the front of the list - before any message args.
+  Examples:
+    Valid:
+      (mis2/message \"hello there\")
+      (mis2/message \"%S\" 'symbol)
+      (mis2/message :settings 'sets :style 'styles \"hello there\")
+      (mis2/message :style 'styles :settings 'sets  \"hello there\")
+      (mis2/message :settings nil :style 'styles \"hello there\")
+      (mis2/message :settings nil \"hello there\")
+      etc.
+    Invalid:
+      (mis2/message \"hello there\" :settings nil)
+      (mis2/message \"%S %S\" :settings 'symbol)
+      etc.
+
+Returns: '(:mis2//settings settings-element
+           :mis2//style    style-element
+           :mis2//parts    remaining-args)
+"
+  ;; Use 'parts' in this function - we'll be changing it and want to look at the
+  ;; latest, not at original args.
+  (let ((parts args)
+        settings style done)
+    (while (not done)
+      ;; We require our keys to go first, so just check the first element.
+      (if (and (keyword (first parts))
+               (memq (first parts) mis2/custom/keywords))
+          ;; Get keyword (if it's our keyword) and val; save to settings/style.
+          (-if-let (mis2--kwd (plist-get (first parts) mis2/custom/keywords))
+              (let ((mis2-val (plist-get (first parts) parts)))
+                ;; settings and style should update their lists, and drop
+                ;; key/value from parts.
+                (cond ((eq mis2--kwd :mis2//settings)
+                       (setq settings mis2-val
+                             parts (-drop 2 parts)))
+                      ((eq mis2--kwd :mis2//style)
+                       (setq style mis2-val
+                             parts (-drop 2 parts)))))
+            ;; Else, didn't find /our/ keyword at front of list. Done parsing.
+            (setq done t))
+
+        ;; Else, didn't find a keyword at front of list. Done parsing.
+        (setq done t)))
+
+    ;; and now return a tuple of parsed args.
+    '(:mis2//settings settings
+      :mis2//style style
+      :mis2//parts parts)))
+
+
+;;------------------------------------------------------------------------------
+;; Pretty Messages in *Messages* Buffer.
+;;------------------------------------------------------------------------------
+
+(defun mis2/message (&rest args)
+  "Build ARGS into a propertized string and output it to the *Messages* buffer.
+
+If `:settings' key is in ARGS, the next element is mis2 settings.
+If `:style' key is in ARGS, the next element is mis2 style.
+These keys must be at the front of the list - before any message args.
+  Examples:
+    Valid:
+      (mis2/message \"hello there\")
+      (mis2/message \"%S\" 'symbol)
+      (mis2/message :settings 'sets :style 'styles \"hello there\")
+      (mis2/message :style 'styles :settings 'sets  \"hello there\")
+      (mis2/message :settings nil :style 'styles \"hello there\")
+      (mis2/message :settings nil \"hello there\")
+      etc.
+    Invalid:
+      (mis2/message \"hello there\" :settings nil)
+      (mis2/message \"%S %S\" :settings 'symbol)
+      etc.
+"
+
     )
-  )
 
 
 ;;------------------------------------------------------------------------------
@@ -254,9 +332,12 @@ If ECHO is non-nil, also echo message to the minibuffer echo area.
         ;; to lose its properties, somehow, probably due to *Messages* stacking
         ;; identical messages.
         (let ((message-log-max nil)
-              (minibuffer-message-timeout (first mis2/message/echo-area-timeout)))
+              (minibuffer-message-timeout
+               (first mis2/message/echo-area-timeout)))
           (minibuffer-message output)))))
 
+(dotimes (i 10)
+  (minibuffer-message ["hi %s"] i))
 ;; (mis2/message/preserve-properties t (propertize "--->" 'face 'underline))
 ;; (mis2/message/preserve-properties nil (propertize "--->" 'face 'underline))
 ;; (mis2/message/preserve-properties t

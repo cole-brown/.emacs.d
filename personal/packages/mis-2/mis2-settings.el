@@ -14,6 +14,40 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Customization: General Settings
+;;------------------------------------------------------------------------------
+
+;; Tested 0 and 2 second timeouts for my init (for Emacs on Windows) and...
+;; No difference. But it does make a difference for interactive commands which
+;; do a lot of messages in sequence.
+(defcustom mis2/custom/echo-area-timeout '(0.1 2)
+  "List of 2 numbers for minibuffer echo area timeout.
+
+First element: timeout for batch type commands.
+Second element: timeout during for interactive type commands.
+
+See docs for `minibuffer-message-timeout'. This will lexically bind
+`minibuffer-message-timeout' to this value. If not numberp, it seems the first
+message will not clear until a non-`minibuffer-message' hits the *Messages*
+buffer, at which point it and all subsequent `minibuffer-message' messages will
+appear in *Messages* before the new message.
+
+If numberp, this is the number of seconds to display the message
+in the echo area. 0 is a good value for 'normal' `message'
+minibuffer-echo-area functionality."
+  :group 'mis2
+  :type 'boolean)
+
+
+(defcustom mis2/custom/keywords '(:settings :mis2//settings
+                                  :style    :mis2//style)
+  "Settings and style keyword symbol names -> internal mis2 symbol.
+"
+  :group 'mis2
+  :type '(list symbol symbol))
+
+
+;;------------------------------------------------------------------------------
 ;; Customization, Consts, Vars, et ceteras...
 ;;------------------------------------------------------------------------------
 
