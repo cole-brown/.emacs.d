@@ -29,6 +29,7 @@
 ;;---
 ;; (ert "mis2-ert/style/.*")
 ;; (ert "mis2-ert/settings/.*")
+;; (ert "mis2-ert/data/.*")
 
 
 ;;------------------------------------------------------------------------------
@@ -1077,6 +1078,52 @@ it is given invalid keys, values, or both.
                              '(:center t))))
 
   (mis2-ert/mis2-settings/teardown))
+
+
+;;------------------------------------------------------------------------------
+;; Test: mis2//data/get
+;;------------------------------------------------------------------------------
+;; (defun mis2//data/get (key plist)
+
+;;---
+;; Test Case 000
+;;---
+(ert-deftest mis2-ert/data/get ()
+  "Test that `mis2/style/set' sets a mis2 style plist correctly when
+it starts off as nil.
+"
+  (mis2-ert/mis2-settings/setup)
+
+  ;; Key exists - return value
+  (should (eq (mis2//settings/get/from-data
+               :echo
+               '(:mis2//settings (:echo t :echo-delay 2) :mis2//testing))
+              t))
+  ;; key DNE - return nil
+  (should (eq (mis2//settings/get/from-data
+               :interactive
+               '(:mis2//settings (:echo t :echo-delay 2) :mis2//testing))
+              nil))
+  ;; request invalid key - error out
+  (should-error (mis2//settings/get/from-data
+                 :center ;; not a settings key
+                 '(:mis2//settings (:echo t :echo-delay 2) :mis2//testing)))
+  ;; no settings in mis2 plist - return nil
+  (should (null (mis2//settings/get/from-data
+                 :echo
+                 '(:mis2//style (:center t) :mis2//testing))))
+
+  ;; some simple tests with in-place mal-formed lists
+  (should-error (mis2//settings/get/from-data
+                 :echo
+                 ;; doesn't pass `mis2//data/plist?' check
+                 '(:mis2//style (:center t))))
+  (should-error (mis2//settings/get/from-data
+                 :echo
+                 ;; is a settings plist instead of a mis2 plist
+                 '(:echo t :echo-delay 2)))
+
+ (mis2-ert/mis2-settings/teardown))
 
 
 ;;------------------------------------------------------------------------------
