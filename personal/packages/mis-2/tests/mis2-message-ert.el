@@ -13,6 +13,7 @@
 ;; None right now...
 
 ;; Test Requirements
+(require 'mis2-themes)
 (require 'mis2-settings)
 (require 'mis2-message)
 
@@ -39,7 +40,7 @@
   "Calls `mis2-ert/setup' for general setup then does setup/reset
 specific to this test suite."
   (mis2-ert/setup/setup)
-  (mis2-ert/setup/reset))
+  (mis2-ert/mis2-message/reset))
 
 
 (defun mis2-ert/mis2-message/teardown ()
@@ -64,14 +65,12 @@ specific to this test suite."
 (defun mis2-ert/mock/mis2//message/output/to-buffer (mis2-msg plist)
   "Save mis2-msg to `mis2-ert/mock/output/to-minibuffer' instead of normal
 functionality."
-  (print "test?")
   (setq mis2-ert/mock/output/to-buffer mis2-msg))
 
 
 (defun mis2-ert/mock/mis2//message/output/to-minibuffer (mis2-msg plist)
   "Save mis2-msg to `mis2-ert/mock/output/to-buffer' instead of normal
 functionality."
-  (print "test mini?")
   (setq mis2-ert/mock/output/to-minibuffer mis2-msg))
 
 
@@ -553,7 +552,7 @@ out into mis2 settings/style.
 ;;   ;; Setup for a message to test.
 ;;   (let ((symbol0 "test")
 ;;         (symbol1 '(thing1 thing2))
-;;         (settings (mis2/settings/set nil :echo t :type :default))
+;;         (settings (mis2/settings/set nil :echo t :theme :default))
 ;;         style)
 
 ;;     ;; Put '(:center nil) into mis/settings plist on symbol 'message.
@@ -597,7 +596,7 @@ out into mis2 settings/style.
 ;;   ;; Html-ish v3?
 ;;   (let ((symbol0 "test")
 ;;         (symbol1 '(thing1 thing2))
-;;         (settings (mis2/settings :echo t :type :default))
+;;         (settings (mis2/settings :echo t :theme :default))
 ;;         style
 ;;         (message "test %S"))
 
@@ -630,7 +629,7 @@ out into mis2 settings/style.
 ;;     ;; §-TODO-§ [2020-03-12]: verify w/ ert `should', `should-not', etc.
 
 ;;     ;; lazy version?
-;;     (mis2/message :settings (mis2/settings :echo t :type :default)
+;;     (mis2/message :settings (mis2/settings :echo t :theme :default)
 ;;                   :style (mis2/style :face :title)
 ;;                   message symbol0)
 

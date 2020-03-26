@@ -36,7 +36,7 @@
   ;;---
   ;; Reset Mis2.el
   ;;---
-  ;; (setq mis2/type->faces nil)
+  ;; (setq mis2/themes nil)
 
   ;;---
   ;; Reset Tests

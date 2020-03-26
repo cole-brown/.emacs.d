@@ -12,6 +12,8 @@
 ;; §-TODO-§ [2020-03-18]: Rename this mis2-configuration.el? mis2-config.el?
 ;; Break into 2 files? Keep all here?
 
+(require 'mis2-themes)
+
 
 ;;------------------------------------------------------------------------------
 ;; Customization: General Settings
@@ -97,7 +99,7 @@ E.g. a :float is always a float, but a :range could be 0 to 100 or -0.5 to 0.5.
 ;;   :echo-delay     nil, numberp (see `minibuffer-message-timeout')
 ;;
 ;; Yes or no?
-;;   :type           mis2/type->faces alist key (keyword symbol or list)
+;;   :theme          mis2/themes alist key (keyword symbol)
 ;;   :face           symbol for desired face
 
 
@@ -118,7 +120,7 @@ Settings:
 (defconst mis2/settings/keys
   '((:echo       :const     (t nil))
     (:echo-delay :range     (0.0 100.0))
-    (:type       :key-alist mis2/type->faces)
+    (:theme      :key-alist mis2/themes)
     (:buffer     :string))
   "10,000 foot view: calls are either intended to be in an interactive manner,
 or as automatic output flung out as soon as it's reached. The main difference is
@@ -128,7 +130,7 @@ Settings:
 ;; §-TODO-§ [2020-03-06]: explain each of these
   :echo
   :echo-delay
-  :type
+  :theme
   :buffer
 ")
 
@@ -144,8 +146,8 @@ Settings:
     (:right  :const (t nil))
 
     ;; Text
-    (:face :key-alist ':type) ;; indirect... got to get :type alist, then get
-                              ;; :face's key out of that.
+    (:face :key-alist ':theme) ;; indirect... got to get :theme alist, then get
+                               ;; :face's key out of that.
 
     ;; Box Model...ish Thing.
     (:margins :list (:string :string))
@@ -252,60 +254,31 @@ Private-Only:
           ;; get settings plist from data plist, then get specific setting.
           (plist-get (mis2//data/get :mis2//settings plist) key)
 
-        (error "Key '%s' is not a known mis2/settings key: %S or %S"
+        (error "settings: Key '%s' is not a known mis2/settings key: %S or %S"
                key mis2/settings/keys mis2/settings/meta/keys))
 
-    (error "Plist is not a mis2 plist. %S %S"
+    (error "settings: Plist is not a mis2 plist. %S %S"
            "Might be a mis2 settings, style, etc sub-list?"
            plist)))
 
+;;------------------------------------------------------------------------------
+;; Style - Getters
+;;------------------------------------------------------------------------------
 
-;; (defun mis2/settings/get (key plist)
-;;   "Get a mis2 setting based off KEY. Setting either comes from USER-SETTINGS
-;; plist or from the appropriate mis2 setting const/var (passed in
-;; as MIS2-SETTING).
-;; "
-;;   ;; Simply return value from user-settings or mis2-setting, preferring
-;;   ;; user-settings. Only complication is if user-settings specifies a nil, so we
-;;   ;; have to check that key is a member of user-settings...
-;;   (if (plist-member user-settings key)
-;;       (plist-get user-settings key)
-;;     mis2-setting))
+(defun mis2//style/get/from-data (key plist)
+  "Get style from a mis2 data PLIST, then get KEY from style.
+"
+  (if (mis2//data/plist? plist)
+      (if (alist-get key mis2/style/keys)
+          ;; get style plist from data plist, then get specific setting.
+          (plist-get (mis2//data/get :mis2//style plist) key)
 
-;; (defun mis2/setting/get-with-default (arg default)
-;;   "Figures out actual ARG by looking at ARG and DEFAULT. It will
-;; be ARG if ARG is non-nil and either symbolp or functionp. Else it
-;; will look at the value of DEFAULT and use either that symbol, or
-;; call that function to get a symbol."
-;;   (cond
-;;    ;; pass through - function
-;;    ((and (not (null arg))
-;;          (functionp arg))
-;;     (funcall arg))
-;;    ;; pass through - symbol
-;;    ((and (not (null arg))
-;;          (symbolp arg))
-;;     ;; if it has a value, use that, else use directly
-;;     (if (symbol-value arg)
-;;           (symbol-value arg)
-;;       arg))
+        (error "style: Key '%s' is not a known mis2/style key: %S"
+               key mis2/style/keys))
 
-;;    ;; default - function to get current
-;;    ((and (not (null default))
-;;          (functionp default))
-;;     (funcall default))
-;;    ;; default - symbol as default
-;;    ((symbolp default)
-;;     ;; if it has a value, use that, else use directly
-;;     (if (and (not (null default))
-;;              (symbol-value default))
-;;           (symbol-value default)
-;;       default))
-
-;;    ;; fallback to something drastic-ish
-;;    (t
-;;     :error)))
-;; ;; (mis2/setting/get-with-default nil mis2/debug/type)
+    (error "style: Plist is not a mis2 plist. %S %S"
+           "Might be a mis2 settings, style, etc sub-list?"
+           plist)))
 
 
 ;;------------------------------------------------------------------------------
@@ -445,9 +418,9 @@ Examples:
 ;; (let ((settings '(:test "an test str"))) (mis2/settings/update settings :echo-delay -1))
 ;; (let ((settings '(:test "an test str"))) (mis2/settings/update settings :echo-delay 101))
 ;; (let ((settings '(:test "an test str"))) (mis2/settings/update settings :echo-delay "jeff"))
-;; (let ((settings '(:test "an test str"))) (mis2/settings/update settings :echo t :type :default))
-;; (let (settings) (mis2/settings/update settings :echo t :type :default) (message "%S" settings))
-;; (let (settings) (macroexpand '(mis2/settings/update settings :echo t :type :default)))
+;; (let ((settings '(:test "an test str"))) (mis2/settings/update settings :echo t :theme :default))
+;; (let (settings) (mis2/settings/update settings :echo t :theme :default) (message "%S" settings))
+;; (let (settings) (macroexpand '(mis2/settings/update settings :echo t :theme :default)))
 
 
 (defun mis2//settings/check-key (key)
@@ -605,8 +578,8 @@ Examples:
 ;;   (:right  :const (t nil))
 ;;
 ;;   ;; Text
-;;   (:face :key-alist :type) ;; indirect... got to get :type alist, then get
-;;                            ;; :face's key out of that.
+;;   (:face :key-alist :theme) ;; indirect... got to get :theme alist, then get
+;;                             ;; :face's key out of that.
 ;;
 ;;   ;; Box Model...ish Thing.
 ;;   (:margins (:list (:string :string)))
@@ -719,7 +692,7 @@ Examples:
      ;; Otherwise, use key-info to check our value.
      ;; We'll have a cdr list like...:
      ;;   '(:const     '(t nil))
-     ;;   '(:key-alist 'mis2/type->faces)
+     ;;   '(:key-alist 'mis2/themes)
      ;;   '(:range     '(0.0 100.0))
      ;;   '(:or (<option> ...))
      ;; and we have to do the check for the type.
@@ -784,71 +757,6 @@ Examples:
            ;; return.
            (t
             info))))
-
-;;         ------------------------------------------------------------
-;;   ------------------------------------------------------------------------
-;;------------------------------------------------------------------------------
-;;                     Version 2, Rough Draft 0 is below.
-;;------------------------------------------------------------------------------
-;;   ------------------------------------------------------------------------
-;;         ------------------------------------------------------------
-
-
-;; (defun mis2/settings/get (key user-settings &optional mis2-setting)
-;;   "Get a mis2 setting based off KEY. Setting either comes from USER-SETTINGS
-;; plist or from the appropriate mis2 setting const/var (passed in
-;; as MIS2-SETTING).
-;; "
-;;   ;; Simply return value from user-settings or mis2-setting, preferring
-;;   ;; user-settings. Only complication is if user-settings specifies a nil, so we
-;;   ;; have to check that key is a member of user-settings...
-;;   (if (plist-member user-settings key)
-;;       (plist-get user-settings key)
-;;     mis2-setting))
-
-;; (defun mis2/setting/get-with-default (arg default)
-;;   "Figures out actual ARG by looking at ARG and DEFAULT. It will
-;; be ARG if ARG is non-nil and either symbolp or functionp. Else it
-;; will look at the value of DEFAULT and use either that symbol, or
-;; call that function to get a symbol."
-;;   (cond
-;;    ;; pass through - function
-;;    ((and (not (null arg))
-;;          (functionp arg))
-;;     (funcall arg))
-;;    ;; pass through - symbol
-;;    ((and (not (null arg))
-;;          (symbolp arg))
-;;     ;; if it has a value, use that, else use directly
-;;     (if (symbol-value arg)
-;;           (symbol-value arg)
-;;       arg))
-
-;;    ;; default - function to get current
-;;    ((and (not (null default))
-;;          (functionp default))
-;;     (funcall default))
-;;    ;; default - symbol as default
-;;    ((symbolp default)
-;;     ;; if it has a value, use that, else use directly
-;;     (if (and (not (null default))
-;;              (symbol-value default))
-;;           (symbol-value default)
-;;       default))
-
-;;    ;; fallback to something drastic-ish
-;;    (t
-;;     :error)))
-;; ;; (mis2/setting/get-with-default nil mis2/debug/type)
-
-;; (defun mis2/settings/put (key value list)
-;;   "Puts VALUE into LIST under KEY, after verifying KEY is a valid mis2 setting.
-;; "
-;;   (if (memq key mis2/settings/keys)
-;;       (plist-put list key value)
-;;     (error "Key %S not a valid mis2/settings key: %S"
-;;            key
-;;            mis2/settings/keys)))
 
 
 ;;------------------------------------------------------------------------------

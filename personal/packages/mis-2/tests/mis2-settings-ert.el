@@ -21,6 +21,7 @@
 ;; None right now...
 
 ;; Test Requirements
+(require 'mis2-themes)
 (require 'mis2-settings)
 
 
@@ -72,11 +73,11 @@ it starts off as nil.
 
     (should (null settings))
     (should (seq-set-equal-p (mis2/settings/update settings
-                                                   :type :default)
-                             '(:type :default)))
+                                                   :theme :default)
+                             '(:theme :default)))
     (should-not (null settings))
     (should (seq-set-equal-p settings
-                             '(:type :default))))
+                             '(:theme :default))))
 
   ;; Multiple settings in one call.
   (let (settings)
@@ -84,11 +85,11 @@ it starts off as nil.
     (should (null settings))
     (should (seq-set-equal-p (mis2/settings/update settings
                                                    :echo t
-                                                   :type :default)
-                             '(:echo t :type :default)))
+                                                   :theme :default)
+                             '(:echo t :theme :default)))
     (should-not (null settings))
     (should (seq-set-equal-p settings
-                             '(:echo t :type :default))))
+                             '(:echo t :theme :default))))
 
   ;; Multiple calls.
   (let (settings)
@@ -102,11 +103,11 @@ it starts off as nil.
     (should (seq-set-equal-p settings
                              '(:echo t)))
     (should (seq-set-equal-p (mis2/settings/update settings
-                                                   :type :default)
-                             '(:echo t :type :default)))
+                                                   :theme :default)
+                             '(:echo t :theme :default)))
     (should-not (null settings))
     (should (seq-set-equal-p settings
-                             '(:echo t :type :default))))
+                             '(:echo t :theme :default))))
 
   (mis2-ert/mis2-settings/teardown))
 
@@ -126,11 +127,11 @@ it starts off as having something.
     (should (seq-set-equal-p settings
                              '(:echo-delay 0.3)))
     (should (seq-set-equal-p (mis2/settings/update settings
-                                                   :type :default)
-                             '(:echo-delay 0.3 :type :default)))
+                                                   :theme :default)
+                             '(:echo-delay 0.3 :theme :default)))
     (should-not (null settings))
     (should (seq-set-equal-p settings
-                             '(:echo-delay 0.3 :type :default))))
+                             '(:echo-delay 0.3 :theme :default))))
 
   ;; Multiple settings in one call.
   (let ((settings '(:echo-delay 0.3)))
@@ -139,11 +140,11 @@ it starts off as having something.
                              '(:echo-delay 0.3)))
     (should (seq-set-equal-p (mis2/settings/update settings
                                                    :echo t
-                                                   :type :default)
-                             '(:echo-delay 0.3 :echo t :type :default)))
+                                                   :theme :default)
+                             '(:echo-delay 0.3 :echo t :theme :default)))
     (should-not (null settings))
     (should (seq-set-equal-p settings
-                             '(:echo-delay 0.3 :echo t :type :default))))
+                             '(:echo-delay 0.3 :echo t :theme :default))))
 
   ;; Multiple calls.
   (let ((settings '(:echo-delay 0.3)))
@@ -158,11 +159,11 @@ it starts off as having something.
     (should (seq-set-equal-p settings
                              '(:echo-delay 0.3 :echo t)))
     (should (seq-set-equal-p (mis2/settings/update settings
-                                                   :type :default)
-                             '(:echo-delay 0.3 :echo t :type :default)))
+                                                   :theme :default)
+                             '(:echo-delay 0.3 :echo t :theme :default)))
     (should-not (null settings))
     (should (seq-set-equal-p settings
-                             '(:echo-delay 0.3 :echo t :type :default))))
+                             '(:echo-delay 0.3 :echo t :theme :default))))
 
   (mis2-ert/mis2-settings/teardown))
 
@@ -183,22 +184,22 @@ just 'updating' the list.
   (let ((settings '(:echo-delay "a string")))
 
     (should (seq-set-equal-p (mis2/settings/update settings
-                                                   :type :default)
-                             '(:echo-delay "a string" :type :default)))
+                                                   :theme :default)
+                             '(:echo-delay "a string" :theme :default)))
     (should-not (null settings))
     (should (seq-set-equal-p settings
-                             '(:echo-delay "a string" :type :default))))
+                             '(:echo-delay "a string" :theme :default))))
 
   ;; Multiple settings in one call.
   (let ((settings '(:echo-delay "a string")))
 
     (should (seq-set-equal-p (mis2/settings/update settings
                                                    :echo t
-                                                   :type :default)
-                             '(:echo-delay "a string" :echo t :type :default)))
+                                                   :theme :default)
+                             '(:echo-delay "a string" :echo t :theme :default)))
     (should-not (null settings))
     (should (seq-set-equal-p settings
-                             '(:echo-delay "a string" :echo t :type :default))))
+                             '(:echo-delay "a string" :echo t :theme :default))))
 
   ;; Multiple calls.
   (let ((settings '(:echo-delay "a string")))
@@ -211,15 +212,15 @@ just 'updating' the list.
     (should (seq-set-equal-p settings
                              '(:echo-delay "a string" :echo t)))
     (should (seq-set-equal-p (mis2/settings/update settings
-                                                   :type :default)
+                                                   :theme :default)
                              '(:echo-delay "a string"
                                            :echo t
-                                           :type :default)))
+                                           :theme :default)))
     (should-not (null settings))
     (should (seq-set-equal-p settings
                              '(:echo-delay "a string"
                                            :echo t
-                                           :type :default))))
+                                           :theme :default))))
   (mis2-ert/mis2-settings/teardown))
 
 
@@ -245,7 +246,7 @@ it is given invalid keys, values, or both.
 
     (should (null settings))
     (should-error (mis2/settings/update settings
-                                        :type :illegal-value))
+                                        :theme :illegal-value))
     (should (null settings)))
 
 
@@ -265,7 +266,7 @@ it is given invalid keys, values, or both.
     (should (seq-set-equal-p settings
                              '(:echo-delay 0.3)))
     (should-error (mis2/settings/update settings
-                                        :type :illegal-value))
+                                        :theme :illegal-value))
     (should (seq-set-equal-p settings
                              '(:echo-delay 0.3))))
 
@@ -291,8 +292,8 @@ it starts off as nil.
 
     (should (null settings))
     (should (seq-set-equal-p (mis2/settings/set settings
-                                                :type :default)
-                             '(:type :default)))
+                                                :theme :default)
+                             '(:theme :default)))
     (should (null settings))) ;; settings should not be changed by set.
 
   ;; Multiple settings in one call.
@@ -301,8 +302,8 @@ it starts off as nil.
     (should (null settings))
     (should (seq-set-equal-p (mis2/settings/set settings
                                                 :echo t
-                                                :type :default)
-                             '(:echo t :type :default)))
+                                                :theme :default)
+                             '(:echo t :theme :default)))
     (should (null settings)))
 
   (mis2-ert/mis2-settings/teardown))
@@ -323,8 +324,8 @@ it starts off as having something.
     (should (seq-set-equal-p settings
                              '(:echo-delay 0.3)))
     (should (seq-set-equal-p (mis2/settings/set settings
-                                                :type :default)
-                             '(:echo-delay 0.3 :type :default)))
+                                                :theme :default)
+                             '(:echo-delay 0.3 :theme :default)))
     ;; should still be unchanged
     (should (seq-set-equal-p settings
                              '(:echo-delay 0.3))))
@@ -336,8 +337,8 @@ it starts off as having something.
                              '(:echo-delay 0.3)))
     (should (seq-set-equal-p (mis2/settings/set settings
                                                 :echo t
-                                                :type :default)
-                             '(:echo-delay 0.3 :echo t :type :default)))
+                                                :theme :default)
+                             '(:echo-delay 0.3 :echo t :theme :default)))
     ;; should still be unchanged
     (should (seq-set-equal-p settings
                              '(:echo-delay 0.3))))
@@ -356,8 +357,8 @@ it starts off as having something.
 
     ;; 2nd call
     (should (seq-set-equal-p (mis2/settings/set settings
-                                                :type :default)
-                             '(:echo-delay 0.3 :type :default)))
+                                                :theme :default)
+                             '(:echo-delay 0.3 :theme :default)))
     ;; should still be unchanged
     (should (seq-set-equal-p settings
                              '(:echo-delay 0.3))))
@@ -381,8 +382,8 @@ just 'updating' the list.
   (let ((settings '(:echo-delay "a string")))
 
     (should (seq-set-equal-p (mis2/settings/set settings
-                                                :type :default)
-                             '(:echo-delay "a string" :type :default)))
+                                                :theme :default)
+                             '(:echo-delay "a string" :theme :default)))
     (should-not (null settings))
     ;; unchanged
     (should (seq-set-equal-p settings
@@ -393,8 +394,8 @@ just 'updating' the list.
 
     (should (seq-set-equal-p (mis2/settings/set settings
                                                 :echo t
-                                                :type :default)
-                             '(:echo-delay "a string" :echo t :type :default)))
+                                                :theme :default)
+                             '(:echo-delay "a string" :echo t :theme :default)))
     (should-not (null settings))
     ;; unchanged
     (should (seq-set-equal-p settings
@@ -412,9 +413,9 @@ just 'updating' the list.
     (should (seq-set-equal-p settings
                              '(:echo-delay "a string")))
     (should (seq-set-equal-p (mis2/settings/set settings
-                                                :type :default)
+                                                :theme :default)
                              '(:echo-delay "a string"
-                                           :type :default)))
+                                           :theme :default)))
     (should-not (null settings))
     ;; unchanged
     (should (seq-set-equal-p settings
@@ -444,7 +445,7 @@ it is given invalid keys, values, or both.
 
     (should (null settings))
     (should-error (mis2/settings/set settings
-                                     :type :illegal-value))
+                                     :theme :illegal-value))
     (should (null settings)))
 
 
@@ -464,7 +465,7 @@ it is given invalid keys, values, or both.
     (should (seq-set-equal-p settings
                              '(:echo-delay 0.3)))
     (should-error (mis2/settings/set settings
-                                     :type :illegal-value))
+                                     :theme :illegal-value))
     (should (seq-set-equal-p settings
                              '(:echo-delay 0.3))))
 
@@ -480,7 +481,7 @@ it is given invalid keys, values, or both.
 ;; Test Case 000
 ;;---
 (ert-deftest mis2-ert/style/check-key/basic-validity ()
-  "Test that `mis2//style/check-key' validates basic types correctly
+  "Test that `mis2//style/check-key' validates basic themes correctly
 (string, int, etc).
 "
   (mis2-ert/mis2-settings/setup)
@@ -525,7 +526,7 @@ i.e. Check that it can do :const, :key-alist, :or etc.
   (should (seq-set-equal-p (mis2//style/check-key :center)
                            '(:const (t nil))))
   (should (seq-set-equal-p (mis2//style/check-key :face)
-                           '(:key-alist ':type)))
+                           '(:key-alist ':theme)))
   (should (seq-set-equal-p (mis2//style/check-key :margins)
                            '(:list (:string :string))))
   (should (seq-set-equal-p
