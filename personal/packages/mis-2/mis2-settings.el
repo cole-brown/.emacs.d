@@ -121,6 +121,7 @@ Settings:
   '((:echo       :const     (t nil))
     (:echo-delay :range     (0.0 100.0))
     (:theme      :key-alist mis2/themes)
+    (:line-width :integer)
     (:buffer     :string))
   "10,000 foot view: calls are either intended to be in an interactive manner,
 or as automatic output flung out as soon as it's reached. The main difference is
@@ -148,6 +149,8 @@ Settings:
     ;; Text
     (:face :key-alist ':theme) ;; indirect... got to get :theme alist, then get
                                ;; :face's key out of that.
+
+    (:indent :integer)
 
     ;; Box Model...ish Thing.
     (:margins :list (:string :string))

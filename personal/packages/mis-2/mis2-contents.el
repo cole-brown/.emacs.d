@@ -16,7 +16,9 @@
 ;; Consts & Vars
 ;;------------------------------------------------------------------------------
 
-
+(defconst mis2//align/keys '(:center :right :left)
+  "Alignment keywords. Will be in the :mis2//style list if specified. Defaults
+to left-aligned.")
 
 
 ;;------------------------------------------------------------------------------
@@ -85,6 +87,9 @@ If the mis2 plist is:
 
 We should be passed CONTENTS of:
  '(\"Hello, %S\" \"World\")
+
+Final sink for:
+  :mis2//contents
 "
   ;; We'll either format the thing into a string (whatever it is), or format
   ;; all the things with the assumption that the first one is a formatting
@@ -106,10 +111,14 @@ We should be passed CONTENTS of:
     ))
 
 
-(defun mis2//contents/build/propertize (message plist)
-  "Given MESSAGE and mis2 PLIST, and assuming there are both a `:mis2//style'
-keyword in PLIST and a `:face' key in the style list, propertize the MESSAGE
+(defun mis2//contents/build/propertize (string plist)
+  "Given STRING and mis2 PLIST, and assuming there are both a `:mis2//style'
+keyword in PLIST and a `:face' key in the style list, propertize the STRING
 with the face.
+
+Final sink for:
+  :mis2//settings -- :theme
+  :mis2//style    -- :face
 "
   ;; Propertize it if we find a face. So let's look for that face. First, check
   ;; what theme we're using. Default to... :default if none supplied.
@@ -122,11 +131,115 @@ with the face.
             ;; Get actual emacs face from the theme faces.
             (face-val (plist-get theme-faces mis2-face)))
 
-      ;; Found a defined face, so set `face' property of message string to our
+      ;; Found a defined face, so set `face' property of string to our
       ;; face and return that.
-      (propertize message 'face face-val)
-    ;; No face; return the unchanged message string.
-    message))
+      (propertize string 'face face-val)
+    ;; No face; return the unchanged string.
+    string))
+
+
+;;------------------------------------------------------------------------------
+;;                                                                  Alignment!
+;;------------------------------------------------------------------------------
+
+(defun mis2//contents/line/reserved-amount (plist)
+  "Look in PLIST for any settings/style that would reduce the
+amount of characters available to be used by alignment.
+
+E.g. if we're aligning to center on 80 columns, but need 10 for
+indentation, margins, etc, then we should center the string on 80
+still, but reserve 6 on the right and 4 on the left (to make up
+numbers), so a 70 width string should be returned.
+
+This function just says that those 6 and 4 are reserved.
+
+Returns tuple of '(left-reserved-chars right-reserved-chars).
+For our example: '(6 4)
+
+Pass-through sink for style:
+  :indent
+  :margins
+  :borders
+"
+  (let ((indent  (or (mis2//style/get/from-data :indent plist)
+                     0))
+        (margins (mis2//style/get/from-data :margins plist))
+        (borders (mis2//style/get/from-data :borders plist)))
+
+    ;; Reserved tuple of (left right) amounts.
+    (list
+     (+ indent
+        (length (first  margins))
+        (length (first  borders)))
+     (+ (length (second margins))
+        (length (second borders))))))
+
+
+(defun mis2//contents/align (string plist)
+  "Given STRING and mis2 PLIST, and assuming there are both a
+`:mis2//style' keyword in PLIST and an alignment keyword in the
+style list, align the STRING based on line width.
+
+Final sink for:
+  :mis2//settings -- :line-width
+  :mis2//style    -- :center
+                  -- :left
+                  -- :right
+"
+  ;; Look for width (optional) and an alignment keyword.
+  (let ((align-center (mis2//style/get/from-data :center plist))
+        (align-right  (mis2//style/get/from-data :right  plist))
+        (line-width   (or (mis2//settings/get/from-data :line-width plist)
+                          ;; fill-column or (current-fill-column)?
+                          fill-column))
+        ;; `line-width' is the full width desired - but we may not be allowed to
+        ;; use all that. We might need to reserve some space for e.g. boxing to
+        ;; draw characters before/after our aligned string.
+        (reserved (mis2//contents/line/reserved-amount plist)))
+
+    ;; Call a specific aligner or no-op.
+    (cond (align-center
+           (mis2//contents/align/center string line-width reserved))
+          (align-right
+           (mis2//contents/align/right string line-width reserved))
+          (t
+           ;; If we don't need to center or right align, we're done; it's left
+           ;; aligned already.
+           string))))
+
+
+(defun mis2//contents/align/center (string width reserved)
+  "Align STRING to center of WIDTH. WIDTH should be what was specified in
+:mis2//settings or the default for the buffer.
+
+RESERVED should be returned value from `mis2//contents/line/reserved-amount'.
+"
+  ;; Center on the full width for true center.
+  (let* ((centered (s-center width string))
+         (len (length centered)))
+
+    ;; Chop down string starting after left-reserved chars, and ending before
+    ;; right-reserved chars.
+    (substring centered
+               (first reserved)
+               (- len (second reserved)))))
+
+
+(defun mis2//contents/align/right (string width reserved)
+  "Align STRING to the right of WIDTH. WIDTH should be what was specified in
+:mis2//settings or the default for the buffer.
+
+RESERVED should be returned value from `mis2//contents/line/reserved-amount'.
+"
+  ;; Right-align. Align only to right-most space we're allow in, so remove
+  ;; right-side reserved amount first. While we're at it, remove left side
+  ;; reserved too - won't affect looks to do the math first then build the
+  ;; string (unlike aligning to center).
+  (let ((len (- width
+                (first reserved)
+                (second reserved))))
+    ;; Now all we have to do is pad out by our calculated length.
+    (s-pad-left len " " string)))
 
 
 ;;------------------------------------------------------------------------------

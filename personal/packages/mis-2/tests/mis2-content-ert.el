@@ -32,6 +32,11 @@
   "mis2-ert/mis2-contents' backup and restore helpers store/retrieve a copy of
 `mis2/themes' here.")
 
+(defvar-local mis2-ert/contents/fill-column/storage fill-column
+  "mis2-ert/mis2-contents' backup and restore helpers store/retrieve a copy of
+`mis2/themes' here.")
+
+
 
 ;;------------------------------------------------------------------------------
 ;; Setup & Teardown Helpers
@@ -40,12 +45,16 @@
 (defun mis2-ert/mis2-contents/setup ()
   "Calls `mis2-ert/setup' for general setup then does setup/reset
 specific to this test suite."
+  ;; save fill column
+  (setq mis2-ert/contents/fill-column/storage fill-column)
   (mis2-ert/setup/setup))
 
 
 (defun mis2-ert/mis2-contents/teardown ()
   "Calls `mis2-ert/teardown' for general setup then does setup
 specific to this test suite."
+  ;; reset fill column
+  (setq fill-column mis2-ert/contents/fill-column/storage)
   (mis2-ert/setup/teardown))
 
 
@@ -125,7 +134,6 @@ from contents.
                    "Hello, World"))
 
   (mis2-ert/mis2-contents/teardown))
-
 
 
 ;;------------------------------------------------------------------------------
@@ -240,6 +248,305 @@ when there is a face to use.
   (should (seq-set-equal-p mis2/themes mis2-ert/contents/themes/storage))
 
   (mis2-ert/mis2-contents/teardown))
+
+
+;;------------------------------------------------------------------------------
+;; Test: mis2//contents/align
+;;------------------------------------------------------------------------------
+;; (defun mis2//contents/align (string plist)
+
+;;---
+;; Test Case 000
+;;---
+(ert-deftest mis2-ert/contents/align/left ()
+  "Test that `mis2//contents/align' can return a properly aligned string
+when no or `:left' alignment is supplied.
+"
+  (mis2-ert/mis2-contents/setup)
+
+  ;; No mis2 plist at all is an error.
+  (should-error (mis2//contents/align "Hello, World." nil))
+
+  ;; Simple string just gets returned as-is.
+  ;; Using simplest 'valid' mis2 plist we can...
+  (should (string= (mis2//contents/align "Hello, World."
+                                         '(:mis2//testing))
+                   "Hello, World."))
+
+  ;; With :line-width. Shouldn't affect left-aligned, but is related to
+  ;; alignment.
+  (should (string= (mis2//contents/align "Hello, World."
+                                         '(:mis2//settings (:line-width 40)
+                                           :mis2//testing))
+                   "Hello, World."))
+
+  ;; With :left, no :line-width.
+  (should (string= (mis2//contents/align "Hello, World."
+                                         '(:mis2//settings (:left t)
+                                           :mis2//testing))
+                   "Hello, World."))
+
+  ;; With :left and :line-width.
+  (should (string= (mis2//contents/align "Hello, World."
+                                         '(:mis2//settings (:left t
+                                                            :line-width 40)
+                                           :mis2//testing))
+                   "Hello, World."))
+
+  (mis2-ert/mis2-contents/teardown))
+
+
+;;---
+;; Test Case 001
+;;---
+(ert-deftest mis2-ert/contents/align/center/no-reserve ()
+  "Test that `mis2//contents/align' can return a properly aligned string
+when `:center' alignment is supplied.
+"
+  (mis2-ert/mis2-contents/setup)
+
+  ;; Give ourselves a known line-width.
+  (let ((line-width 80)
+        (string-odd "Hello, World.") ;; odd number of chararcters to center
+        (string-even "Hello, Jeff.")) ;; even number of chararcters to center
+
+    ;; :center? Nil means no.
+    (should (string= (mis2//contents/align string-odd
+                                           '(:mis2//style (:center nil)
+                                             :mis2//testing))
+                     string-odd))
+
+    ;; Actually centered. No left/right reserved.
+    (should (string= (mis2//contents/align string-odd
+                                           '(:mis2//style (:center t)
+                                             :mis2//testing))
+                     ;; extra space is put in front of string
+                     (concat
+                      (make-string 34 ?\s)
+                      string-odd
+                      (make-string 33 ?\s))))
+    (should (string= (mis2//contents/align string-even
+                                           '(:mis2//style (:center t)
+                                             :mis2//testing))
+                     ;; extra space is put in front of string
+                     (concat
+                      (make-string 34 ?\s)
+                      string-even
+                      (make-string 34 ?\s))))
+
+    ;; Actually centered. No left/right reserved. Line width override.
+    (should (string= (mis2//contents/align string-odd
+                                           '(:mis2//settings (:line-width 40)
+                                             :mis2//style (:center t)
+                                             :mis2//testing))
+                     ;; extra space is put in front of string
+                     (concat
+                      (make-string 14 ?\s)
+                      string-odd
+                      (make-string 13 ?\s))))
+    (should (string= (mis2//contents/align string-even
+                                           '(:mis2//settings (:line-width 40)
+                                             :mis2//style (:center t)
+                                             :mis2//testing))
+                     ;; extra space is put in front of string
+                     (concat
+                      (make-string 14 ?\s)
+                      string-even
+                      (make-string 14 ?\s)))))
+
+  (mis2-ert/mis2-contents/teardown))
+
+
+;;---
+;; Test Case 002
+;;---
+(ert-deftest mis2-ert/contents/align/center/with-reserve ()
+  "Test that `mis2//contents/align' can return a properly aligned string
+when `:center' alignment is supplied and a reserve exists.
+"
+  (mis2-ert/mis2-contents/setup)
+
+  ;; Give ourselves a known line-width.
+  (let ((line-width 80)
+        (string-odd "Hello, World.") ;; odd number of chararcters to center
+        (string-even "Hello, Jeff.")) ;; even number of chararcters to center
+
+    ;; Actually centered. No left/right reserved.
+    (should (string= (mis2//contents/align string-odd
+                                           '(:mis2//style (:center t
+                                                           :margins ("xx" "xx"))
+                                             :mis2//testing))
+                     ;; Extra space is put in front of string. 2 chars knocked
+                     ;; off front & back compared to no-reserved case.
+                     (concat
+                      (make-string 32 ?\s)
+                      string-odd
+                      (make-string 31 ?\s))))
+
+    (should (string= (mis2//contents/align string-even
+                                           '(:mis2//style (:center t
+                                                           :borders ("yy" "yy"))
+                                             :mis2//testing))
+                     (concat
+                      (make-string 32 ?\s)
+                      string-even
+                      (make-string 32 ?\s))))
+
+    ;; Asymmetrical reserved.
+    (should (string= (mis2//contents/align string-even
+                                           '(:mis2//style (:center t
+                                                           :margins (nil "xx")
+                                                           :borders ("yy" "yy"))
+                                             :mis2//testing))
+                     ;; Less at end of string due to asymmetry.
+                     (concat
+                      (make-string 32 ?\s)
+                      string-even
+                      (make-string 30 ?\s))))
+
+    ;; Asymmetrical reserved.
+    (should (string= (mis2//contents/align string-even
+                                           '(:mis2//style (:center t
+                                                           :margins ("xx" nil)
+                                                           :borders ("yy" "yy"))
+                                             :mis2//testing))
+                     ;; Less at beginning of string due to asymmetry.
+                     (concat
+                      (make-string 30 ?\s)
+                      string-even
+                      (make-string 32 ?\s)))))
+
+  (mis2-ert/mis2-contents/teardown))
+
+
+;;---
+;; Test Case 003
+;;---
+(ert-deftest mis2-ert/contents/align/right/no-reserve ()
+  "Test that `mis2//contents/align' can return a properly aligned string
+when `:right' alignment is supplied.
+"
+  (mis2-ert/mis2-contents/setup)
+
+  ;; Give ourselves a known line-width.
+  (let ((line-width 80)
+        (string-odd "Hello, World.") ;; odd number of chararcters
+        (string-even "Hello, Jeff.")) ;; even number of chararcters
+
+    ;; :right? Nil means no.
+    (should (string= (mis2//contents/align string-odd
+                                           '(:mis2//style (:right nil)
+                                             :mis2//testing))
+                     string-odd))
+
+    ;; Actually right-aligned. No left/right reserved.
+    (should (string= (mis2//contents/align string-odd
+                                           '(:mis2//style (:right t)
+                                             :mis2//testing))
+                     ;; extra spaces are all in front of string
+                     (concat
+                      (make-string (- line-width (length string-odd)) ?\s)
+                      string-odd)))
+
+    (should (string= (mis2//contents/align string-even
+                                           '(:mis2//style (:right t)
+                                             :mis2//testing))
+                     ;; extra space is put in front of string
+                     (concat
+                      (make-string (- line-width (length string-even)) ?\s)
+                      string-even)))
+
+    ;; Actually right-aligned. No left/right reserved. Line width override.
+    (should (string= (mis2//contents/align string-odd
+                                           '(:mis2//settings (:line-width 40)
+                                             :mis2//style (:right t)
+                                             :mis2//testing))
+                     ;; extra spaces are all in front of string
+                     (concat
+                      (make-string (- 40 (length string-odd)) ?\s)
+                      string-odd)))
+
+    (should (string= (mis2//contents/align string-even
+                                           '(:mis2//settings (:line-width 40)
+                                             :mis2//style (:right t)
+                                             :mis2//testing))
+                     ;; extra space is put in front of string
+                     (concat
+                      (make-string (- 40 (length string-even)) ?\s)
+                      string-even))))
+
+  (mis2-ert/mis2-contents/teardown))
+
+
+;;---
+;; Test Case 004
+;;---
+(ert-deftest mis2-ert/contents/align/right/with-reserve ()
+  "Test that `mis2//contents/align' can return a properly aligned string
+when `:right' alignment is supplied and a reserve exists.
+"
+  (mis2-ert/mis2-contents/setup)
+
+  ;; Give ourselves a known line-width.
+  (let ((line-width 80)
+        (string-odd "Hello, World.") ;; odd number of chararcters to right
+        (string-even "Hello, Jeff.")) ;; even number of chararcters to right
+
+    ;; Actually right-aligned. No left/right reserved.
+    (should (string= (mis2//contents/align string-odd
+                                           '(:mis2//style (:right t
+                                                           :margins ("xx" "xx"))
+                                             :mis2//testing))
+                     (concat
+                      (make-string (- line-width (length string-odd)
+                                      ;; minus both margins too
+                                      2 2)
+                                   ?\s)
+                      string-odd)))
+
+    (should (string= (mis2//contents/align string-even
+                                           '(:mis2//style (:right t
+                                                           :borders ("yy" "yy"))
+                                             :mis2//testing))
+                     (concat
+                      (make-string (- line-width (length string-even)
+                                      ;; minus both margins too
+                                      2 2)
+                                   ?\s)
+                      string-even)))
+
+    ;; Asymmetrical reserved.
+    (should (string= (mis2//contents/align string-even
+                                           '(:mis2//style (:right t
+                                                           :margins (nil "xx")
+                                                           :borders ("yy" "yy"))
+                                             :mis2//testing))
+                     (concat
+                      (make-string (- line-width (length string-even)
+                                      ;; Minus asymmetrical margins.
+                                      0 2
+                                      ;; Minus borders.
+                                      2 2)
+                                   ?\s)
+                      string-even)))
+
+    ;; Asymmetrical reserved.
+    (should (string= (mis2//contents/align string-even
+                                           '(:mis2//style (:right t
+                                                           :margins ("xx" nil)
+                                                           :borders ("yy" "yy"))
+                                             :mis2//testing))
+                     (concat
+                      (make-string (- line-width (length string-even)
+                                      ;; Minus asymmetrical margins.
+                                      2 0
+                                      ;; Minus borders.
+                                      2 2)
+                                   ?\s)
+                      string-even))))
+
+  (mis2-ert/mis2-contents/teardown))
+
 
 
 ;;------------------------------------------------------------------------------
