@@ -63,9 +63,9 @@ Pipeline for sink of:
         message)
 
     ;; Second: Propertize the string with the styled face. If there is one.
-    (setq message (mis2//contents/build/propertize
+    (setq message (mis2//contents/string/propertize
                    ;; First up: Build contents string.
-                   (mis2//contents/build/string contents)))
+                   (mis2//contents/string/build contents)))
 
     ;; Third thing: Format the string in the line? e.g. :center
     ;; §-TODO-§ [2020-03-25]: this
@@ -79,7 +79,7 @@ Pipeline for sink of:
 ;; Build... specific parts of it. And be careful. The super and boss are here...
 ;;------------------------------------------------------------------------------
 
-(defun mis2//contents/build/string (contents)
+(defun mis2//contents/string/build (contents)
   "Builds a formatted string from CONTENTS (which is a list).
 
 If the mis2 plist is:
@@ -111,7 +111,7 @@ Final sink for:
     ))
 
 
-(defun mis2//contents/build/propertize (string plist)
+(defun mis2//contents/string/propertize (string plist)
   "Given STRING and mis2 PLIST, and assuming there are both a `:mis2//style'
 keyword in PLIST and a `:face' key in the style list, propertize the STRING
 with the face.

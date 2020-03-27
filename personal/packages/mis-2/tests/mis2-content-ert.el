@@ -76,33 +76,33 @@ specific to this test suite."
 
 
 ;;------------------------------------------------------------------------------
-;; Test: mis2//contents/build/string
+;; Test: mis2//contents/string/build
 ;;------------------------------------------------------------------------------
-;; (defun mis2//contents/build/string (contents)
+;; (defun mis2//contents/string/build (contents)
 
 ;;---
 ;; Test Case 000
 ;;---
 (ert-deftest mis2-ert/contents/build/string/simple ()
-  "Test that `mis2//contents/build/string' can build & return a simple string
+  "Test that `mis2//contents/string/build' can build & return a simple string
 from contents.
 "
   (mis2-ert/mis2-contents/setup)
 
   ;; Simple string just gets returned as-is.
-  (should (string= (mis2//contents/build/string '("Hello, World."))
+  (should (string= (mis2//contents/string/build '("Hello, World."))
                    "Hello, World."))
 
   ;; Single other thing gets formatted.
-  (should (string= (mis2//contents/build/string '(:face))
+  (should (string= (mis2//contents/string/build '(:face))
                    ":face"))
 
   ;; Nothing in; nothing out (but it's a string now!).
-  (should (string= (mis2//contents/build/string nil)
+  (should (string= (mis2//contents/string/build nil)
                    "nil"))
 
   ;; Single other thing gets formatted.
-  (should (string= (mis2//contents/build/string '((1 2 3 4 5)))
+  (should (string= (mis2//contents/string/build '((1 2 3 4 5)))
                    "(1 2 3 4 5)"))
 
   (mis2-ert/mis2-contents/teardown))
@@ -112,23 +112,23 @@ from contents.
 ;; Test Case 001
 ;;---
 (ert-deftest mis2-ert/contents/build/string/formatter ()
-  "Test that `mis2//contents/build/string' can build & return a simple string
+  "Test that `mis2//contents/string/build' can build & return a simple string
 from contents.
 "
   (mis2-ert/mis2-contents/setup)
 
   ;; More than one thing in contents means first thing is formatting string.
-  (should (string= (mis2//contents/build/string '("Hello, %s" "World."))
+  (should (string= (mis2//contents/string/build '("Hello, %s" "World."))
                    "Hello, World."))
 
   ;; Bad contents? No formatter string...
-  (should-error (mis2//contents/build/string '(:keyword valueword)))
+  (should-error (mis2//contents/string/build '(:keyword valueword)))
 
   ;; Null formatter - also bad.
-  (should-error (mis2//contents/build/string '(nil "hello")))
+  (should-error (mis2//contents/string/build '(nil "hello")))
 
   ;; more extra args than percents in formatter
-  (should (string= (mis2//contents/build/string
+  (should (string= (mis2//contents/string/build
                     '("Hello, %s" "World" "," "my name is..."))
                    ;; means we just don't get the rest.
                    "Hello, World"))
@@ -137,42 +137,42 @@ from contents.
 
 
 ;;------------------------------------------------------------------------------
-;; Test: mis2//contents/build/propertize
+;; Test: mis2//contents/string/propertize
 ;;------------------------------------------------------------------------------
-;; (defun mis2//contents/build/propertize (message plist)
+;; (defun mis2//contents/string/propertize (message plist)
 
 ;;---
 ;; Test Case 000
 ;;---
 (ert-deftest mis2-ert/contents/build/propertize/nothing ()
-  "Test that `mis2//contents/build/propertize' can return an unaltered string
+  "Test that `mis2//contents/string/propertize' can return an unaltered string
 when no properties are there to add.
 "
   (mis2-ert/mis2-contents/setup)
 
   ;; No mis2 plist at all is an error.
-  (should-error (mis2//contents/build/propertize "Hello, World." nil))
+  (should-error (mis2//contents/string/propertize "Hello, World." nil))
 
   ;; Simple string just gets returned as-is.
   ;; Using simplest 'valid' mis2 plist we can...
-  (should (string= (mis2//contents/build/propertize "Hello, World."
-                                                    '(:mis2//testing))
+  (should (string= (mis2//contents/string/propertize "Hello, World."
+                                                     '(:mis2//testing))
                    "Hello, World."))
 
   ;; Have a mis2 plist without `:face' in style.
   (let ((plist '(:mis2//settings (:theme :default)
                  :mis2//style (:margins (">" "<"))
                  :mis2//testing)))
-    (should (string= (mis2//contents/build/propertize "Hello, World."
-                                                      plist)
+    (should (string= (mis2//contents/string/propertize "Hello, World."
+                                                       plist)
                      "Hello, World.")))
 
   ;; Have a mis2 plist without `:theme' or `:face' in style.
   (let ((plist '(:mis2//settings nil
                  :mis2//style (:margins (">" "<"))
                  :mis2//testing)))
-    (should (string= (mis2//contents/build/propertize "Hello, World."
-                                                      plist)
+    (should (string= (mis2//contents/string/propertize "Hello, World."
+                                                       plist)
                      "Hello, World.")))
 
   (mis2-ert/mis2-contents/teardown))
@@ -182,7 +182,7 @@ when no properties are there to add.
 ;; Test Case 001
 ;;---
 (ert-deftest mis2-ert/contents/build/propertize/face ()
-  "Test that `mis2//contents/build/propertize' can return a propertized string
+  "Test that `mis2//contents/string/propertize' can return a propertized string
 when there is a face to use.
 "
   (mis2-ert/mis2-contents/setup)
@@ -200,8 +200,8 @@ when there is a face to use.
                  :mis2//testing))
         (expected-output "Hello, World.")
         message)
-    (setq message (mis2//contents/build/propertize "Hello, World."
-                                                   plist))
+    (setq message (mis2//contents/string/propertize "Hello, World."
+                                                    plist))
     ;; Should have our string as expected.
     (should (string= message expected-output))
 
@@ -216,8 +216,8 @@ when there is a face to use.
                  :mis2//testing))
         (expected-output "Hello, World.")
         message)
-    (setq message (mis2//contents/build/propertize "Hello, World."
-                                                   plist))
+    (setq message (mis2//contents/string/propertize "Hello, World."
+                                                    plist))
     ;; Should have our string as expected.
     (should (string= message expected-output))
 
@@ -232,8 +232,8 @@ when there is a face to use.
                  :mis2//testing))
         (expected-output "Hello, World.")
         message)
-    (setq message (mis2//contents/build/propertize "Hello, World."
-                                                   plist))
+    (setq message (mis2//contents/string/propertize "Hello, World."
+                                                    plist))
     ;; Should have our string as expected.
     (should (string= message expected-output))
 
@@ -546,7 +546,6 @@ when `:right' alignment is supplied and a reserve exists.
                       string-even))))
 
   (mis2-ert/mis2-contents/teardown))
-
 
 
 ;;------------------------------------------------------------------------------
