@@ -186,14 +186,29 @@ current buffer.
 
 
 (defun mis2//contents/line/indent (string plist)
-  "Indents STRING based on `:indent' style setting in PLIST.
+  "Makes indent string for STRING based on `:indent' style setting in PLIST.
 "
-  (if-let ((indent (mis2//style/get/from-data :indent plist)))
+  (when-let ((indent (mis2//style/get/from-data :indent plist)))
       ;; Have indent - add that to front of str.
-      (concat (make-string indent ?\s)
-              string)
-    ;; No indent; no-op.
-    string))
+      (mis2//contents/line/update plist
+                                  :indent (make-string indent ?\s)))
+
+  string)
+
+
+(defmacro mis2//contents/line/update (plist key value)
+  "Given mis2 PLIST, get `:mis2//line' key, and update /that/ plist with
+KEY & VALUE.
+"
+  `(let (;;(,temp-plist ,plist)
+         ;; Get out our line plist from mis2 plist.
+         (line (mis2//data/get :mis2//line ,plist)))
+     ;; Update mis2 plist with newest line plist.
+     (setq ,plist
+           (plist-put ,plist
+                      :mis2//line
+                      ;; Add our key/value to line plist.
+                      (plist-put line ,key ,value)))))
 
 
 ;;------------------------------------------------------------------------------
@@ -315,11 +330,10 @@ Pipeline for sources of:
   ;; Our padding step right now is just to build `:pad' and `:fill' for easy
   ;; completion of line later.
 
-  (-> string ;; Thread string through all these in order as 1st parameter.
-      (mis2//contents/box/padding plist)
-      (mis2//contents/box/borders plist)
-      (mis2//contents/box/margins plist)
-      (mis2//contents/line/indent plist)))
+  (mis2//contents/box/padding string plist)
+  (mis2//contents/box/borders string plist)
+  (mis2//contents/box/margins string plist)
+  (mis2//contents/line/indent string plist))
 
 
 (defmacro mis2//contents/box/update (plist key value)
@@ -362,9 +376,13 @@ Strings can be asymmetrical.
   (if-let ((padding (mis2//style/get/from-data :padding plist)))
       ;; Padding is a weirder one as it can be a list of 2 string, or a list of
       ;; how to build the padding.
-      (if (mis2//style/check-value :padding padding '(:list (:string :string)))
-          (mis2//contents/box/padding/strings string padding plist)
-        (mis2//contents/box/padding/build string padding plist))
+      (if (eq (mis2//style/check-value :padding padding
+                                       '(:list (:string :string)))
+              :*bad-value-error*)
+          ;; Not the string/string list, so the other one.
+          (mis2//contents/box/padding/build string padding plist)
+        ;; The easy string/string path.
+        (mis2//contents/box/padding/strings string padding plist))
 
     ;; No padding; no-op.
     string))
@@ -399,7 +417,7 @@ Strings can be asymmetrical.
                                    (second padding))))
 
 
-(defun mis2//contents/box/padding/build (string padding)
+(defun mis2//contents/box/padding/build (string padding plist)
   "Takes STRING and makes left/right PADDING for it. PADDING is required to be a
 list of three elements:
   (:char (:const (:empty :fill)) :integer)

@@ -156,13 +156,13 @@ when no properties are there to add.
   ;; Simple string just gets returned as-is.
   ;; Using simplest 'valid' mis2 plist we can...
   (should (string= (mis2//contents/string/propertize "Hello, World."
-                                                     '(:mis2//testing))
+                                                     '(:mis2//testing t))
                    "Hello, World."))
 
   ;; Have a mis2 plist without `:face' in style.
   (let ((plist '(:mis2//settings (:theme :default)
                  :mis2//style (:margins (">" "<"))
-                 :mis2//testing)))
+                 :mis2//testing t)))
     (should (string= (mis2//contents/string/propertize "Hello, World."
                                                        plist)
                      "Hello, World.")))
@@ -170,7 +170,7 @@ when no properties are there to add.
   ;; Have a mis2 plist without `:theme' or `:face' in style.
   (let ((plist '(:mis2//settings nil
                  :mis2//style (:margins (">" "<"))
-                 :mis2//testing)))
+                 :mis2//testing t)))
     (should (string= (mis2//contents/string/propertize "Hello, World."
                                                        plist)
                      "Hello, World.")))
@@ -197,7 +197,7 @@ when there is a face to use.
   ;; Should use `:default' theme.
   (let ((plist '(:mis2//settings nil
                  :mis2//style (:face :test-face0)
-                 :mis2//testing))
+                 :mis2//testing t))
         (expected-output "Hello, World.")
         message)
     (setq message (mis2//contents/string/propertize "Hello, World."
@@ -213,7 +213,7 @@ when there is a face to use.
   ;; Same thing, but :fancy theme
   (let ((plist '(:mis2//settings (:theme :fancy)
                  :mis2//style (:face :test-face0)
-                 :mis2//testing))
+                 :mis2//testing t))
         (expected-output "Hello, World.")
         message)
     (setq message (mis2//contents/string/propertize "Hello, World."
@@ -229,7 +229,7 @@ when there is a face to use.
   ;; :fancy & :test-face1
   (let ((plist '(:mis2//settings (:theme :fancy)
                  :mis2//style (:face :test-face1)
-                 :mis2//testing))
+                 :mis2//testing t))
         (expected-output "Hello, World.")
         message)
     (setq message (mis2//contents/string/propertize "Hello, World."
@@ -270,27 +270,27 @@ when no or `:left' alignment is supplied.
   ;; Simple string just gets returned as-is.
   ;; Using simplest 'valid' mis2 plist we can...
   (should (string= (mis2//contents/align "Hello, World."
-                                         '(:mis2//testing))
+                                         '(:mis2//testing t))
                    "Hello, World."))
 
   ;; With :line-width. Shouldn't affect left-aligned, but is related to
   ;; alignment.
   (should (string= (mis2//contents/align "Hello, World."
                                          '(:mis2//settings (:line-width 40)
-                                           :mis2//testing))
+                                           :mis2//testing t))
                    "Hello, World."))
 
   ;; With :left, no :line-width.
   (should (string= (mis2//contents/align "Hello, World."
                                          '(:mis2//settings (:left t)
-                                           :mis2//testing))
+                                           :mis2//testing t))
                    "Hello, World."))
 
   ;; With :left and :line-width.
   (should (string= (mis2//contents/align "Hello, World."
                                          '(:mis2//settings (:left t
                                                             :line-width 40)
-                                           :mis2//testing))
+                                           :mis2//testing t))
                    "Hello, World."))
 
   (mis2-ert/mis2-contents/teardown))
@@ -313,13 +313,13 @@ when `:center' alignment is supplied.
     ;; :center? Nil means no.
     (should (string= (mis2//contents/align string-odd
                                            '(:mis2//style (:center nil)
-                                             :mis2//testing))
+                                             :mis2//testing t))
                      string-odd))
 
     ;; Actually centered. No left/right reserved.
     (should (string= (mis2//contents/align string-odd
                                            '(:mis2//style (:center t)
-                                             :mis2//testing))
+                                             :mis2//testing t))
                      ;; extra space is put in front of string
                      (concat
                       (make-string 34 ?\s)
@@ -327,7 +327,7 @@ when `:center' alignment is supplied.
                       (make-string 33 ?\s))))
     (should (string= (mis2//contents/align string-even
                                            '(:mis2//style (:center t)
-                                             :mis2//testing))
+                                             :mis2//testing t))
                      ;; extra space is put in front of string
                      (concat
                       (make-string 34 ?\s)
@@ -338,7 +338,7 @@ when `:center' alignment is supplied.
     (should (string= (mis2//contents/align string-odd
                                            '(:mis2//settings (:line-width 40)
                                              :mis2//style (:center t)
-                                             :mis2//testing))
+                                             :mis2//testing t))
                      ;; extra space is put in front of string
                      (concat
                       (make-string 14 ?\s)
@@ -347,7 +347,7 @@ when `:center' alignment is supplied.
     (should (string= (mis2//contents/align string-even
                                            '(:mis2//settings (:line-width 40)
                                              :mis2//style (:center t)
-                                             :mis2//testing))
+                                             :mis2//testing t))
                      ;; extra space is put in front of string
                      (concat
                       (make-string 14 ?\s)
@@ -375,7 +375,7 @@ when `:center' alignment is supplied and a reserve exists.
     (should (string= (mis2//contents/align string-odd
                                            '(:mis2//style (:center t
                                                            :margins ("xx" "xx"))
-                                             :mis2//testing))
+                                             :mis2//testing t))
                      ;; Extra space is put in front of string. 2 chars knocked
                      ;; off front & back compared to no-reserved case.
                      (concat
@@ -386,7 +386,7 @@ when `:center' alignment is supplied and a reserve exists.
     (should (string= (mis2//contents/align string-even
                                            '(:mis2//style (:center t
                                                            :borders ("yy" "yy"))
-                                             :mis2//testing))
+                                             :mis2//testing t))
                      (concat
                       (make-string 32 ?\s)
                       string-even
@@ -397,7 +397,7 @@ when `:center' alignment is supplied and a reserve exists.
                                            '(:mis2//style (:center t
                                                            :margins (nil "xx")
                                                            :borders ("yy" "yy"))
-                                             :mis2//testing))
+                                             :mis2//testing t))
                      ;; Less at end of string due to asymmetry.
                      (concat
                       (make-string 32 ?\s)
@@ -409,7 +409,7 @@ when `:center' alignment is supplied and a reserve exists.
                                            '(:mis2//style (:center t
                                                            :margins ("xx" nil)
                                                            :borders ("yy" "yy"))
-                                             :mis2//testing))
+                                             :mis2//testing t))
                      ;; Less at beginning of string due to asymmetry.
                      (concat
                       (make-string 30 ?\s)
@@ -436,13 +436,13 @@ when `:right' alignment is supplied.
     ;; :right? Nil means no.
     (should (string= (mis2//contents/align string-odd
                                            '(:mis2//style (:right nil)
-                                             :mis2//testing))
+                                             :mis2//testing t))
                      string-odd))
 
     ;; Actually right-aligned. No left/right reserved.
     (should (string= (mis2//contents/align string-odd
                                            '(:mis2//style (:right t)
-                                             :mis2//testing))
+                                             :mis2//testing t))
                      ;; extra spaces are all in front of string
                      (concat
                       (make-string (- line-width (length string-odd)) ?\s)
@@ -450,7 +450,7 @@ when `:right' alignment is supplied.
 
     (should (string= (mis2//contents/align string-even
                                            '(:mis2//style (:right t)
-                                             :mis2//testing))
+                                             :mis2//testing t))
                      ;; extra space is put in front of string
                      (concat
                       (make-string (- line-width (length string-even)) ?\s)
@@ -460,7 +460,7 @@ when `:right' alignment is supplied.
     (should (string= (mis2//contents/align string-odd
                                            '(:mis2//settings (:line-width 40)
                                              :mis2//style (:right t)
-                                             :mis2//testing))
+                                             :mis2//testing t))
                      ;; extra spaces are all in front of string
                      (concat
                       (make-string (- 40 (length string-odd)) ?\s)
@@ -469,7 +469,7 @@ when `:right' alignment is supplied.
     (should (string= (mis2//contents/align string-even
                                            '(:mis2//settings (:line-width 40)
                                              :mis2//style (:right t)
-                                             :mis2//testing))
+                                             :mis2//testing t))
                      ;; extra space is put in front of string
                      (concat
                       (make-string (- 40 (length string-even)) ?\s)
@@ -496,7 +496,7 @@ when `:right' alignment is supplied and a reserve exists.
     (should (string= (mis2//contents/align string-odd
                                            '(:mis2//style (:right t
                                                            :margins ("xx" "xx"))
-                                             :mis2//testing))
+                                             :mis2//testing t))
                      (concat
                       (make-string (- line-width (length string-odd)
                                       ;; minus both margins too
@@ -507,7 +507,7 @@ when `:right' alignment is supplied and a reserve exists.
     (should (string= (mis2//contents/align string-even
                                            '(:mis2//style (:right t
                                                            :borders ("yy" "yy"))
-                                             :mis2//testing))
+                                             :mis2//testing t))
                      (concat
                       (make-string (- line-width (length string-even)
                                       ;; minus both margins too
@@ -520,7 +520,7 @@ when `:right' alignment is supplied and a reserve exists.
                                            '(:mis2//style (:right t
                                                            :margins (nil "xx")
                                                            :borders ("yy" "yy"))
-                                             :mis2//testing))
+                                             :mis2//testing t))
                      (concat
                       (make-string (- line-width (length string-even)
                                       ;; Minus asymmetrical margins.
@@ -535,7 +535,7 @@ when `:right' alignment is supplied and a reserve exists.
                                            '(:mis2//style (:right t
                                                            :margins ("xx" nil)
                                                            :borders ("yy" "yy"))
-                                             :mis2//testing))
+                                             :mis2//testing t))
                      (concat
                       (make-string (- line-width (length string-even)
                                       ;; Minus asymmetrical margins.
@@ -544,6 +544,191 @@ when `:right' alignment is supplied and a reserve exists.
                                       2 2)
                                    ?\s)
                       string-even))))
+
+  (mis2-ert/mis2-contents/teardown))
+
+
+;;------------------------------------------------------------------------------
+;; Test: mis2//contents/box/*
+;;------------------------------------------------------------------------------
+;; (defun mis2//contents/box/parts (string plist)
+
+;;---
+;; Test Case 000
+;;---
+(ert-deftest mis2-ert/contents/box/parts ()
+  "Test that `mis2//contents/box/parts' can create a proper :mis2//box plist
+in the mis2 plist based on mis2//settings and mis2//style.
+"
+  (mis2-ert/mis2-contents/setup)
+
+  ;; No mis2 plist at all is an error.
+  (should-error (mis2//contents/box/parts "Hello, World." nil))
+
+  ;; No box; yes indent
+  (let ((plist '(:mis2//settings (:line-width 80)
+                 :mis2//style    (:indent 4
+                                  ;; :margins ("left" "right")
+                                  ;; :borders ("|" "|")
+                                  ;; :padding ("--" "--")
+                                  ;; :padding (?- :fill 2)
+                                  ;; :padding (?- :empty 3)
+                                          )
+                 :mis2//testing t))
+        (string "Hello, World.")
+        line
+        box)
+
+    ;; Don't care about output... important things go into plist.
+    (mis2//contents/box/parts string
+                              plist)
+
+    ;; Only have indent - so no :mis2//box and :mis2//line should contain a
+    ;; correct indent.
+    (setq box (plist-get plist :mis2//box))
+    (setq line (plist-get plist :mis2//line))
+    (should (null box))
+    (should line)
+    (should (eq (first line) :indent))
+    (should (string= (second line) "    ")))
+
+  ;; Box pieces, no indent.
+  (let ((plist '(:mis2//settings (:line-width 80)
+                 :mis2//style    (;; :indent 4
+                                  :margins ("left" "right")
+                                  :borders ("|" "|")
+                                  :padding ("--" "--")
+                                  ;; :padding (?- :fill 2)
+                                  ;; :padding (?- :empty 3)
+                                          )
+                 :mis2//testing t))
+        (string "Hello, World.")
+        line
+        box
+        element)
+
+    ;; Don't care about output... important things go into plist.
+    (mis2//contents/box/parts string
+                              plist)
+
+    ;; Should have box but no line components.
+    (setq box (plist-get plist :mis2//box))
+    (setq line (plist-get plist :mis2//line))
+    (should (null line))
+    (should box)
+
+    ;; Check margins.
+    (setq element (plist-get box :margins))
+    (should element)
+    (should (listp element))
+    (should (= (length element) 2))
+    (should (string= (first element) "left"))
+    (should (string= (second element) "right"))
+
+    ;; Check borders.
+    (setq element (plist-get box :borders))
+    (should element)
+    (should (listp element))
+    (should (= (length element) 2))
+    (should (string= (first element) "|"))
+    (should (string= (second element) "|"))
+
+    ;; Check padding.
+    (setq element (plist-get box :padding))
+    (should element)
+    (should (listp element))
+    (should (= (length element) 4))
+    (should (string= (first element) "--"))
+    (should (= (second element) ?\s))
+    (should (= (third element) ?\s))
+    (should (string= (fourth element) "--")))
+
+  ;; Paddings type 2
+  (let ((plist '(:mis2//settings (:line-width 80)
+                 :mis2//style    (;; :indent 4
+                                  ;; :margins ("left" "right")
+                                  ;; :borders ("|" "|")
+                                  ;; :padding ("--" "--")
+                                  :padding (?- :fill 2)
+                                  ;; :padding (?- :empty 3)
+                                           )
+                 :mis2//testing t))
+        (string "Hello, World.")
+        line
+        box
+        element)
+
+    ;; Don't care about output... important things go into plist.
+    (mis2//contents/box/parts string
+                              plist)
+
+    ;; Should have box but no line components.
+    (setq box (plist-get plist :mis2//box))
+    (setq line (plist-get plist :mis2//line))
+    (should (null line))
+    (should box)
+
+    ;; Should not have margins.
+    (setq element (plist-get box :margins))
+    (should-not element)
+
+    ;; Should not have borders.
+    (setq element (plist-get box :borders))
+    (should-not element)
+
+    ;; Check padding.
+    (setq element (plist-get box :padding))
+    (should element)
+    (should (listp element))
+    (should (= (length element) 4))
+    (should (string= (first element) "--"))
+    (should (= (second element) ?\s))
+    (should (= (third element) ?\s))
+    (should (string= (fourth element) "--")))
+
+  ;; Paddings type 3
+  (let ((plist '(:mis2//settings (:line-width 80)
+                 :mis2//style    (;; :indent 4
+                                  ;; :margins ("left" "right")
+                                  ;; :borders ("|" "|")
+                                  ;; :padding ("--" "--")
+                                  ;; :padding (?- :fill 2)
+                                  :padding (?- :empty 3)
+                                           )
+                 :mis2//testing t))
+        (string "Hello, World.")
+        line
+        box
+        element)
+
+    ;; Don't care about output... important things go into plist.
+    (mis2//contents/box/parts string
+                              plist)
+
+    ;; Should have box but no line components.
+    (setq box (plist-get plist :mis2//box))
+    (setq line (plist-get plist :mis2//line))
+    (should (null line))
+    (should box)
+
+    ;; Should not have margins.
+    (setq element (plist-get box :margins))
+    (should-not element)
+
+    ;; Should not have borders.
+    (setq element (plist-get box :borders))
+    (should-not element)
+
+    ;; Check padding.
+    (setq element (plist-get box :padding))
+    (message "%S" element)
+    (should element)
+    (should (listp element))
+    (should (= (length element) 4))
+    (should (= (first element) ?-))
+    (should (string= (second element) "   "))
+    (should (string= (third element) "   "))
+    (should (= (fourth element) ?-)))
 
   (mis2-ert/mis2-contents/teardown))
 

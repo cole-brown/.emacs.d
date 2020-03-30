@@ -200,6 +200,7 @@ Styles:
 
         :mis2//contents
         :mis2//box
+        :mis2//line
 
         :mis2//message
         :mis2//buffers
@@ -441,10 +442,10 @@ Examples:
   (mis2//private/check-key key mis2/settings/keys mis2/settings/meta/keys))
 
 
-(defun mis2//settings/check-value (key value)
+(defun mis2//settings/check-value (key value &optional key-info)
   "Checks that VALUE is a valid value for the mis/settings keyword KEY.
 "
-  (mis2//private/check-value key value #'mis2//settings/check-key))
+  (mis2//private/check-value key value #'mis2//settings/check-key key-info))
 
 
 ;;------------------------------------------------------------------------------
@@ -606,7 +607,7 @@ Examples:
 (defun mis2//style/check-value (key value &optional key-info)
   "Checks that VALUE is a valid value for the mis/style keyword KEY.
 "
-  (mis2//private/check-value key value #'mis2//style/check-key))
+  (mis2//private/check-value key value #'mis2//style/check-key key-info))
 
 
 ;;------------------------------------------------------------------------------
