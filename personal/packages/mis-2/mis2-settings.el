@@ -199,6 +199,8 @@ Styles:
         :mis2//style
 
         :mis2//contents
+        :mis2//box
+
         :mis2//message
         :mis2//buffers
 
@@ -211,6 +213,7 @@ Public -> Private (see `mis2/custom/keywords'):
 
 Private-Only:
   :mis2//contents - contents of message, unformatted
+  :mis2//box      - intermediate parts for building final box
   :mis2//message  - final, propertized, and formatted message
   :mis2//buffers  - list of buffer(s) to send output to
   :mis2//testing  - valid only in mis2 tests
@@ -242,6 +245,12 @@ Private-Only:
     (error "Key '%s' is not a known mis2//data key: %S"
            key mis2//data/keywords)))
 ;; (mis2//settings/get/from-data :echo '(:echo t :echo-delay 2)
+
+
+(defmacro mis2//data/update (plist key value)
+  "Push key/value into plist.
+"
+  `(setq ,plist (plist-put ,plist ,key ,value)))
 
 
 ;;------------------------------------------------------------------------------
