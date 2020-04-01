@@ -619,14 +619,16 @@ do the hard work yourself:
 
   ;; Our box, if we have one, has been built in parts in `:mis2//box' in PLIST.
   (if-let ((box (mis2//data/get :mis2//box plist)))
-      (let* ((indent     (mis2//style/get/from-data :indent  plist))
+      (let* ((indent     (plist-get (plist-get plist :mis2//line) :indent))
              (margins    (plist-get box :margins))
              (borders    (plist-get box :borders))
              (padding    (plist-get box :padding))
              prefix
              postfix
-             pad-left
-             pad-right
+             pad-left-char
+             pad-right-char
+             pad-left-str
+             pad-right-str
              (width-line (mis2//contents/line/width plist))
              width-remaining)
 
@@ -634,8 +636,8 @@ do the hard work yourself:
                              (first margins)
                              (first borders)))
 
-        (setq postfix (concat(second margins)
-                             (second borders)))
+        (setq postfix (concat (second borders)
+                              (second margins)))
 
         ;; Add fixed-size padding elements to final pieces.
         (when padding
@@ -643,29 +645,45 @@ do the hard work yourself:
           ;;  - concat to STRING, leave fill chars for final step
           (if (characterp (first padding))
               (progn
-                (setq pad-left (first padding))
+                (setq pad-left-char (first padding))
                 (setq string (concat (second padding)
                                      string
                                      (third padding)))
-                (setq pad-right (fourth padding)))
+                (setq pad-right-char (fourth padding)))
 
             ;; padding: (string char char string)
             ;;  - concat to prefix/postfix, leave fill chars for final step
             (setq prefix (concat prefix (first padding)))
-            (setq pad-left (second padding))
-            (setq pad-right (third padding))
+            (setq pad-left-char (second padding))
+            (setq pad-right-char (third padding))
             (setq postfix (concat (fourth padding) postfix))))
 
-        (setq width-remaining (-sum (length left)
-                                    (length string)
-                                    (length right)))
+        (setq width-remaining (- width-line
+                                 (-sum (mapcar #'length
+                                               (list prefix string postfix)))))
+
+        ;; Ensure minimal padding on left & right.
+        (cond ((= width-remaining 1)
+               ;; Only one char to work with; put it on the left?
+               (setq pad-left-str (make-string 1 pad-left-char)
+                     pad-right-str nil))
+
+              ((> width-remaining 1)
+               ;; Space to work in; put one on left and rest on right-pad duty.
+               (setq pad-left-str (make-string 1 pad-left-char)
+                     pad-right-str (make-string (1- width-remaining)
+                                                pad-left-char)))
+
+              (t  ;; zero or negative remaining - no more padding available.
+               (setq pad-left-str nil
+                     pad-right-str nil)))
 
         ;; Build full inner string. Only thing prefix is to fill in with
         ;; the pad characters.
         (concat prefix
-                (make-string (ceiling (/ (float width-remaining) 2)) pad-left)
+                pad-left-str
                 string
-                (make-string (floor (/ (float width-remaining) 2)) pad-right)
+                pad-right-str
                 postfix))))
 
 
