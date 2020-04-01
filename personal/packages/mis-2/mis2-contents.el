@@ -21,6 +21,14 @@
 to left-aligned.")
 
 
+(defconst mis2//line/keys '(:indent :padding)
+  "Line-related keywords. Will be in the :mis2//line list if specified.")
+
+
+(defconst mis2//box/keys '(:margins :borders :padding)
+  "Box-related keywords. Will be in the :mis2//box list if specified.")
+
+
 ;;------------------------------------------------------------------------------
 ;; Build... boss?
 ;;------------------------------------------------------------------------------
@@ -144,8 +152,9 @@ Final sink for:
 
 
 (defun mis2//contents/line/reserved-amount (plist)
-  "Look in PLIST for any settings/style that would reduce the
-amount of characters available to be used by alignment.
+  "Look in PLIST for any settings/style/boxing/what-not that
+would reduce the amount of characters available to be used by
+alignment.
 
 E.g. if we're aligning to center on 80 columns, but need 10 for
 indentation, margins, etc, then we should center the string on 80
@@ -157,23 +166,28 @@ This function just says that those 6 and 4 are reserved.
 Returns tuple of '(left-reserved-chars right-reserved-chars).
 For our example: '(6 4)
 
-Pass-through sink for style:
-  :indent
-  :margins
-  :borders
+Pass-through sink for:
+  :mis2//line -- :indent
+  :mis2//box  -- :margins
+              -- :borders
+              -- :padding
 "
-  (let ((indent  (or (mis2//style/get/from-data :indent plist)
-                     0))
-        (margins (mis2//style/get/from-data :margins plist))
-        (borders (mis2//style/get/from-data :borders plist)))
+  ;; Get the final line and box data for reserved characters.
+  (let ((indent  (or (mis2//contents/line/get/from-data :indent plist) 0))
+        (margins (mis2//contents/box/get/from-data :margins plist))
+        (borders (mis2//contents/box/get/from-data :borders plist))
+        (padding (mis2//contents/box/get/from-data :padding plist)))
 
-    ;; Reserved tuple of (left right) amounts.
+    ;; Reserved tuple of (left right) amounts. Some of these are expected to be
+    ;; nil, but `first', `second', and `length' all cope correctly with it.
     (list
      (+ indent
         (length (first  margins))
-        (length (first  borders)))
+        (length (first  borders))
+        (length (first  padding)))
      (+ (length (second margins))
-        (length (second borders))))))
+        (length (second borders))
+        (length (second padding))))))
 
 
 (defun mis2//contents/line/width (plist)
@@ -192,8 +206,22 @@ current buffer.
       ;; Have indent - add that to front of str.
       (mis2//contents/line/update plist
                                   :indent (make-string indent ?\s)))
-
   string)
+
+
+;;---
+;; Mis2 PLIST Getter/Setter
+;;---
+
+;; §-TODO-§ [2020-04-01]: use this in here
+(defun mis2//contents/line/get/from-data (key plist)
+  "Get line data from a mis2 data PLIST, then get KEY from that.
+"
+  (mis2//data/get/from-data key
+                            :mis2//line plist
+                            mis2//line/keys
+                            nil
+                            nil))
 
 
 (defmacro mis2//contents/line/update (plist key value)
@@ -220,6 +248,12 @@ KEY & VALUE.
 `:mis2//style' keyword in PLIST and an alignment keyword in the
 style list, align the STRING based on line width.
 
+Boxing and line data must be created already for align to calculate proper size
+and position of the string in the line.
+Requires / Passthrough sink for:
+  :mis2//box
+  :mis2//line
+
 Final sink for:
   :mis2//style    -- :center
                   -- :left
@@ -229,7 +263,8 @@ Shared 'final' sink for:
   :mis2//settings -- :line-width
 "
   ;; Look for width (optional) and an alignment keyword.
-  (let ((align-center (mis2//style/get/from-data :center plist))
+  (let ((align-left   (mis2//style/get/from-data :left  plist))
+        (align-center (mis2//style/get/from-data :center plist))
         (align-right  (mis2//style/get/from-data :right  plist))
         (line-width   (mis2//contents/line/width plist))
         ;; `line-width' is the full width desired - but we may not be allowed to
@@ -239,16 +274,39 @@ Shared 'final' sink for:
 
     ;; Call a specific aligner or no-op.
     (cond (align-center
-           (mis2//contents/align/center string line-width reserved))
+           (mis2//contents/align/center string line-width reserved plist))
           (align-right
-           (mis2//contents/align/right string line-width reserved))
+           (mis2//contents/align/right string line-width reserved plist))
           (t
-           ;; If we don't need to center or right align, we're done; it's left
-           ;; aligned already.
-           string))))
+           ;; If we don't need to center or right align, then we're left
+           ;; aligning; it's left aligned already, but may need to do more
+           ;; anyways for e.g. boxing help.
+           (mis2//contents/align/left string line-width reserved plist)))))
 
 
-(defun mis2//contents/align/center (string width reserved)
+(defun mis2//contents/align/left (string width reserved plist)
+  "Align STRING to the left of WIDTH. WIDTH should be what was specified in
+:mis2//settings or the default for the buffer.
+
+RESERVED should be returned value from `mis2//contents/line/reserved-amount'.
+"
+  ;; Left-align. Align only to left-most space we're allow in, so remove
+  ;; left-side reserved amount first. While we're at it, remove right side
+  ;; reserved too - won't affect looks to do the math first then build the
+  ;; string (unlike aligning to center).
+  (let ((len (- width
+                (first reserved)
+                (second reserved)
+                (length string))))
+    ;; For left align, we do not build any padding string at this time - we may not need one at all.
+    ;; We'll still put into the plist just how much padding should be used.
+    (mis2//contents/line/update plist :padding (list 0 len)))
+
+  ;; ...And return unaltered string as it's already "aligned".
+  string)
+
+
+(defun mis2//contents/align/center (string width reserved plist)
   "Align STRING to center of WIDTH. WIDTH should be what was specified in
 :mis2//settings or the default for the buffer.
 
@@ -265,7 +323,7 @@ RESERVED should be returned value from `mis2//contents/line/reserved-amount'.
                (- len (second reserved)))))
 
 
-(defun mis2//contents/align/right (string width reserved)
+(defun mis2//contents/align/right (string width reserved plist)
   "Align STRING to the right of WIDTH. WIDTH should be what was specified in
 :mis2//settings or the default for the buffer.
 
@@ -334,21 +392,6 @@ Pipeline for sources of:
   (mis2//contents/box/borders string plist)
   (mis2//contents/box/margins string plist)
   (mis2//contents/line/indent string plist))
-
-
-(defmacro mis2//contents/box/update (plist key value)
-  "Given mis2 PLIST, get `:mis2//box' key, and update /that/ plist with
-KEY & VALUE.
-"
-  `(let (;;(,temp-plist ,plist)
-         ;; Get out our box plist from mis2 plist.
-         (box (mis2//data/get :mis2//box ,plist)))
-     ;; Update mis2 plist with newest box plist.
-     (setq ,plist
-           (plist-put ,plist
-                      :mis2//box
-                      ;; Add our key/value to box plist.
-                      (plist-put box ,key ,value)))))
 
 
 (defun mis2//contents/box/padding (string plist)
@@ -685,6 +728,36 @@ do the hard work yourself:
                 string
                 pad-right-str
                 postfix))))
+
+
+;;---
+;; Mis2 PLIST Getter/Setter
+;;---
+
+;; §-TODO-§ [2020-04-01]: use this in here
+(defun mis2//contents/box/get/from-data (key plist)
+  "Get box data from a mis2 data PLIST, then get KEY from that.
+"
+  (mis2//data/get/from-data key
+                            :mis2//box plist
+                            mis2//box/keys
+                            nil
+                            nil))
+
+
+(defmacro mis2//contents/box/update (plist key value)
+  "Given mis2 PLIST, get `:mis2//box' key, and update /that/ plist with
+KEY & VALUE.
+"
+  `(let (;;(,temp-plist ,plist)
+         ;; Get out our box plist from mis2 plist.
+         (box (mis2//data/get :mis2//box ,plist)))
+     ;; Update mis2 plist with newest box plist.
+     (setq ,plist
+           (plist-put ,plist
+                      :mis2//box
+                      ;; Add our key/value to box plist.
+                      (plist-put box ,key ,value)))))
 
 
 ;;------------------------------------------------------------------------------

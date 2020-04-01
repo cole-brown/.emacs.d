@@ -254,6 +254,36 @@ Private-Only:
   `(setq ,plist (plist-put ,plist ,key ,value)))
 
 
+(defun mis2//data/get/from-data (key mis2--key mis2--plist
+                                     &optional
+                                     valid-key-list
+                                     valid-key-alist0
+                                     valid-key-alist1)
+  "Get MIS2--KEY's value from a MIS2--PLIST, then get KEY's value from
+MIS2--KEY's plist. Validates key is acceptable by checking for it as either:
+  1. an element in VALID-KEY-LIST
+  2. a key in VALID-KEY-ALIST0 or VALID-KEY-ALIST1
+"
+  (if (mis2//data/plist? mis2--plist)
+      (if (or (memq key valid-key-list)
+              (alist-get key valid-key-alist0)
+              (alist-get key valid-key-alist1))
+          ;; get settings plist from data plist, then get specific setting.
+          (plist-get (mis2//data/get mis2--key mis2--plist) key)
+
+        (error "%s: Key '%s' is not a known %S key: %S, %S or %S"
+               "mis2//data/get/from-data"
+               key
+               mis2--key
+               valid-key-list
+               valid-key-alist0
+               valid-key-alist1))
+
+    (error "settings: mis2--plist is not a mis2 plist. %S %S"
+           "Might be a mis2 settings, style, etc sub-list?"
+           plist)))
+
+
 ;;------------------------------------------------------------------------------
 ;; Settings - Getters
 ;;------------------------------------------------------------------------------
@@ -261,18 +291,24 @@ Private-Only:
 (defun mis2//settings/get/from-data (key plist)
   "Get settings from a mis2 data PLIST, then get KEY from settings.
 "
-  (if (mis2//data/plist? plist)
-      (if (or (alist-get key mis2/settings/keys)
-              (alist-get key mis2/settings/meta/keys))
-          ;; get settings plist from data plist, then get specific setting.
-          (plist-get (mis2//data/get :mis2//settings plist) key)
+  (mis2//data/get/from-data key
+                            :mis2//settings plist
+                            nil
+                            mis2/settings/keys
+                            mis2/settings/meta/keys))
 
-        (error "settings: Key '%s' is not a known mis2/settings key: %S or %S"
-               key mis2/settings/keys mis2/settings/meta/keys))
+  ;; (if (mis2//data/plist? plist)
+  ;;     (if (or (alist-get key mis2/settings/keys)
+  ;;             (alist-get key mis2/settings/meta/keys))
+  ;;         ;; get settings plist from data plist, then get specific setting.
+  ;;         (plist-get (mis2//data/get :mis2//settings plist) key)
 
-    (error "settings: Plist is not a mis2 plist. %S %S"
-           "Might be a mis2 settings, style, etc sub-list?"
-           plist)))
+  ;;       (error "settings: Key '%s' is not a known mis2/settings key: %S or %S"
+  ;;              key mis2/settings/keys mis2/settings/meta/keys))
+
+  ;;   (error "settings: Plist is not a mis2 plist. %S %S"
+  ;;          "Might be a mis2 settings, style, etc sub-list?"
+  ;;          plist)))
 
 ;;------------------------------------------------------------------------------
 ;; Style - Getters
@@ -281,17 +317,23 @@ Private-Only:
 (defun mis2//style/get/from-data (key plist)
   "Get style from a mis2 data PLIST, then get KEY from style.
 "
-  (if (mis2//data/plist? plist)
-      (if (alist-get key mis2/style/keys)
-          ;; get style plist from data plist, then get specific setting.
-          (plist-get (mis2//data/get :mis2//style plist) key)
+  (mis2//data/get/from-data key
+                            :mis2//style plist
+                            nil
+                            mis2/style/keys
+                            nil))
 
-        (error "style: Key '%s' is not a known mis2/style key: %S"
-               key mis2/style/keys))
+  ;; (if (mis2//data/plist? plist)
+  ;;     (if (alist-get key mis2/style/keys)
+  ;;         ;; get style plist from data plist, then get specific setting.
+  ;;         (plist-get (mis2//data/get :mis2//style plist) key)
 
-    (error "style: Plist is not a mis2 plist. %S %S"
-           "Might be a mis2 settings, style, etc sub-list?"
-           plist)))
+  ;;       (error "style: Key '%s' is not a known mis2/style key: %S"
+  ;;              key mis2/style/keys))
+
+  ;;   (error "style: Plist is not a mis2 plist. %S %S"
+  ;;          "Might be a mis2 settings, style, etc sub-list?"
+  ;;          plist)))
 
 
 ;;------------------------------------------------------------------------------

@@ -273,27 +273,73 @@ when no or `:left' alignment is supplied.
                                          '(:mis2//testing t))
                    "Hello, World."))
 
+  ;; Using simplest 'valid' mis2 plist we can, but as a var so we can check left
+  ;; align's padding line info.
+  (let ((plist '(:mis2//testing t))
+        (string "Hello, World."))
+    (mis2//contents/box/parts string plist)
+
+    ;; Simple string just gets returned as-is.
+    (should (string= (mis2//contents/align string plist)
+                     string))
+
+    (should (seq-set-equal-p (mis2//contents/line/get/from-data :padding plist)
+                             (list 0
+                                   ;; Width minus string amount in this case
+                                   ;; for the right padding amount.
+                                   (- fill-column (length string))))))
+
   ;; With :line-width. Shouldn't affect left-aligned, but is related to
   ;; alignment.
-  (should (string= (mis2//contents/align "Hello, World."
-                                         '(:mis2//settings (:line-width 40)
-                                           :mis2//testing t))
-                   "Hello, World."))
+  (let ((plist '(:mis2//settings (:line-width 40)
+                 :mis2//testing  t))
+        (string "Hello, World."))
+    (mis2//contents/box/parts string plist)
+
+    ;; Simple string just gets returned as-is.
+    (should (string= (mis2//contents/align string plist)
+                     string))
+
+    (should (seq-set-equal-p (mis2//contents/line/get/from-data :padding plist)
+                             (list 0
+                                   ;; Width minus string amount in this case
+                                   ;; for the right padding amount.
+                                   ;; Width of 40 in this case.
+                                   (- 40 (length string))))))
 
   ;; With :left, no :line-width.
-  (should (string= (mis2//contents/align "Hello, World."
-                                         '(:mis2//settings (:left t)
-                                           :mis2//testing t))
-                   "Hello, World."))
+  (let ((plist '(:mis2//settings (:left t) :mis2//testing t))
+        (string "Hello, World."))
+    (mis2//contents/box/parts string plist)
+
+    ;; Simple string just gets returned as-is.
+    (should (string= (mis2//contents/align string plist)
+                     string))
+
+    (should (seq-set-equal-p (mis2//contents/line/get/from-data :padding plist)
+                             (list 0
+                                   ;; Width minus string amount in this case
+                                   ;; for the right padding amount.
+                                   (- fill-column (length string))))))
 
   ;; With :left and :line-width.
-  (should (string= (mis2//contents/align "Hello, World."
-                                         '(:mis2//settings (:left t
-                                                            :line-width 40)
-                                           :mis2//testing t))
-                   "Hello, World."))
+  (let ((plist '(:mis2//settings (:left t :line-width 40)
+                 :mis2//testing  t))
+        (string "Hello, World."))
+    (mis2//contents/box/parts string plist)
 
-  (mis2-ert/mis2-contents/teardown))
+    ;; Simple string just gets returned as-is.
+    (should (string= (mis2//contents/align string plist)
+                     string))
+
+    (should (seq-set-equal-p (mis2//contents/line/get/from-data :padding plist)
+                             (list 0
+                                   ;; Width minus string amount in this case
+                                   ;; for the right padding amount.
+                                   ;; Width of 40 in this case.
+                                   (- 40 (length string))))))
+
+   (mis2-ert/mis2-contents/teardown))
 
 
 ;;---
