@@ -767,7 +767,6 @@ in the mis2 plist based on mis2//settings and mis2//style.
 
     ;; Check padding.
     (setq element (plist-get box :padding))
-    (message "%S" element)
     (should element)
     (should (listp element))
     (should (= (length element) 4))
@@ -824,6 +823,105 @@ plist: :mis2//box, :mis2//line, and :mis2//contents.
                              "|"     ;; border, right
                              "<<<<<" ;; margin, right
                              ))))
+
+  (mis2-ert/mis2-contents/teardown))
+
+
+;;------------------------------------------------------------------------------
+;; Test: mis2//contents
+;;------------------------------------------------------------------------------
+;; (defun mis2//contents (plist)
+
+;;---
+;; Test Case 000
+;;---
+(ert-deftest mis2-ert/contents/output ()
+  "Test that `mis2//contents' can build the parts and then the
+line based on inputs in plist: :mis2//settings, :mis2//style, and
+:mis2//contents.
+"
+  (mis2-ert/mis2-contents/setup)
+  (mis2-ert/mis2-contents/themes/backup)
+
+  (setq mis2/themes '(:default (:title       font-lock-builtin-face
+                                :inattention font-lock-comment-face
+                                :highlight   font-lock-constant-face
+                                :border      font-lock-comment-delimiter-face
+                                :padding     font-lock-string-face
+                                :text        font-lock-warning-face)
+                      :fancy   (:title       compilation-error
+                                :inattention compilation-info
+                                :highlight   compilation-line-number
+                                :border      compilation-mode-line-exit
+                                :padding     compilation-mode-line-fail
+                                :text        compilation-warning)))
+
+  ;; §-TODO-§ [2020-04-02]: try out dash.el's fancy -let plist pattern thingies?
+
+  ;; Bit of everything in the plist...
+  (let* ((plist '(:mis2//contents ("Hello, %s." "World")
+                  :mis2//settings (:line-width 80)
+                  :mis2//style (;; face: default if no specific in :faces
+                                :face :text
+                                ;; face: set specifics for everything this time
+                                :faces (:message :title
+                                        :indent  :inattention
+                                        :margins :highlight
+                                        :border  :border
+                                        :padding :padding)
+                                ;; alignment
+                                :left t
+                                ;; boxing
+                                :indent 4
+                                :margins (">>>" "<<<<<")
+                                :borders ("|" "|")
+                                :padding ("--" "--"))
+                  ;; This should be a proper, complete mis2 list so
+                  ;; leave off testing flag:
+                  ;; :mis2//testing t
+                  ))
+         (expected-str "Hello, World.")
+         output)
+
+    ;; Output will be in our plist under :mis2//message; plist will have updates
+    ;; from intermediate steps.
+    (should (mis2//data/plist? (mis2//contents plist)))
+    (setq output (plist-get plist :mis2//message))
+    (should output)
+    (should (stringp output))
+
+    (should (string= output
+                     (concat "    " ;; indent
+                             ">>>"  ;; margin, left
+                             "|"    ;; border, left
+                             "--"   ;; static pad, left
+                             (make-string 1 ?\s) ;; dynamic pad, left
+                             expected-str
+                             (make-string 48 ?\s) ;; dynamic pad, right
+                             "--"    ;; static pad, right
+                             "|"     ;; border, right
+                             "<<<<<" ;; margin, right
+                             )))
+
+    (should
+     (seq-set-equal-p
+      output
+      (concat
+       (propertize "    "               'face font-lock-comment-face)
+       (propertize ">>>"                'face font-lock-constant-face)
+       (propertize "|"                  'face font-lock-comment-delimiter-face)
+       (propertize "--"                 'face font-lock-string-face)
+       (propertize (make-string 1 ?\s)  'face font-lock-string-face)
+       (propertize expected-str         'face font-lock-builtin-face)
+       (propertize (make-string 48 ?\s) 'face font-lock-string-face)
+       (propertize "--"                 'face font-lock-string-face)
+       (propertize "|"                  'face font-lock-comment-delimiter-face)
+       (propertize "<<<<<"              'face font-lock-constant-face)))))
+
+  ;; Done; set mis2/themes back and check that that worked too.
+  (mis2-ert/mis2-contents/themes/restore)
+
+  (should (seq-set-equal-p mis2/themes mis2-ert/contents/themes/storage))
 
   (mis2-ert/mis2-contents/teardown))
 

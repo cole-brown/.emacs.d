@@ -147,8 +147,14 @@ Settings:
     (:right  :const (t nil))
 
     ;; Text
-    (:face :key-alist ':theme) ;; indirect... got to get :theme alist, then get
+    (:face :key-alist ':theme) ;; Indirect... got to get :theme alist, then get
                                ;; :face's key out of that.
+    (:faces :plist) ;; Indirect... :faces is a plist of :face key/value,
+                    ;; basically, for various parts of the line.
+    ;; §-TODO-§ [2020-04-02]: a more better checker?
+    ;;   - (:faces :plist (keywordp . keywordp)) at the least?
+    ;;   - (:faces :plist (keywordp . ':theme)) would be better?
+    ;;   - actually checking against expected keywords would be best?
 
     (:indent :integer)
 
@@ -334,6 +340,18 @@ MIS2--KEY's plist. Validates key is acceptable by checking for it as either:
   ;;   (error "style: Plist is not a mis2 plist. %S %S"
   ;;          "Might be a mis2 settings, style, etc sub-list?"
   ;;          plist)))
+
+
+(defun mis2//style/get/face-by-content-type (content-type plist)
+  "Get style from a mis2 data PLIST, then get faces from style, then get TYPE
+key's value from faces.
+"
+  (plist-get (mis2//data/get/from-data :faces
+                                       :mis2//style plist
+                                       nil
+                                       mis2/style/keys
+                                       nil)
+             content-type))
 
 
 ;;------------------------------------------------------------------------------
@@ -770,6 +788,16 @@ Examples:
       (if (and (not (null value))
                (not (null value-checker))
                (alist-get value (symbol-value value-checker)))
+          value
+        :*bad-value-error*))
+
+     ;; plist checker!
+     ;; Dumb right now.
+     ((eq :plist type)
+      ;; dumb check: exists, is list, is even (for key/value pairs)
+      (if (and value
+               (listp value)
+               (even (length value)))
           value
         :*bad-value-error*))
 

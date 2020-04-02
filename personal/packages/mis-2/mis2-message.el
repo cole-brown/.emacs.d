@@ -131,22 +131,21 @@ Returns: '(:mis2//settings settings-element
 ;; Send mis2 message to outputs.
 ;;------------------------------------------------------------------------------
 
-(defun mis2//message/output (&rest args)
-  "Output message described by ARGS (a mis2 plist). Key `:mis2//message' must
-exist in ARGS.
+(defun mis2//message/output (plist)
+  "Output message described by mis2 PLIST. Key `:mis2//message' must
+exist in PLIST.
 
 Pipeline for sink of settings:
   :buffer, :echo, :echo-delay
 "
-  (message "test output? args: %S" args)
-  (if-let ((message (mis2//data/get :mis2//message args)))
+  (if-let ((message (mis2//data/get :mis2//message plist)))
       ;; Found a message so let's try to output it.
       (progn
-        (mis2//message/output/to-buffer message args)
-        (mis2//message/output/to-minibuffer message args))
+        (mis2//message/output/to-buffer message plist)
+        (mis2//message/output/to-minibuffer message plist))
 
     ;; Error out if not found.
-    (error "No finalized mis2 message supplied. %S" args)))
+    (error "No finalized mis2 message supplied. %S" plist)))
 
 
 ;; Some ideas from https://emacs.stackexchange.com/a/20178
@@ -225,8 +224,8 @@ These keys must be at the front of the list - before any message args.
       (mis2/message \"%S %S\" :settings 'symbol)
       etc.
 "
-  (let ((parts (apply #'mis2//message/parse args)))
-    (apply #'mis2//message/output (mis2//build parts))))
+  (let ((plist (apply #'mis2//message/parse args)))
+    (mis2//message/output (mis2//contents plist))))
 
 
 ;;------------------------------------------------------------------------------
