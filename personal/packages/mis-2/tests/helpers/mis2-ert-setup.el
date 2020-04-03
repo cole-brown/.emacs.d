@@ -25,6 +25,10 @@
 (defvar mis2-ert/setup/error-out-functions/orig nil
   "Data saved about original function definitons.")
 
+(defvar mis2-ert/setup/themes/storage nil
+  "mis2-ert/mis2-contents' backup and restore helpers store/retrieve a copy of
+`mis2/themes' here.")
+
 
 ;;------------------------------------------------------------------------------
 ;; Setup / Reset
@@ -50,14 +54,57 @@
   "Start-of-test setup steps.
 "
   ;; Reset vars & things.
-  (mis2-ert/setup/reset))
+  (mis2-ert/setup/reset)
+
+  ;; get themes to a testing value
+  (mis2-ert/setup/themes/test-values))
 
 
 (defun mis2-ert/setup/teardown ()
   "End-of-test teardown steps.
 "
+  ;; put back themes
+  (mis2-ert/setup/themes/restore)
   ;; Revert fail functions.
   (mis2-ert/teardown/error-out-functions))
+
+
+;;---
+;; Themes
+;;---
+(defun mis2-ert/setup/themes/test-values (&optional themes)
+  "Set `mis2/themes' to THEMES if non-nil, or to default test data if nil.
+"
+  (mis2-ert/mis2-contents/themes/backup)
+  (setq mis2/themes
+        (or themes
+            '((:default (:title       font-lock-builtin-face
+                         :inattention font-lock-comment-face
+                         :highlight   font-lock-constant-face
+                         :border      font-lock-comment-delimiter-face
+                         :padding     font-lock-string-face
+                         :text        font-lock-warning-face))
+
+              (:fancy   (:title       compilation-error
+                         :inattention compilation-info
+                         :highlight   compilation-line-number
+                         :border      compilation-mode-line-exit
+                         :padding     compilation-mode-line-fail
+                         :text        compilation-warning))))))
+;; (mis2-ert/setup/themes/test-values)
+
+
+(defun mis2-ert/setup/themes/backup ()
+  "Reverts `mis2/themes' back to it's backed up value.
+"
+  (unless mis2-ert/setup/themes/storage
+    (setq mis2-ert/setup/themes/storage (copy-sequence mis2/themes))))
+
+
+(defun mis2-ert/setup/themes/restore ()
+  "Reverts `mis2/themes' back to it's backed up value.
+"
+  (setq mis2/themes (copy-sequence mis2-ert/contents/themes/storage)))
 
 
 ;;------------------------------------------------------------------------------
@@ -83,8 +130,8 @@ this error throwing one. Will save the old function definition for reverting to.
 (defun mis2-ert/setup/error-out-functions ()
   "Set up functions we don't want to get to via tests to throw errors.
 "
-  (mis2-ert/setup/error-out 'mis2-oauth2-token)
-  (mis2-ert/setup/error-out 'mis2-api-call-async))
+  ;; (mis2-ert/setup/error-out 'mis2//whatever)
+  )
 
 
 ;; §-TODO-§ [2020-01-10]: don't think this works...

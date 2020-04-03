@@ -67,7 +67,7 @@ all in a 'mis2-ert/' \"namespace\".")
   ;; Tests (in implementation/simplicity/dependency-pyramid order)
   ;;---
   (load-file "mis2-settings-ert.el")
-  ;; (load-file "mis2-contents-ert.el")
+  (load-file "mis2-contents-ert.el")
   (load-file "mis2-message-ert.el")
 
   ;;---

@@ -64,12 +64,13 @@ minibuffer-echo-area functionality."
 ;;---
 
 (defconst mis2/validity/types
-  '((:number  numberp)
-    (:integer integerp)
-    (:float   floatp)
-    (:string  stringp)
-    (:char    characterp)
-    (:list    listp))
+  (list (list :number   #'numberp)
+        (list :integer  #'integerp)
+        (list :float    #'floatp)
+        (list :string   #'stringp)
+        (list :str/nil  (lambda (x) (or (null x) (stringp x))))
+        (list :char     #'characterp)
+        (list :list     #'listp))
   "Validity checkers for basic types and anything else that doesn't change
 based on context.
 
@@ -159,13 +160,13 @@ Settings:
     (:indent :integer)
 
     ;; Box Model...ish Thing.
-    (:margins :list (:string :string))
-    (:borders :list (:string :string))
+    (:margins :list (:str/nil :str/nil))
+    (:borders :list (:str/nil :str/nil))
     ;; Can be either, e.g.:
     ;;   :padding '(">>" "<<")   ;; use the strings exactly
     ;;   :padding '(?- :empty 3) ;; Build from char, leaving 3 empties.
     ;;   :padding '(?- :fill 3)  ;; Build from char, to max of 3 long.
-    (:padding :or ((:list (:string :string))
+    (:padding :or ((:list (:str/nil :str/nil))
                    (:list (:char (:const (:empty :fill)) :integer)))))
   "Style for a part of a mis2 message. Alignment, text properties, border,
 margin, padding...
@@ -359,8 +360,10 @@ key's value from faces.
 ;;------------------------------------------------------------------------------
 
 (defun mis2/settings/set (plist &rest args)
-  "Add one or more mis settings in ARGS to whatever is already in PLIST.
-Returns new list (PLIST will be unchanged).
+  "Add one or more mis settings in ARGS to whatever is already in
+:mis2/settings PLIST. Returns new list (PLIST will be unchanged).
+
+NOTE: works on :mis2//settings plist, /not/ full mis2 plist.
 
 Expects ARGS to be: key0 value0 key1 value1 ...
 
@@ -387,8 +390,10 @@ Examples:
 
 
 (defmacro mis2/settings/update (plist &rest args)
-  "Add one or more mis settings in ARGS to whatever is already in PLIST.
-Updates PLIST in place.
+  "Add one or more mis settings in ARGS to whatever is already in
+:mis2//settings PLIST. Updates PLIST in place.
+
+NOTE: works on :mis2//settings plist, /not/ full mis2 plist.
 
 Expects ARGS to be: key0 value0 key1 value1 ...
 
@@ -470,7 +475,8 @@ Examples:
 
          ;; Still have ,temp-args? Didn't end up with a pair - complain?
          (when ,temp-args
-           (error "Uneven list; no value for last element: %s" (first ,temp-args)))
+           (error "Uneven list; no value for last element: %s"
+                  (first ,temp-args)))
 
          ;; ...and return the list.
          ,plist)
@@ -514,8 +520,10 @@ Examples:
 
 
 (defun mis2/style/set (plist &rest args)
-  "Add one or more mis styles in ARGS to whatever is already in PLIST.
-Returns new list (PLIST will be unchanged).
+  "Add one or more mis styles in ARGS to whatever is already in
+:mis2/style PLIST. Returns new list (PLIST will be unchanged).
+
+NOTE: works on :mis2//style plist, /not/ full mis2 plist.
 
 Expects ARGS to be: key0 value0 key1 value1 ...
 
@@ -540,8 +548,10 @@ Examples:
 
 
 (defmacro mis2/style/update (plist &rest args)
-  "Add one or more mis style in ARGS to whatever is already in PLIST.
-Updates PLIST in place.
+  "Add one or more mis style in ARGS to whatever is already in
+:mis2/style PLIST. Updates PLIST in place.
+
+NOTE: works on :mis2//settings plist, /not/ full mis2 plist.
 
 Expects ARGS to be: key0 value0 key1 value1 ...
 
@@ -624,7 +634,8 @@ Examples:
 
          ;; Still have ,temp-args? Didn't end up with a pair - complain?
          (when ,temp-args
-           (error "Uneven list; no value for last element: %s" (first ,temp-args)))
+           (error "Uneven list; no value for last element: %s"
+                  (first ,temp-args)))
 
          ;; ...and return the list.
          ,plist)
@@ -677,6 +688,9 @@ Examples:
 (defun mis2//private/check-value (key value check-key-fn &optional key-info)
   "Checks that VALUE is a valid value for the keyword KEY.
 "
+    ;; (message "mis2//private/check-value: k: %S, v: %S, ckf: %S, ki: %S"
+    ;;          key value check-key-fn key-info)
+
   ;; sometimes need to override key-info in a recursion (e.g. :or case)
   (let* ((key-info (or key-info (funcall check-key-fn key)))
          (type (and (listp key-info) (first key-info)))
@@ -684,6 +698,10 @@ Examples:
          (basic-validity (or (first (alist-get key mis2/validity/types))
                              (first (alist-get type mis2/validity/types))))
          success)
+
+    ;; (message "    : ki: %S, t: %S, vc: %S, bv: %S"
+    ;;          key-info type value-checker basic-validity)
+
 
     ;; This may be a bug in check-key rather than a special edge case here...
     (when (eq :const key)
@@ -695,6 +713,12 @@ Examples:
      ((eq key-info :*bad-key-error*)
            ;; Return bad value if we have a bad key.
       :*bad-value-error*)
+
+     ;; If key-info is an anonymous function, from e.g. a list's recursion
+     ;; checking, we should just use it to check the value.
+     ((or (eq type 'closure)
+          (eq type 'lambda))
+      (setq success (funcall key-info value)))
 
      ;; Is it an :or? Got to check each option in value-checker and see
      ;; if any pass.
@@ -805,7 +829,6 @@ Examples:
      ;; *handling yet.
      (t
       :*bad-value-error*))))
-
 ;; (mis2//style/check-value :string "string-value")
 ;; (mis2//style/check-value "string-value" :string)
 ;; (mis2//style/check-value :margins '("hi" "hello"))

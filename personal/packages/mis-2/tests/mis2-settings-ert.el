@@ -28,8 +28,8 @@
 ;;---
 ;; Runner Shortcuts
 ;;---
-;; (ert "mis2-ert/style/.*")
 ;; (ert "mis2-ert/settings/.*")
+;; (ert "mis2-ert/style/.*")
 ;; (ert "mis2-ert/data/.*")
 
 
@@ -528,10 +528,10 @@ i.e. Check that it can do :const, :key-alist, :or etc.
   (should (seq-set-equal-p (mis2//style/check-key :face)
                            '(:key-alist ':theme)))
   (should (seq-set-equal-p (mis2//style/check-key :margins)
-                           '(:list (:string :string))))
+                           '(:list (:str/nil :str/nil))))
   (should (seq-set-equal-p
            (mis2//style/check-key :padding)
-           '(:or ((:list (:string :string))
+           '(:or ((:list (:str/nil :str/nil))
                   (:list (:char (:const (:empty :fill)) :integer)))))))
 
 

@@ -352,7 +352,8 @@ when `:center' alignment is supplied.
   (mis2-ert/mis2-contents/setup)
 
   ;; Give ourselves a known line-width.
-  (let ((line-width 80)
+  (let ((fill-column 80)
+        (line-width fill-column)
         (string-odd "Hello, World.") ;; odd number of chararcters to center
         (string-even "Hello, Jeff.")) ;; even number of chararcters to center
 
@@ -413,15 +414,17 @@ when `:center' alignment is supplied and a reserve exists.
   (mis2-ert/mis2-contents/setup)
 
   ;; Give ourselves a known line-width.
-  (let ((line-width 80)
-        (string-odd "Hello, World.") ;; odd number of chararcters to center
+  (let ((fill-column 80)
+        (line-width fill-column)
+        (style '(:center t
+                 :margins ("xx" "xx")))
+        (plist '(:mis2//testing t))
+        (string-odd "Hello, World.")  ;; odd number of chararcters to center
         (string-even "Hello, Jeff.")) ;; even number of chararcters to center
 
-    ;; Actually centered. No left/right reserved.
-    (should (string= (mis2//contents/align string-odd
-                                           '(:mis2//style (:center t
-                                                           :margins ("xx" "xx"))
-                                             :mis2//testing t))
+    (mis2//data/update plist :mis2//style style)
+    (mis2//contents/box/parts string-odd plist)
+    (should (string= (mis2//contents/align string-odd plist)
                      ;; Extra space is put in front of string. 2 chars knocked
                      ;; off front & back compared to no-reserved case.
                      (concat
@@ -429,21 +432,18 @@ when `:center' alignment is supplied and a reserve exists.
                       string-odd
                       (make-string 31 ?\s))))
 
-    (should (string= (mis2//contents/align string-even
-                                           '(:mis2//style (:center t
-                                                           :borders ("yy" "yy"))
-                                             :mis2//testing t))
+    (mis2//contents/box/parts string-even plist)
+    (should (string= (mis2//contents/align string-even plist)
                      (concat
                       (make-string 32 ?\s)
                       string-even
                       (make-string 32 ?\s))))
 
     ;; Asymmetrical reserved.
-    (should (string= (mis2//contents/align string-even
-                                           '(:mis2//style (:center t
-                                                           :margins (nil "xx")
-                                                           :borders ("yy" "yy"))
-                                             :mis2//testing t))
+    (mis2/style/update style :margins '(nil "xx") :borders '("yy" "yy"))
+    (mis2//data/update plist :mis2//style style)
+    (mis2//contents/box/parts string-odd plist)
+    (should (string= (mis2//contents/align string-even plist)
                      ;; Less at end of string due to asymmetry.
                      (concat
                       (make-string 32 ?\s)
@@ -451,11 +451,10 @@ when `:center' alignment is supplied and a reserve exists.
                       (make-string 30 ?\s))))
 
     ;; Asymmetrical reserved.
-    (should (string= (mis2//contents/align string-even
-                                           '(:mis2//style (:center t
-                                                           :margins ("xx" nil)
-                                                           :borders ("yy" "yy"))
-                                             :mis2//testing t))
+    (mis2/style/update style :margins '("xx" nil) :borders '("yy" "yy"))
+    (mis2//data/update plist :mis2//style style)
+    (mis2//contents/box/parts string-even plist)
+    (should (string= (mis2//contents/align string-even plist)
                      ;; Less at beginning of string due to asymmetry.
                      (concat
                       (make-string 30 ?\s)
@@ -475,7 +474,8 @@ when `:right' alignment is supplied.
   (mis2-ert/mis2-contents/setup)
 
   ;; Give ourselves a known line-width.
-  (let ((line-width 80)
+  (let ((fill-column 80)
+        (line-width fill-column)
         (string-odd "Hello, World.") ;; odd number of chararcters
         (string-even "Hello, Jeff.")) ;; even number of chararcters
 
@@ -534,15 +534,18 @@ when `:right' alignment is supplied and a reserve exists.
   (mis2-ert/mis2-contents/setup)
 
   ;; Give ourselves a known line-width.
-  (let ((line-width 80)
+  (let ((fill-column 80)
+        (line-width fill-column)
+        (style '(:right t
+                 :margins ("xx" "xx")))
+        (plist '(:mis2//testing t))
         (string-odd "Hello, World.") ;; odd number of chararcters to right
         (string-even "Hello, Jeff.")) ;; even number of chararcters to right
 
-    ;; Actually right-aligned. No left/right reserved.
-    (should (string= (mis2//contents/align string-odd
-                                           '(:mis2//style (:right t
-                                                           :margins ("xx" "xx"))
-                                             :mis2//testing t))
+    ;; Actually right-aligned. With reserved.
+    (mis2//data/update plist :mis2//style style)
+    (mis2//contents/box/parts string-odd plist)
+    (should (string= (mis2//contents/align string-odd plist)
                      (concat
                       (make-string (- line-width (length string-odd)
                                       ;; minus both margins too
@@ -550,10 +553,8 @@ when `:right' alignment is supplied and a reserve exists.
                                    ?\s)
                       string-odd)))
 
-    (should (string= (mis2//contents/align string-even
-                                           '(:mis2//style (:right t
-                                                           :borders ("yy" "yy"))
-                                             :mis2//testing t))
+    (mis2//contents/box/parts string-even plist)
+    (should (string= (mis2//contents/align string-even plist)
                      (concat
                       (make-string (- line-width (length string-even)
                                       ;; minus both margins too
@@ -562,11 +563,10 @@ when `:right' alignment is supplied and a reserve exists.
                       string-even)))
 
     ;; Asymmetrical reserved.
-    (should (string= (mis2//contents/align string-even
-                                           '(:mis2//style (:right t
-                                                           :margins (nil "xx")
-                                                           :borders ("yy" "yy"))
-                                             :mis2//testing t))
+    (mis2/style/update style :margins '(nil "xx") :borders '("yy" "yy"))
+    (mis2//data/update plist :mis2//style style)
+    (mis2//contents/box/parts string-even plist)
+    (should (string= (mis2//contents/align string-even plist)
                      (concat
                       (make-string (- line-width (length string-even)
                                       ;; Minus asymmetrical margins.
@@ -577,11 +577,10 @@ when `:right' alignment is supplied and a reserve exists.
                       string-even)))
 
     ;; Asymmetrical reserved.
-    (should (string= (mis2//contents/align string-even
-                                           '(:mis2//style (:right t
-                                                           :margins ("xx" nil)
-                                                           :borders ("yy" "yy"))
-                                             :mis2//testing t))
+    (mis2/style/update plist :margins '("xx" nil) :borders '("yy" "yy"))
+    (mis2//data/update plist :mis2//style style)
+    (mis2//contents/box/parts string-even plist)
+    (should (string= (mis2//contents/align string-even plist)
                      (concat
                       (make-string (- line-width (length string-even)
                                       ;; Minus asymmetrical margins.

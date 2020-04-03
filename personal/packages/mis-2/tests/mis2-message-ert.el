@@ -518,7 +518,7 @@ out into mis2 settings/style.
 ;;---
 ;; Test Case 000
 ;;---
-(ert-deftest spotify-ert/mis2/message/simplest ()
+(ert-deftest mis2-ert/message/simplest ()
   "Test that `mis2/message' outputs a properly formatted message.
 "
   (mis2-ert/mis2-message/setup)

@@ -237,7 +237,7 @@ Pass-through sink for:
               -- :padding
 "
   ;; Get the final line and box data for reserved characters.
-  (let ((indent  (or (mis2//contents/line/get/from-data :indent plist) 0))
+  (let ((indent  (mis2//contents/line/get/from-data :indent plist))
         (margins (mis2//contents/box/get/from-data :margins plist))
         (borders (mis2//contents/box/get/from-data :borders plist))
         (padding (mis2//contents/box/get/from-data :padding plist)))
