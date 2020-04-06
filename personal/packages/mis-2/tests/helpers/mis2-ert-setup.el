@@ -26,8 +26,8 @@
   "Data saved about original function definitons.")
 
 (defvar mis2-ert/setup/themes/storage nil
-  "mis2-ert/mis2-contents' backup and restore helpers store/retrieve a copy of
-`mis2/themes' here.")
+  "mis2-ert/setup/themes/* backup and restore helpers store/retrieve a copy of
+(actual) `mis2/themes' here so they can blow it away with test data.")
 
 
 ;;------------------------------------------------------------------------------
@@ -75,7 +75,7 @@
 (defun mis2-ert/setup/themes/test-values (&optional themes)
   "Set `mis2/themes' to THEMES if non-nil, or to default test data if nil.
 "
-  (mis2-ert/mis2-contents/themes/backup)
+  (mis2-ert/setup/themes/backup)
   (setq mis2/themes
         (or themes
             '((:default (;; user-friendly stuff
@@ -109,7 +109,7 @@
 (defun mis2-ert/setup/themes/restore ()
   "Reverts `mis2/themes' back to it's backed up value.
 "
-  (setq mis2/themes (copy-sequence mis2-ert/contents/themes/storage)))
+  (setq mis2/themes (copy-sequence mis2-ert/setup/themes/storage)))
 
 
 ;;------------------------------------------------------------------------------

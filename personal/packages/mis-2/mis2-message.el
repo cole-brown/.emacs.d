@@ -1,10 +1,11 @@
 ;; -*- mode: emacs-lisp; lexical-binding: t -*-
 
-;; Mis2 Naming:
+;; mis2 Naming:
 ;;   namespace name:   "mis2"
 ;;   public:           mis2/...
 ;;   private:          mis2//...
 ;;
+;; §-TODO-§ [2020-04-06]: this isn't really true...
 ;; In a function, 'mis2-' vs 'mis2--' refers to a var holding a public-related
 ;; symbol-name or value vs one holding a private symbol-name
 ;; or value.
@@ -52,7 +53,7 @@
 
 
 
-
+;; §-TODO-§ [2020-04-06]: actual example used in a test...
 ;; (let ((message "hello, %s")
 ;;       (symbol0 "there")
 ;;       (symbol1 '(thing1 thing2))
