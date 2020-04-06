@@ -117,23 +117,37 @@ Final sink for:
   :mis2//settings -- :theme
   :mis2//style    -- :faces
 "
-  ;; Propertize it if we find a face. So let's look for that face. First, check
-  ;; what theme we're using. Default to... :default if none supplied.
-  (if-let* ((mis2-theme (or (mis2//settings/get/from-data :theme plist)
-                            :default))
-            ;; Get mis2/theme's faces based on our theme.
-            (theme-faces (plist-get mis2/themes mis2-theme))
+  ;; (message "m2/prop: str: %S, t: %S"
+  ;;          string type)
+  ;; (message "---> theme: %S"
+  ;;          (mis2//themes/get/theme plist))
+
+  ;; (message "---> (fct: %S, fd: %S) -> m2-f: %S"
+  ;;          (mis2//style/get/face-by-content-type type plist)
+  ;;          (mis2//style/get/from-data :face plist)
+  ;;          (or (mis2//style/get/face-by-content-type type plist)
+  ;;              (mis2//style/get/from-data :face plist)))
+
+  ;; (message "---> fv: %S"
+  ;;          (mis2//themes/get/face (or (mis2//style/get/face-by-content-type type plist)
+  ;;                                     (mis2//style/get/from-data :face plist))
+  ;;                                 (mis2//themes/get/theme plist)))
+
+  ;; Propertize it if we have a string and find a face.
+  (if-let* ((string string) ;; null check
+            (mis2-theme (mis2//themes/get/theme plist))
             ;; mis2's face keyword (e.g. :title, :highlight, :attention) for:
             ;;   - specific content type (e.g. :margins, :message...)
             ;;   - or fallback of the general mis2//style :face
             (mis2-face (or (mis2//style/get/face-by-content-type type plist)
                            (mis2//style/get/from-data :face plist)))
             ;; Get actual emacs face from the theme faces.
-            (face-val (plist-get theme-faces mis2-face)))
+            (face-val (mis2//themes/get/face mis2-face mis2-theme)))
 
       ;; Found a defined face, so set `face' property of string to our
       ;; face and return that.
       (propertize string 'face face-val)
+
     ;; No face; return the unchanged string.
     string))
 

@@ -78,12 +78,17 @@
   (mis2-ert/mis2-contents/themes/backup)
   (setq mis2/themes
         (or themes
-            '((:default (:title       font-lock-builtin-face
+            '((:default (;; user-friendly stuff
+                         :title       font-lock-builtin-face
                          :inattention font-lock-comment-face
                          :highlight   font-lock-constant-face
-                         :border      font-lock-comment-delimiter-face
-                         :padding     font-lock-string-face
-                         :text        font-lock-warning-face))
+                         :text        font-lock-warning-face
+
+                         ;; box by piece names
+                         :indent      font-lock-doc-face
+                         :margins     font-lock-function-name-face
+                         :borders     font-lock-comment-delimiter-face
+                         :padding     font-lock-string-face))
 
               (:fancy   (:title       compilation-error
                          :inattention compilation-info

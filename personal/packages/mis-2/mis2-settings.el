@@ -70,7 +70,8 @@ minibuffer-echo-area functionality."
         (list :string   #'stringp)
         (list :str/nil  (lambda (x) (or (null x) (stringp x))))
         (list :char     #'characterp)
-        (list :list     #'listp))
+        (list :list     #'listp)
+        (list :keyword  #'keywordp))
   "Validity checkers for basic types and anything else that doesn't change
 based on context.
 
@@ -121,7 +122,7 @@ Settings:
 (defconst mis2/settings/keys
   '((:echo       :const     (t nil))
     (:echo-delay :range     (0.0 100.0))
-    (:theme      :key-alist mis2/themes)
+    (:theme      :alist mis2/themes)
     (:line-width :integer)
     (:buffer     :string))
   "10,000 foot view: calls are either intended to be in an interactive manner,
@@ -142,24 +143,38 @@ Settings:
 ;;---
 
 (defconst mis2/style/keys
-  '(;; Alignment
+  '(;;---
+    ;; Alignment
+    ;;---
     (:center :const (t nil))
     (:left   :const (t nil))
     (:right  :const (t nil))
 
+    ;;---
     ;; Text
-    (:face :key-alist ':theme) ;; Indirect... got to get :theme alist, then get
-                               ;; :face's key out of that.
-    (:faces :plist) ;; Indirect... :faces is a plist of :face key/value,
-                    ;; basically, for various parts of the line.
+    ;;---
+    ;; Indirect... got to get :theme, then get theme's alist from mis2/themes,
+    ;; then get :face's key out of that.
+    (:face  :keyword)
+    ;; §-TODO-§ [2020-04-02]: a more better checker?
+    ;;   - Actually checking against expected faces in given theme?
+
+    ;; Indirect... :faces is a plist of :face key/value, basically, for various
+    ;; parts of the line.
+    (:faces :plist)
     ;; §-TODO-§ [2020-04-02]: a more better checker?
     ;;   - (:faces :plist (keywordp . keywordp)) at the least?
     ;;   - (:faces :plist (keywordp . ':theme)) would be better?
-    ;;   - actually checking against expected keywords would be best?
+    ;;   - Actually checking against expected keywords would be best?
 
+    ;;---
+    ;; Line
+    ;;---
     (:indent :integer)
 
+    ;;---
     ;; Box Model...ish Thing.
+    ;;---
     (:margins :list (:str/nil :str/nil))
     (:borders :list (:str/nil :str/nil))
     ;; Can be either, e.g.:
@@ -344,15 +359,19 @@ MIS2--KEY's plist. Validates key is acceptable by checking for it as either:
 
 
 (defun mis2//style/get/face-by-content-type (content-type plist)
-  "Get style from a mis2 data PLIST, then get faces from style, then get TYPE
+  "Get style from a mis2 data PLIST, then get face(s) from style, then get TYPE
 key's value from faces.
+
+This is still the mis2 face (e.g. `:borders'), not the actual
+property (e.g. `font-lock-comment-delimiter-face').
 "
-  (plist-get (mis2//data/get/from-data :faces
-                                       :mis2//style plist
-                                       nil
-                                       mis2/style/keys
-                                       nil)
-             content-type))
+  ;; Get CONTENT-TYPE's face keyword from style's `:faces' plist.
+  ;; This is still the mis2 face (e.g. `:borders'), not the
+  ;; actual property (e.g. `font-lock-comment-delimiter-face').
+  (plist-get
+   ;; Get `:faces' plist from style data from mis2 plist.
+   (mis2//style/get/from-data :faces plist)
+   content-type))
 
 
 ;;------------------------------------------------------------------------------
@@ -662,7 +681,7 @@ Examples:
 ;;   (:right  :const (t nil))
 ;;
 ;;   ;; Text
-;;   (:face :key-alist :theme) ;; indirect... got to get :theme alist, then get
+;;   (:face :alist :theme) ;; indirect... got to get :theme alist, then get
 ;;                             ;; :face's key out of that.
 ;;
 ;;   ;; Box Model...ish Thing.
@@ -701,7 +720,6 @@ Examples:
 
     ;; (message "    : ki: %S, t: %S, vc: %S, bv: %S"
     ;;          key-info type value-checker basic-validity)
-
 
     ;; This may be a bug in check-key rather than a special edge case here...
     (when (eq :const key)
@@ -789,7 +807,7 @@ Examples:
      ;; Otherwise, use key-info to check our value.
      ;; We'll have a cdr list like...:
      ;;   '(:const     '(t nil))
-     ;;   '(:key-alist 'mis2/themes)
+     ;;   '(:alist 'mis2/themes)
      ;;   '(:range     '(0.0 100.0))
      ;;   '(:or (<option> ...))
      ;; and we have to do the check for the type.
@@ -808,7 +826,7 @@ Examples:
         :*bad-value-error*))
 
      ;; Find it in the alist? Valid.
-     ((eq :key-alist type)
+     ((eq :alist type)
       (if (and (not (null value))
                (not (null value-checker))
                (alist-get value (symbol-value value-checker)))

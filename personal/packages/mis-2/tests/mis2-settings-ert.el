@@ -519,14 +519,14 @@ i.e. it should return :*bad-key-error*.
 ;;---
 (ert-deftest mis2-ert/style/check-key/normal-keys ()
   "Test that `mis2//style/check-key' works ok with `mis2/style/keys'
-i.e. Check that it can do :const, :key-alist, :or etc.
+i.e. Check that it can do :const, :alist, :or etc.
 "
   (mis2-ert/mis2-settings/setup)
 
   (should (seq-set-equal-p (mis2//style/check-key :center)
                            '(:const (t nil))))
   (should (seq-set-equal-p (mis2//style/check-key :face)
-                           '(:key-alist ':theme)))
+                           '(:alist ':theme)))
   (should (seq-set-equal-p (mis2//style/check-key :margins)
                            '(:list (:str/nil :str/nil))))
   (should (seq-set-equal-p

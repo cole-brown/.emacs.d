@@ -28,13 +28,8 @@
 ;; Consts & Vars
 ;;------------------------------------------------------------------------------
 
-(defvar-local mis2-ert/contents/themes/storage nil
-  "mis2-ert/mis2-contents' backup and restore helpers store/retrieve a copy of
-`mis2/themes' here.")
-
 (defvar-local mis2-ert/contents/fill-column/storage fill-column
-  "mis2-ert/mis2-contents' backup and restore helpers store/retrieve a copy of
-`mis2/themes' here.")
+  "Backup and restore helpers store/retrieve a copy of `fill-column' here.")
 
 
 
@@ -56,18 +51,6 @@ specific to this test suite."
   ;; reset fill column
   (setq fill-column mis2-ert/contents/fill-column/storage)
   (mis2-ert/setup/teardown))
-
-
-(defun mis2-ert/mis2-contents/themes/backup ()
-  "Reverts `mis2/themes' back to it's backed up value.
-"
-  (setq mis2-ert/contents/themes/storage (copy-sequence mis2/themes)))
-
-
-(defun mis2-ert/mis2-contents/themes/restore ()
-  "Reverts `mis2/themes' back to it's backed up value.
-"
-  (setq mis2/themes (copy-sequence mis2-ert/contents/themes/storage)))
 
 
 ;;------------------------------------------------------------------------------
@@ -186,7 +169,6 @@ when no properties are there to add.
 when there is a face to use.
 "
   (mis2-ert/mis2-contents/setup)
-  (mis2-ert/mis2-contents/themes/backup)
 
   (setq mis2/themes '(:default (:test-face0 font-lock-keyword-face
                                 :test-face1 font-lock-comment-face)
@@ -840,22 +822,6 @@ line based on inputs in plist: :mis2//settings, :mis2//style, and
 :mis2//contents.
 "
   (mis2-ert/mis2-contents/setup)
-  (mis2-ert/mis2-contents/themes/backup)
-
-  (setq mis2/themes '(:default (:title       font-lock-builtin-face
-                                :inattention font-lock-comment-face
-                                :highlight   font-lock-constant-face
-                                :border      font-lock-comment-delimiter-face
-                                :padding     font-lock-string-face
-                                :text        font-lock-warning-face)
-                      :fancy   (:title       compilation-error
-                                :inattention compilation-info
-                                :highlight   compilation-line-number
-                                :border      compilation-mode-line-exit
-                                :padding     compilation-mode-line-fail
-                                :text        compilation-warning)))
-
-  ;; §-TODO-§ [2020-04-02]: try out dash.el's fancy -let plist pattern thingies?
 
   ;; Bit of everything in the plist...
   (let* ((plist '(:mis2//contents ("Hello, %s." "World")
@@ -866,7 +832,7 @@ line based on inputs in plist: :mis2//settings, :mis2//style, and
                                 :faces (:message :title
                                         :indent  :inattention
                                         :margins :highlight
-                                        :border  :border
+                                        :borders :borders
                                         :padding :padding)
                                 ;; alignment
                                 :left t
@@ -902,20 +868,21 @@ line based on inputs in plist: :mis2//settings, :mis2//style, and
                              "<<<<<" ;; margin, right
                              )))
 
-    (should
-     (seq-set-equal-p
-      output
-      (concat
-       (propertize "    "               'face font-lock-comment-face)
-       (propertize ">>>"                'face font-lock-constant-face)
-       (propertize "|"                  'face font-lock-comment-delimiter-face)
-       (propertize "--"                 'face font-lock-string-face)
-       (propertize (make-string 1 ?\s)  'face font-lock-string-face)
-       (propertize expected-str         'face font-lock-builtin-face)
-       (propertize (make-string 48 ?\s) 'face font-lock-string-face)
-       (propertize "--"                 'face font-lock-string-face)
-       (propertize "|"                  'face font-lock-comment-delimiter-face)
-       (propertize "<<<<<"              'face font-lock-constant-face)))))
+    (cl-flet ((ms #'make-string))
+      (should
+       (equal-including-properties
+        output
+        (concat
+         (propertize "    "       'face font-lock-comment-face)
+         (propertize ">>>"        'face font-lock-constant-face)
+         (propertize "|"          'face font-lock-comment-delimiter-face)
+         (propertize "--"         'face font-lock-string-face)
+         (propertize (ms 1 ?\s)   'face font-lock-string-face)
+         (propertize expected-str 'face font-lock-builtin-face)
+         (propertize (ms 48 ?\s)  'face font-lock-string-face)
+         (propertize "--"         'face font-lock-string-face)
+         (propertize "|"          'face font-lock-constant-face)
+         (propertize "<<<<<"      'face font-lock-comment-delimiter-face))))))
 
   ;; Done; set mis2/themes back and check that that worked too.
   (mis2-ert/mis2-contents/themes/restore)

@@ -51,6 +51,31 @@
 ;; §-TODO-§ [2020-03-25]: that last one is maybe probably wrong
 
 
+
+
+;; (let ((message "hello, %s")
+;;       (symbol0 "there")
+;;       (symbol1 '(thing1 thing2))
+;;       (settings (mis2/settings/set nil :echo t :theme :default))
+;;       style)
+
+;;   ;; Put '(:center nil) into mis/settings plist on symbol 'message.
+;;   (mis2/style/update style
+;;                      :center nil)
+;;   (mis2/style/update style
+;;                      :margins '(">>" "<<"))
+;;   (mis2/style/update style
+;;                      :borders '("|" "|"))
+;;   (mis2/style/update style
+;;                      :padding '("--" "--"))
+;;   ;; :padding '(?- :empty 3))
+;;   (mis2/style/update style
+;;                      :face :title)
+
+;;   (mis2/message :settings settings :style style message symbol0))
+
+
+
 ;;----------------------------------...---...-----------------------------------
 ;;--                   We're all fine here... How are you?                    --
 ;;------------------------------------------------------------------------------

@@ -541,46 +541,76 @@ out into mis2 settings/style.
   (mis2-ert/mis2-message/teardown))
 
 
-;; ;;---
-;; ;; Test Case 001
-;; ;;---
-;; (ert-deftest spotify-ert/mis2/message/case001 ()
-;;   "Test that `mis2/message' outputs a properly formatted message.
-;; "
-;;   (mis2-ert/mis2-message/setup)
+;;---
+;; Test Case 001
+;;---
+(ert-deftest mis2-ert/message/styled ()
+  "Test that `mis2/message' outputs a properly formatted message.
+"
+  (mis2-ert/mis2-message/setup)
 
-;;   ;; Setup for a message to test.
-;;   (let ((symbol0 "test")
-;;         (symbol1 '(thing1 thing2))
-;;         (settings (mis2/settings/set nil :echo t :theme :default))
-;;         style)
+  ;; Setup for a message to test.
+  (let ((message "hello, %s")
+        (symbol0 "there")
+        (symbol1 '(thing1 thing2))
+        (settings (mis2/settings/set nil :echo t :theme :default))
+        (style '(;; face: default if no specific in :faces
+                 :face :text
+                 ;; face: set specifics for everything this time
+                 :faces (:message :title
+                         :indent  :inattention
+                         :margins :highlight
+                         :borders :borders
+                         :padding :padding)))
+        (expected-str "hello, there"))
 
-;;     ;; Put '(:center nil) into mis/settings plist on symbol 'message.
-;;     (mis2/style/update style
-;;                        :center nil)
-;;     (mis2/style/update style
-;;                        :margins '(">>" "<<"))
-;;     (mis2/style/update style
-;;                        :borders '("|" "|"))
-;;     (mis2/style/update style
-;;                        :padding '(?- :empty 3))
-;;     (mis2/style/update style
-;;                        :face :title)
+    ;; Put more style in afterwards... just cause.
+    (mis2/style/update style
+                       :center nil)
+    (mis2/style/update style
+                       :margins '(">>" "<<"))
+    (mis2/style/update style
+                       :borders '("|" "|"))
+    (mis2/style/update style
+                       :padding '("--" "--"))
+                       ;; :padding '(?- :empty 3))
 
-;;     ;; Output message 0 with settings and style lists.
-;;     (mis2/message :settings settings :style style message symbol0)
+    (mis2-ert/mock 'mis2//message/output/to-buffer nil
+      (mis2-ert/mock 'mis2//message/output/to-minibuffer nil
+        ;; Output message 0 with settings and style lists.
+        (mis2/message :settings settings :style style message symbol0)
 
-;;     ;; §-TODO-§ [2020-03-12]: verify w/ ert `should', `should-not', etc.
+        ;; correct characters?
+        (should
+         (string= mis2-ert/mock/output/to-buffer
+                  (concat
+                   ">>"
+                   "|"
+                   "--"
+                   " "
+                   "hello, there"
+                   "                                                         "
+                   "--"
+                   "|"
+                   "<<")))
 
-;;     ;; Output message 1 with settings and style lists.
-;;     (mis2/message :settings settings
-;;                   :style style
-;;                   "test 2: %S" symbol1)
+        ;; correctly propertized?
+        (cl-flet ((ms #'make-string))
+          (should
+           (equal-including-properties
+            mis2-ert/mock/output/to-buffer
+            (concat
+             (propertize ">>"         'face font-lock-constant-face)
+             (propertize "|"          'face font-lock-comment-delimiter-face)
+             (propertize "--"         'face font-lock-string-face)
+             (propertize (ms  1 ?\s)  'face font-lock-string-face)
+             (propertize expected-str 'face font-lock-builtin-face)
+             (propertize (ms 57 ?\s)  'face font-lock-string-face)
+             (propertize "--"         'face font-lock-string-face)
+             (propertize "|"          'face font-lock-constant-face)
+             (propertize "<<"         'face font-lock-comment-delimiter-face))))))))
 
-;;     ;; §-TODO-§ [2020-03-12]: verify w/ ert `should', `should-not', etc.
-;;     )
-
-;;   (mis2-ert/mis2-message/teardown))
+  (mis2-ert/mis2-message/teardown))
 
 
 ;; ;;---
