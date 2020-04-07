@@ -64,14 +64,15 @@ minibuffer-echo-area functionality."
 ;;---
 
 (defconst mis2/validity/types
-  (list (list :number   #'numberp)
-        (list :integer  #'integerp)
-        (list :float    #'floatp)
-        (list :string   #'stringp)
-        (list :str/nil  (lambda (x) (or (null x) (stringp x))))
-        (list :char     #'characterp)
-        (list :list     #'listp)
-        (list :keyword  #'keywordp))
+  (list (list :number     #'numberp)
+        (list :integer    #'integerp)
+        (list :float      #'floatp)
+        (list :string     #'stringp)
+        (list :str/nil    (lambda (x) (or (null x) (stringp x))))
+        (list :str/buffer (lambda (x) (or (stringp x) (bufferp x))))
+        (list :char       #'characterp)
+        (list :list       #'listp)
+        (list :keyword    #'keywordp))
   "Validity checkers for basic types and anything else that doesn't change
 based on context.
 
@@ -124,7 +125,7 @@ Settings:
     (:echo-delay :range     (0.0 100.0))
     (:theme      :alist mis2/themes)
     (:line-width :integer)
-    (:buffer     :string))
+    (:buffer     :str/buffer))
   "10,000 foot view: calls are either intended to be in an interactive manner,
 or as automatic output flung out as soon as it's reached. The main difference is
 how long the echo area timeout is changes between the two.

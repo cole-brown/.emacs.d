@@ -90,9 +90,29 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Customization: General Settings
+;;------------------------------------------------------------------------------
+
+(defcustom mis2/message/buffer/default "*Messages*"
+  "Default buffer to output mis2 messages to."
+  :group 'mis2
+  :type 'string)
+
+
+;;------------------------------------------------------------------------------
 ;; Consts & Vars
 ;;------------------------------------------------------------------------------
 
+
+;;------------------------------------------------------------------------------
+;; Output Buffer
+;;------------------------------------------------------------------------------
+
+(defun mis2//message/get/buffer (plist)
+  "Gets `:buffer' from :mis2//settings in PLIST. If none exists, will return
+`mis2/message/buffer/default'."
+  (or (mis2//settings/get/from-data :buffer plist)
+      mis2/message/buffer/default))
 
 ;;------------------------------------------------------------------------------
 ;; Pop settings and style off front of list.
@@ -184,7 +204,7 @@ Final sink for settings:
   :buffer
 "
   ;; §-TODO-§ [2020-03-24]: check for buffers keyword, use that if exists.
-  (with-current-buffer (get-buffer "*Messages*")
+  (with-current-buffer (get-buffer (mis2//message/get/buffer plist))
     ;;   "Manually inserts the propertized string at the end of the messages
     ;; buffer by lexically-binding inhibit-read-only to t in
     ;; the message buffer."
@@ -200,6 +220,8 @@ Final sink for settings:
 ;; (mis2//message/output/to-buffer "hi" '(:mis2//settings (:echo t :echo-delay 2)))
 
 
+;; §-TODO-§ [2020-04-06]: Can I try what this guy does again, to get away from
+;; the delay hacks?
 ;; Some ideas from https://emacs.stackexchange.com/a/20178
 (defun mis2//message/output/to-minibuffer (mis2-msg plist)
   "Outputs MIS2-MSG to mini-buffer/echo-area. Will look in PLIST

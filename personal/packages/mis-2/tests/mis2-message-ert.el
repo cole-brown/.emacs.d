@@ -613,60 +613,42 @@ out into mis2 settings/style.
   (mis2-ert/mis2-message/teardown))
 
 
-;; ;;---
-;; ;; Test Case 1
-;; ;;---
-;; (ert-deftest spotify-ert/mis2/message/case1 ()
-;;   "Test that `mis2/message' outputs a properly formatted message.
-;; "
-;;   (mis2-ert/mis2-message/setup)
+;;---
+;; Test Case 002
+;;---
+(ert-deftest mis2-ert/message/alt-buffer ()
+  "Test that `mis2/message' outputs a properly formatted message to
+specified buffer.
+"
+  (mis2-ert/mis2-message/setup)
 
-;;   ;; Setup for a message to test.
+  ;; A temp buffer we'll output to:
+  (with-temp-buffer
+    (let ((buffer-name-tmp (buffer-name (current-buffer))))
 
-;;   ;; Html-ish v3?
-;;   (let ((symbol0 "test")
-;;         (symbol1 '(thing1 thing2))
-;;         (settings (mis2/settings :echo t :theme :default))
-;;         style
-;;         (message "test %S"))
+      ;; Mock to-minibuffer; actual to-buffer, but use our temp buffer instead
+      ;; of default.
+      (mis2-ert/mock 'mis2//message/output/to-minibuffer nil
+        ;; No style/settings - just do the simplest message possible.
+        (mis2/message :settings (list :buffer buffer-name-tmp) "hello there")
 
-;;     ;; Put '(:center nil) into mis/settings plist on symbol 'message.
-;;     (mis2/style/update style
-;;                        :center nil)
-;;     (mis2/style/update style
-;;                        :margins '(">>" "<<"))
-;;     (mis2/style/update style
-;;                        :borders '("|" "|"))
-;;     (mis2/style/update style
-;;                        :padding '(?- :empty 3))
-;;     (mis2/style/update style
-;;                        :face :title)
+        (should (string= (buffer-string)
+                         "hello there\n")))))
 
-;;     ;; Output messages with settings and style lists.
-;;     (mis2/message :settings settings :style style message symbol0)
+  ;; Again, but using buffer object instead of buffer name.
+  (with-temp-buffer
+    (let ((buffer-obj-tmp (current-buffer)))
 
-;;     ;; §-TODO-§ [2020-03-12]: verify w/ ert `should', `should-not', etc.
+      ;; Mock to-minibuffer; actual to-buffer, but use our temp buffer instead
+      ;; of default.
+      (mis2-ert/mock 'mis2//message/output/to-minibuffer nil
+        ;; No style/settings - just do the simplest message possible.
+        (mis2/message :settings (list :buffer buffer-obj-tmp) "hello there")
 
-;;     (mis2/message :settings settings
-;;                   :style style
-;;                   "test 2: "
-;;                   ;; Think I need a tag to separate a recursion level from, say,
-;;                   ;; format args. So... `:r'? `:recurse'? `:mis'?
-;;                   :mis '(:style (mis2/style style :face :attention)
-;;                                 "%S" symbol1))
-;;     ;; So... I want a non-destructive `mis2/style' for this one.
+        (should (string= (buffer-string)
+                         "hello there\n")))))
 
-;;     ;; §-TODO-§ [2020-03-12]: verify w/ ert `should', `should-not', etc.
-
-;;     ;; lazy version?
-;;     (mis2/message :settings (mis2/settings :echo t :theme :default)
-;;                   :style (mis2/style :face :title)
-;;                   message symbol0)
-
-;;     ;; §-TODO-§ [2020-03-12]: verify w/ ert `should', `should-not', etc.
-;;     )
-
-;;   (mis2-ert/mis2-message/teardown))
+  (mis2-ert/mis2-message/teardown))
 
 
 ;;------------------------------------------------------------------------------
