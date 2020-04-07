@@ -881,8 +881,8 @@ line based on inputs in plist: :mis2//settings, :mis2//style, and
          (propertize expected-str 'face font-lock-builtin-face)
          (propertize (ms 48 ?\s)  'face font-lock-string-face)
          (propertize "--"         'face font-lock-string-face)
-         (propertize "|"          'face font-lock-constant-face)
-         (propertize "<<<<<"      'face font-lock-comment-delimiter-face))))))
+         (propertize "|"          'face font-lock-comment-delimiter-face)
+         (propertize "<<<<<"      'face font-lock-constant-face))))))
 
   ;; Done; set mis2/themes back and check that that worked too.
   (mis2-ert/mis2-contents/themes/restore)

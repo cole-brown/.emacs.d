@@ -770,9 +770,9 @@ do the hard work yourself:
                                                         :borders plist)))
 
         (setq postfix (concat (mis2//contents/propertize (second borders)
-                                                         :margins plist)
+                                                         :borders plist)
                               (mis2//contents/propertize (second margins)
-                                                         :borders plist)))
+                                                         :margins plist)))
 
         ;; Add fixed-size padding elements to final pieces.
         (when padding

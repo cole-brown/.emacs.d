@@ -40,30 +40,19 @@ them to the *Messages* buffer as such..."
 ;;---
 ;; Doesn't require any of the others right now...
 ;;---
-(require 'mis2-debug)
+;; (require 'mis2-debug)
 
 ;;---
 ;; Trying to be non-circularly referential with these...
 ;;---
 
-;; Refs mis2-center functions, vars in `mis2/parts/symbols-alist'.
-;; Inside quoted list, so ok.
-(require 'mis2-parts)
-
-;; Needs mis2-parts
-(require 'mis2-center)
-
-;; Needs mis2-parts, mis2-center
-(require 'mis2-comment)
-
-;; Needs mis2-parts
+(require 'mis2-themes)
+(require 'mis2-settings)
+(require 'mis2-contents)
 (require 'mis2-message)
 
-;; Needs mis2-message
-(require 'mis2-init)
-
-;; Needs mis2-parts, mis2-center, mis2-message
-(require 'mis2-koan)
+;; (require 'mis2-comment)
+;; (require 'mis2-nomer)
 
 
 ;;------------------------------------------------------------------------------

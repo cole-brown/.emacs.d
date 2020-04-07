@@ -607,8 +607,8 @@ out into mis2 settings/style.
              (propertize expected-str 'face font-lock-builtin-face)
              (propertize (ms 57 ?\s)  'face font-lock-string-face)
              (propertize "--"         'face font-lock-string-face)
-             (propertize "|"          'face font-lock-constant-face)
-             (propertize "<<"         'face font-lock-comment-delimiter-face))))))))
+             (propertize "|"          'face font-lock-comment-delimiter-face)
+             (propertize "<<"         'face font-lock-constant-face))))))))
 
   (mis2-ert/mis2-message/teardown))
 

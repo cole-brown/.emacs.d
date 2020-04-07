@@ -19,29 +19,35 @@
     (:default (;;---
                ;; Text Things
                ;;---
-               :title       font-lock-preprocessor-face ;; brightish blue
-               :highlight   font-lock-keyword-face      ;; gold/bold
-               :highlight2  font-lock-constant-face     ;; brightish green
-               :text        font-lock-builtin-face      ;; white/bold
-               :inattention font-lock-string-face       ;; darkish red
-               :attention   font-lock-preprocessor-face ;; brightish blue
-               :attention2  font-lock-constant-face     ;; brightish green
+               :title       font-lock-keyword-face       ;; gold/bold
+               :highlight   font-lock-variable-name-face ;; orangeish/peachish
+               :highlight2  font-lock-warning-face       ;; darker orangish/brownish
+               :highlight3  font-lock-warning-face       ;; darker orangeish/peachish
+               :text        font-lock-builtin-face       ;; white/bold
+               :text-pop    font-lock-string-face        ;; darkish pinkish
+               :inattention font-lock-doc-face           ;; almost darkish green (close to comment/delimiter)
+               :attention   font-lock-preprocessor-face  ;; brightish blue
+               :attention2  font-lock-constant-face      ;; brightish green
+
+               ;; remaining:
+               ;; font-lock-function-name-face ;; light blue/teal
+               ;; Others that are too close to ones I use for me to tell the difference...
 
                ;;---
                ;; Non-texty Things:
                ;;---
                ;; Box by piece names:
-               :indent      font-lock-comment-delimiter-face
-               :margins     font-lock-comment-delimiter-face
-               :borders     font-lock-comment-delimiter-face
-               :padding     font-lock-comment-face
+               :indent      font-lock-comment-delimiter-face ;; darker green
+               :margins     font-lock-comment-delimiter-face ;; darker green
+               :borders     font-lock-comment-delimiter-face ;; darker green
+               :padding     font-lock-comment-face           ;; darkish green
                ))
 
-    ;; §-TODO-§ [2020-03-25]: Remove custom stuff from in here.
+    ;; §-TODO-§ [2020-03-25]: Remove custom stuff from in here; add when
+    ;; configuring package.
     ;;---
     ;; My Custom Stuff
     ;;---
-    ;; §-TODO-§ [2019-11-15]: change do (:spydez :homeward)?
     (:homeward (:borders     font-lock-comment-delimiter-face
                 :padding     font-lock-comment-face
                 :text        font-lock-builtin-face
