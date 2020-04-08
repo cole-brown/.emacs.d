@@ -456,20 +456,13 @@
   ;; ;;---
 
 
-  ;;---
-  :config
-  ;;---
-
-  ;; bufler-defgroups should go here...
-  ;; (setf bufler-groups (bufler-defgroups ...))
-
-  ;; hook into Helm
-  (require 'helm-bufler)
-  ;; (helm :sources '(helm-bufler-source))
-  (setq helm-mini-default-sources '(helm-source-buffers-list
-                                    helm-bufler-source
-                                    helm-source-recentf
-                                    helm-source-buffer-not-found)))
+  ;; ;;---
+  ;; :config
+  ;; ;;---
+  ;; 
+  ;; ;; bufler-defgroups should go here...
+  ;; ;; (setf bufler-groups (bufler-defgroups ...))
+  )
 
 ;; Commands:    https://github.com/alphapapa/bufler.el#commands
 ;;   bufler
@@ -520,6 +513,20 @@
 ;;   k         : Kill buffers.
 ;;   s         : Save buffers.
 
+
+(use-package helm-bufler
+  :after (helm bufler)
+  :demand t
+  ;;---
+  :config
+  ;;---
+
+  ;; hook into Helm
+  ;; (helm :sources '(helm-bufler-source))
+  (setq helm-mini-default-sources '(helm-source-buffers-list
+                                    helm-bufler-source
+                                    helm-source-recentf
+                                    helm-source-buffer-not-found)))
 
 
 ;;------------------------------------------------------------------------------
