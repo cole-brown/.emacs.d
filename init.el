@@ -624,6 +624,8 @@
 ;;
 ;; Also, now, useful non-interactive functions used in init.
 (spydez/require 'mis) ;; This should already be loaded by early-init, so no-op?
+(add-to-list 'load-path (spydez/path/to-dir spydez/dir/personal/packages "mis-2"))
+(spydez/require 'mis2) ;; §-TODO-§ [2020-04-06]: temp while mis2 still a WIP
 (spydez/require 'strings-and-things)
 (spydez/require 'json-and-tom)
 (spydez/require 'misc-functions)

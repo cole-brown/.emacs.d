@@ -12,6 +12,8 @@
 ;; §-TODO-§ [2020-03-18]: Rename this mis2-configuration.el? mis2-config.el?
 ;; Break into 2 files? Keep all here?
 
+(require 'mis2-themes)
+
 
 ;;------------------------------------------------------------------------------
 ;; Customization: General Settings
@@ -41,7 +43,7 @@ minibuffer-echo-area functionality."
 
 (defcustom mis2/custom/keywords '(:settings :mis2//settings
                                   :style    :mis2//style)
-  "Settings and style keyword symbol names -> internal mis2 symbol.
+  "Settings and style keyword symbol names -> mis2 private symbols.
 "
   :group 'mis2
   :type '(list symbol symbol))
@@ -57,18 +59,20 @@ minibuffer-echo-area functionality."
 ;; Consts that we want available to the user to change.
 
 
-
 ;;---
 ;; General Consts
 ;;---
 
 (defconst mis2/validity/types
-  '((:number  numberp)
-    (:integer integerp)
-    (:float   floatp)
-    (:string  stringp)
-    (:char    characterp)
-    (:list    listp))
+  (list (list :number     #'numberp)
+        (list :integer    #'integerp)
+        (list :float      #'floatp)
+        (list :string     #'stringp)
+        (list :str/nil    (lambda (x) (or (null x) (stringp x))))
+        (list :str/buffer (lambda (x) (or (stringp x) (bufferp x))))
+        (list :char       #'characterp)
+        (list :list       #'listp)
+        (list :keyword    #'keywordp))
   "Validity checkers for basic types and anything else that doesn't change
 based on context.
 
@@ -98,7 +102,7 @@ E.g. a :float is always a float, but a :range could be 0 to 100 or -0.5 to 0.5.
 ;;   :echo-delay     nil, numberp (see `minibuffer-message-timeout')
 ;;
 ;; Yes or no?
-;;   :type           mis2/type->faces alist key (keyword symbol or list)
+;;   :theme          mis2/themes alist key (keyword symbol)
 ;;   :face           symbol for desired face
 
 
@@ -119,8 +123,9 @@ Settings:
 (defconst mis2/settings/keys
   '((:echo       :const     (t nil))
     (:echo-delay :range     (0.0 100.0))
-    (:type       :key-alist mis2/type->faces)
-    (:buffer     :string))
+    (:theme      :alist mis2/themes)
+    (:line-width :integer)
+    (:buffer     :str/buffer))
   "10,000 foot view: calls are either intended to be in an interactive manner,
 or as automatic output flung out as soon as it's reached. The main difference is
 how long the echo area timeout is changes between the two.
@@ -129,7 +134,7 @@ Settings:
 ;; §-TODO-§ [2020-03-06]: explain each of these
   :echo
   :echo-delay
-  :type
+  :theme
   :buffer
 ")
 
@@ -139,23 +144,45 @@ Settings:
 ;;---
 
 (defconst mis2/style/keys
-  '(;; Alignment
+  '(;;---
+    ;; Alignment
+    ;;---
     (:center :const (t nil))
     (:left   :const (t nil))
     (:right  :const (t nil))
 
+    ;;---
     ;; Text
-    (:face :key-alist ':type) ;; indirect... got to get :type alist, then get
-                              ;; :face's key out of that.
+    ;;---
+    ;; Indirect... got to get :theme, then get theme's alist from mis2/themes,
+    ;; then get :face's key out of that.
+    (:face  :keyword)
+    ;; §-TODO-§ [2020-04-02]: a more better checker?
+    ;;   - Actually checking against expected faces in given theme?
 
+    ;; Indirect... :faces is a plist of :face key/value, basically, for various
+    ;; parts of the line.
+    (:faces :plist)
+    ;; §-TODO-§ [2020-04-02]: a more better checker?
+    ;;   - (:faces :plist (keywordp . keywordp)) at the least?
+    ;;   - (:faces :plist (keywordp . ':theme)) would be better?
+    ;;   - Actually checking against expected keywords would be best?
+
+    ;;---
+    ;; Line
+    ;;---
+    (:indent :integer)
+
+    ;;---
     ;; Box Model...ish Thing.
-    (:margins :list (:string :string))
-    (:borders :list (:string :string))
+    ;;---
+    (:margins :list (:str/nil :str/nil))
+    (:borders :list (:str/nil :str/nil))
     ;; Can be either, e.g.:
     ;;   :padding '(">>" "<<")   ;; use the strings exactly
     ;;   :padding '(?- :empty 3) ;; Build from char, leaving 3 empties.
     ;;   :padding '(?- :fill 3)  ;; Build from char, to max of 3 long.
-    (:padding :or ((:list (:string :string))
+    (:padding :or ((:list (:str/nil :str/nil))
                    (:list (:char (:const (:empty :fill)) :integer)))))
   "Style for a part of a mis2 message. Alignment, text properties, border,
 margin, padding...
@@ -185,13 +212,162 @@ Styles:
       (mis2/settings/style/update style :padding '(\"---\" \"---\"))
 ")
 
+
 ;;------------------------------------------------------------------------------
-;; Settings
+;; Private Keywords
+;;------------------------------------------------------------------------------
+
+(defconst mis2//data/keywords
+  (list :mis2//settings
+        :mis2//style
+
+        :mis2//contents
+        :mis2//box
+        :mis2//line
+
+        :mis2//message
+        :mis2//buffers
+
+        :mis2//testing)
+  "Full list of keywords:
+
+Public -> Private (see `mis2/custom/keywords'):
+  :settings -> :mis2//settings
+  :style    -> :mis2//style
+
+Private-Only:
+  :mis2//contents - contents of message, unformatted
+  :mis2//box      - intermediate parts for building final box
+  :mis2//message  - final, propertized, and formatted message
+  :mis2//buffers  - list of buffer(s) to send output to
+  :mis2//testing  - valid only in mis2 tests
+")
+
+
+;;------------------------------------------------------------------------------
+;; Data - Getters
+;;------------------------------------------------------------------------------
+
+;; §-TODO-§ [2020-03-24]: move data things to own file?
+(defun mis2//data/plist? (plist)
+  "Returns non-nil if PLIST is a mis2 plist.
+"
+  ;; Check for contents or message key/value - they're required.
+  ;; or for mere existance of :mis2//testing keyword.
+  (or (plist-get plist :mis2//contents)
+      (plist-get plist :mis2//message)
+      (memq :mis2//testing plist)))
+;; (mis2//data/plist? '(:mis2//message "hi" :mis2//settings (:echo t :echo-delay 2)))
+;; (mis2//data/plist? '(:mis2//testing))
+
+
+(defun mis2//data/get (key plist)
+  "Get a piece of a mis2 data plist (settings, styles, contents, etc).
+"
+  (if (memq key mis2//data/keywords)
+      (plist-get plist key)
+    (error "Key '%s' is not a known mis2//data key: %S"
+           key mis2//data/keywords)))
+;; (mis2//settings/get/from-data :echo '(:echo t :echo-delay 2)
+
+
+(defmacro mis2//data/update (plist key value)
+  "Push key/value into plist.
+"
+  `(setq ,plist (plist-put ,plist ,key ,value)))
+
+
+(defun mis2//data/get/from-data (key mis2--key mis2--plist
+                                     &optional
+                                     valid-key-list
+                                     valid-key-alist0
+                                     valid-key-alist1)
+  "Get MIS2--KEY's value from a MIS2--PLIST, then get KEY's value from
+MIS2--KEY's plist. Validates key is acceptable by checking for it as either:
+  1. an element in VALID-KEY-LIST
+  2. a key in VALID-KEY-ALIST0 or VALID-KEY-ALIST1
+"
+  (if (mis2//data/plist? mis2--plist)
+      (if (or (memq key valid-key-list)
+              (alist-get key valid-key-alist0)
+              (alist-get key valid-key-alist1))
+          ;; get settings plist from data plist, then get specific setting.
+          (plist-get (mis2//data/get mis2--key mis2--plist) key)
+
+        (error "%s: Key '%s' is not a known %S key: %S, %S or %S"
+               "mis2//data/get/from-data"
+               key
+               mis2--key
+               valid-key-list
+               valid-key-alist0
+               valid-key-alist1))
+
+    (error "settings: mis2--plist is not a mis2 plist. %S %S"
+           "Might be a mis2 settings, style, etc sub-list?"
+           plist)))
+
+
+;;------------------------------------------------------------------------------
+;; Settings - Getters
+;;------------------------------------------------------------------------------
+
+(defun mis2//settings/get/from-data (key plist)
+  "Get settings from a mis2 data PLIST, then get KEY from settings.
+"
+  (mis2//data/get/from-data key
+                            :mis2//settings plist
+                            nil
+                            mis2/settings/keys
+                            mis2/settings/meta/keys))
+
+  ;; (if (mis2//data/plist? plist)
+  ;;     (if (or (alist-get key mis2/settings/keys)
+  ;;             (alist-get key mis2/settings/meta/keys))
+  ;;         ;; get settings plist from data plist, then get specific setting.
+  ;;         (plist-get (mis2//data/get :mis2//settings plist) key)
+
+  ;;       (error "settings: Key '%s' is not a known mis2/settings key: %S or %S"
+  ;;              key mis2/settings/keys mis2/settings/meta/keys))
+
+  ;;   (error "settings: Plist is not a mis2 plist. %S %S"
+  ;;          "Might be a mis2 settings, style, etc sub-list?"
+  ;;          plist)))
+
+;;------------------------------------------------------------------------------
+;; Style - Getters
+;;------------------------------------------------------------------------------
+
+(defun mis2//style/get/from-data (key plist)
+  "Get style from a mis2 data PLIST, then get KEY from style.
+"
+  (mis2//data/get/from-data key
+                            :mis2//style plist
+                            nil
+                            mis2/style/keys
+                            nil))
+
+  ;; (if (mis2//data/plist? plist)
+  ;;     (if (alist-get key mis2/style/keys)
+  ;;         ;; get style plist from data plist, then get specific setting.
+  ;;         (plist-get (mis2//data/get :mis2//style plist) key)
+
+  ;;       (error "style: Key '%s' is not a known mis2/style key: %S"
+  ;;              key mis2/style/keys))
+
+  ;;   (error "style: Plist is not a mis2 plist. %S %S"
+  ;;          "Might be a mis2 settings, style, etc sub-list?"
+  ;;          plist)))
+
+
+;;------------------------------------------------------------------------------
+;; Settings - Setters
 ;;------------------------------------------------------------------------------
 
 (defun mis2/settings/set (plist &rest args)
-  "Add one or more mis settings in ARGS to whatever is already in PLIST.
-Returns new list (PLIST will be unchanged).
+  "Add one or more mis settings in ARGS to whatever is already in
+:mis2/settings PLIST. Returns new list (PLIST will be unchanged).
+
+NOTE: works on :mis2//settings plist, /not/ full mis2 plist.
 
 Expects ARGS to be: key0 value0 key1 value1 ...
 
@@ -218,8 +394,10 @@ Examples:
 
 
 (defmacro mis2/settings/update (plist &rest args)
-  "Add one or more mis settings in ARGS to whatever is already in PLIST.
-Updates PLIST in place.
+  "Add one or more mis settings in ARGS to whatever is already in
+:mis2//settings PLIST. Updates PLIST in place.
+
+NOTE: works on :mis2//settings plist, /not/ full mis2 plist.
 
 Expects ARGS to be: key0 value0 key1 value1 ...
 
@@ -301,7 +479,8 @@ Examples:
 
          ;; Still have ,temp-args? Didn't end up with a pair - complain?
          (when ,temp-args
-           (error "Uneven list; no value for last element: %s" (first ,temp-args)))
+           (error "Uneven list; no value for last element: %s"
+                  (first ,temp-args)))
 
          ;; ...and return the list.
          ,plist)
@@ -322,21 +501,21 @@ Examples:
 ;; (let ((settings '(:test "an test str"))) (mis2/settings/update settings :echo-delay -1))
 ;; (let ((settings '(:test "an test str"))) (mis2/settings/update settings :echo-delay 101))
 ;; (let ((settings '(:test "an test str"))) (mis2/settings/update settings :echo-delay "jeff"))
-;; (let ((settings '(:test "an test str"))) (mis2/settings/update settings :echo t :type :default))
-;; (let (settings) (mis2/settings/update settings :echo t :type :default) (message "%S" settings))
-;; (let (settings) (macroexpand '(mis2/settings/update settings :echo t :type :default)))
+;; (let ((settings '(:test "an test str"))) (mis2/settings/update settings :echo t :theme :default))
+;; (let (settings) (mis2/settings/update settings :echo t :theme :default) (message "%S" settings))
+;; (let (settings) (macroexpand '(mis2/settings/update settings :echo t :theme :default)))
 
 
 (defun mis2//settings/check-key (key)
   "Checks that KEY is a known mis/settings keyword.
 "
-  (mis2//internal/check-key key mis2/settings/keys mis2/settings/meta/keys))
+  (mis2//private/check-key key mis2/settings/keys mis2/settings/meta/keys))
 
 
-(defun mis2//settings/check-value (key value)
+(defun mis2//settings/check-value (key value &optional key-info)
   "Checks that VALUE is a valid value for the mis/settings keyword KEY.
 "
-  (mis2//internal/check-value key value #'mis2//settings/check-key))
+  (mis2//private/check-value key value #'mis2//settings/check-key key-info))
 
 
 ;;------------------------------------------------------------------------------
@@ -345,8 +524,10 @@ Examples:
 
 
 (defun mis2/style/set (plist &rest args)
-  "Add one or more mis styles in ARGS to whatever is already in PLIST.
-Returns new list (PLIST will be unchanged).
+  "Add one or more mis styles in ARGS to whatever is already in
+:mis2/style PLIST. Returns new list (PLIST will be unchanged).
+
+NOTE: works on :mis2//style plist, /not/ full mis2 plist.
 
 Expects ARGS to be: key0 value0 key1 value1 ...
 
@@ -371,8 +552,10 @@ Examples:
 
 
 (defmacro mis2/style/update (plist &rest args)
-  "Add one or more mis style in ARGS to whatever is already in PLIST.
-Updates PLIST in place.
+  "Add one or more mis style in ARGS to whatever is already in
+:mis2/style PLIST. Updates PLIST in place.
+
+NOTE: works on :mis2//settings plist, /not/ full mis2 plist.
 
 Expects ARGS to be: key0 value0 key1 value1 ...
 
@@ -455,7 +638,8 @@ Examples:
 
          ;; Still have ,temp-args? Didn't end up with a pair - complain?
          (when ,temp-args
-           (error "Uneven list; no value for last element: %s" (first ,temp-args)))
+           (error "Uneven list; no value for last element: %s"
+                  (first ,temp-args)))
 
          ;; ...and return the list.
          ,plist)
@@ -470,7 +654,7 @@ Examples:
 (defun mis2//style/check-key (key)
   "Checks that KEY is a known mis/style keyword.
 "
-  (mis2//internal/check-key key mis2/style/keys nil))
+  (mis2//private/check-key key mis2/style/keys nil))
 ;; (mis2//style/check-key :string)
 ;; (mis2//style/check-key :center)
 ;; (mis2//style/check-key nil)
@@ -482,8 +666,8 @@ Examples:
 ;;   (:right  :const (t nil))
 ;;
 ;;   ;; Text
-;;   (:face :key-alist :type) ;; indirect... got to get :type alist, then get
-;;                            ;; :face's key out of that.
+;;   (:face :alist :theme) ;; indirect... got to get :theme alist, then get
+;;                             ;; :face's key out of that.
 ;;
 ;;   ;; Box Model...ish Thing.
 ;;   (:margins (:list (:string :string)))
@@ -498,12 +682,19 @@ Examples:
 (defun mis2//style/check-value (key value &optional key-info)
   "Checks that VALUE is a valid value for the mis/style keyword KEY.
 "
-  (mis2//internal/check-value key value #'mis2//style/check-key))
+  (mis2//private/check-value key value #'mis2//style/check-key key-info))
 
 
-(defun mis2//internal/check-value (key value check-key-fn &optional key-info)
+;;------------------------------------------------------------------------------
+;; Settings / Style Helpers
+;;------------------------------------------------------------------------------
+
+(defun mis2//private/check-value (key value check-key-fn &optional key-info)
   "Checks that VALUE is a valid value for the keyword KEY.
 "
+    ;; (message "mis2//private/check-value: k: %S, v: %S, ckf: %S, ki: %S"
+    ;;          key value check-key-fn key-info)
+
   ;; sometimes need to override key-info in a recursion (e.g. :or case)
   (let* ((key-info (or key-info (funcall check-key-fn key)))
          (type (and (listp key-info) (first key-info)))
@@ -511,6 +702,9 @@ Examples:
          (basic-validity (or (first (alist-get key mis2/validity/types))
                              (first (alist-get type mis2/validity/types))))
          success)
+
+    ;; (message "    : ki: %S, t: %S, vc: %S, bv: %S"
+    ;;          key-info type value-checker basic-validity)
 
     ;; This may be a bug in check-key rather than a special edge case here...
     (when (eq :const key)
@@ -523,6 +717,12 @@ Examples:
            ;; Return bad value if we have a bad key.
       :*bad-value-error*)
 
+     ;; If key-info is an anonymous function, from e.g. a list's recursion
+     ;; checking, we should just use it to check the value.
+     ((or (eq type 'closure)
+          (eq type 'lambda))
+      (setq success (funcall key-info value)))
+
      ;; Is it an :or? Got to check each option in value-checker and see
      ;; if any pass.
      ((eq type :or)
@@ -532,7 +732,7 @@ Examples:
       (dotimes (i (length value-checker))
         ;; Ask sub-us to check this sub-key-info/sub-value.
         (when (not (eq :*bad-value-error*
-                       (mis2//internal/check-value
+                       (mis2//private/check-value
                         ;; Pass key and whole value in;
                         ;; only change value-checker.
                         key value check-key-fn
@@ -568,14 +768,14 @@ Examples:
                                     (keywordp (first (nth i value-checker))))
                                ;; e.g. (:const (:empty :fill)) as a
                                ;; value-checker for a list item.
-                               (mis2//internal/check-value
+                               (mis2//private/check-value
                                 (first (nth i value-checker))
                                 (nth i value)
                                 check-key-fn
                                 (second (nth i value-checker)))
 
                              ;; e.g. :string as a value-checker for a list item.
-                             (mis2//internal/check-value (nth i value-checker)
+                             (mis2//private/check-value (nth i value-checker)
                                                          (nth i value)
                                                          check-key-fn)))
                    ;; failure - set success to a big nope
@@ -592,7 +792,7 @@ Examples:
      ;; Otherwise, use key-info to check our value.
      ;; We'll have a cdr list like...:
      ;;   '(:const     '(t nil))
-     ;;   '(:key-alist 'mis2/type->faces)
+     ;;   '(:alist 'mis2/themes)
      ;;   '(:range     '(0.0 100.0))
      ;;   '(:or (<option> ...))
      ;; and we have to do the check for the type.
@@ -611,10 +811,20 @@ Examples:
         :*bad-value-error*))
 
      ;; Find it in the alist? Valid.
-     ((eq :key-alist type)
+     ((eq :alist type)
       (if (and (not (null value))
                (not (null value-checker))
                (alist-get value (symbol-value value-checker)))
+          value
+        :*bad-value-error*))
+
+     ;; plist checker!
+     ;; Dumb right now.
+     ((eq :plist type)
+      ;; dumb check: exists, is list, is even (for key/value pairs)
+      (if (and value
+               (listp value)
+               (even (length value)))
           value
         :*bad-value-error*))
 
@@ -622,7 +832,6 @@ Examples:
      ;; *handling yet.
      (t
       :*bad-value-error*))))
-
 ;; (mis2//style/check-value :string "string-value")
 ;; (mis2//style/check-value "string-value" :string)
 ;; (mis2//style/check-value :margins '("hi" "hello"))
@@ -633,12 +842,8 @@ Examples:
 ;; (mis2//style/check-value :padding '(?- :empty 3))
 
 
-;;------------------------------------------------------------------------------
-;; mis2 Settings & Style Internals
-;;------------------------------------------------------------------------------
-
-(defun mis2//internal/check-key (key valid-key-info valid-meta-key-info)
-  "Internal helper function for checking keys for mis2/settings and mis2/style.
+(defun mis2//private/check-key (key valid-key-info valid-meta-key-info)
+  "Private helper function for checking keys for mis2/settings and mis2/style.
 "
   (let ((info (or (alist-get key valid-key-info)
                   (alist-get key valid-meta-key-info)))
@@ -661,71 +866,6 @@ Examples:
            ;; return.
            (t
             info))))
-
-;;         ------------------------------------------------------------
-;;   ------------------------------------------------------------------------
-;;------------------------------------------------------------------------------
-;;                     Version 2, Rough Draft 0 is below.
-;;------------------------------------------------------------------------------
-;;   ------------------------------------------------------------------------
-;;         ------------------------------------------------------------
-
-
-;; (defun mis2/settings/get (key user-settings &optional mis2-setting)
-;;   "Get a mis2 setting based off KEY. Setting either comes from USER-SETTINGS
-;; plist or from the appropriate mis2 setting const/var (passed in
-;; as MIS2-SETTING).
-;; "
-;;   ;; Simply return value from user-settings or mis2-setting, preferring
-;;   ;; user-settings. Only complication is if user-settings specifies a nil, so we
-;;   ;; have to check that key is a member of user-settings...
-;;   (if (plist-member user-settings key)
-;;       (plist-get user-settings key)
-;;     mis2-setting))
-
-;; (defun mis2/setting/get-with-default (arg default)
-;;   "Figures out actual ARG by looking at ARG and DEFAULT. It will
-;; be ARG if ARG is non-nil and either symbolp or functionp. Else it
-;; will look at the value of DEFAULT and use either that symbol, or
-;; call that function to get a symbol."
-;;   (cond
-;;    ;; pass through - function
-;;    ((and (not (null arg))
-;;          (functionp arg))
-;;     (funcall arg))
-;;    ;; pass through - symbol
-;;    ((and (not (null arg))
-;;          (symbolp arg))
-;;     ;; if it has a value, use that, else use directly
-;;     (if (symbol-value arg)
-;;           (symbol-value arg)
-;;       arg))
-
-;;    ;; default - function to get current
-;;    ((and (not (null default))
-;;          (functionp default))
-;;     (funcall default))
-;;    ;; default - symbol as default
-;;    ((symbolp default)
-;;     ;; if it has a value, use that, else use directly
-;;     (if (and (not (null default))
-;;              (symbol-value default))
-;;           (symbol-value default)
-;;       default))
-
-;;    ;; fallback to something drastic-ish
-;;    (t
-;;     :error)))
-;; ;; (mis2/setting/get-with-default nil mis2/debug/type)
-
-;; (defun mis2/settings/put (key value list)
-;;   "Puts VALUE into LIST under KEY, after verifying KEY is a valid mis2 setting.
-;; "
-;;   (if (memq key mis2/settings/keys)
-;;       (plist-put list key value)
-;;     (error "Key %S not a valid mis2/settings key: %S"
-;;            key
-;;            mis2/settings/keys)))
 
 
 ;;------------------------------------------------------------------------------

@@ -48,6 +48,14 @@ all in a 'mis2-ert/' \"namespace\".")
   ;; (load-file "data/mis2-ert-data-xyz.el")
 
   ;;---
+  ;; mis2 itself
+  ;;---
+  (load-file "../mis2-themes.el")
+  (load-file "../mis2-settings.el")
+  (load-file "../mis2-contents.el")
+  (load-file "../mis2-message.el")
+
+  ;;---
   ;; Helpers
   ;;---
   (load-file "helpers/mis2-ert-mock-stub.el")
@@ -59,7 +67,8 @@ all in a 'mis2-ert/' \"namespace\".")
   ;; Tests (in implementation/simplicity/dependency-pyramid order)
   ;;---
   (load-file "mis2-settings-ert.el")
-  ;; (load-file "mis2-message-ert.el")
+  (load-file "mis2-contents-ert.el")
+  (load-file "mis2-message-ert.el")
 
   ;;---
   ;; Done
