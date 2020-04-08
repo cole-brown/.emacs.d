@@ -514,19 +514,21 @@
 ;;   s         : Save buffers.
 
 
-(use-package helm-bufler
-  :after (helm bufler)
-  :demand t
-  ;;---
-  :config
-  ;;---
-
-  ;; hook into Helm
-  ;; (helm :sources '(helm-bufler-source))
-  (setq helm-mini-default-sources '(helm-source-buffers-list
-                                    helm-bufler-source
-                                    helm-source-recentf
-                                    helm-source-buffer-not-found)))
+;; TODO: This is fucking up way back in bootstrap-packages?! Its autoload during `package-initialize' wants helm to be up and running already.
+;;
+;; (use-package helm-bufler
+;;   :after (helm bufler)
+;;   :demand t
+;;   ;;---
+;;   :config
+;;   ;;---
+;; 
+;;   ;; hook into Helm
+;;   ;; (helm :sources '(helm-bufler-source))
+;;   (setq helm-mini-default-sources '(helm-source-buffers-list
+;;                                     helm-bufler-source
+;;                                     helm-source-recentf
+;;                                     helm-source-buffer-not-found)))
 
 
 ;;------------------------------------------------------------------------------
