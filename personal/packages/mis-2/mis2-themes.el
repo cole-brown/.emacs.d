@@ -7,6 +7,17 @@
 
 
 
+;; NOTE:
+;;   "emface"   - emacs face property
+;;
+;;   "misface" - mis2 face keyword (:title)
+;;   "theme"   - mis2 keyword (:default) for a collection of misfaces
+
+;; NOTE:
+;;   Special Types:
+;;     - :message - entire mis2 message line
+;;     - :text    - part of mis2 message that is not line/box/special/etc.
+
 ;;------------------------------------------------------------------------------
 ;; Consts & Vars
 ;;------------------------------------------------------------------------------
@@ -28,6 +39,8 @@
                :inattention font-lock-doc-face           ;; almost darkish green (close to comment/delimiter)
                :attention   font-lock-preprocessor-face  ;; brightish blue
                :attention2  font-lock-constant-face      ;; brightish green
+
+               :message     font-lock-builtin-face       ;; white/bold
 
                ;; remaining:
                ;; font-lock-function-name-face ;; light blue/teal
@@ -70,10 +83,10 @@
                           :padding  font-lock-comment-face
                           :text     font-lock-comment-face)))
   "alist of plists. Each entry should be a list (not cons) of:
-  (:theme-keyword faces-list)
+  (:theme-keyword misfaces-list)
 
 Each faces-list should be a plist of:
-  (:face-keyword defined-face-symbol)
+  (:misface-keyword defined-face-symbol)
 
 See 'M-x list-faces-display' for all defined faces."
   :group 'mis2
@@ -98,30 +111,119 @@ If cannot find a theme, returns default theme: `:default'.
 ;; (mis2//themes/get/theme '(:mis2//style (:theme 'jeff)))
 
 
-(defun mis2//themes/get/faces-all (theme)
+(defun mis2//themes/get/misfaces-all (theme)
   "Get specific THEME faces from `mis2/themes' data. THEME is a
 keyword symbol alist key for the `mis2/themes' alist.
 
 If cannot find theme, or THEME is nil, returns all faces for
 default theme: `:default'.
+
+Returns plist of key/values: (misface0 emface0 ... misfaceN emfaceN)
 "
   ;; our alist cells are lists, not conses, so drop the outer list we get from
   ;; alist-get so we just have value, not (value).
   ;; We want (<face-key> <face-val> ...), not ((<face-key> <face-val> ...)).
   (or (first (alist-get theme mis2/themes))
       (first (alist-get :default mis2/themes))))
-;; (mis2//themes/get/faces-all :default)
+;; (mis2//themes/get/misfaces-all :default)
 
 
-(defun mis2//themes/get/face (face theme)
-  "Get specific FACE from THEME in `mis2/themes' data.
+(defun mis2//themes/get/emface (misface theme)
+  "Get specific MISFACE from THEME in `mis2/themes' data.
 THEME should be alist key keyword symbol in `mis2/themes' alist.
-FACE should be a plist key keyword symbol for THEME plist.
+MISFACE should be a plist key keyword symbol for THEME plist.
 
-Returns face property or nil.
+Returns emface (emacs face property) or nil.
 "
-  (plist-get (mis2//themes/get/faces-all theme) face))
-;; (mis2//themes/get/face :title :default)
+  (plist-get (mis2//themes/get/faces-all theme) misface))
+;; (mis2//themes/get/emface :title :default)
+
+
+(defun mis2//themes/get/misface/by-type (type plist)
+  "Get misface (e.g. :text) from THEME by TYPE (e.g. :borders).
+
+Returns misface or nil.
+"
+  ;; Get TYPE's face keyword from style's `:faces' plist.
+  ;; This is still the mis2 face (e.g. `:borders'), not the
+  ;; actual property (e.g. `font-lock-comment-delimiter-face').
+  (plist-get
+   ;; Get `:faces' plist from style data from mis2 plist.
+   (plist-get (plist-get plist :mis2//style) :faces)
+   type))
+
+
+(defun mis2//themes/get/misface/from-style (plist)
+  "Get misface (e.g. :text) from :face from :mis2//style in PLIST.
+
+Returns misface or nil.
+"
+   ;; Get `:face' plist from style data from mis2 plist.
+   (plist-get (plist-get plist :mis2//style) :face))
+
+
+(defun mis2//themes/get/misface/smart-type (type plist)
+  "Get misface (e.g. :text) from THEME by TYPE (e.g. :borders).
+
+If TYPE is _A_, checks for _A_ with fallback to _B_:
+  A) :text
+    B) :message
+  A)
+    B)
+Otherwise just look for TYPE, no fallback.
+
+Returns misface or nil.
+"
+  ;; :text should check :message as fallback
+  (cond ((eq type :text)
+         (or (mis2//themes/get/misface/by-type :text    plist)
+             (mis2//themes/get/misface/by-type :message plist)))
+
+        ;; Default: No fallback to check.
+        (t
+         (mis2//themes/get/misface/by-type type plist))))
+
+
+(defun mis2//themes/misface (type theme plist)
+  "Checks various places for the correct misface for this type.
+
+1) PLIST -> :mis2//style -> :faces -> TYPE -> misface
+2) PLIST -> :mis2//style -> :face -> misface
+3) THEME -> TYPE --exists?-> TYPE (type == misface in this instance)
+4) THEME -> :default --exists?-> :default
+5) nil
+"
+  (or
+   ;; Check for match by type in :mis2//style :faces.
+   (mis2//themes/get/misface/by-type type plist)
+
+   ;; Else check for :mis2//style :face.
+   (mis2//themes/get/misface/from-style plist)
+
+   ;; Else check for match by type in theme.
+   (when (mis2//themes/get/emface type theme)
+     ;; Have match; type is also misface now.
+     type)
+
+   ;; Else check for... :default in theme?
+   (when (mis2//themes/get/emface :default theme)
+     :default)))
+
+
+(defun mis2//themes/emface (type plist)
+  "Go from mis2 PLIST and TYPE, all the way to emface (emacs face property).
+Checks :theme, :faces vs :face, falls back to default values, etc. Everything
+necessary to get from PLIST to emface (emacs face property).
+"
+  ;; Get theme (e.g. :default) from plist.
+  (let* ((theme (mis2//themes/get/theme plist))
+         ;; misface keyword (e.g. :title, :highlight, :attention) for:
+         ;;   - specific content type (e.g. :margins, :message...)
+         ;;   - or use type.
+         ;;   - or fallback to the general mis2//style :face.
+         (misface (mis2//themes/misface type theme plist)))
+    ;; Get actual emacs face from the theme misface.
+    (mis2//themes/get/face misface theme)))
 
 
 ;;------------------------------------------------------------------------------

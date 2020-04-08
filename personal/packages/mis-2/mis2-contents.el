@@ -95,7 +95,7 @@ parts (:mis2//line, :mis2//box, etc).
 "
   (-> string
       ;; Propertize the string directly.
-      (mis2//contents/propertize :message plist)
+      (mis2//contents/propertize :text plist)
       ;; Box will propertize the boxing pieces as it builds them.
       (mis2//contents/box/build plist)))
 
@@ -109,7 +109,7 @@ So we're... 3 plists deep.
   E.g.: '(:mis2//settings (...)
           ...
           :mis2//style (...
-                        :faces (:message 'face-name-0
+                        :faces (:text    'face-name-0
                                 :padding 'face-name-1
                                 ...)))
 
@@ -117,36 +117,14 @@ Final sink for:
   :mis2//settings -- :theme
   :mis2//style    -- :faces
 "
-  ;; (message "m2/prop: str: %S, t: %S"
-  ;;          string type)
-  ;; (message "---> theme: %S"
-  ;;          (mis2//themes/get/theme plist))
-
-  ;; (message "---> (fct: %S, fd: %S) -> m2-f: %S"
-  ;;          (mis2//style/get/face-by-content-type type plist)
-  ;;          (mis2//style/get/from-data :face plist)
-  ;;          (or (mis2//style/get/face-by-content-type type plist)
-  ;;              (mis2//style/get/from-data :face plist)))
-
-  ;; (message "---> fv: %S"
-  ;;          (mis2//themes/get/face (or (mis2//style/get/face-by-content-type type plist)
-  ;;                                     (mis2//style/get/from-data :face plist))
-  ;;                                 (mis2//themes/get/theme plist)))
-
   ;; Propertize it if we have a string and find a face.
   (if-let* ((string string) ;; null check
-            (mis2-theme (mis2//themes/get/theme plist))
-            ;; mis2's face keyword (e.g. :title, :highlight, :attention) for:
-            ;;   - specific content type (e.g. :margins, :message...)
-            ;;   - or fallback of the general mis2//style :face
-            (mis2-face (or (mis2//style/get/face-by-content-type type plist)
-                           (mis2//style/get/from-data :face plist)))
-            ;; Get actual emacs face from the theme faces.
-            (face-val (mis2//themes/get/face mis2-face mis2-theme)))
+            ;; Actual emacs face by way of type and plist.
+            (emface (mis2//themes/emface type plist)))
 
       ;; Found a defined face, so set `face' property of string to our
       ;; face and return that.
-      (propertize string 'face face-val)
+      (propertize string 'face emface)
 
     ;; No face; return the unchanged string.
     string))

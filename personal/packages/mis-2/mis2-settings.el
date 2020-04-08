@@ -359,22 +359,6 @@ MIS2--KEY's plist. Validates key is acceptable by checking for it as either:
   ;;          plist)))
 
 
-(defun mis2//style/get/face-by-content-type (content-type plist)
-  "Get style from a mis2 data PLIST, then get face(s) from style, then get TYPE
-key's value from faces.
-
-This is still the mis2 face (e.g. `:borders'), not the actual
-property (e.g. `font-lock-comment-delimiter-face').
-"
-  ;; Get CONTENT-TYPE's face keyword from style's `:faces' plist.
-  ;; This is still the mis2 face (e.g. `:borders'), not the
-  ;; actual property (e.g. `font-lock-comment-delimiter-face').
-  (plist-get
-   ;; Get `:faces' plist from style data from mis2 plist.
-   (mis2//style/get/from-data :faces plist)
-   content-type))
-
-
 ;;------------------------------------------------------------------------------
 ;; Settings - Setters
 ;;------------------------------------------------------------------------------
