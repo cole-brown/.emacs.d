@@ -94,6 +94,25 @@ See 'M-x list-faces-display' for all defined faces."
 
 
 ;;------------------------------------------------------------------------------
+;; Theme Adder
+;;------------------------------------------------------------------------------
+
+(defun mis2/themes/add (name faces-plist)
+  "Add theme NAME with FACES-PLIST to mis2/themes.
+
+NAME should be a symbol keyword.
+ - e.g. :my-theme
+
+FACES-PLIST should be a keyword/face-property PLIST.
+ - e.g. '(:borders font-lock-comment-delimiter-face)
+
+This sets theme NAME to FACES-PLIST, overwriting any existing
+theme of that name.
+"
+  (setq mis2/themes (plist-put mis2/themes name faces-plist)))
+
+
+;;------------------------------------------------------------------------------
 ;; Helper Functions
 ;;------------------------------------------------------------------------------
 

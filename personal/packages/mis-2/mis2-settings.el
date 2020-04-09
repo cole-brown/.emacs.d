@@ -16,6 +16,22 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Vars for User
+;;------------------------------------------------------------------------------
+
+(defcustom mis2/settings/user nil
+  "Variable for user to put their default/most used settings into.
+"
+  :group 'mis2)
+
+
+(defcustom mis2/style/user nil
+  "Variable for user to put their default/most used styling into.
+"
+  :group 'mis2)
+
+
+;;------------------------------------------------------------------------------
 ;; Customization: General Settings
 ;;------------------------------------------------------------------------------
 

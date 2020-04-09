@@ -76,6 +76,18 @@
 ;;   (mis2/message :settings settings :style style message symbol0))
 
 
+;;------------------------------------------------------------------------------
+;; §-TODO-§ [2020-04-08]: Inline styling
+;;------------------------------------------------------------------------------
+;; (mis2/message :settings settings :style style
+;;               "Unbelieveable! You, "
+;;               (:face :text-pop "SUBJECT NAME HERE")
+;;               ", must be the pride of "
+;;               (:face :text-inattention "SUBJECT HOMETOWN HERE")
+;;               ".")
+;;------------------------------------------------------------------------------
+
+
 
 ;;----------------------------------...---...-----------------------------------
 ;;--                   We're all fine here... How are you?                    --

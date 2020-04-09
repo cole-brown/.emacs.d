@@ -372,7 +372,7 @@ Magit to: add files, commit, and push.
 "
   (interactive)
 
-  ;; §-TODO-§ [2020-02-03]: replace `message' with `mis/message/propertize'
+  ;; §-TODO-§ [2020-02-03]: replace `message' with `mis2/message'
 
   ;; Either have to require magit here, or set magit to ":demand t" in
   ;; use-package. Trying out requiring here as magit isn't the fastest to start.

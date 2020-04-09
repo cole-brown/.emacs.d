@@ -652,6 +652,51 @@ specified buffer.
 
 
 ;;------------------------------------------------------------------------------
+;; Test: mis2/message multi-formatting!
+;;------------------------------------------------------------------------------
+;; (defun mis2/message (&rest args)
+
+(ert-deftest mis2-ert/message/multi-formatted ()
+  "Test that `mis2/message' outputs a properly formatted message when input
+contains several styled subsections.
+"
+  (mis2-ert/mis2-message/setup)
+
+  ;; Setup for a message to test.
+  (let ((settings nil)
+        (style '(:face :text)))
+
+    (mis2-ert/mock 'mis2//message/output/to-buffer nil
+      (mis2-ert/mock 'mis2//message/output/to-minibuffer nil
+
+        ;; Output message 0 with settings and style lists.
+        (mis2/message :settings settings :style style
+                      "Unbelieveable! You, "
+                      (:face :highlight "SUBJECT NAME HERE")
+                      ", must be the pride of "
+                      (:face :title "SUBJECT HOMETOWN HERE")
+                      ".")
+
+        (mis2/message :settings settings :style style message symbol0)
+
+
+        ;; correctly propertized?
+        (cl-flet ((ms #'make-string))
+          (should
+           (equal-including-properties
+            mis2-ert/mock/output/to-buffer
+            (concat
+
+             (propertize "Unbelieveable! You, "    'face font-lock-warning-face)
+             (propertize "SUBJECT NAME HERE"       'face font-lock-constant-face)
+             (propertize ", must be the pride of " 'face font-lock-warning-face)
+             (propertize "SUBJECT HOMETOWN HERE"   'face font-lock-builtin-face)
+             (propertize "."                       'face font-lock-warning-face))))))))
+
+  (mis2-ert/mis2-message/teardown))
+
+
+;;------------------------------------------------------------------------------
 ;; Local Test Data
 ;;------------------------------------------------------------------------------
 
