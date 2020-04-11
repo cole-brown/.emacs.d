@@ -59,33 +59,33 @@ specific to this test suite."
 
 
 ;;------------------------------------------------------------------------------
-;; Test: mis2//contents/string/build
+;; Test: mis2//contents/text/format/emacs
 ;;------------------------------------------------------------------------------
-;; (defun mis2//contents/string/build (contents)
+;; (defun mis2//contents/text/format/emacs (contents)
 
 ;;---
 ;; Test Case 000
 ;;---
 (ert-deftest mis2-ert/contents/build/string/simple ()
-  "Test that `mis2//contents/string/build' can build & return a simple string
+  "Test that `mis2//contents/text/format/emacs' can build & return a simple string
 from contents.
 "
   (mis2-ert/mis2-contents/setup)
 
   ;; Simple string just gets returned as-is.
-  (should (string= (mis2//contents/string/build '("Hello, World."))
+  (should (string= (mis2//contents/text/format/emacs '("Hello, World."))
                    "Hello, World."))
 
   ;; Single other thing gets formatted.
-  (should (string= (mis2//contents/string/build '(:face))
+  (should (string= (mis2//contents/text/format/emacs '(:face))
                    ":face"))
 
   ;; Nothing in; nothing out (but it's a string now!).
-  (should (string= (mis2//contents/string/build nil)
+  (should (string= (mis2//contents/text/format/emacs nil)
                    "nil"))
 
   ;; Single other thing gets formatted.
-  (should (string= (mis2//contents/string/build '((1 2 3 4 5)))
+  (should (string= (mis2//contents/text/format/emacs '((1 2 3 4 5)))
                    "(1 2 3 4 5)"))
 
   (mis2-ert/mis2-contents/teardown))
@@ -95,23 +95,23 @@ from contents.
 ;; Test Case 001
 ;;---
 (ert-deftest mis2-ert/contents/build/string/formatter ()
-  "Test that `mis2//contents/string/build' can build & return a simple string
+  "Test that `mis2//contents/text/format/emacs' can build & return a simple string
 from contents.
 "
   (mis2-ert/mis2-contents/setup)
 
   ;; More than one thing in contents means first thing is formatting string.
-  (should (string= (mis2//contents/string/build '("Hello, %s" "World."))
+  (should (string= (mis2//contents/text/format/emacs '("Hello, %s" "World."))
                    "Hello, World."))
 
   ;; Bad contents? No formatter string...
-  (should-error (mis2//contents/string/build '(:keyword valueword)))
+  (should-error (mis2//contents/text/format/emacs '(:keyword valueword)))
 
   ;; Null formatter - also bad.
-  (should-error (mis2//contents/string/build '(nil "hello")))
+  (should-error (mis2//contents/text/format/emacs '(nil "hello")))
 
   ;; more extra args than percents in formatter
-  (should (string= (mis2//contents/string/build
+  (should (string= (mis2//contents/text/format/emacs
                     '("Hello, %s" "World" "," "my name is..."))
                    ;; means we just don't get the rest.
                    "Hello, World"))

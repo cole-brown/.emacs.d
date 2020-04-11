@@ -245,6 +245,19 @@ necessary to get from PLIST to emface (emacs face property).
     (mis2//themes/get/face misface theme)))
 
 
+(defun mis2//themes/emface/from-style (styles-plist mis2-plist)
+  "Get emface (emacs face property) from :face in STYLES-PLIST.
+
+Returns emface or nil.
+"
+  (when (and styles-plist mis2-plist)
+    ;; Get `:face' (misface) from style plist, then translate to emface for
+    ;; this theme.
+    (mis2//themes/get/emface
+     (plist-get styles-plist :face) ;; misface getter
+     (mis2//themes/get/theme mis2-plist)))) ;; theme getter
+
+
 ;;------------------------------------------------------------------------------
 ;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------

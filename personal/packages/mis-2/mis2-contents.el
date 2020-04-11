@@ -66,9 +66,8 @@ Pipeline for sink of:
   - all other style keys.
 "
   ;; Style and contents for this level of the message. Could have more levels of
-  ;; style/content to recurse into, but this is what we're dealing with now.
-  (let ((string (mis2//contents/string/build (plist-get plist
-                                                        :mis2//contents))))
+  ;; style/content to recurse into? ...but this is what we're dealing with now.
+  (let ((string (mis2//contents/text (plist-get plist :mis2//contents))))
 
     ;; Prep Work: Boxing: Deal with any box styling.
     (mis2//contents/box/parts string plist)
@@ -93,14 +92,12 @@ Pipeline for sink of:
   "Build final, propertized string from input STRING and PLIST string
 parts (:mis2//line, :mis2//box, etc).
 "
-  (-> string
-      ;; Propertize the string directly.
-      (mis2//contents/propertize :text plist)
-      ;; Box will propertize the boxing pieces as it builds them.
-      (mis2//contents/box/build plist)))
+  ;; The string is already propertized. Just do the rest.
+  ;; Box will propertize the boxing pieces as it builds them.
+  (mis2//contents/box/build string plist))
 
 
-(defun mis2//contents/propertize (string type plist)
+(defun mis2//contents/propertize (string type plist &optional style-overrides)
   "Adds a 'face property to STRING from PLIST given content TYPE.
 If no appropriate face for TYPE found in PLIST, return string as-is.
 
@@ -113,14 +110,19 @@ So we're... 3 plists deep.
                                 :padding 'face-name-1
                                 ...)))
 
+STYLE-OVERRIDES is a secondary :mis2//style plist. Any styles in
+STYLE-OVERRIDES will be favored over styles in PLIST.
+
 Final sink for:
   :mis2//settings -- :theme
   :mis2//style    -- :faces
 "
   ;; Propertize it if we have a string and find a face.
   (if-let* ((string string) ;; null check
-            ;; Actual emacs face by way of type and plist.
-            (emface (mis2//themes/emface type plist)))
+            ;; Actual emacs face by way of override, type, theme, etc...
+            ;; Favor override over plist.
+            (emface (or (mis2//themes/emface/from-style style-overrides plist)
+                        (mis2//themes/emface type plist))))
 
       ;; Found a defined face, so set `face' property of string to our
       ;; face and return that.
@@ -130,11 +132,136 @@ Final sink for:
     string))
 
 
-;;------------------------------------------------------------------------------
-;; String Helpers
-;;------------------------------------------------------------------------------
+(defun mis2//contents/text (contents plist)
+  "Builds CONTENTS into a propertized string based on settings/style in PLIST
+and CONTENTS.
 
-(defun mis2//contents/string/build (contents)
+Will deal with differently faced sub-sections, like:
+  (mis2/message :settings settings :style style
+                \"Unbelieveable! You, \"
+                (:face :highlight \"SUBJECT NAME HERE\")
+                \", must be the pride of \"
+                (:face :title \"SUBJECT HOMETOWN HERE\")
+                \".\")
+"
+  ;; Assumption:
+  ;;   /Either/ they have a "normal" string or format string & args,
+  ;;   OR they have a mis2 multi-formatting message like above.
+  ;; We have to figure out which one it is so we can process it correctly. So
+  ;; loop through the contents, looking for a :mis2//style keyword (e.g. :face)
+  ;; as the first item in a list (e.g. '("Hello, " (:face :title "JEFF"))).
+  (let ((formatter :format-emacs)) ;; default to simple/non-mis2 contents.
+    (dolist (element contents)
+      ;; Is this a mis2/style keyword?
+      (when (and element
+                 (list element)
+                 (alist-get (first element) mis2/style/keys))
+        ;; Yes; set our kind to mis2 formatting.
+        (setq formatter :format-mis2)))
+    ;; and now call the contents builder/formatter
+    (cond ((eq formatter :format-mis2)
+           (mis2//contents/text/format/mis2 contents plist))
+
+          ((eq formatter :format-emacs)
+           (mis2//contents/text/format/emacs contents plist))
+
+          (t
+           (error "%S: Unknown formatting type '%S' for contents: %S"
+                  "mis2//contents/text"
+                  formatting contents)))))
+
+
+(defun mis2//contents/text/format/mis2 (contents plist)
+  "Builds CONTENTS into a propertized string based on settings/style in PLIST
+and CONTENTS.
+
+Will deal with differently faced sub-sections, like:
+  (mis2/message :settings settings :style style
+                \"Unbelieveable! You, \"
+                (:face :highlight \"SUBJECT NAME HERE\")
+                \", must be the pride of \"
+                (:face :title \"SUBJECT HOMETOWN HERE\")
+                \".\")
+"
+  (let (accum)
+    ;; for each item in contents list...
+    (dolist (element contents)
+      ;; If this is a sub-list with style overrides...
+      (if (and element
+               (eq (type-of element) 'cons) ;; listp useless - string is listp
+               ;; keyword and in mis2/style/keys means we've got a style
+               ;; override here.
+               (keywordp (first element))
+               (alist-get (first element) mis2/style/keys))
+          ;; Pick off all the style overrides, and then get the rest
+          ;; formatted/propertized.
+          (push (mis2//contents/text/format/mis2/sub-section element plist)
+                accum)
+
+        ;; Else just a string or something - format/propertize it on its own
+        ;; without any overrides.
+        (push (mis2//contents/propertize (if (stringp element)
+                                             element
+                                           (format "%s" element))
+                                         :text plist)
+              accum)))
+
+    ;; Done with sub-sections - put it all together.
+    (apply #'concat (nreverse accum))))
+;; (mis2//contents/text/format/mis2
+;;  '("Unbelieveable! You, "
+;;    (:face :highlight "SUBJECT NAME HERE")
+;;    ", must be the pride of "
+;;    (:face :title "SUBJECT HOMETOWN HERE")
+;;    ".")
+;;  '(mis2//testing t))
+
+
+(defun mis2//contents/text/format/mis2/sub-section (content plist)
+  "Format a sub-section of the contents list.
+"
+  ;; Loop over content list, pull styles out into override plist.
+  ;; Stop after styles and propertize the rest using those overrides.
+  (let (style-overrides
+        (i 0)
+        (len (length content))
+        element
+        value)
+    (while (< i len)
+      (setq element (nth i content))
+
+      ;; We require our keys to go first, so just check the elements
+      ;; until not our key.
+      (if (and (mis2//style/check-key element)
+               (< (1+ i) len)) ;; have room to look for key
+          (progn
+            ;; Get keyword and val; save to settings/style.
+            ;; Keyword is element (and verified);
+            ;; just need to get and verify value.
+            (setq value (nth (1+ i) content))
+            (if (mis2//style/check-value element value)
+                ;; Good - add to overrides.
+                (setq style-overrides (plist-put style-overrides element value))
+              ;; Bad - error out!
+              (error "%S: %S: %S %S. Content sub-section: %S"
+                     "mis2//contents/text/format/mis2/sub-section"
+                     value
+                     "not a valid value for style override"
+                     element
+                     content))
+            ;; update the loop var for this key and value
+            (setq i (+ i 2)))
+
+        ;; Else we're past the style overrides and should propertize the rest of
+        ;; the contents now.
+        (setq content (-drop i content)
+              i len))) ;; Set index past end of contents so loop will end.
+
+    (mis2//contents/propertize (apply 'format content)
+                               :text plist style-overrides)))
+
+
+(defun mis2//contents/text/format/emacs (contents)
   "Builds a formatted string from CONTENTS (which is a list).
 
 If the mis2 plist is:
@@ -146,54 +273,35 @@ We should be passed CONTENTS of:
 Final sink for:
   :mis2//contents
 "
-  ;; We'll either format the thing into a string (whatever it is), or format
-  ;; all the things with the assumption that the first one is a formatting
-  ;; string.
-  (if (not (and contents
-                (listp contents)
-                (> (length contents) 1)))
-      ;; Simple case. Only one thing in contents (or nothing).
-      ;; It is the message.
-      (format "%s" (first contents))
+  ;; propertize whatever we figure out the string is...
+  (mis2//contents/propertize
 
-    ;; Complex case. More than one thing! Oh no...
-    ;; ...Well in that case assume the first thing is a string formatter.
-    (apply 'format contents)
-    ;; §-TODO-§ [2020-03-25]: More Complexer:
-    ;;   - Split contents into parts we can do vs parts we recurse?
-    ;;   - do each?
-    ;;   - Concat results together.
-    ))
+   ;; We'll either format the thing into a string (whatever it is), or format
+   ;; all the things with the assumption that the first one is a formatting
+   ;; string.
+   (if (not (and contents
+                 (listp contents)
+                 (> (length contents) 1)))
+       ;; Simple case. Only one thing in contents (or nothing).
+       ;; It is the message.
+       (format "%s" (first contents))
+
+     ;; Complex case. More than one thing! Oh no...
+     ;; ...Well in that case assume the first thing is a string formatter.
+     (apply 'format contents)
+     ;; §-TODO-§ [2020-03-25]: More Complexer:
+     ;;   - Split contents into parts we can do vs parts we recurse?
+     ;;   - do each?
+     ;;   - Concat results together.
+     )
+
+   ;; Propertize as text.
+   :text plist))
 
 
-;; §-TODO-§ [2020-04-01]: remove in favor of just the generic
-;; mis2//contents/propertize?
-(defun mis2//contents/string/propertize (string plist)
-  "Given STRING and mis2 PLIST, and assuming there are both a `:mis2//style'
-keyword in PLIST and a `:face' key in the style list, propertize the STRING
-with the face.
-
-Final sink for:
-  :mis2//settings -- :theme
-  :mis2//style    -- :face
-"
-  ;; Propertize it if we find a face. So let's look for that face. First, check
-  ;; what theme we're using. Default to... :default if none supplied.
-  (if-let* ((mis2-theme (or (mis2//settings/get/from-data :theme plist)
-                            :default))
-            ;; Get mis2/theme's faces based on our theme.
-            (theme-faces (plist-get mis2/themes mis2-theme))
-            ;; mis2's face's keyword e.g. :title, :highlight, :attention
-            (mis2-face (mis2//style/get/from-data :face plist))
-            ;; Get actual emacs face from the theme faces.
-            (face-val (plist-get theme-faces mis2-face)))
-
-      ;; Found a defined face, so set `face' property of string to our
-      ;; face and return that.
-      (propertize string 'face face-val)
-    ;; No face; return the unchanged string.
-    string))
-
+;;------------------------------------------------------------------------------
+;; String Helpers
+;;------------------------------------------------------------------------------
 
 (defun mis2//contents/string/length-safe (str-maybe)
   "Returns `length' of STR-MAYBE if it is a string, otherwise returns 0.
@@ -201,6 +309,7 @@ Final sink for:
   (if (stringp str-maybe)
       (length str-maybe)
     0))
+
 
 ;;------------------------------------------------------------------------------
 ;; Line Helpers
