@@ -5,6 +5,8 @@
 ;;--                             We have Themes.                              --
 ;;----------------------------Why not a Theme Song?-----------------------------
 
+(require 'cl)
+(require 'dash)
 
 
 ;; NOTE:
@@ -154,7 +156,7 @@ MISFACE should be a plist key keyword symbol for THEME plist.
 
 Returns emface (emacs face property) or nil.
 "
-  (plist-get (mis2//themes/get/faces-all theme) misface))
+  (plist-get (mis2//themes/get/misfaces-all theme) misface))
 ;; (mis2//themes/get/emface :title :default)
 
 
@@ -242,7 +244,7 @@ necessary to get from PLIST to emface (emacs face property).
          ;;   - or fallback to the general mis2//style :face.
          (misface (mis2//themes/misface type theme plist)))
     ;; Get actual emacs face from the theme misface.
-    (mis2//themes/get/face misface theme)))
+    (mis2//themes/get/emface misface theme)))
 
 
 (defun mis2//themes/emface/from-style (styles-plist mis2-plist)

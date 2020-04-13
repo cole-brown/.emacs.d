@@ -669,16 +669,13 @@ contains several styled subsections.
     (mis2-ert/mock 'mis2//message/output/to-buffer nil
       (mis2-ert/mock 'mis2//message/output/to-minibuffer nil
 
-        ;; Output message 0 with settings and style lists.
+        ;; Output message with multiple differently styled user-input sections.
         (mis2/message :settings settings :style style
                       "Unbelieveable! You, "
-                      (:face :highlight "SUBJECT NAME HERE")
+                      '(:face :highlight "SUBJECT NAME HERE")
                       ", must be the pride of "
-                      (:face :title "SUBJECT HOMETOWN HERE")
+                      '(:face :title "SUBJECT HOMETOWN HERE")
                       ".")
-
-        (mis2/message :settings settings :style style message symbol0)
-
 
         ;; correctly propertized?
         (cl-flet ((ms #'make-string))

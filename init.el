@@ -633,7 +633,7 @@
 (spydez/require 'mis2)
 ;;
 (mis2/settings/update mis2/settings/user :echo t)
-;; (mis2/style/update    mis2/style/user    )
+;; ;; (mis2/style/update    mis2/style/user    )
 ;;
 ;;------------------------------------------------------------------------------
 (spydez/require 'strings-and-things)

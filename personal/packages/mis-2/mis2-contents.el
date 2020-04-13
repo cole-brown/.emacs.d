@@ -5,7 +5,7 @@
 ;;--               Build :mis2//contents into :mis2//message.                 --
 ;;------------------------------------------------------------------------------
 
-
+(require 'cl)
 (require 'dash)
 (require 's)
 
@@ -67,7 +67,7 @@ Pipeline for sink of:
 "
   ;; Style and contents for this level of the message. Could have more levels of
   ;; style/content to recurse into? ...but this is what we're dealing with now.
-  (let ((string (mis2//contents/text (plist-get plist :mis2//contents))))
+  (let ((string (mis2//contents/text (plist-get plist :mis2//contents) plist)))
 
     ;; Prep Work: Boxing: Deal with any box styling.
     (mis2//contents/box/parts string plist)
@@ -154,7 +154,8 @@ Will deal with differently faced sub-sections, like:
     (dolist (element contents)
       ;; Is this a mis2/style keyword?
       (when (and element
-                 (list element)
+                 (listp element)
+                 (first element)
                  (alist-get (first element) mis2/style/keys))
         ;; Yes; set our kind to mis2 formatting.
         (setq formatter :format-mis2)))

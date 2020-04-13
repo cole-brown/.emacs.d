@@ -94,6 +94,7 @@
 ;;------------------------------------------------------------------------------
 
 
+(require 'cl)
 (require 'dash)
 (require 's)
 
@@ -201,6 +202,7 @@ Pipeline for sink of settings:
       (progn
         (mis2//message/output/to-buffer message plist)
         (mis2//message/output/to-minibuffer message plist))
+        ;; message)
 
     ;; Error out if not found.
     (error "No finalized mis2 message supplied. %S" plist)))
