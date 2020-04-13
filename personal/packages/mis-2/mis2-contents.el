@@ -117,6 +117,13 @@ Final sink for:
   :mis2//settings -- :theme
   :mis2//style    -- :faces
 "
+  ;; (message "prop: %S %S %S &o %S" string type plist style-overrides)
+  ;; (message "prop: (or emface override: %S, emface type: %S) -> %S"
+  ;;          (mis2//themes/emface/from-style style-overrides plist)
+  ;;          (mis2//themes/emface type plist)
+  ;;          (or (mis2//themes/emface/from-style style-overrides plist)
+  ;;                       (mis2//themes/emface type plist)))
+
   ;; Propertize it if we have a string and find a face.
   (if-let* ((string string) ;; null check
             ;; Actual emacs face by way of override, type, theme, etc...
@@ -262,8 +269,8 @@ Will deal with differently faced sub-sections, like:
                                :text plist style-overrides)))
 
 
-(defun mis2//contents/text/format/emacs (contents)
-  "Builds a formatted string from CONTENTS (which is a list).
+(defun mis2//contents/text/format/emacs (contents plist)
+  "Builds a formatted string from CONTENTS (which is a list) and mis2 PLIST.
 
 If the mis2 plist is:
  '(:mis2//style style :mis2//contents (\"Hello, %S\" \"World\"))

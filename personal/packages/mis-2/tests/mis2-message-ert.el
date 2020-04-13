@@ -557,7 +557,7 @@ out into mis2 settings/style.
         (style '(;; face: default if no specific in :faces
                  :face :text
                  ;; face: set specifics for everything this time
-                 :faces (:message :title
+                 :faces (:text    :title
                          :indent  :inattention
                          :margins :highlight
                          :borders :borders

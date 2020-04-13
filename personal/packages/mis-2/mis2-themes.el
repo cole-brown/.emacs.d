@@ -126,10 +126,10 @@ key for the `mis2/themes' alist.
 If cannot find a theme, returns default theme: `:default'.
 "
   ;; Get style, then get theme from style.
-  (or (plist-get (plist-get plist :mis2//style) :theme)
+  (or (plist-get (plist-get plist :mis2//settings) :theme)
       ;; Fallback to default if none found.
       :default))
-;; (mis2//themes/get/theme '(:mis2//style (:theme 'jeff)))
+;; (mis2//themes/get/theme '(:mis2//settings (:theme 'jeff)))
 
 
 (defun mis2//themes/get/misfaces-all (theme)
@@ -141,6 +141,11 @@ default theme: `:default'.
 
 Returns plist of key/values: (misface0 emface0 ... misfaceN emfaceN)
 "
+  ;; (message "get/misfaces-all-: %S" theme)
+  ;; (message "      mis2/themes: %S" mis2/themes)
+  ;; (message "   theme-misfaces: %S" (first (alist-get theme mis2/themes)))
+  ;; (message "  default-misfaces: %S" (first (alist-get :default mis2/themes)))
+
   ;; our alist cells are lists, not conses, so drop the outer list we get from
   ;; alist-get so we just have value, not (value).
   ;; We want (<face-key> <face-val> ...), not ((<face-key> <face-val> ...)).
@@ -156,6 +161,9 @@ MISFACE should be a plist key keyword symbol for THEME plist.
 
 Returns emface (emacs face property) or nil.
 "
+  ;; (message "get/emface-----: %S %S" misface theme)
+  ;; (message "   all-misfaces: %S" (mis2//themes/get/misfaces-all theme))
+  ;; (message "         emface: %S" (plist-get (mis2//themes/get/misfaces-all theme) misface))
   (plist-get (mis2//themes/get/misfaces-all theme) misface))
 ;; (mis2//themes/get/emface :title :default)
 
@@ -236,6 +244,14 @@ Returns misface or nil.
 Checks :theme, :faces vs :face, falls back to default values, etc. Everything
 necessary to get from PLIST to emface (emacs face property).
 "
+  ;; (message "all-themes: %S" mis2/themes)
+  ;; (message "themes/emface: %S %S" type plist)
+  ;; (message "        theme: %S" (mis2//themes/get/theme plist))
+  ;; (message "      misface: %S" (mis2//themes/misface type (mis2//themes/get/theme plist) plist))
+  ;; (message "       emface: %S" (mis2//themes/get/emface
+  ;;                               (mis2//themes/misface type (mis2//themes/get/theme plist) plist)
+  ;;                               (mis2//themes/get/theme plist)))
+
   ;; Get theme (e.g. :default) from plist.
   (let* ((theme (mis2//themes/get/theme plist))
          ;; misface keyword (e.g. :title, :highlight, :attention) for:

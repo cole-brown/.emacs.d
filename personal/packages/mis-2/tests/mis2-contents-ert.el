@@ -72,21 +72,22 @@ from contents.
 "
   (mis2-ert/mis2-contents/setup)
 
-  ;; Simple string just gets returned as-is.
-  (should (string= (mis2//contents/text/format/emacs '("Hello, World."))
-                   "Hello, World."))
+  (let ((plist '(:mis2//testing t)))
+    ;; Simple string just gets returned as-is.
+    (should (string= (mis2//contents/text/format/emacs '("Hello, World.") plist)
+                     "Hello, World."))
 
-  ;; Single other thing gets formatted.
-  (should (string= (mis2//contents/text/format/emacs '(:face))
-                   ":face"))
+    ;; Single other thing gets formatted.
+    (should (string= (mis2//contents/text/format/emacs '(:face) plist)
+                     ":face"))
 
-  ;; Nothing in; nothing out (but it's a string now!).
-  (should (string= (mis2//contents/text/format/emacs nil)
-                   "nil"))
+    ;; Nothing in; nothing out (but it's a string now!).
+    (should (string= (mis2//contents/text/format/emacs nil plist)
+                     "nil"))
 
-  ;; Single other thing gets formatted.
-  (should (string= (mis2//contents/text/format/emacs '((1 2 3 4 5)))
-                   "(1 2 3 4 5)"))
+    ;; Single other thing gets formatted.
+    (should (string= (mis2//contents/text/format/emacs '((1 2 3 4 5)) plist)
+                     "(1 2 3 4 5)")))
 
   (mis2-ert/mis2-contents/teardown))
 
@@ -100,21 +101,25 @@ from contents.
 "
   (mis2-ert/mis2-contents/setup)
 
-  ;; More than one thing in contents means first thing is formatting string.
-  (should (string= (mis2//contents/text/format/emacs '("Hello, %s" "World."))
-                   "Hello, World."))
+  (let ((plist '(:mis2//testing t)))
+    ;; More than one thing in contents means first thing is formatting string.
+    (should (string= (mis2//contents/text/format/emacs '("Hello, %s" "World.")
+                                                       plist)
+                     "Hello, World."))
 
-  ;; Bad contents? No formatter string...
-  (should-error (mis2//contents/text/format/emacs '(:keyword valueword)))
+    ;; Bad contents? No formatter string...
+    (should-error (mis2//contents/text/format/emacs '(:keyword valueword)
+                                                    plist))
 
-  ;; Null formatter - also bad.
-  (should-error (mis2//contents/text/format/emacs '(nil "hello")))
+    ;; Null formatter - also bad.
+    (should-error (mis2//contents/text/format/emacs '(nil "hello")
+                                                    plist))
 
-  ;; more extra args than percents in formatter
-  (should (string= (mis2//contents/text/format/emacs
-                    '("Hello, %s" "World" "," "my name is..."))
-                   ;; means we just don't get the rest.
-                   "Hello, World"))
+    ;; more extra args than percents in formatter
+    (should (string= (mis2//contents/text/format/emacs
+                      '("Hello, %s" "World" "," "my name is...") plist)
+                     ;; means we just don't get the rest.
+                     "Hello, World")))
 
   (mis2-ert/mis2-contents/teardown))
 
@@ -128,34 +133,35 @@ from contents.
 ;; Test Case 000
 ;;---
 (ert-deftest mis2-ert/contents/build/propertize/nothing ()
-  "Test that `mis2//contents/string/propertize' can return an unaltered string
+  "Test that `mis2//contents/propertize' can return an unaltered string
 when no properties are there to add.
 "
   (mis2-ert/mis2-contents/setup)
 
-  ;; No mis2 plist at all is an error.
-  (should-error (mis2//contents/string/propertize "Hello, World." nil))
+  ;; Let higher level func do this.
+  ;; ;; No mis2 plist at all is an error.
+  ;; (should-error (mis2//contents/propertize "Hello, World." :text nil))
 
   ;; Simple string just gets returned as-is.
   ;; Using simplest 'valid' mis2 plist we can...
-  (should (string= (mis2//contents/string/propertize "Hello, World."
-                                                     '(:mis2//testing t))
+  (should (string= (mis2//contents/propertize "Hello, World."
+                                              :text '(:mis2//testing t))
                    "Hello, World."))
 
   ;; Have a mis2 plist without `:face' in style.
   (let ((plist '(:mis2//settings (:theme :default)
                  :mis2//style (:margins (">" "<"))
                  :mis2//testing t)))
-    (should (string= (mis2//contents/string/propertize "Hello, World."
-                                                       plist)
+    (should (string= (mis2//contents/propertize "Hello, World."
+                                                :text plist)
                      "Hello, World.")))
 
   ;; Have a mis2 plist without `:theme' or `:face' in style.
   (let ((plist '(:mis2//settings nil
                  :mis2//style (:margins (">" "<"))
                  :mis2//testing t)))
-    (should (string= (mis2//contents/string/propertize "Hello, World."
-                                                       plist)
+    (should (string= (mis2//contents/propertize "Hello, World."
+                                                :text plist)
                      "Hello, World.")))
 
   (mis2-ert/mis2-contents/teardown))
@@ -165,15 +171,15 @@ when no properties are there to add.
 ;; Test Case 001
 ;;---
 (ert-deftest mis2-ert/contents/build/propertize/face ()
-  "Test that `mis2//contents/string/propertize' can return a propertized string
+  "Test that `mis2//contents/propertize' can return a propertized string
 when there is a face to use.
 "
   (mis2-ert/mis2-contents/setup)
 
-  (setq mis2/themes '(:default (:test-face0 font-lock-keyword-face
-                                :test-face1 font-lock-comment-face)
-                      :fancy   (:test-face0 font-lock-string-face
-                                :test-face1 font-lock-type-face)))
+  (setq mis2/themes '((:default (:test-face0 font-lock-keyword-face
+                                 :test-face1 font-lock-comment-face))
+                      (:fancy   (:test-face0 font-lock-string-face
+                                 :test-face1 font-lock-type-face))))
 
   ;; Have a mis2 plist with `:face' in style, but no theme in settings.
   ;; Should use `:default' theme.
@@ -182,8 +188,9 @@ when there is a face to use.
                  :mis2//testing t))
         (expected-output "Hello, World.")
         message)
-    (setq message (mis2//contents/string/propertize "Hello, World."
-                                                    plist))
+    (setq message (mis2//contents/propertize "Hello, World."
+                                             :test-face0 plist))
+
     ;; Should have our string as expected.
     (should (string= message expected-output))
 
@@ -198,8 +205,8 @@ when there is a face to use.
                  :mis2//testing t))
         (expected-output "Hello, World.")
         message)
-    (setq message (mis2//contents/string/propertize "Hello, World."
-                                                    plist))
+    (setq message (mis2//contents/propertize "Hello, World."
+                                             :test-face0 plist))
     ;; Should have our string as expected.
     (should (string= message expected-output))
 
@@ -214,8 +221,8 @@ when there is a face to use.
                  :mis2//testing t))
         (expected-output "Hello, World.")
         message)
-    (setq message (mis2//contents/string/propertize "Hello, World."
-                                                    plist))
+    (setq message (mis2//contents/propertize "Hello, World."
+                                             :test-face1 plist))
     ;; Should have our string as expected.
     (should (string= message expected-output))
 
@@ -225,9 +232,9 @@ when there is a face to use.
                   'font-lock-type-face))))
 
   ;; Done; set mis2/themes back and check that that worked too.
-  (mis2-ert/mis2-contents/themes/restore)
+  (mis2-ert/setup/themes/restore)
 
-  (should (seq-set-equal-p mis2/themes mis2-ert/contents/themes/storage))
+  (should (seq-set-equal-p mis2/themes mis2-ert/setup/themes/storage))
 
   (mis2-ert/mis2-contents/teardown))
 
@@ -829,7 +836,7 @@ line based on inputs in plist: :mis2//settings, :mis2//style, and
                   :mis2//style (;; face: default if no specific in :faces
                                 :face :text
                                 ;; face: set specifics for everything this time
-                                :faces (:message :title
+                                :faces (:text    :title
                                         :indent  :inattention
                                         :margins :highlight
                                         :borders :borders
@@ -885,9 +892,9 @@ line based on inputs in plist: :mis2//settings, :mis2//style, and
          (propertize "<<<<<"      'face font-lock-constant-face))))))
 
   ;; Done; set mis2/themes back and check that that worked too.
-  (mis2-ert/mis2-contents/themes/restore)
+  (mis2-ert/setup/themes/restore)
 
-  (should (seq-set-equal-p mis2/themes mis2-ert/contents/themes/storage))
+  (should (seq-set-equal-p mis2/themes mis2-ert/setup/themes/storage))
 
   (mis2-ert/mis2-contents/teardown))
 
