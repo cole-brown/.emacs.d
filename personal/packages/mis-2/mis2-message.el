@@ -158,7 +158,8 @@ Returns: '(:mis2//settings settings-element
   ;; Use 'contents' in this function - we'll be changing it and want to look at
   ;; the latest, not at original args.
   (let ((contents args)
-        settings style done)
+        defaults settings style
+        done)
     (while (not done)
       ;; We require our keys to go first, so just check the first element.
       (if (and (keywordp (first contents))
@@ -166,9 +167,16 @@ Returns: '(:mis2//settings settings-element
           ;; Get keyword (if it's our keyword) and val; save to settings/style.
           (-if-let (mis2--kwd (plist-get mis2/custom/keywords (first contents)))
               (let ((mis2-val (plist-get contents (first contents))))
+                ;; 'user-defaults' means load defaults (`mis2/settings/user',
+                ;; `mis2/style/user') as settings/style, then layer/override
+                ;; other settings/style on top.
+                (cond ((eq mis2--kwd :mis2//user-defaults)
+                       (setq settings mis2-val
+                             contents (-drop 2 contents)))
+
                 ;; settings and style should update their lists, and drop
                 ;; key/value from contents.
-                (cond ((eq mis2--kwd :mis2//settings)
+                 ((eq mis2--kwd :mis2//settings)
                        (setq settings mis2-val
                              contents (-drop 2 contents)))
                       ((eq mis2--kwd :mis2//style)
@@ -180,10 +188,34 @@ Returns: '(:mis2//settings settings-element
         ;; Else, didn't find a keyword at front of list. Done parsing.
         (setq done t)))
 
-    ;; and now return a tuple of parsed args.
-    (list :mis2//settings settings
-          :mis2//style style
-          :mis2//contents contents)))
+    ;; If they want to use defaults, we have to layer other settings/styles on
+    ;; top for proper priority ordering.
+    (let (settings-combined style-combined)
+      (if defaults
+          (progn
+            (setq settings-combined (copy-sequence mis2/settings/user))
+            (while settings
+              (let ((key (car settings))
+                    (value (cadr settings)))
+                (setq settings-combined (plist-put (car settings)
+                                                   (cadr settings))
+                      settings (cddr settings))))
+
+            (setq style-combined (copy-sequence mis2/style/user))
+            (while style
+              (let ((key (car style))
+                    (value (cadr style)))
+                (setq style-combined (plist-put (car style)
+                                                (cadr style))
+                      style (cddr style)))))
+        ;; Else just use what we've parsed out.
+        (setq settings-combined settings
+              style-combined    style))
+
+      ;; and now return a tuple of parsed args.
+      (list :mis2//settings settings-combined
+            :mis2//style style-combined
+            :mis2//contents contents))))
 
 
 ;;------------------------------------------------------------------------------

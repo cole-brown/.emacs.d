@@ -59,7 +59,8 @@ minibuffer-echo-area functionality."
 
 
 (defcustom mis2/custom/keywords '(:settings :mis2//settings
-                                  :style    :mis2//style)
+                                  :style    :mis2//style
+                                  :defaults :mis2//user-defaults)
   "Settings and style keyword symbol names -> mis2 private symbols.
 "
   :group 'mis2
@@ -124,8 +125,8 @@ E.g. a :float is always a float, but a :range could be 0 to 100 or -0.5 to 0.5.
 
 
 (defconst mis2/settings/meta/keys
-  '((:interactive :const nil)
-    (:batch       :const nil))
+  '((:interactive   :const (t nil))
+    (:batch         :const (t nil)))
   "10,000 foot view: calls are either intended to be in an interactive manner,
 or as automatic output flung out as soon as it's reached. The main difference is
 how long the echo area timeout is changes between the two.

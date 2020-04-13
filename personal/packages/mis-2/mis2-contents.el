@@ -221,7 +221,8 @@ Will deal with differently faced sub-sections, like:
 ;;    (:face :highlight "SUBJECT NAME HERE")
 ;;    ", must be the pride of "
 ;;    (:face :title "SUBJECT HOMETOWN HERE")
-;;    ".")
+;;    ". "
+;;    (:face :highlight 2))
 ;;  '(mis2//testing t))
 
 
@@ -265,7 +266,7 @@ Will deal with differently faced sub-sections, like:
         (setq content (-drop i content)
               i len))) ;; Set index past end of contents so loop will end.
 
-    (mis2//contents/propertize (apply 'format content)
+    (mis2//contents/propertize (mis2//contents/string/format content)
                                :text plist style-overrides)))
 
 
@@ -287,21 +288,7 @@ Final sink for:
    ;; We'll either format the thing into a string (whatever it is), or format
    ;; all the things with the assumption that the first one is a formatting
    ;; string.
-   (if (not (and contents
-                 (listp contents)
-                 (> (length contents) 1)))
-       ;; Simple case. Only one thing in contents (or nothing).
-       ;; It is the message.
-       (format "%s" (first contents))
-
-     ;; Complex case. More than one thing! Oh no...
-     ;; ...Well in that case assume the first thing is a string formatter.
-     (apply 'format contents)
-     ;; §-TODO-§ [2020-03-25]: More Complexer:
-     ;;   - Split contents into parts we can do vs parts we recurse?
-     ;;   - do each?
-     ;;   - Concat results together.
-     )
+   (mis2//contents/string/format contents)
 
    ;; Propertize as text.
    :text plist))
@@ -310,6 +297,32 @@ Final sink for:
 ;;------------------------------------------------------------------------------
 ;; String Helpers
 ;;------------------------------------------------------------------------------
+
+;; §-TODO-§ [2020-04-13]: 'format' vs 'propertize' vs 'format and propertize'
+;; naming scheme for funcs.
+;; §-TODO-§ [2020-04-13]: 'elements' is meh.
+(defun mis2//contents/string/format (elements)
+  "Builds a formatted string from elements (which is a list or single thing).
+"
+  ;; We'll either format the thing into a string (whatever it is), or format
+  ;; all the things with the assumption that the first one is a formatting
+  ;; string.
+  (if (not (and elements
+                (listp elements)
+                (> (length elements) 1)))
+      ;; Simple case. Only one thing in elements (or nothing).
+      ;; Pass through format in case not a string.
+      (format "%s" (first elements))
+
+    ;; Complex case. More than one thing! Oh no...
+    ;; ...Well in that case assume the first thing is a string formatter.
+    (apply 'format elements)
+    ;; §-TODO-§ [2020-03-25]: More Complexer:
+    ;;   - Split elements into parts we can do vs parts we recurse?
+    ;;   - do each?
+    ;;   - Concat results together.
+    ))
+
 
 (defun mis2//contents/string/length-safe (str-maybe)
   "Returns `length' of STR-MAYBE if it is a string, otherwise returns 0.
