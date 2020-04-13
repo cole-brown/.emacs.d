@@ -28,9 +28,9 @@
 ;;---
 ;; Runner Shortcuts
 ;;---
+;; (ert "mis2-ert/data/.*")
 ;; (ert "mis2-ert/settings/.*")
 ;; (ert "mis2-ert/style/.*")
-;; (ert "mis2-ert/data/.*")
 
 
 ;;------------------------------------------------------------------------------
@@ -526,7 +526,7 @@ i.e. Check that it can do :const, :alist, :or etc.
   (should (seq-set-equal-p (mis2//style/check-key :center)
                            '(:const (t nil))))
   (should (seq-set-equal-p (mis2//style/check-key :face)
-                           '(:alist ':theme)))
+                           '(:keyword)))
   (should (seq-set-equal-p (mis2//style/check-key :margins)
                            '(:list (:str/nil :str/nil))))
   (should (seq-set-equal-p
