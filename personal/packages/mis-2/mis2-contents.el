@@ -252,7 +252,7 @@ Will deal with differently faced sub-sections, like:
 ;;  '(mis2//testing t))
 
 
-(defun mis2//format/by-format-type (content type plist)
+(defun mis2//format/by-format-type (type content plist)
   "Format a sub-section of the contents list (CONTENT) by format TYPE (e.g.
 `:each' for formatting a results accum).
 "
@@ -284,14 +284,14 @@ Will deal with differently faced sub-sections, like:
 
       ;; We require our keys to go first, so just check the elements
       ;; until not our key.
-      (if (and (mis2//style/check-key element)
+      (if (and (not (eq (mis2//style/check-key element) :*bad-key-error*))
                (< (1+ i) len)) ;; have room to look for key
           (progn
             ;; Get keyword and val; save to settings/style.
             ;; Keyword is element (and verified);
             ;; just need to get and verify value.
             (setq value (nth (1+ i) content))
-            (if (mis2//style/check-value element value)
+            (if (not (eq (mis2//style/check-value element value) :*bad-value-error*))
                 ;; Good - add to overrides.
                 (setq style-overrides (plist-put style-overrides element value))
               ;; Bad - error out!
@@ -308,7 +308,6 @@ Will deal with differently faced sub-sections, like:
         ;; the contents now.
         (setq content (-drop i content)
               i len))) ;; Set index past end of contents so loop will end.
-
     (mis2//contents/propertize (mis2//format/string content)
                                :text plist style-overrides)))
 
@@ -338,13 +337,13 @@ Which will then be processed down to a propertized string and returned.
         accum)
     ;; Loop over our inputs...
     (dolist (each-input inputs)
-      ;; Get our input element and it's mate from the formats.
+      ;; get our input element and it's mate from the formats.
       (dotimes (each-i (length each-input))
         (setq style     (nth each-i formats)
               substance (nth each-i each-input))
         ;; And now we can combine style & substance into a list to pass on to be
         ;; formatted as a div of these contents.
-        (push (mis2//format/div (-concat style substance))
+        (push (mis2//format/div (-snoc style substance) plist)
               accum)))
 
     (apply #'concat (nreverse accum))))
