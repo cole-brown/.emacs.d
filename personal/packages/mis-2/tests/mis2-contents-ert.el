@@ -59,34 +59,34 @@ specific to this test suite."
 
 
 ;;------------------------------------------------------------------------------
-;; Test: mis2//contents/text/format/emacs
+;; Test: mis2//format/text
 ;;------------------------------------------------------------------------------
-;; (defun mis2//contents/text/format/emacs (contents)
+;; (defun mis2//format/text (contents)
 
 ;;---
 ;; Test Case 000
 ;;---
 (ert-deftest mis2-ert/contents/build/string/simple ()
-  "Test that `mis2//contents/text/format/emacs' can build & return a simple string
+  "Test that `mis2//format/text' can build & return a simple string
 from contents.
 "
   (mis2-ert/mis2-contents/setup)
 
   (let ((plist '(:mis2//testing t)))
     ;; Simple string just gets returned as-is.
-    (should (string= (mis2//contents/text/format/emacs '("Hello, World.") plist)
+    (should (string= (mis2//format/text '("Hello, World.") plist)
                      "Hello, World."))
 
     ;; Single other thing gets formatted.
-    (should (string= (mis2//contents/text/format/emacs '(:face) plist)
+    (should (string= (mis2//format/text '(:face) plist)
                      ":face"))
 
     ;; Nothing in; nothing out (but it's a string now!).
-    (should (string= (mis2//contents/text/format/emacs nil plist)
+    (should (string= (mis2//format/text nil plist)
                      "nil"))
 
     ;; Single other thing gets formatted.
-    (should (string= (mis2//contents/text/format/emacs '((1 2 3 4 5)) plist)
+    (should (string= (mis2//format/text '((1 2 3 4 5)) plist)
                      "(1 2 3 4 5)")))
 
   (mis2-ert/mis2-contents/teardown))
@@ -96,27 +96,27 @@ from contents.
 ;; Test Case 001
 ;;---
 (ert-deftest mis2-ert/contents/build/string/formatter ()
-  "Test that `mis2//contents/text/format/emacs' can build & return a simple string
+  "Test that `mis2//format/text' can build & return a simple string
 from contents.
 "
   (mis2-ert/mis2-contents/setup)
 
   (let ((plist '(:mis2//testing t)))
     ;; More than one thing in contents means first thing is formatting string.
-    (should (string= (mis2//contents/text/format/emacs '("Hello, %s" "World.")
+    (should (string= (mis2//format/text '("Hello, %s" "World.")
                                                        plist)
                      "Hello, World."))
 
     ;; Bad contents? No formatter string...
-    (should-error (mis2//contents/text/format/emacs '(:keyword valueword)
+    (should-error (mis2//format/text '(:keyword valueword)
                                                     plist))
 
     ;; Null formatter - also bad.
-    (should-error (mis2//contents/text/format/emacs '(nil "hello")
+    (should-error (mis2//format/text '(nil "hello")
                                                     plist))
 
     ;; more extra args than percents in formatter
-    (should (string= (mis2//contents/text/format/emacs
+    (should (string= (mis2//format/text
                       '("Hello, %s" "World" "," "my name is...") plist)
                      ;; means we just don't get the rest.
                      "Hello, World")))

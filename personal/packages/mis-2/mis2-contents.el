@@ -8,8 +8,10 @@
 (require 'dash)
 (require 's)
 
+(require 'mis2-utils)
 (require 'mis2-themes)
 (require 'mis2-settings)
+
 
 ;;------------------------------------------------------------------------------
 ;; Consts & Vars
@@ -159,26 +161,24 @@ Will deal with differently faced sub-sections, like:
   (let ((formatter :format-emacs)) ;; default to simple/non-mis2 contents.
     (dolist (element contents)
       ;; Is this a mis2/style keyword?
-      (when (and element
-                 (listp element)
-                 (-first-item element)
-                 (alist-get (-first-item element) mis2/style/keys))
+      (when (and (mis2//list-exists? element)
+                 (mis2//first element)
+                 (alist-get (mis2//first element) mis2/style/keys))
         ;; Yes; set our kind to mis2 formatting.
         (setq formatter :format-mis2)))
     ;; and now call the contents builder/formatter
     (cond ((eq formatter :format-mis2)
-           (mis2//contents/text/format/mis2 contents plist))
+           (mis2//format/contents contents plist))
 
           ((eq formatter :format-emacs)
-           (mis2//contents/text/format/emacs contents plist))
+           (mis2//format/text contents plist))
 
           (t
            (error "%S: Unknown formatting type '%S' for contents: %S"
                   "mis2//contents/text"
                   formatting contents)))))
 
-
-(defun mis2//contents/text/format/mis2 (contents plist)
+(defun mis2//format/contents (contents plist)
   "Builds CONTENTS into a propertized string based on settings/style in PLIST
 and CONTENTS.
 
@@ -190,32 +190,59 @@ Will deal with differently faced sub-sections, like:
                 (:face :title \"SUBJECT HOMETOWN HERE\")
                 \".\")
 "
-  (let (accum)
+  (let (accum
+        list?
+        key?)
     ;; for each item in contents list...
     (dolist (element contents)
-      ;; If this is a sub-list with style overrides...
-      (if (and element
-               (eq (type-of element) 'cons) ;; listp useless - string is listp
-               ;; keyword and in mis2/style/keys means we've got a style
-               ;; override here.
-               (keywordp (-first-item element))
-               (alist-get (-first-item element) mis2/style/keys))
-          ;; Pick off all the style overrides, and then get the rest
-          ;; formatted/propertized.
-          (push (mis2//contents/text/format/mis2/sub-section element plist)
-                accum)
+      ;; `listp' is useless here - string is listp. so check for type 'cons?
+      (setq list? (mis2//list? element)
+            key? (keywordp (mis2//first element)))
+      (cond
+       ;;-----------
+       ;; format: starts with `:format' keyword
+       ;;         '(:format :each
+       ;;                   '((:face :highlight "%s: ") (:face :title))
+       ;;                   results))
+       ((and list? key?
+             ;; `:format' means we want to format this some complicated way.
+             ;; which way is in `:format' key's value.
+             (eq (mis2//first element) :format))
+        ;; format type is 2nd item in element, and we'll be nice and chop off
+        ;; the `:format :type' entries in element.
+        (push (mis2//format/by-format-type (mis2//second element)
+                                           (-drop 2 element)
+                                           plist)
+              accum))
 
-        ;; Else just a string or something - format/propertize it on its own
+       ;;-----------
+       ;; div: starts with a style keyword
+       ;;      '(:face :title "hello there")
+       ((and list? key?
+             ;; keyword and in mis2/style/keys means we've got a style
+             ;; override here.
+             (alist-get (mis2//first element) mis2/style/keys))
+        ;; Pick off all the style overrides, and then get the rest
+        ;; formatted/propertized.
+        (push (mis2//format/div element plist)
+              accum))
+
+       ;;-----------
+       ;; default: Just some string or list to be printed.
+       ;;          "hello there"
+       ;;          'hello-var
+       (t
+        ;; Just a string or something - format/propertize it on its own
         ;; without any overrides.
         (push (mis2//contents/propertize (if (stringp element)
                                              element
                                            (format "%s" element))
                                          :text plist)
-              accum)))
+              accum))))
 
     ;; Done with sub-sections - put it all together.
     (apply #'concat (nreverse accum))))
-;; (mis2//contents/text/format/mis2
+;; (mis2//format/contents
 ;;  '("Unbelieveable! You, "
 ;;    (:face :highlight "SUBJECT NAME HERE")
 ;;    ", must be the pride of "
@@ -225,8 +252,25 @@ Will deal with differently faced sub-sections, like:
 ;;  '(mis2//testing t))
 
 
-(defun mis2//contents/text/format/mis2/sub-section (content plist)
-  "Format a sub-section of the contents list.
+(defun mis2//format/by-format-type (content type plist)
+  "Format a sub-section of the contents list (CONTENT) by format TYPE (e.g.
+`:each' for formatting a results accum).
+"
+  (cond ((eq type :each)
+         ;; `:each' implies CONTENT is in this layout:
+         ;;   '(format-list content-list)
+         (mis2//format/each (mis2//first content)
+                            (mis2//second content)
+                            plist))
+
+        (t
+         (error "%S: unknown formatting type %S. content: %S"
+                "mis2//format/by-format-type"
+                type content))))
+
+
+(defun mis2//format/div (content plist)
+  "Format a sub-section of the contents list (CONTENT).
 "
   ;; Loop over content list, pull styles out into override plist.
   ;; Stop after styles and propertize the rest using those overrides.
@@ -252,7 +296,7 @@ Will deal with differently faced sub-sections, like:
                 (setq style-overrides (plist-put style-overrides element value))
               ;; Bad - error out!
               (error "%S: %S: %S %S. Content sub-section: %S"
-                     "mis2//contents/text/format/mis2/sub-section"
+                     "mis2//format/div"
                      value
                      "not a valid value for style override"
                      element
@@ -265,11 +309,48 @@ Will deal with differently faced sub-sections, like:
         (setq content (-drop i content)
               i len))) ;; Set index past end of contents so loop will end.
 
-    (mis2//contents/propertize (mis2//contents/string/format content)
+    (mis2//contents/propertize (mis2//format/string content)
                                :text plist style-overrides)))
 
 
-(defun mis2//contents/text/format/emacs (contents plist)
+(defun mis2//format/each (formats inputs plist)
+  "Formats INPUTS list with FORMATS list overrides and mis2 PLIST.
+
+FORMATS must mirror layout of an INPUTS element/item. E.g.
+   INPUTS:  '((\"/path/to/test0\" \"a.txt, b.txt, c.txt\")
+             (\"/path/to/test1\" \"b.jpg, o.jpg, o.png\")))
+   FORMATS: '((:face :highlight \"%s: \") (:face :title))
+ - INPUTS is a list of 2-tuple lists.
+ - FORMATS is a 2-tuple list.
+
+Each INPUTS element will be effectively appended to its place in a
+FORMATS element, so for this example FORMATS and INPUTS are effectively:
+  '((:face :highlight \"%s: \" \"/path/to/test0\")
+    (:face :title              \"a.txt, b.txt, c.txt\")
+    (:face :highlight \"%s: \" \"/path/to/test1\")
+    (:face :title              \"b.jpg, o.jpg, o.png\")))
+
+Which will then be processed down to a propertized string and returned.
+"
+  (let (each-input
+        style
+        substance
+        accum)
+    ;; Loop over our inputs...
+    (dolist (each-input inputs)
+      ;; Get our input element and it's mate from the formats.
+      (dotimes (each-i (length each-input))
+        (setq style     (nth each-i formats)
+              substance (nth each-i each-input))
+        ;; And now we can combine style & substance into a list to pass on to be
+        ;; formatted as a div of these contents.
+        (push (mis2//format/div (-concat style substance))
+              accum)))
+
+    (apply #'concat (nreverse accum))))
+
+
+(defun mis2//format/text (contents plist)
   "Builds a formatted string from CONTENTS (which is a list) and mis2 PLIST.
 
 If the mis2 plist is:
@@ -287,7 +368,7 @@ Final sink for:
    ;; We'll either format the thing into a string (whatever it is), or format
    ;; all the things with the assumption that the first one is a formatting
    ;; string.
-   (mis2//contents/string/format contents)
+   (mis2//format/string contents)
 
    ;; Propertize as text.
    :text plist))
@@ -300,18 +381,18 @@ Final sink for:
 ;; §-TODO-§ [2020-04-13]: 'format' vs 'propertize' vs 'format and propertize'
 ;; naming scheme for funcs.
 ;; §-TODO-§ [2020-04-13]: 'elements' is meh.
-(defun mis2//contents/string/format (elements)
+(defun mis2//format/string (elements)
   "Builds a formatted string from elements (which is a list or single thing).
+Does not propertize.
 "
   ;; We'll either format the thing into a string (whatever it is), or format
   ;; all the things with the assumption that the first one is a formatting
   ;; string.
-  (if (not (and elements
-                (listp elements)
+  (if (not (and (mis2//list-exists? elements)
                 (> (length elements) 1)))
       ;; Simple case. Only one thing in elements (or nothing).
       ;; Pass through format in case not a string.
-      (format "%s" (-first-item elements))
+      (format "%s" (mis2//first elements))
 
     ;; Complex case. More than one thing! Oh no...
     ;; ...Well in that case assume the first thing is a string formatter.
@@ -321,14 +402,6 @@ Final sink for:
     ;;   - do each?
     ;;   - Concat results together.
     ))
-
-
-(defun mis2//contents/string/length-safe (str-maybe)
-  "Returns `length' of STR-MAYBE if it is a string, otherwise returns 0.
-"
-  (if (stringp str-maybe)
-      (length str-maybe)
-    0))
 
 
 ;;------------------------------------------------------------------------------
@@ -367,16 +440,16 @@ Pass-through sink for:
     ;; nil, but `first', `second', and `length' all cope correctly with it.
     (list
      (+ (length indent)
-        (length (-first-item margins))
-        (length (-first-item borders))
+        (length (mis2//first margins))
+        (length (mis2//first borders))
         (or
-         (mis2//contents/string/length-safe (-first-item padding))
-         (mis2//contents/string/length-safe (-second-item padding))))
-     (+ (length (-second-item margins))
-        (length (-second-item borders))
+         (mis2//string/length-safe (mis2//first padding))
+         (mis2//string/length-safe (mis2//second padding))))
+     (+ (length (mis2//second margins))
+        (length (mis2//second borders))
         (or
-         (mis2//contents/string/length-safe (-first-item padding))
-         (mis2//contents/string/length-safe (-second-item padding)))))))
+         (mis2//string/length-safe (mis2//first padding))
+         (mis2//string/length-safe (mis2//second padding)))))))
 
 
 (defun mis2//contents/line/width (plist)
@@ -392,9 +465,9 @@ current buffer.
   "Makes indent string for STRING based on `:indent' style setting in PLIST.
 "
   (when-let ((indent (mis2//style/get/from-data :indent plist)))
-      ;; Have indent - add that to front of str.
-      (mis2//contents/line/update plist
-                                  :indent (make-string indent ?\s)))
+    ;; Have indent - add that to front of str.
+    (mis2//contents/line/update plist
+                                :indent (make-string indent ?\s)))
   string)
 
 
@@ -484,8 +557,8 @@ RESERVED should be returned value from `mis2//contents/line/reserved-amount'.
   ;; reserved too - won't affect looks to do the math first then build the
   ;; string (unlike aligning to center).
   (let ((len (- width
-                (-first-item reserved)
-                (-second-item reserved)
+                (mis2//first reserved)
+                (mis2//second reserved)
                 (length string))))
 
     ;; For left align, we do not build any padding string at this time - we may
@@ -510,8 +583,8 @@ RESERVED should be returned value from `mis2//contents/line/reserved-amount'.
     ;; Chop down string starting after left-reserved chars, and ending before
     ;; right-reserved chars.
     (substring centered
-               (-first-item reserved)
-               (- len (-second-item reserved)))))
+               (mis2//first reserved)
+               (- len (mis2//second reserved)))))
 
 
 (defun mis2//contents/align/right (string width reserved plist)
@@ -525,8 +598,8 @@ RESERVED should be returned value from `mis2//contents/line/reserved-amount'.
   ;; reserved too - won't affect looks to do the math first then build the
   ;; string (unlike aligning to center).
   (let ((len (- width
-                (-first-item reserved)
-                (-second-item reserved))))
+                (mis2//first reserved)
+                (mis2//second reserved))))
     ;; Now all we have to do is pad out by our calculated length.
     (s-pad-left len " " string)))
 
@@ -645,10 +718,10 @@ Strings can be asymmetrical.
   ;; padding strings are always the outer pieces with inner fill of spaces.
   (mis2//contents/box/update plist
                              :padding
-                             (list (-first-item padding)
+                             (list (mis2//first padding)
                                    ?\s
                                    ?\s
-                                   (-second-item padding))))
+                                   (mis2//second padding))))
 
 
 (defun mis2//contents/box/padding/build (string padding plist)
@@ -679,8 +752,8 @@ Strings can be asymmetrical.
 "
   (cond
    ;; Given an amount to fill up.
-   ((eq (-second-item padding) :fill)
-    (let ((pad (make-string (-third-item padding) (-first-item padding))))
+   ((eq (mis2//second padding) :fill)
+    (let ((pad (make-string (mis2//third padding) (mis2//first padding))))
       ;; Made outer pad based on fill char/amount. Inner pad will be
       ;; space characters.
       (mis2//contents/box/update plist
@@ -691,21 +764,21 @@ Strings can be asymmetrical.
                                        pad))))
 
    ;; Given an amount to leave empty.
-   ((eq (-second-item padding) :empty)
-    (let ((pad (make-string (-third-item padding) ?\s)))
+   ((eq (mis2//second padding) :empty)
+    (let ((pad (make-string (mis2//third padding) ?\s)))
       ;; Made inner pad of spaces based on fill amount. Inner pad will be
       ;; provided character.
       (mis2//contents/box/update plist
                                  :padding
-                                 (list (-first-item padding)
+                                 (list (mis2//first padding)
                                        pad
                                        pad
-                                       (-first-item padding)))))
+                                       (mis2//first padding)))))
 
    ;; Not sure... error out?
    (t
     (error "Unknown padding type: %S in padding data: %S"
-           (-second-item padding) padding))))
+           (mis2//second padding) padding))))
 
 
 ;; (defun mis2//contents/box/padding/trim (string left right)
@@ -738,8 +811,8 @@ Strings can be asymmetrical.
 ;;                            (group (repeat 0 (+ left right) whitespace)
 ;;                                   string-end))
 ;;                           string))
-;;         (max-left (length (-second-item matches)))
-;;         (max-right (length (-third-item matches)))
+;;         (max-left (length (mis2//second matches)))
+;;         (max-right (length (mis2//third matches)))
 ;;         take-left
 ;;         take-right)
 
@@ -871,40 +944,40 @@ do the hard work yourself:
 
         (setq prefix (concat (mis2//contents/propertize indent
                                                         :indent plist)
-                             (mis2//contents/propertize (-first-item margins)
+                             (mis2//contents/propertize (mis2//first margins)
                                                         :margins plist)
-                             (mis2//contents/propertize (-first-item borders)
+                             (mis2//contents/propertize (mis2//first borders)
                                                         :borders plist)))
 
-        (setq postfix (concat (mis2//contents/propertize (-second-item borders)
+        (setq postfix (concat (mis2//contents/propertize (mis2//second borders)
                                                          :borders plist)
-                              (mis2//contents/propertize (-second-item margins)
+                              (mis2//contents/propertize (mis2//second margins)
                                                          :margins plist)))
 
         ;; Add fixed-size padding elements to final pieces.
         (when padding
           ;; padding: (char string string char)
           ;;  - concat to STRING, leave fill chars for final step
-          (if (characterp (-first-item padding))
+          (if (characterp (mis2//first padding))
               (progn
-                (setq pad-left-char (-first-item padding))
+                (setq pad-left-char (mis2//first padding))
                 (setq string
-                      (concat (mis2//contents/propertize (-second-item padding)
+                      (concat (mis2//contents/propertize (mis2//second padding)
                                                          :padding plist)
                               string
-                              (mis2//contents/propertize (-third-item padding)
+                              (mis2//contents/propertize (mis2//third padding)
                                                          :padding plist)))
-                (setq pad-right-char (-fourth-item padding)))
+                (setq pad-right-char (mis2//fourth padding)))
 
             ;; padding: (string char char string)
             ;;  - concat to prefix/postfix, leave fill chars for final step
             (setq prefix (concat prefix
-                                 (mis2//contents/propertize (-first-item padding)
+                                 (mis2//contents/propertize (mis2//first padding)
                                                             :padding plist)))
-            (setq pad-left-char (-second-item padding))
-            (setq pad-right-char (-third-item padding))
+            (setq pad-left-char (mis2//second padding))
+            (setq pad-right-char (mis2//third padding))
             (setq postfix (concat
-                           (mis2//contents/propertize (-fourth-item padding)
+                           (mis2//contents/propertize (mis2//fourth padding)
                                                       :padding plist)
                            postfix))))
 

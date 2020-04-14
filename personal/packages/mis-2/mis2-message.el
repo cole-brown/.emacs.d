@@ -77,7 +77,7 @@
 
 
 ;;------------------------------------------------------------------------------
-;; §-TODO-§ [2020-04-08]: Inline styling
+;; Inline Styling:
 ;;------------------------------------------------------------------------------
 ;; (mis2/message :settings settings :style style
 ;;               "Unbelieveable! You, "
@@ -85,6 +85,17 @@
 ;;               ", must be the pride of "
 ;;               (:face :text-inattention "SUBJECT HOMETOWN HERE")
 ;;               ".")
+;;------------------------------------------------------------------------------
+
+;;------------------------------------------------------------------------------
+;; §-TODO-§ [2020-04-08]: Apply formatting to a results list.
+;;------------------------------------------------------------------------------
+;; (mis2/message :style style
+;;               "Did something to these "
+;;               (list :face :text-pop (length results))
+;;               " results: \n"
+;;               (list :format :each '((:face :highlight "%s: ") (:face :text-pop))
+;;                     results))
 ;;------------------------------------------------------------------------------
 
 
@@ -97,6 +108,7 @@
 (require 'dash)
 (require 's)
 
+(require 'mis2-utils)
 (require 'mis2-settings)
 (require 'mis2-contents)
 
@@ -161,11 +173,11 @@ Returns: '(:mis2//settings settings-element
         done)
     (while (not done)
       ;; We require our keys to go first, so just check the first element.
-      (if (and (keywordp (-first-item contents))
-               (memq (-first-item contents) mis2/custom/keywords))
+      (if (and (keywordp (mis2//first contents))
+               (memq (mis2//first contents) mis2/custom/keywords))
           ;; Get keyword (if it's our keyword) and val; save to settings/style.
-          (-if-let (mis2--kwd (plist-get mis2/custom/keywords (-first-item contents)))
-              (let ((mis2-val (plist-get contents (-first-item contents))))
+          (-if-let (mis2--kwd (plist-get mis2/custom/keywords (mis2//first contents)))
+              (let ((mis2-val (plist-get contents (mis2//first contents))))
                 ;; 'user-defaults' means load defaults (`mis2/settings/user',
                 ;; `mis2/style/user') as settings/style, then layer/override
                 ;; other settings/style on top.

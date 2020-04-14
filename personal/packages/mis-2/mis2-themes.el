@@ -7,6 +7,8 @@
 
 (require 'dash)
 
+(require 'mis2-utils)
+
 
 ;; NOTE:
 ;;   "emface"   - emacs face property
@@ -142,14 +144,14 @@ Returns plist of key/values: (misface0 emface0 ... misfaceN emfaceN)
 "
   ;; (message "get/misfaces-all-: %S" theme)
   ;; (message "      mis2/themes: %S" mis2/themes)
-  ;; (message "   theme-misfaces: %S" (-first-item (alist-get theme mis2/themes)))
-  ;; (message "  default-misfaces: %S" (-first-item (alist-get :default mis2/themes)))
+  ;; (message "   theme-misfaces: %S" (mis2//first (alist-get theme mis2/themes)))
+  ;; (message "  default-misfaces: %S" (mis2//first (alist-get :default mis2/themes)))
 
   ;; our alist cells are lists, not conses, so drop the outer list we get from
   ;; alist-get so we just have value, not (value).
   ;; We want (<face-key> <face-val> ...), not ((<face-key> <face-val> ...)).
-  (or (-first-item (alist-get theme mis2/themes))
-      (-first-item (alist-get :default mis2/themes))))
+  (or (mis2//first (alist-get theme mis2/themes))
+      (mis2//first (alist-get :default mis2/themes))))
 ;; (mis2//themes/get/misfaces-all :default)
 
 

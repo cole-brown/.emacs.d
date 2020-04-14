@@ -656,6 +656,9 @@ specified buffer.
 ;;------------------------------------------------------------------------------
 ;; (defun mis2/message (&rest args)
 
+;;---
+;; Test Case 000
+;;---
 (ert-deftest mis2-ert/message/multi-formatted ()
   "Test that `mis2/message' outputs a properly formatted message when input
 contains several styled subsections.
@@ -691,6 +694,64 @@ contains several styled subsections.
              (propertize "."                       'face font-lock-warning-face))))))))
 
   (mis2-ert/mis2-message/teardown))
+
+
+;;---
+;; Test Case 001
+;;---
+(ert-deftest mis2-ert/message/format-each ()
+  "Test that `mis2/message' outputs a properly formatted message when input
+contains several styled subsections.
+"
+  (mis2-ert/mis2-message/setup)
+
+  ;; Setup for a message to test.
+  (let ((settings nil)
+        (style '(:face :text))
+        (results '(("/path/to/test0" "a.txt, b.txt, c.txt")
+                   ("/path/to/test1" "b.jpg, o.jpg, o.png"))))
+
+    (mis2-ert/mock 'mis2//message/output/to-buffer nil
+      (mis2-ert/mock 'mis2//message/output/to-minibuffer nil
+
+        ;; Output message with a results list styled as
+        ;; indicated by ":format :each"
+        (mis2/message :style style
+                      "Did something to these "
+                      (list :face :title (length results))
+                      " folders: "
+                      (list :format :each
+                            '((:face :highlight "%s: ") (:face :title))
+                            results))
+
+        ;; correctly propertized?
+        (should
+         (equal-including-properties
+          mis2-ert/mock/output/to-buffer
+          (concat
+           (propertize "Did something to these " 'face font-lock-warning-face)
+           (propertize "2"                       'face font-lock-constant-face)
+           (propertize "folders: "               'face font-lock-warning-face)
+           (propertize "/path/to/test0: "        'face font-lock-constant-face)
+           (propertize "a.txt, b.txt, c.txt"     'face font-lock-builtin-face)
+           (propertize "/path/to/test1: "        'face font-lock-constant-face)
+           (propertize "b.jpg, o.jpg, o.png"     'face font-lock-builtin-face)))))))
+
+  (mis2-ert/mis2-message/teardown))
+(when nil
+  (let ((settings nil)
+        (style '(:face :text))
+        (results '(("/path/to/test0" "a.txt, b.txt, c.txt")
+                   ("/path/to/test1" "b.jpg, o.jpg, o.png"))))
+        (mis2/message :style style
+                      "Did something to these "
+                      (list :face :title (length results))
+                      " folders: "
+                      (list :format :each
+                            '((:face :highlight "%s: ") (:face :title))
+                            results)))
+  )
+
 
 
 ;;------------------------------------------------------------------------------
