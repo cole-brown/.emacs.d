@@ -5,7 +5,6 @@
 ;;--               Build :mis2//contents into :mis2//message.                 --
 ;;------------------------------------------------------------------------------
 
-(require 'cl)
 (require 'dash)
 (require 's)
 
@@ -162,8 +161,8 @@ Will deal with differently faced sub-sections, like:
       ;; Is this a mis2/style keyword?
       (when (and element
                  (listp element)
-                 (first element)
-                 (alist-get (first element) mis2/style/keys))
+                 (-first-item element)
+                 (alist-get (-first-item element) mis2/style/keys))
         ;; Yes; set our kind to mis2 formatting.
         (setq formatter :format-mis2)))
     ;; and now call the contents builder/formatter
@@ -199,8 +198,8 @@ Will deal with differently faced sub-sections, like:
                (eq (type-of element) 'cons) ;; listp useless - string is listp
                ;; keyword and in mis2/style/keys means we've got a style
                ;; override here.
-               (keywordp (first element))
-               (alist-get (first element) mis2/style/keys))
+               (keywordp (-first-item element))
+               (alist-get (-first-item element) mis2/style/keys))
           ;; Pick off all the style overrides, and then get the rest
           ;; formatted/propertized.
           (push (mis2//contents/text/format/mis2/sub-section element plist)
@@ -312,7 +311,7 @@ Final sink for:
                 (> (length elements) 1)))
       ;; Simple case. Only one thing in elements (or nothing).
       ;; Pass through format in case not a string.
-      (format "%s" (first elements))
+      (format "%s" (-first-item elements))
 
     ;; Complex case. More than one thing! Oh no...
     ;; ...Well in that case assume the first thing is a string formatter.
@@ -368,16 +367,16 @@ Pass-through sink for:
     ;; nil, but `first', `second', and `length' all cope correctly with it.
     (list
      (+ (length indent)
-        (length (first margins))
-        (length (first borders))
+        (length (-first-item margins))
+        (length (-first-item borders))
         (or
-         (mis2//contents/string/length-safe (first padding))
-         (mis2//contents/string/length-safe (second padding))))
-     (+ (length (second margins))
-        (length (second borders))
+         (mis2//contents/string/length-safe (-first-item padding))
+         (mis2//contents/string/length-safe (-second-item padding))))
+     (+ (length (-second-item margins))
+        (length (-second-item borders))
         (or
-         (mis2//contents/string/length-safe (first padding))
-         (mis2//contents/string/length-safe (second padding)))))))
+         (mis2//contents/string/length-safe (-first-item padding))
+         (mis2//contents/string/length-safe (-second-item padding)))))))
 
 
 (defun mis2//contents/line/width (plist)
@@ -485,8 +484,8 @@ RESERVED should be returned value from `mis2//contents/line/reserved-amount'.
   ;; reserved too - won't affect looks to do the math first then build the
   ;; string (unlike aligning to center).
   (let ((len (- width
-                (first reserved)
-                (second reserved)
+                (-first-item reserved)
+                (-second-item reserved)
                 (length string))))
 
     ;; For left align, we do not build any padding string at this time - we may
@@ -511,8 +510,8 @@ RESERVED should be returned value from `mis2//contents/line/reserved-amount'.
     ;; Chop down string starting after left-reserved chars, and ending before
     ;; right-reserved chars.
     (substring centered
-               (first reserved)
-               (- len (second reserved)))))
+               (-first-item reserved)
+               (- len (-second-item reserved)))))
 
 
 (defun mis2//contents/align/right (string width reserved plist)
@@ -526,8 +525,8 @@ RESERVED should be returned value from `mis2//contents/line/reserved-amount'.
   ;; reserved too - won't affect looks to do the math first then build the
   ;; string (unlike aligning to center).
   (let ((len (- width
-                (first reserved)
-                (second reserved))))
+                (-first-item reserved)
+                (-second-item reserved))))
     ;; Now all we have to do is pad out by our calculated length.
     (s-pad-left len " " string)))
 
@@ -646,10 +645,10 @@ Strings can be asymmetrical.
   ;; padding strings are always the outer pieces with inner fill of spaces.
   (mis2//contents/box/update plist
                              :padding
-                             (list (first padding)
+                             (list (-first-item padding)
                                    ?\s
                                    ?\s
-                                   (second padding))))
+                                   (-second-item padding))))
 
 
 (defun mis2//contents/box/padding/build (string padding plist)
@@ -680,8 +679,8 @@ Strings can be asymmetrical.
 "
   (cond
    ;; Given an amount to fill up.
-   ((eq (second padding) :fill)
-    (let ((pad (make-string (third padding) (first padding))))
+   ((eq (-second-item padding) :fill)
+    (let ((pad (make-string (-third-item padding) (-first-item padding))))
       ;; Made outer pad based on fill char/amount. Inner pad will be
       ;; space characters.
       (mis2//contents/box/update plist
@@ -692,21 +691,21 @@ Strings can be asymmetrical.
                                        pad))))
 
    ;; Given an amount to leave empty.
-   ((eq (second padding) :empty)
-    (let ((pad (make-string (third padding) ?\s)))
+   ((eq (-second-item padding) :empty)
+    (let ((pad (make-string (-third-item padding) ?\s)))
       ;; Made inner pad of spaces based on fill amount. Inner pad will be
       ;; provided character.
       (mis2//contents/box/update plist
                                  :padding
-                                 (list (first padding)
+                                 (list (-first-item padding)
                                        pad
                                        pad
-                                       (first padding)))))
+                                       (-first-item padding)))))
 
    ;; Not sure... error out?
    (t
     (error "Unknown padding type: %S in padding data: %S"
-           (second padding) padding))))
+           (-second-item padding) padding))))
 
 
 ;; (defun mis2//contents/box/padding/trim (string left right)
@@ -739,8 +738,8 @@ Strings can be asymmetrical.
 ;;                            (group (repeat 0 (+ left right) whitespace)
 ;;                                   string-end))
 ;;                           string))
-;;         (max-left (length (second matches)))
-;;         (max-right (length (third matches)))
+;;         (max-left (length (-second-item matches)))
+;;         (max-right (length (-third-item matches)))
 ;;         take-left
 ;;         take-right)
 
@@ -872,40 +871,40 @@ do the hard work yourself:
 
         (setq prefix (concat (mis2//contents/propertize indent
                                                         :indent plist)
-                             (mis2//contents/propertize (first margins)
+                             (mis2//contents/propertize (-first-item margins)
                                                         :margins plist)
-                             (mis2//contents/propertize (first borders)
+                             (mis2//contents/propertize (-first-item borders)
                                                         :borders plist)))
 
-        (setq postfix (concat (mis2//contents/propertize (second borders)
+        (setq postfix (concat (mis2//contents/propertize (-second-item borders)
                                                          :borders plist)
-                              (mis2//contents/propertize (second margins)
+                              (mis2//contents/propertize (-second-item margins)
                                                          :margins plist)))
 
         ;; Add fixed-size padding elements to final pieces.
         (when padding
           ;; padding: (char string string char)
           ;;  - concat to STRING, leave fill chars for final step
-          (if (characterp (first padding))
+          (if (characterp (-first-item padding))
               (progn
-                (setq pad-left-char (first padding))
+                (setq pad-left-char (-first-item padding))
                 (setq string
-                      (concat (mis2//contents/propertize (second padding)
+                      (concat (mis2//contents/propertize (-second-item padding)
                                                          :padding plist)
                               string
-                              (mis2//contents/propertize (third padding)
+                              (mis2//contents/propertize (-third-item padding)
                                                          :padding plist)))
-                (setq pad-right-char (fourth padding)))
+                (setq pad-right-char (-fourth-item padding)))
 
             ;; padding: (string char char string)
             ;;  - concat to prefix/postfix, leave fill chars for final step
             (setq prefix (concat prefix
-                                 (mis2//contents/propertize (first padding)
+                                 (mis2//contents/propertize (-first-item padding)
                                                             :padding plist)))
-            (setq pad-left-char (second padding))
-            (setq pad-right-char (third padding))
+            (setq pad-left-char (-second-item padding))
+            (setq pad-right-char (-third-item padding))
             (setq postfix (concat
-                           (mis2//contents/propertize (fourth padding)
+                           (mis2//contents/propertize (-fourth-item padding)
                                                       :padding plist)
                            postfix))))
 

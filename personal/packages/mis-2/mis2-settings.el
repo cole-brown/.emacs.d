@@ -6,7 +6,6 @@
 ;;------------------------------------------------------------------------------
 
 
-(require 'cl)
 (require 'dash)
 (require 's)
 
@@ -447,14 +446,14 @@ Examples:
        (when (and (not (null ,temp-args))
                   (listp ,temp-args)
                   (= 1 (length ,temp-args)))
-         (setq ,temp-args (first ,temp-args)))
+         (setq ,temp-args (-first-item ,temp-args)))
 
        ;; Now look at the args and do the key and value checking.
        (cond
         ;; No args: No settings; no worries.
         ((or (null ,temp-args)
              (and (= 1 (length ,temp-args))
-                  (null (first ,temp-args))))
+                  (null (-first-item ,temp-args))))
          ;; Give them back their list.
          ;; No update to it because no change.
          ,plist)
@@ -498,7 +497,7 @@ Examples:
          ;; Still have ,temp-args? Didn't end up with a pair - complain?
          (when ,temp-args
            (error "Uneven list; no value for last element: %s"
-                  (first ,temp-args)))
+                  (-first-item ,temp-args)))
 
          ;; ...and return the list.
          ,plist)
@@ -606,14 +605,14 @@ Examples:
        (when (and (not (null ,temp-args))
                   (listp ,temp-args)
                   (= 1 (length ,temp-args)))
-         (setq ,temp-args (first ,temp-args)))
+         (setq ,temp-args (-first-item ,temp-args)))
 
        ;; Now look at the args and do the key and value checking.
        (cond
         ;; No args: No style; no worries.
         ((or (null ,temp-args)
              (and (= 1 (length ,temp-args))
-                  (null (first ,temp-args))))
+                  (null (-first-item ,temp-args))))
          ;; Give them back their list.
          ;; No update to it because no change.
          ,plist)
@@ -657,7 +656,7 @@ Examples:
          ;; Still have ,temp-args? Didn't end up with a pair - complain?
          (when ,temp-args
            (error "Uneven list; no value for last element: %s"
-                  (first ,temp-args)))
+                  (-first-item ,temp-args)))
 
          ;; ...and return the list.
          ,plist)
@@ -715,10 +714,10 @@ Examples:
 
   ;; sometimes need to override key-info in a recursion (e.g. :or case)
   (let* ((key-info (or key-info (funcall check-key-fn key)))
-         (type (and (listp key-info) (first key-info)))
-         (value-checker (and (listp key-info) (second key-info)))
-         (basic-validity (or (first (alist-get key mis2/validity/types))
-                             (first (alist-get type mis2/validity/types))))
+         (type (and (listp key-info) (-first-item key-info)))
+         (value-checker (and (listp key-info) (-second-item key-info)))
+         (basic-validity (or (-first-item (alist-get key mis2/validity/types))
+                             (-first-item (alist-get type mis2/validity/types))))
          success)
 
     ;; (message "    : ki: %S, t: %S, vc: %S, bv: %S"
@@ -783,14 +782,14 @@ Examples:
                  ;; So ask sub-us to check this sub-key/sub-value.
                  (when (eq :*bad-value-error*
                            (if (and (listp (nth i value-checker))
-                                    (keywordp (first (nth i value-checker))))
+                                    (keywordp (-first-item (nth i value-checker))))
                                ;; e.g. (:const (:empty :fill)) as a
                                ;; value-checker for a list item.
                                (mis2//private/check-value
-                                (first (nth i value-checker))
+                                (-first-item (nth i value-checker))
                                 (nth i value)
                                 check-key-fn
-                                (second (nth i value-checker)))
+                                (-second-item (nth i value-checker)))
 
                              ;; e.g. :string as a value-checker for a list item.
                              (mis2//private/check-value (nth i value-checker)
@@ -823,8 +822,8 @@ Examples:
       ;; Range must be a number (float or int) and must be in the range
       ;; specified (inclusive).
       (if (and (numberp value)
-               (<= (first value-checker) value)
-               (>= (second value-checker) value))
+               (<= (-first-item value-checker) value)
+               (>= (-second-item value-checker) value))
           value
         :*bad-value-error*))
 
@@ -865,7 +864,7 @@ Examples:
 "
   (let ((info (or (alist-get key valid-key-info)
                   (alist-get key valid-meta-key-info)))
-        (basic-validity (first (alist-get key mis2/validity/types))))
+        (basic-validity (-first-item (alist-get key mis2/validity/types))))
 
     ;; Check basic validity first - it takes care of str, int, etc.
     (cond ((and (not (null basic-validity))

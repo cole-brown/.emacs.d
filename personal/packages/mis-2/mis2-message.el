@@ -94,7 +94,6 @@
 ;;------------------------------------------------------------------------------
 
 
-(require 'cl)
 (require 'dash)
 (require 's)
 
@@ -162,11 +161,11 @@ Returns: '(:mis2//settings settings-element
         done)
     (while (not done)
       ;; We require our keys to go first, so just check the first element.
-      (if (and (keywordp (first contents))
-               (memq (first contents) mis2/custom/keywords))
+      (if (and (keywordp (-first-item contents))
+               (memq (-first-item contents) mis2/custom/keywords))
           ;; Get keyword (if it's our keyword) and val; save to settings/style.
-          (-if-let (mis2--kwd (plist-get mis2/custom/keywords (first contents)))
-              (let ((mis2-val (plist-get contents (first contents))))
+          (-if-let (mis2--kwd (plist-get mis2/custom/keywords (-first-item contents)))
+              (let ((mis2-val (plist-get contents (-first-item contents))))
                 ;; 'user-defaults' means load defaults (`mis2/settings/user',
                 ;; `mis2/style/user') as settings/style, then layer/override
                 ;; other settings/style on top.
