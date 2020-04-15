@@ -755,7 +755,7 @@ Examples:
                         ;; only change value-checker.
                         key value check-key-fn
                         ;; override key-info with the or's key-info
-                        (nth i value-checker))))
+                        (mis2//nth i value-checker))))
           ;; Any success - passes 'or' test.
           (setq success value)))
       success)
@@ -778,23 +778,23 @@ Examples:
                (setq success value)
                (dotimes (i (length value))
                  ;; If (mis2//style/check-value :margins '("hi" "hello")):
-                 ;;  (nth i value)         - "hi" (sub-value)
-                 ;;  (nth i value-checker) - :string (sub-key)
+                 ;;  (mis2//nth i value)         - "hi" (sub-value)
+                 ;;  (mis2//nth i value-checker) - :string (sub-key)
                  ;; So ask sub-us to check this sub-key/sub-value.
                  (when (eq :*bad-value-error*
-                           (if (and (listp (nth i value-checker))
-                                    (keywordp (mis2//first (nth i value-checker))))
+                           (if (and (listp (mis2//nth i value-checker))
+                                    (keywordp (mis2//first (mis2//nth i value-checker))))
                                ;; e.g. (:const (:empty :fill)) as a
                                ;; value-checker for a list item.
                                (mis2//private/check-value
-                                (mis2//first (nth i value-checker))
-                                (nth i value)
+                                (mis2//first (mis2//nth i value-checker))
+                                (mis2//nth i value)
                                 check-key-fn
-                                (mis2//second (nth i value-checker)))
+                                (mis2//second (mis2//nth i value-checker)))
 
                              ;; e.g. :string as a value-checker for a list item.
-                             (mis2//private/check-value (nth i value-checker)
-                                                         (nth i value)
+                             (mis2//private/check-value (mis2//nth i value-checker)
+                                                         (mis2//nth i value)
                                                          check-key-fn)))
                    ;; failure - set success to a big nope
                    (setq success :*bad-value-error*)))

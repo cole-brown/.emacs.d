@@ -13,8 +13,41 @@
 
 
 ;;------------------------------------------------------------------------------
+;; List/Cons Functions
+;;------------------------------------------------------------------------------
+(defun mis2//length-safe (maybe)
+  "Returns `length' of MAYBE if it is a string, list, cons...
+otherwise returns 0.
+"
+  ;; if list and not string, do list/cons version.
+  (cond ((mis2//list? maybe)
+
+         ;; If second element is a list, this list is a list.
+         ;; Otherwise this list is a cons... hopefully.
+         (if (listp (cdr maybe))
+             (length maybe)
+           ;; cons are 2 long, and we definitely have a cons... right?
+           2))
+
+        ;; if string, pass to mis2//string/length-safe.
+        ((stringp maybe)
+         (mis2//string/length-safe maybe))
+
+        ;; Uh... We have to be safe, so... *shrugs*
+        (t
+         0)))
+;; (mis2//length-safe '(x . y))
+;; (mis2//length-safe '(x y))
+;; (mis2//length-safe '(x y z))
+;; (mis2//length-safe "hello")
+;; (mis2//length-safe nil)
+;; (mis2//length-safe 'hi)
+
+
+;;------------------------------------------------------------------------------
 ;; List Functions
 ;;------------------------------------------------------------------------------
+
 
 (defun mis2//list? (element)
   "`listp' is insufficient for checking if an element is a list -
@@ -47,7 +80,19 @@ string or otherwise."
 N counts from zero.  If LIST is not that long, nil is returned.
 "
   (when (mis2//list-exists? list)
-    (nth n list)))
+    ;; "cons or list" case - don't use `nth' because it needs a list.
+    (cond ((= n 0)
+           (car list))
+          ((= n 1)
+           (if (mis2//list? (cdr list))
+               (nth 1 list) ;; is a list - grab just 2nd element
+             (cdr list)))   ;; is a cons - grab end-of-list/2nd-element
+
+          ;; default case: just use nth
+          (t
+           (nth n list)))))
+;; (mis2//nth 1 '(1 2 3))
+;; (mis2//nth 1 '(1 . 2))
 
 
 (defun mis2//first (list)

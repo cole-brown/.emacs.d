@@ -276,11 +276,11 @@ Will deal with differently faced sub-sections, like:
   ;; Stop after styles and propertize the rest using those overrides.
   (let (style-overrides
         (i 0)
-        (len (length content))
+        (len (mis2//length-safe content))
         element
         value)
     (while (< i len)
-      (setq element (nth i content))
+      (setq element (mis2//nth i content))
 
       ;; We require our keys to go first, so just check the elements
       ;; until not our key.
@@ -290,7 +290,7 @@ Will deal with differently faced sub-sections, like:
             ;; Get keyword and val; save to settings/style.
             ;; Keyword is element (and verified);
             ;; just need to get and verify value.
-            (setq value (nth (1+ i) content))
+            (setq value (mis2//nth (1+ i) content))
             (if (not (eq (mis2//style/check-value element value) :*bad-value-error*))
                 ;; Good - add to overrides.
                 (setq style-overrides (plist-put style-overrides element value))
@@ -331,6 +331,7 @@ FORMATS element, so for this example FORMATS and INPUTS are effectively:
 
 Which will then be processed down to a propertized string and returned.
 "
+  ;; (message "mis2//format/each: formats: %S, inputs: %S" formats inputs)
   (let (each-input
         style
         substance
@@ -338,9 +339,11 @@ Which will then be processed down to a propertized string and returned.
     ;; Loop over our inputs...
     (dolist (each-input inputs)
       ;; get our input element and it's mate from the formats.
-      (dotimes (each-i (length each-input))
-        (setq style     (nth each-i formats)
-              substance (nth each-i each-input))
+      (dotimes (each-i (mis2//length-safe each-input))
+        (setq style     (mis2//nth each-i formats)
+              substance (mis2//nth each-i each-input))
+        ;; (message "mis2//format/each: style: %S, substance: %S" style substance)
+
         ;; And now we can combine style & substance into a list to pass on to be
         ;; formatted as a div of these contents.
         (push (mis2//format/div (-snoc style substance) plist)
@@ -388,7 +391,7 @@ Does not propertize.
   ;; all the things with the assumption that the first one is a formatting
   ;; string.
   (if (not (and (mis2//list-exists? elements)
-                (> (length elements) 1)))
+                (> (mis2//length-safe elements) 1)))
       ;; Simple case. Only one thing in elements (or nothing).
       ;; Pass through format in case not a string.
       (format "%s" (mis2//first elements))
@@ -438,14 +441,14 @@ Pass-through sink for:
     ;; Reserved tuple of (left right) amounts. Some of these are expected to be
     ;; nil, but `first', `second', and `length' all cope correctly with it.
     (list
-     (+ (length indent)
-        (length (mis2//first margins))
-        (length (mis2//first borders))
+     (+ (mis2//string/length-safe indent)
+        (mis2//string/length-safe (mis2//first margins))
+        (mis2//string/length-safe (mis2//first borders))
         (or
          (mis2//string/length-safe (mis2//first padding))
          (mis2//string/length-safe (mis2//second padding))))
-     (+ (length (mis2//second margins))
-        (length (mis2//second borders))
+     (+ (mis2//string/length-safe (mis2//second margins))
+        (mis2//string/length-safe (mis2//second borders))
         (or
          (mis2//string/length-safe (mis2//first padding))
          (mis2//string/length-safe (mis2//second padding)))))))
@@ -558,7 +561,7 @@ RESERVED should be returned value from `mis2//contents/line/reserved-amount'.
   (let ((len (- width
                 (mis2//first reserved)
                 (mis2//second reserved)
-                (length string))))
+                (mis2//string/length-safe string))))
 
     ;; For left align, we do not build any padding string at this time - we may
     ;; not need one at all. We'll still put into the plist just how much padding
@@ -577,7 +580,7 @@ RESERVED should be returned value from `mis2//contents/line/reserved-amount'.
 "
   ;; Center on the full width for true center.
   (let* ((centered (s-center width string))
-         (len (length centered)))
+         (len (mis2//string/length-safe centered)))
 
     ;; Chop down string starting after left-reserved chars, and ending before
     ;; right-reserved chars.
@@ -780,70 +783,6 @@ Strings can be asymmetrical.
            (mis2//second padding) padding))))
 
 
-;; (defun mis2//contents/box/padding/trim (string left right)
-;;   "Trim STRING by amount LEFT and RIGHT on each end.
-
-;; Attempts to trim exactly as requested. If not enough whitespace
-;; on left or right, will attempt to make up the difference on the
-;; other side.
-
-;; Returns: '(trimmed-string left-trimmed-amount right-trimmed-amount)
-;; "
-;;   ;; (s-match (rx (group string-start (repeat 0 7 whitespace))
-;;   ;;              (+? printing)
-;;   ;;              (group (repeat 0 7 whitespace) string-end))
-;;   ;;          "    hello there   ")
-
-;;   (let ((matches (s-match (rx
-;;                            ;; first group:
-;;                            ;;  - anchored at beginning-of-string
-;;                            ;;  - take as many whitespaces as possible
-;;                            ;;    up to total needed
-;;                            (group string-start
-;;                                   (repeat 0 (+ left right) whitespace))
-;;                            ;; Middle should be... something, right?
-;;                            (+? printing)
-;;                            ;; first group:
-;;                            ;;  - take as many whitespaces as possible
-;;                            ;;    up to total needed
-;;                            ;;  - anchored at end-of-string
-;;                            (group (repeat 0 (+ left right) whitespace)
-;;                                   string-end))
-;;                           string))
-;;         (max-left (length (mis2//second matches)))
-;;         (max-right (length (mis2//third matches)))
-;;         take-left
-;;         take-right)
-
-;;     ;; Now we know what's available to take from each side... Figure out what
-;;     ;; we're actually going to take.
-;;     (setq take-left (min max-left left))
-;;     (setq take-right (min max-right right))
-;;     ;; If we want more taken from left, but can't, and have more available on
-;;     ;; right... Take it from there.
-;;     (when (and (< take-left left)
-;;                (> max-right take-right))
-;;       (setq take-right
-;;             (min
-;;              ;; new desired
-;;              (+ take-right (- left take-left))
-;;              ;; or max we can do
-;;              max-right)))
-;;     ;; If we want more taken from right, but can't, and have more available on
-;;     ;; left... Take it from there.
-;;     (when (and (< take-right right)
-;;                (> max-left take-left))
-;;       (setq take-left
-;;             (min
-;;              ;; new desired
-;;              (+ take-left (- right take-right))
-;;              ;; or max we can do
-;;              max-left)))
-
-;;     ;; Now chop out our substring
-;;     (substring string take-left (- (length string) take-right))))
-
-
 (defun mis2//contents/box/borders (string plist)
   "Takes STRING and adds left/right borders to it if defined in the mis2 PLIST.
 "
@@ -863,32 +802,6 @@ inputs and creates final margins in `:mis2//box' in PLIST.
       ;; We have them - stuff 'em straight into the box.
       (mis2//contents/box/update plist
                                  :margins margins)))
-
-
-;; (defun mis2//contents/box/right-fill (string plist)
-;;   "Takes STRING and mis2 PLIST. Adds right padding if needed to
-;; get it to line-width sans margins & borders. Required mainly just
-;; for left-aligned strings since we'll be putting a box's right
-;; side on and need it to be located at the proper column.
-;; "
-;;   ;; need all this junk so I know how wide the inner padding/string section is.
-;;   (let* ((indent     (mis2//style/get/from-data :indent  plist))
-;;          (margins    (mis2//style/get/from-data :margins plist))
-;;          (borders    (mis2//style/get/from-data :borders plist))
-;;          (width-line (mis2//contents/line/width plist))
-;;          (width-inner (- width-line
-;;                          ;; avoid 'nil'
-;;                          (or indent 0)
-;;                          ;; reduce margins/borders down to their length
-;;                          (-sum (mapcar #'length margins))
-;;                          (-sum (mapcar #'length borders)))))
-
-;;     (if (and string
-;;              (< (length string) width-inner))
-;;         ;; Need more - pad out string.
-;;         (s-pad-right width-inner ?\s string)
-;;       ;; Don't  need more - just return as-is.
-;;       string)))
 
 
 (defun mis2//contents/box/build (string plist)

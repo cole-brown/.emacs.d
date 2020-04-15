@@ -404,7 +404,7 @@ Magit to: add files, commit, and push.
         (if (null change-list)
             (progn
               ;; Save that nothing happened.
-              (push (cons location nil) results)
+              (push (cons location "None.") results)
               ;; Say why nothing happened.
               (mis2/message :style style
                             "  "
@@ -463,33 +463,29 @@ Magit to: add files, commit, and push.
                           " and "
                           '(:face :text-pop "pushed")
                           '(:face :highlight2 " (probably?)")
-                          ":"
+                          ": "
                           (list :face :highlight change-str))
-            (push (cons location change-str) results)))))
+            (push (cons location (or change-str "None.")) results)))))
 
       (mis2/message :style style
                     "\nAuto-Commit ran on "
                     (list :face :text-pop (length results))
                     " locations: \n"
-                    ;; ;; format for each: "path: changed.el, file.py, list.txt"
-                    ;; (-map (lambda (x)
-                    ;;         (list (list :face :highlight "%s: " (car x))
-                    ;;               (list :face :text-pop
-                    ;;                     "%s\n"
-                    ;;                     (if (null (cdr x))
-                    ;;                         "None."
-                    ;;                       (cdr x)))))
-                    ;;       results)
-                    (list :face :text-pop
-                     ;; format for each: "path: changed.el, file.py, list.txt"
-                     (string-join
-                      (mapcar (lambda (x) (format "  %s: %s"
-                                                  (car x)
-                                                  (if (null (cdr x))
-                                                      "None."
-                                                    (cdr x))))
-                              results)
-                      "\n")))))
+                    ;; format for each: "path: changed.el, file.py, list.txt"
+                    (list :format :each
+                          '((:face :highlight "  %s: ") (:face :text-pop "%s\n"))
+                          results)
+
+                    ;; (list :face :text-pop
+                    ;;  ;; format for each: "path: changed.el, file.py, list.txt"
+                    ;;  (string-join
+                    ;;   (mapcar (lambda (x) (format "  %s: %s"
+                    ;;                               (car x)
+                    ;;                               (if (null (cdr x))
+                    ;;                                   "None."
+                    ;;                                 (cdr x))))
+                    ;;           results)
+                    "\n")))
 ;; (spydez/magit/auto-commit)
 
 
