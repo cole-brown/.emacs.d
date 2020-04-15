@@ -730,27 +730,15 @@ contains several styled subsections.
           mis2-ert/mock/output/to-buffer
           (concat
            (propertize "Did something to these " 'face font-lock-warning-face)
-           (propertize "2"                       'face font-lock-constant-face)
-           (propertize "folders: "               'face font-lock-warning-face)
+           (propertize "2"                       'face font-lock-builtin-face)
+           (propertize " folders: "               'face font-lock-warning-face)
            (propertize "/path/to/test0: "        'face font-lock-constant-face)
            (propertize "a.txt, b.txt, c.txt"     'face font-lock-builtin-face)
            (propertize "/path/to/test1: "        'face font-lock-constant-face)
            (propertize "b.jpg, o.jpg, o.png"     'face font-lock-builtin-face)))))))
 
   (mis2-ert/mis2-message/teardown))
-(when nil
-  (let ((settings nil)
-        (style '(:face :text))
-        (results '(("/path/to/test0" "a.txt, b.txt, c.txt")
-                   ("/path/to/test1" "b.jpg, o.jpg, o.png"))))
-        (mis2/message :style style
-                      "Did something to these "
-                      (list :face :title (length results))
-                      " folders: "
-                      (list :format :each
-                            '((:face :highlight "%s: ") (:face :title))
-                            results)))
-  )
+
 
 
 
