@@ -475,16 +475,6 @@ Magit to: add files, commit, and push.
                     (list :format :each
                           '((:face :highlight "  %s: ") (:face :text-pop "%s\n"))
                           results)
-
-                    ;; (list :face :text-pop
-                    ;;  ;; format for each: "path: changed.el, file.py, list.txt"
-                    ;;  (string-join
-                    ;;   (mapcar (lambda (x) (format "  %s: %s"
-                    ;;                               (car x)
-                    ;;                               (if (null (cdr x))
-                    ;;                                   "None."
-                    ;;                                 (cdr x))))
-                    ;;           results)
                     "\n")))
 ;; (spydez/magit/auto-commit)
 

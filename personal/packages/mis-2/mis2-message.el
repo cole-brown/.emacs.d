@@ -223,6 +223,10 @@ Returns: '(:mis2//settings settings-element
         (setq settings-combined settings
               style-combined    style))
 
+      ;; (message "mis2//message/parse: settings: %S" settings)
+      ;; (message "mis2//message/parse: style: %S" style)
+      ;; (message "mis2//message/parse: contents: %S" contents)
+
       ;; and now return a tuple of parsed args.
       (list :mis2//settings settings-combined
             :mis2//style style-combined
@@ -331,6 +335,54 @@ These keys must be at the front of the list - before any message args.
 "
   (let ((plist (apply #'mis2//message/parse args)))
     (mis2//message/output (mis2//contents plist))))
+
+
+(defun mis2/block (&rest args)
+  "For each mis2 message line in ARGS, call mis2/message.
+
+If `:settings' key is in ARGS, the next element is mis2 settings.
+If `:style' key is in ARGS, the next element is mis2 style.
+These keys must be at the front of the list - before any message lines.
+
+If final element in args (after parsing out settings/style) is a
+list, that list will be considered the block of lines to output.
+
+  Examples:
+    Valid:
+      (mis2/block \"hello there\" \"how are you?\")
+      (mis2/block '(\"hello %s\" \"jeff\") \"how are you?\")
+      (mis2/block :settings 'sets :style 'styles 'lines-list)
+      etc.
+    Invalid:
+      (mis2/block \"hello there\" \"how are you?\" :settings nil)
+      etc.
+"
+  (let* ((plist-meta (apply #'mis2//message/parse args))
+         (settings (plist-get plist-meta :mis2//settings))
+         (style (plist-get plist-meta :mis2//style))
+         (lines (plist-get plist-meta :mis2//contents))
+         ;; If we have a doubled list '((x y ...)), turn into just a list.
+         (lines (if (and (= (mis2//length-safe lines) 1)
+                         (mis2//list? (mis2//first lines)))
+                    (mis2//first lines)))
+         plist)
+
+    ;; Parse has broken out settings/style/"the rest" into `plist-meta'.
+    ;; We've already grabbed settings and style,
+    ;; so just loop the lines for output.
+    (dolist (line lines)
+      (setq plist (list :mis2//settings settings
+                        :mis2//style    style
+                        ;; The contents should be a list; so make it one
+                        ;; if it isn't.
+                        :mis2//contents (if (mis2//list? line)
+                                            line
+                                          (list line))))
+      (message "mis2/block line plist: %S" plist)
+      (mis2//message/output (mis2//contents plist)))))
+;; (mis2/message "hello there")
+;; (mis2/block "hello there" "how are you?")
+;; (mis2/block '("hello %s" "there") "how are you?")
 
 
 ;;------------------------------------------------------------------------------

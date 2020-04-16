@@ -30,6 +30,13 @@ to left-aligned.")
   "Box-related keywords. Will be in the :mis2//box list if specified.")
 
 
+(defconst mis2//line/full-lines
+  '((:newline "")  ;; "\n"
+    (:empty   "")  ;; "\n"
+    (:full    ?-)) ;; "<line-width padded with something like '-'>\n"
+  "Alist of keywords for entire lines and data for help building them.")
+
+
 ;;------------------------------------------------------------------------------
 ;; Build... boss?
 ;;------------------------------------------------------------------------------
@@ -68,7 +75,12 @@ Pipeline for sink of:
 "
   ;; Style and contents for this level of the message. Could have more levels of
   ;; style/content to recurse into? ...but this is what we're dealing with now.
-  (let ((string (mis2//contents/text (plist-get plist :mis2//contents) plist)))
+  (let* ((contents (plist-get plist :mis2//contents))
+         ;; Prep Work: Convert contents to a string.
+         (string (mis2//contents/section contents)))
+
+    ;; (message "mis2//contents/build: contents: %S -> string: %S"
+    ;;          contents string)
 
     ;; Prep Work: Boxing: Deal with any box styling.
     (mis2//contents/box/parts string plist)
@@ -86,9 +98,191 @@ Pipeline for sink of:
 
 
 ;;------------------------------------------------------------------------------
-;; Content, uh... minions.
+;; Content Sections
 ;;------------------------------------------------------------------------------
 
+(defun mis2//contents/section/type (contents)
+  "Determines what section type the CONTENTS are:
+  Basic sections:
+    - :mis2//section/text   - Just a string,
+                              a format string and some data,
+                              or just some data.
+    - :mis2//section/format - Contents start with :format keyword.
+    - :mis2//section/line   - Content is just a
+                              `mis2//line/full-lines' keyword.
+
+  Complex sections:
+    - :mis2//section/div    - A division with style overrides.
+                              It will have contents of its own with their
+                              own content section.
+    - :mis2//section/multi  - Contents is more than one content section.
+                              Format each on its own, concat, and return.
+"
+  (let ((check (mis2//first contents)))
+    (cond
+     ;; format: easy - it'll have `:format' as the check.
+     ((and (keywordp check) (eq check :format))
+      :mis2//section/format)
+
+     ;; line: also easy - line section will be the check.
+     ((and (keywordp check)
+           (alist-get check mis2//line/full-lines))
+      :mis2//section/line)
+
+     ;; div: we need to look at check and see if it's a style keyword
+     ((and (keywordp check)
+           (alist-get (mis2//first element) mis2/style/keys))
+      :mis2//section/div)
+
+     ;; text: Either we have a string as check, or we just have one thing
+     ;; to print.
+     ((or (stringp check)
+          (mis2//length contents 1))
+      :mis2//section/text)
+
+     ;; multi: If it's not the rest of the sections, assume it's
+     ;; some combination?
+     (t
+      :mis2//section/multi))))
+
+
+(defun mis2//contents/section (contents)
+  "Determines what section type the CONTENTS are and builds the
+propertized output string from them.
+"
+  (let ((section (mis2//contents/section/get contents)))
+    (cond ((eq section :mis2//section/text)
+           (mis2//contents/section/text contents plist))
+
+          ((eq section :mis2//section/format)
+           (mis2//contents/section/format contents plist))
+
+          ((eq section :mis2//section/line)
+           (mis2//contents/section/line contents plist))
+
+          ((eq section :mis2//section/div)
+           (mis2//contents/section/div contents plist))
+
+          ((eq section :mis2//section/multi)
+           (mis2//contents/section/multi contents plist)))))
+
+
+(defun mis2//contents/section/multi (contents plist)
+  "Builds CONTENTS of section `:mis2//section/multi' into a
+propertized string based on settings/style in PLIST and
+CONTENTS.
+
+CONTENTS should be:
+  - strings
+  - lists of contents (of any section type)
+
+E.g. this is a :mis2//section/multi message:
+  (mis2/message :settings settings :style style
+                \"Unbelieveable! You, \"
+                (:face :highlight \"SUBJECT NAME HERE\")
+                \", must be the pride of \"
+                (:face :title \"SUBJECT HOMETOWN HERE\")
+                \".\")
+"
+  (let (accum)
+    (dolist (section contents)
+      (message "mis2//contents/section/multi: section: %S, contents: %S"
+               section contents)
+      ;; Recurse back up to our parent to process this section.
+      (push (mis2//contents/section section plist) accum))
+
+    ;; Done with sub-sections - put it all together.
+    (apply #'concat (nreverse accum))))
+
+
+(defun mis2//contents/section/text (contents plist)
+  "Builds CONTENTS of section `:mis2//section/text' into a
+propertized string based on settings/style in PLIST and
+CONTENTS.
+
+CONTENTS should just be:
+  - a string
+  - a formatting string and its arguments
+  - one argument to be formatted by \"%s\"
+"
+  (mis2//format/text contents plist))
+
+
+(defun mis2//contents/section/line (contents plist)
+  "Builds CONTENTS of section `:mis2//section/div' into a
+propertized string based on settings/style in PLIST and
+CONTENTS (which should just be instructions for building a
+certain type of line).
+
+CONTENTS should jus be a line type. Will deal with all the
+different line types; see `mis2//line/full-lines'.
+"
+  (let* ((line-type (mis2//first contents))
+         (build-data (alist-get line-type mis2//line/full-lines)))
+
+    ;; (message "mis2//contents/line: type: %S, data: %S" line-type build-data)
+
+    ;; These mean we'll be printing out nothing.
+    (cond
+     ((or (eq line-type :newline)
+          (eq line-type :empty))
+      ;; §-TODO-§ [2020-04-16]: Add/remove something to plist to indicate
+      ;; not to add boxing or anything.
+      (mis2//contents/propertize (mis2//first build-data) :line plist))
+
+     ;; "-" or something padded out to line length.
+     ((eq line-type :full)
+      ;; (message "mis2//contents/line: full. reserved: %S (sum: %S), build-data: %S (first: %S), string: %S"
+      ;;          (mis2//contents/line/reserved-amount plist)
+      ;;          (-sum (mis2//contents/line/reserved-amount plist))
+      ;;          build-data
+      ;;          (mis2//first build-data)
+      ;;          (make-string (-sum (mis2//contents/line/reserved-amount plist))
+      ;;                       (mis2//first build-data)))
+
+      ;; Make full line (with room for reserved amount).
+      (mis2//contents/propertize
+       (make-string (- (mis2//contents/line/width plist)
+                       (-sum (mis2//contents/line/reserved-amount plist)))
+                    (mis2//first build-data))
+       :line plist))
+
+     (t
+      (error "mis2//contents/line: unknown line type '%S' for contents: %S"
+             line-type contents)))))
+
+
+(defun mis2//contents/section/format (contents plist)
+  "Builds CONTENTS of section `:mis2//section/format' into a
+propertized string based on settings/style in PLIST and
+CONTENTS.
+
+CONTENTS should be:
+  - A list starting with :format <format-type>. E.g.:
+    '(:format :each ...)
+"
+  ;; Get the type keyword and then drop both :format and type keywords from
+  ;; front of contents.
+  (mis2//format/by-format-type (mis2//second element)
+                               (-drop 2 element)
+                               plist))
+
+
+(defun mis2//contents/section/div (contents plist)
+  "Builds CONTENTS of section `:mis2//section/div' into a
+propertized string based on settings/style in PLIST and
+CONTENTS.
+
+CONTENTS should be:
+  - A list starting with a mis2 style keyword. E.g.:
+    '(:face :title ...)
+"
+  (mis2//format/div contents plist))
+
+
+;;------------------------------------------------------------------------------
+;; Content, uh... minions.
+;;------------------------------------------------------------------------------
 (defun mis2//contents/finalize (string plist)
   "Build final, propertized string from input STRING and PLIST string
 parts (:mis2//line, :mis2//box, etc).
@@ -140,116 +334,134 @@ Final sink for:
     string))
 
 
-(defun mis2//contents/text (contents plist)
-  "Builds CONTENTS into a propertized string based on settings/style in PLIST
-and CONTENTS.
+;; (defun mis2//contents/text (contents plist)
+;;   "Builds CONTENTS into a propertized string based on settings/style in PLIST
+;; and CONTENTS.
 
-Will deal with differently faced sub-sections, like:
-  (mis2/message :settings settings :style style
-                \"Unbelieveable! You, \"
-                (:face :highlight \"SUBJECT NAME HERE\")
-                \", must be the pride of \"
-                (:face :title \"SUBJECT HOMETOWN HERE\")
-                \".\")
-"
-  ;; Assumption:
-  ;;   /Either/ they have a "normal" string or format string & args,
-  ;;   OR they have a mis2 multi-formatting message like above.
-  ;; We have to figure out which one it is so we can process it correctly. So
-  ;; loop through the contents, looking for a :mis2//style keyword (e.g. :face)
-  ;; as the first item in a list (e.g. '("Hello, " (:face :title "JEFF"))).
-  (let ((formatter :format-emacs)) ;; default to simple/non-mis2 contents.
-    (dolist (element contents)
-      ;; Is this a mis2/style keyword?
-      (when (and (mis2//list-exists? element)
-                 (mis2//first element)
-                 (alist-get (mis2//first element) mis2/style/keys))
-        ;; Yes; set our kind to mis2 formatting.
-        (setq formatter :format-mis2)))
-    ;; and now call the contents builder/formatter
-    (cond ((eq formatter :format-mis2)
-           (mis2//format/contents contents plist))
+;; Will deal with differently faced sub-sections, like:
+;;   (mis2/message :settings settings :style style
+;;                 \"Unbelieveable! You, \"
+;;                 (:face :highlight \"SUBJECT NAME HERE\")
+;;                 \", must be the pride of \"
+;;                 (:face :title \"SUBJECT HOMETOWN HERE\")
+;;                 \".\")
+;; "
+;;   (message "mis2//contents/text: input: %S"
+;;            contents)
 
-          ((eq formatter :format-emacs)
-           (mis2//format/text contents plist))
+;;   ;; Assumption:
+;;   ;;   /Either/ they have a "normal" string or format string & args,
+;;   ;;   OR they have a mis2 multi-formatting message like above.
+;;   ;; We have to figure out which one it is so we can process it correctly. So
+;;   ;; loop through the contents, looking for a :mis2//style keyword (e.g. :face)
+;;   ;; as the first item in a list (e.g. '("Hello, " (:face :title "JEFF"))).
+;;   (let ((formatter :format-emacs)) ;; default to simple/non-mis2 contents.
+;;     (dolist (element contents)
+;;       (message "mis2//contents/text: checking: %S... %S is style key? %S"
+;;                element
+;;                (mis2//first element)
+;;                (alist-get (mis2//first element) mis2/style/keys))
 
-          (t
-           (error "%S: Unknown formatting type '%S' for contents: %S"
-                  "mis2//contents/text"
-                  formatting contents)))))
+;;       ;; Is this a mis2/style keyword?
+;;       (when (and (mis2//list-exists? element)
+;;                  (mis2//first element)
+;;                  (alist-get (mis2//first element) mis2/style/keys))
+;;         ;; Yes; set our kind to mis2 formatting.
+;;         (setq formatter :format-mis2)))
+;;     (message "mis2//contents/text: formatting as: %S, contents: %S"
+;;              formatter contents)
+;;     ;; and now call the contents builder/formatter
+;;     (cond ((eq formatter :format-mis2)
+;;            (mis2//format/contents contents plist))
 
-(defun mis2//format/contents (contents plist)
-  "Builds CONTENTS into a propertized string based on settings/style in PLIST
-and CONTENTS.
+;;           ((eq formatter :format-emacs)
+;;            (mis2//format/text contents plist))
 
-Will deal with differently faced sub-sections, like:
-  (mis2/message :settings settings :style style
-                \"Unbelieveable! You, \"
-                (:face :highlight \"SUBJECT NAME HERE\")
-                \", must be the pride of \"
-                (:face :title \"SUBJECT HOMETOWN HERE\")
-                \".\")
-"
-  (let (accum
-        list?
-        key?)
-    ;; for each item in contents list...
-    (dolist (element contents)
-      ;; `listp' is useless here - string is listp. so check for type 'cons?
-      (setq list? (mis2//list? element)
-            key? (keywordp (mis2//first element)))
-      (cond
-       ;;-----------
-       ;; format: starts with `:format' keyword
-       ;;         '(:format :each
-       ;;                   '((:face :highlight "%s: ") (:face :title))
-       ;;                   results))
-       ((and list? key?
-             ;; `:format' means we want to format this some complicated way.
-             ;; which way is in `:format' key's value.
-             (eq (mis2//first element) :format))
-        ;; format type is 2nd item in element, and we'll be nice and chop off
-        ;; the `:format :type' entries in element.
-        (push (mis2//format/by-format-type (mis2//second element)
-                                           (-drop 2 element)
-                                           plist)
-              accum))
+;;           (t
+;;            (error "%S: Unknown formatting type '%S' for contents: %S"
+;;                   "mis2//contents/text"
+;;                   formatting contents)))))
 
-       ;;-----------
-       ;; div: starts with a style keyword
-       ;;      '(:face :title "hello there")
-       ((and list? key?
-             ;; keyword and in mis2/style/keys means we've got a style
-             ;; override here.
-             (alist-get (mis2//first element) mis2/style/keys))
-        ;; Pick off all the style overrides, and then get the rest
-        ;; formatted/propertized.
-        (push (mis2//format/div element plist)
-              accum))
 
-       ;;-----------
-       ;; default: Just some string or list to be printed.
-       ;;          "hello there"
-       ;;          'hello-var
-       (t
-        ;; Just a string or something - format/propertize it on its own
-        ;; without any overrides.
-        (push (mis2//contents/propertize (if (stringp element)
-                                             element
-                                           (format "%s" element))
-                                         :text plist)
-              accum))))
+;; (defun mis2//format/contents (contents plist)
+;;   "Builds CONTENTS into a propertized string based on settings/style in PLIST
+;; and CONTENTS.
 
-    ;; Done with sub-sections - put it all together.
-    (apply #'concat (nreverse accum))))
-;; (mis2//format/contents
-;;  '("Unbelieveable! You, "
-;;    (:face :highlight "SUBJECT NAME HERE")
-;;    ", must be the pride of "
-;;    (:face :title "SUBJECT HOMETOWN HERE")
-;;    ". "
-;;    (:face :highlight 2))
-;;  '(mis2//testing t))
+;; Will deal with differently faced sub-sections, like:
+;;   (mis2/message :settings settings :style style
+;;                 \"Unbelieveable! You, \"
+;;                 (:face :highlight \"SUBJECT NAME HERE\")
+;;                 \", must be the pride of \"
+;;                 (:face :title \"SUBJECT HOMETOWN HERE\")
+;;                 \".\")
+;; "
+;;   (let (accum
+;;         list?
+;;         key?)
+;;     ;; for each item in contents list...
+;;     (dolist (element contents)
+;;       (message "mis2//format/contents: element: %S, contents: %S" element contents)
+;;       (setq list? (mis2//list? element)
+;;             key? (keywordp (mis2//first element)))
+;;       (cond
+;;        ;;-----------
+;;        ;; format: starts with `:format' keyword
+;;        ;;         '(:format :each
+;;        ;;                   '((:face :highlight "%s: ") (:face :title))
+;;        ;;                   results))
+;;        ((and list? key?
+;;              ;; `:format' means we want to format this some complicated way.
+;;              ;; which way is in `:format' key's value.
+;;              (eq (mis2//first element) :format))
+;;         (message "mis2//format/contents: formatter: %S %S, element: %S"
+;;                  (mis2//first element) (mis2//second element)
+;;                  element)
+;;         ;; format type is 2nd item in element, and we'll be nice and chop off
+;;         ;; the `:format :type' entries in element.
+;;         (push (mis2//format/by-format-type (mis2//second element)
+;;                                            (-drop 2 element)
+;;                                            plist)
+;;               accum))
+
+;;        ;;-----------
+;;        ;; div: starts with a style keyword
+;;        ;;      '(:face :title "hello there")
+;;        ((and list? key?
+;;              ;; keyword and in mis2/style/keys means we've got a style
+;;              ;; override here.
+;;              (alist-get (mis2//first element) mis2/style/keys))
+;;         (message "mis2//format/contents: style-overrides found: element: %S (style key: %S)"
+;;                  element (mis2//first element))
+;;         ;; Pick off all the style overrides, and then get the rest
+;;         ;; formatted/propertized.
+;;         (push (mis2//format/div element plist)
+;;               accum))
+
+;;        ;;-----------
+;;        ;; default: Just some string or list to be printed.
+;;        ;;          "hello there"
+;;        ;;          'hello-var
+;;        (t
+;;         (message "mis2//format/contents: just some default: element: %S"
+;;                  element)
+;;         ;; Just a string or something - format/propertize it on its own
+;;         ;; without any overrides.
+;;         (push (mis2//contents/propertize (if (stringp element)
+;;                                              element
+;;                                            (format "%s" element))
+;;                                          :text plist)
+;;               accum))))
+
+;;     ;; Done with sub-sections - put it all together.
+;;     (apply #'concat (nreverse accum))))
+;; ;; (mis2//format/contents
+;; ;;  '("Unbelieveable! You, "
+;; ;;    (:face :highlight "SUBJECT NAME HERE")
+;; ;;    ", must be the pride of "
+;; ;;    (:face :title "SUBJECT HOMETOWN HERE")
+;; ;;    ". "
+;; ;;    (:face :highlight 2))
+;; ;;  '(mis2//testing t))
 
 
 (defun mis2//format/by-format-type (type content plist)
@@ -284,14 +496,16 @@ Will deal with differently faced sub-sections, like:
 
       ;; We require our keys to go first, so just check the elements
       ;; until not our key.
-      (if (and (not (eq (mis2//style/check-key element) :*bad-key-error*))
+      (if (and (not (eq (mis2//style/check-key element)
+                        :*bad-key-error*))
                (< (1+ i) len)) ;; have room to look for key
           (progn
             ;; Get keyword and val; save to settings/style.
             ;; Keyword is element (and verified);
             ;; just need to get and verify value.
             (setq value (mis2//nth (1+ i) content))
-            (if (not (eq (mis2//style/check-value element value) :*bad-value-error*))
+            (if (not (eq (mis2//style/check-value element value)
+                         :*bad-value-error*))
                 ;; Good - add to overrides.
                 (setq style-overrides (plist-put style-overrides element value))
               ;; Bad - error out!
