@@ -378,7 +378,7 @@ list, that list will be considered the block of lines to output.
                         :mis2//contents (if (mis2//list? line)
                                             line
                                           (list line))))
-      (message "mis2/block line plist: %S" plist)
+      ;; (message "mis2/block line plist: %S" plist)
       (mis2//message/output (mis2//contents plist)))))
 ;; (mis2/message "hello there")
 ;; (mis2/block "hello there" "how are you?")

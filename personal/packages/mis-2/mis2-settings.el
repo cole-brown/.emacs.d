@@ -338,43 +338,25 @@ MIS2--KEY's plist. Validates key is acceptable by checking for it as either:
                             mis2/settings/keys
                             mis2/settings/meta/keys))
 
-  ;; (if (mis2//data/plist? plist)
-  ;;     (if (or (alist-get key mis2/settings/keys)
-  ;;             (alist-get key mis2/settings/meta/keys))
-  ;;         ;; get settings plist from data plist, then get specific setting.
-  ;;         (plist-get (mis2//data/get :mis2//settings plist) key)
-
-  ;;       (error "settings: Key '%s' is not a known mis2/settings key: %S or %S"
-  ;;              key mis2/settings/keys mis2/settings/meta/keys))
-
-  ;;   (error "settings: Plist is not a mis2 plist. %S %S"
-  ;;          "Might be a mis2 settings, style, etc sub-list?"
-  ;;          plist)))
 
 ;;------------------------------------------------------------------------------
 ;; Style - Getters
 ;;------------------------------------------------------------------------------
 
-(defun mis2//style/get/from-data (key plist)
+(defun mis2//style/get/from-data (key plist overrides)
   "Get style from a mis2 data PLIST, then get KEY from style.
+Also gets KEY from OVERRIDES (note: overrides is just a style plist, not a
+mis2 plist).
+
+Returns value of key, preferring OVERRIDES if KEY exists in both
+PLIST and OVERRIDES.
 "
-  (mis2//data/get/from-data key
-                            :mis2//style plist
-                            nil
-                            mis2/style/keys
-                            nil))
-
-  ;; (if (mis2//data/plist? plist)
-  ;;     (if (alist-get key mis2/style/keys)
-  ;;         ;; get style plist from data plist, then get specific setting.
-  ;;         (plist-get (mis2//data/get :mis2//style plist) key)
-
-  ;;       (error "style: Key '%s' is not a known mis2/style key: %S"
-  ;;              key mis2/style/keys))
-
-  ;;   (error "style: Plist is not a mis2 plist. %S %S"
-  ;;          "Might be a mis2 settings, style, etc sub-list?"
-  ;;          plist)))
+  (or (plist-get overrides key) ;; §-TODO-§ [2020-04-17]: call `check-value'?
+      (mis2//data/get/from-data key
+                                :mis2//style plist
+                                nil
+                                mis2/style/keys
+                                nil)))
 
 
 ;;------------------------------------------------------------------------------
@@ -701,6 +683,57 @@ Examples:
   "Checks that VALUE is a valid value for the mis/style keyword KEY.
 "
   (mis2//private/check-value key value #'mis2//style/check-key key-info))
+
+
+(defun mis2//style/overrides (contents)
+  "Pulls any style overrides out of CONTENTS.
+
+Returns '(style-overrides-list contents).
+  - Contents is either unchanged (if no overrides) or has had the overrides
+    dropped off the front of it.
+"
+  ;; Loop over contents list, pull styles out into override plist.
+  ;; Stop after styles and propertize the rest using those overrides.
+  (let (style-overrides
+        (i 0)
+        (len (mis2//length-safe contents))
+        element
+        value)
+    (while (< i len)
+      (setq element (mis2//nth i contents))
+
+      ;; We require our keys to go first, so just check the elements
+      ;; until not our key.
+      (if (and (not (eq (mis2//style/check-key element)
+                        :*bad-key-error*))
+               (< (1+ i) len)) ;; have room to look for key
+          (progn
+            ;; Get keyword and val; save to settings/style.
+            ;; Keyword is element (and verified);
+            ;; just need to get and verify value.
+            (setq value (mis2//nth (1+ i) contents))
+            (if (not (eq (mis2//style/check-value element value)
+                         :*bad-value-error*))
+                ;; Good - add to overrides.
+                (setq style-overrides (plist-put style-overrides element value))
+              ;; Bad - error out!
+              (error "%S: %S: %S %S. Content sub-section: %S"
+                     "mis2//style/overrides"
+                     value
+                     "not a valid value for style override"
+                     element
+                     contents))
+            ;; update the loop var for this key and value
+            (setq i (+ i 2)))
+
+        ;; Else we're past the style overrides and the rest is the contents now.
+        (setq contents (-drop i contents)
+              i len))) ;; Set index past end of contents so loop will end.
+
+    ;; (message "mis2//style/overrides: overrides: %S, string: %S"
+    ;;          style-overrides
+    ;;          (mis2//format/string contents))
+    (list style-overrides contents)))
 
 
 ;;------------------------------------------------------------------------------

@@ -75,19 +75,24 @@ Pipeline for sink of:
 "
   ;; Style and contents for this level of the message. Could have more levels of
   ;; style/content to recurse into? ...but this is what we're dealing with now.
-  (let* ((contents (plist-get plist :mis2//contents))
-         ;; Prep Work: Convert contents to a string.
-         (string (mis2//contents/section contents plist)))
+  (-let* (;; Contents from plist.
+          (contents (plist-get plist :mis2//contents))
+          ;; Prep: Pull any style overrides out of contents now.
+          ((overrides contents) (mis2//style/overrides contents))
+          ;; Prep Work: Convert contents to a string.
+          (string (mis2//contents/section contents plist overrides)))
 
-    ;; (message "mis2//contents/build: contents: %S -> string: %S"
-    ;;          contents string)
+    ;; (message "mis2//contents/build: contents: %S, overrides: %S -> string: %S"
+    ;;          contents overrides string)
+
+    ;; §-TODO-§ [2020-04-17]: overrides below too
 
     ;; Prep Work: Boxing: Deal with any box styling.
-    (mis2//contents/box/parts string plist)
+    (mis2//contents/box/parts string plist overrides)
 
     (-> string
         ;; Prep/String Work: Alignment.
-        (mis2//contents/align plist)
+        (mis2//contents/align plist overrides)
 
         ;; Penultimate:
         ;;   (Reserved for the ultimate pen.)
@@ -167,30 +172,30 @@ Pipeline for sink of:
       :mis2//section/multi))))
 
 
-(defun mis2//contents/section (contents plist)
+(defun mis2//contents/section (contents plist &optional overrides)
   "Determines what section type the CONTENTS are and builds the
-propertized output string from them.
+propertized output string from it using PLIST and OVERRIDES.
 "
   (let ((section (mis2//contents/section/type contents)))
     ;; (message "mis2//contents/section: type: %S, contents: %S, plist: %S"
     ;;          section contents plist)
     (cond ((eq section :mis2//section/text)
-           (mis2//contents/section/text contents plist))
+           (mis2//contents/section/text contents plist overrides))
 
           ((eq section :mis2//section/format)
-           (mis2//contents/section/format contents plist))
+           (mis2//contents/section/format contents plist overrides))
 
           ((eq section :mis2//section/line)
-           (mis2//contents/section/line contents plist))
+           (mis2//contents/section/line contents plist overrides))
 
           ((eq section :mis2//section/div)
-           (mis2//contents/section/div contents plist))
+           (mis2//contents/section/div contents plist overrides))
 
           ((eq section :mis2//section/multi)
-           (mis2//contents/section/multi contents plist)))))
+           (mis2//contents/section/multi contents plist overrides)))))
 
 
-(defun mis2//contents/section/multi (contents plist)
+(defun mis2//contents/section/multi (contents plist &optional overrides)
   "Builds CONTENTS of section `:mis2//section/multi' into a
 propertized string based on settings/style in PLIST and
 CONTENTS.
@@ -212,13 +217,13 @@ E.g. this is a :mis2//section/multi message:
       ;; (message "mis2//contents/section/multi: section: %S, contents: %S"
       ;;          section contents)
       ;; Recurse back up to our parent to process this section.
-      (push (mis2//contents/section section plist) accum))
+      (push (mis2//contents/section section plist overrides) accum))
 
     ;; Done with sub-sections - put it all together.
     (apply #'concat (nreverse accum))))
 
 
-(defun mis2//contents/section/text (contents plist)
+(defun mis2//contents/section/text (contents plist &optional overrides)
   "Builds CONTENTS of section `:mis2//section/text' into a
 propertized string based on settings/style in PLIST and
 CONTENTS.
@@ -233,7 +238,7 @@ CONTENTS should just be:
   (mis2//format/text contents plist))
 
 
-(defun mis2//contents/section/line (contents plist)
+(defun mis2//contents/section/line (contents plist &optional overrides)
   "Builds CONTENTS of section `:mis2//section/div' into a
 propertized string based on settings/style in PLIST and
 CONTENTS (which should just be instructions for building a
@@ -277,7 +282,7 @@ different line types; see `mis2//line/full-lines'.
              line-type contents)))))
 
 
-(defun mis2//contents/section/format (contents plist)
+(defun mis2//contents/section/format (contents plist &optional overrides)
   "Builds CONTENTS of section `:mis2//section/format' into a
 propertized string based on settings/style in PLIST and
 CONTENTS.
@@ -293,7 +298,7 @@ CONTENTS should be:
                                plist))
 
 
-(defun mis2//contents/section/div (contents plist)
+(defun mis2//contents/section/div (contents plist &optional overrides)
   "Builds CONTENTS of section `:mis2//section/div' into a
 propertized string based on settings/style in PLIST and
 CONTENTS.
@@ -489,65 +494,38 @@ Final sink for:
 ;; ;;  '(mis2//testing t))
 
 
-(defun mis2//format/by-format-type (type content plist)
-  "Format a sub-section of the contents list (CONTENT) by format TYPE (e.g.
+(defun mis2//format/by-format-type (type contents plist)
+  "Format a sub-section of the contents list (CONTENTS) by format TYPE (e.g.
 `:each' for formatting a results accum).
 "
   (cond ((eq type :each)
-         ;; `:each' implies CONTENT is in this layout:
-         ;;   '(format-list content-list)
-         (mis2//format/each (mis2//first content)
-                            (mis2//second content)
+         ;; `:each' implies CONTENTS is in this layout:
+         ;;   '(format-list contents-list)
+         (mis2//format/each (mis2//first contents)
+                            (mis2//second contents)
                             plist))
 
         (t
-         (error "%S: unknown formatting type %S. content: %S"
+         (error "%S: unknown formatting type %S. contents: %S"
                 "mis2//format/by-format-type"
-                type content))))
+                type contents))))
 
 
-(defun mis2//format/div (content plist)
-  "Format a sub-section of the contents list (CONTENT).
+(defun mis2//format/div (contents plist)
+  "Format a sub-section of the contents list (CONTENTS).
 "
-  ;; Loop over content list, pull styles out into override plist.
+  ;; Loop over contents list, pull styles out into override plist.
   ;; Stop after styles and propertize the rest using those overrides.
-  (let (style-overrides
-        (i 0)
-        (len (mis2//length-safe content))
+  (-let (((style-overrides contents) (mis2//style/overrides contents))
+         (i 0)
+        (len (mis2//length-safe contents))
         element
         value)
-    (while (< i len)
-      (setq element (mis2//nth i content))
 
-      ;; We require our keys to go first, so just check the elements
-      ;; until not our key.
-      (if (and (not (eq (mis2//style/check-key element)
-                        :*bad-key-error*))
-               (< (1+ i) len)) ;; have room to look for key
-          (progn
-            ;; Get keyword and val; save to settings/style.
-            ;; Keyword is element (and verified);
-            ;; just need to get and verify value.
-            (setq value (mis2//nth (1+ i) content))
-            (if (not (eq (mis2//style/check-value element value)
-                         :*bad-value-error*))
-                ;; Good - add to overrides.
-                (setq style-overrides (plist-put style-overrides element value))
-              ;; Bad - error out!
-              (error "%S: %S: %S %S. Content sub-section: %S"
-                     "mis2//format/div"
-                     value
-                     "not a valid value for style override"
-                     element
-                     content))
-            ;; update the loop var for this key and value
-            (setq i (+ i 2)))
-
-        ;; Else we're past the style overrides and should propertize the rest of
-        ;; the contents now.
-        (setq content (-drop i content)
-              i len))) ;; Set index past end of contents so loop will end.
-    (mis2//contents/propertize (mis2//format/string content)
+    ;; (message "mis2//format/div: overrides: %S, string: %S"
+    ;;          style-overrides
+    ;;          (mis2//format/string contents))
+    (mis2//contents/propertize (mis2//format/string contents)
                                :text plist style-overrides)))
 
 
@@ -702,10 +680,10 @@ current buffer.
       fill-column))
 
 
-(defun mis2//contents/line/indent (string plist)
+(defun mis2//contents/line/indent (string plist &optional overrides);; §-TODO-§ [2020-04-17]:
   "Makes indent string for STRING based on `:indent' style setting in PLIST.
 "
-  (when-let ((indent (mis2//style/get/from-data :indent plist)))
+  (when-let ((indent (mis2//style/get/from-data :indent plist overrides)))
     ;; Have indent - add that to front of str.
     (mis2//contents/line/update plist
                                 :indent (make-string indent ?\s)))
@@ -746,7 +724,7 @@ KEY & VALUE.
 ;;                                                                  Alignment!
 ;;------------------------------------------------------------------------------
 
-(defun mis2//contents/align (string plist)
+(defun mis2//contents/align (string plist &optional overrides)
   "Given STRING and mis2 PLIST, and assuming there are both a
 `:mis2//style' keyword in PLIST and an alignment keyword in the
 style list, align the STRING based on line width.
@@ -766,9 +744,9 @@ Shared 'final' sink for:
   :mis2//settings -- :line-width
 "
   ;; Look for width (optional) and an alignment keyword.
-  (let ((align-left   (mis2//style/get/from-data :left  plist))
-        (align-center (mis2//style/get/from-data :center plist))
-        (align-right  (mis2//style/get/from-data :right  plist))
+  (let ((align-left   (mis2//style/get/from-data :left   plist overrides))
+        (align-center (mis2//style/get/from-data :center plist overrides))
+        (align-right  (mis2//style/get/from-data :right  plist overrides))
         (line-width   (mis2//contents/line/width plist))
         ;; `line-width' is the full width desired - but we may not be allowed to
         ;; use all that. We might need to reserve some space for e.g. boxing to
@@ -849,12 +827,14 @@ RESERVED should be returned value from `mis2//contents/line/reserved-amount'.
 ;;--                                 Boxes!                                 --;;
 ;;----------------------------------------------------------------------------;;
 
-(defun mis2//contents/box/parts (string plist)
+(defun mis2//contents/box/parts (string plist &optional overrides)
   "Takes a STRING, and assumes:
   - It is the minimal string buildable from contents (i.e. not aligned).
-  - It has its box parts in PLIST under key `:mis2//box'.
+  - It has its box styling parts in PLIST..
+  - It may have box stylings in OVERRIDES plist foo.
 
 Creates the boxing parts for `mis2//contents/box/build' to complete later.
+Puts the parts into PLIST under key `:mis2//box'.
 
 Currently only capable of free-hand ASCII style boxes like:
   +----+   +----+   ;;----;;    ┌┬┬┬──────┬┬┬┐
@@ -893,13 +873,13 @@ Pipeline for sources of:
   ;; Our padding step right now is just to build `:pad' and `:fill' for easy
   ;; completion of line later.
 
-  (mis2//contents/box/padding string plist)
-  (mis2//contents/box/borders string plist)
-  (mis2//contents/box/margins string plist)
-  (mis2//contents/line/indent string plist))
+  (mis2//contents/box/padding string plist overrides)
+  (mis2//contents/box/borders string plist overrides)
+  (mis2//contents/box/margins string plist overrides)
+  (mis2//contents/line/indent string plist overrides))
 
 
-(defun mis2//contents/box/padding (string plist)
+(defun mis2//contents/box/padding (string plist &optional overrides);; §-TODO-§ [2020-04-17]:
   "Takes STRING and adds left/right padding (if defined in PLIST) to
 `:mis2//box' in PLIST.
 
@@ -921,7 +901,7 @@ Examples:
 Strings can be asymmetrical.
 "
   ;; They're optional, so only do it if we have 'em.
-  (if-let ((padding (mis2//style/get/from-data :padding plist)))
+  (if-let ((padding (mis2//style/get/from-data :padding plist overrides)))
       ;; Padding is a weirder one as it can be a list of 2 string, or a list of
       ;; how to build the padding.
       (if (eq (mis2//style/check-value :padding padding
@@ -1022,22 +1002,22 @@ Strings can be asymmetrical.
            (mis2//second padding) padding))))
 
 
-(defun mis2//contents/box/borders (string plist)
+(defun mis2//contents/box/borders (string plist &optional overrides);; §-TODO-§ [2020-04-17]:
   "Takes STRING and adds left/right borders to it if defined in the mis2 PLIST.
 "
   ;; They're optional, so only do it if we have 'em.
-  (if-let ((borders (mis2//style/get/from-data :borders plist)))
+  (if-let ((borders (mis2//style/get/from-data :borders plist overrides)))
       ;; We have them - stuff 'em straight into the box.
       (mis2//contents/box/update plist
                                  :borders borders)))
 
 
-(defun mis2//contents/box/margins (string plist)
+(defun mis2//contents/box/margins (string plist &optional overrides);; §-TODO-§ [2020-04-17]:
   "If margins are defined in the mis2 PLIST, this takes STRING and margins
 inputs and creates final margins in `:mis2//box' in PLIST.
 "
   ;; They're optional, so only do it if we have 'em.
-  (if-let ((margins (mis2//style/get/from-data :margins plist)))
+  (if-let ((margins (mis2//style/get/from-data :margins plist overrides)))
       ;; We have them - stuff 'em straight into the box.
       (mis2//contents/box/update plist
                                  :margins margins)))
