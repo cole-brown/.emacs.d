@@ -44,6 +44,13 @@ otherwise returns 0.
 ;; (mis2//length-safe 'hi)
 
 
+(defun mis2//length-safe/= (maybe equal-to)
+  "Returns if the length of MAYBE is equal to EQUAL-TO. That is,
+(= (mis2//length-safe maybe) equal-to)
+"
+  (= (mis2//length-safe maybe) equal-to))
+
+
 ;;------------------------------------------------------------------------------
 ;; List Functions
 ;;------------------------------------------------------------------------------

@@ -77,7 +77,7 @@ Pipeline for sink of:
   ;; style/content to recurse into? ...but this is what we're dealing with now.
   (let* ((contents (plist-get plist :mis2//contents))
          ;; Prep Work: Convert contents to a string.
-         (string (mis2//contents/section contents)))
+         (string (mis2//contents/section contents plist)))
 
     ;; (message "mis2//contents/build: contents: %S -> string: %S"
     ;;          contents string)
@@ -131,26 +131,49 @@ Pipeline for sink of:
 
      ;; div: we need to look at check and see if it's a style keyword
      ((and (keywordp check)
-           (alist-get (mis2//first element) mis2/style/keys))
+           (alist-get check mis2/style/keys))
       :mis2//section/div)
 
-     ;; text: Either we have a string as check, or we just have one thing
-     ;; to print.
-     ((or (stringp check)
-          (mis2//length contents 1))
+     ;; text: Either we have just a string, format string and stuff, or we just
+     ;; have one thing to print. Use 'contents' instead of 'check' for
+     ;; just-a-string.
+     ((or (stringp contents) ;; 1) Just a string.
+          ;; 2) Or list with format string as first element.
+          (and (mis2//list-exists? contents)
+               (stringp check)
+               (s-contains? "%" check))
+          ;; 3) Just one thing.
+          (mis2//length-safe/= contents 1))
       :mis2//section/text)
 
      ;; multi: If it's not the rest of the sections, assume it's
      ;; some combination?
      (t
+      ;; (message "mis2//contents/section/type: failed text check. string?(contents) %S, string?(check) %S, list? %S, len: %S, len==1: %S, has'%%'? %S => %S"
+      ;;          (stringp contents)
+      ;;          (stringp check)
+      ;;          (mis2//list-exists? contents)
+      ;;          (mis2//length-safe contents)
+      ;;          (mis2//length-safe/= contents 1)
+      ;;          (s-contains? "%" check)
+      ;;          (or (stringp contents) ;; 1) Just a string.
+      ;;              ;; 2) Or list with format string as first element.
+      ;;              (and (mis2//list-exists? contents)
+      ;;                   (stringp check)
+      ;;                   (s-contains? "%" check))
+      ;;              ;; 3) Just one thing.
+      ;;              (mis2//length-safe/= contents 1)))
+
       :mis2//section/multi))))
 
 
-(defun mis2//contents/section (contents)
+(defun mis2//contents/section (contents plist)
   "Determines what section type the CONTENTS are and builds the
 propertized output string from them.
 "
-  (let ((section (mis2//contents/section/get contents)))
+  (let ((section (mis2//contents/section/type contents)))
+    ;; (message "mis2//contents/section: type: %S, contents: %S, plist: %S"
+    ;;          section contents plist)
     (cond ((eq section :mis2//section/text)
            (mis2//contents/section/text contents plist))
 
@@ -186,8 +209,8 @@ E.g. this is a :mis2//section/multi message:
 "
   (let (accum)
     (dolist (section contents)
-      (message "mis2//contents/section/multi: section: %S, contents: %S"
-               section contents)
+      ;; (message "mis2//contents/section/multi: section: %S, contents: %S"
+      ;;          section contents)
       ;; Recurse back up to our parent to process this section.
       (push (mis2//contents/section section plist) accum))
 
@@ -205,6 +228,8 @@ CONTENTS should just be:
   - a formatting string and its arguments
   - one argument to be formatted by \"%s\"
 "
+  ;; (message "mis2//contents/section/text: %S => %S"
+  ;;          contents (mis2//format/text contents plist))
   (mis2//format/text contents plist))
 
 
@@ -263,8 +288,8 @@ CONTENTS should be:
 "
   ;; Get the type keyword and then drop both :format and type keywords from
   ;; front of contents.
-  (mis2//format/by-format-type (mis2//second element)
-                               (-drop 2 element)
+  (mis2//format/by-format-type (mis2//second contents)
+                               (-drop 2 contents)
                                plist))
 
 
@@ -578,6 +603,10 @@ We should be passed CONTENTS of:
 Final sink for:
   :mis2//contents
 "
+  ;; (message "mis2//format/text: contents: %S => str: %S"
+  ;;          contents
+  ;;          (mis2//format/string contents))
+
   ;; propertize whatever we figure out the string is...
   (mis2//contents/propertize
 
@@ -601,23 +630,19 @@ Final sink for:
   "Builds a formatted string from elements (which is a list or single thing).
 Does not propertize.
 "
-  ;; We'll either format the thing into a string (whatever it is), or format
-  ;; all the things with the assumption that the first one is a formatting
-  ;; string.
-  (if (not (and (mis2//list-exists? elements)
-                (> (mis2//length-safe elements) 1)))
-      ;; Simple case. Only one thing in elements (or nothing).
-      ;; Pass through format in case not a string.
-      (format "%s" (mis2//first elements))
+  ;; Just passed a string - return it.
+  (cond ((stringp elements)
+         elements)
 
-    ;; Complex case. More than one thing! Oh no...
-    ;; ...Well in that case assume the first thing is a string formatter.
-    (apply 'format elements)
-    ;; §-TODO-§ [2020-03-25]: More Complexer:
-    ;;   - Split elements into parts we can do vs parts we recurse?
-    ;;   - do each?
-    ;;   - Concat results together.
-    ))
+        ;; Passed a list of length > 1. Assume first is a format string and rest
+        ;; are formatting args.
+        ((and (mis2//list-exists? elements)
+              (> (mis2//length-safe elements) 1))
+         (apply 'format elements))
+
+        ;; Default - print out whatever it is formatted as "%s".
+        (t
+         (format "%s" (mis2//first elements)))))
 
 
 ;;------------------------------------------------------------------------------
