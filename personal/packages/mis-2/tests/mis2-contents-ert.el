@@ -767,50 +767,52 @@ in the mis2 plist based on mis2//settings and mis2//style.
 
 
 ;;------------------------------------------------------------------------------
-;; Test: mis2//contents/box/build
+;; Test: mis2//contents/box/finalize
 ;;------------------------------------------------------------------------------
-;; (defun mis2//contents/box/build (string plist)
+;; (defun mis2//contents/box/finalize (string plist stack-prefixes stack-postfixes)
 
 ;;---
 ;; Test Case 000
 ;;---
-(ert-deftest mis2-ert/contents/box/build ()
-  "Test that `mis2//contents/box/bulid' can build the line based on parts in
+(ert-deftest mis2-ert/contents/box/finalize ()
+  "Test that `mis2//contents/box/finalize' can build the line based on parts in
 plist: :mis2//box, :mis2//line, and :mis2//contents.
 "
   (mis2-ert/mis2-contents/setup)
 
   ;; mis2 plist has initial stuff (settings, style) and
   ;; derived stuff (box, line). We'll only actually use derived.
-  (let ((plist '(:mis2//settings (:line-width 80)
-                 :mis2//style (:indent 4
-                               :margins ("left" "right")
+  (-let* ((plist '(:mis2//settings (:line-width 80)
+                   :mis2//style (:indent 4
+                                 :margins ("left" "right")
+                                 :borders ("|" "|")
+                                 :padding ("--" "--"))
+                   :mis2//box (:padding ("--" ?\s ?\s "--")
                                :borders ("|" "|")
-                               :padding ("--" "--"))
-                 :mis2//box (:padding ("--" ?\s ?\s "--")
-                             :borders ("|" "|")
-                             :margins (">>>" "<<<<<"))
-                 :mis2//line (:indent "    ")
-                 :mis2//testing t))
+                               :margins (">>>" "<<<<<"))
+                   :mis2//line (:indent "    ")
+                   :mis2//testing t))
+          (string "Hello, World.")
+          ((stack-prefixes stack-postfixes) (mis2//contents/box/finalize string
+                                                                         plist
+                                                                         nil
+                                                                         nil)))
 
-        (string "Hello, World.")
-        line
-        box)
+    (should (seq-set-equal-p
+             stack-prefixes
+             '(;; "    " ;; no indent
+               ">>>"  ;; margin, left
+               "|"    ;; border, left
+               "--"   ;; static pad, left
+               " "))) ;; dynamic pad, left
 
-    (should (string= (mis2//contents/box/build string
-                                               plist)
-                     (concat "    " ;; indent
-                             ">>>"  ;; margin, left
-                             "|"    ;; border, left
-                             "--"   ;; static pad, left
-                             " "    ;; dynamic pad, left
-                             string
-                             ;; dynamic pad, right
-                             "                                                "
-                             "--"    ;; static pad, right
-                             "|"     ;; border, right
-                             "<<<<<" ;; margin, right
-                             ))))
+    (should (seq-set-equal-p
+             stack-postfixes
+             '(;; dynamic pad, right
+               "                                                "
+               "--"        ;; static pad, right
+               "|"         ;; border, right
+               "<<<<<")))) ;; margin, right
 
   (mis2-ert/mis2-contents/teardown))
 

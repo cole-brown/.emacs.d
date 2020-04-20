@@ -148,6 +148,35 @@ N counts from zero.  If LIST is not that long, nil is returned.
       (length str-maybe)
     0))
 
+
+(defun mis2//string/sum (&rest args)
+  "Returns sum of all string lengths in ARGS. Will recurse into sublists of
+ARGS. Non-string items are 0 length.
+
+E.g.
+  (mis2//string/sum 9 \"hi\" '(\"test\" \"testing\")) => 0 + 2 + (4 + 7) = 13
+"
+  (let ((sum 0))
+    (dolist (element args sum)
+
+      (cond ((null element)
+             (setq sum (+ sum 0)))
+
+            ((stringp element)
+             (setq sum (+ sum (mis2//string/length-safe element))))
+
+            ((listp element)
+             (dolist (sublist element sum)
+               (setq sum (+ sum (funcall #'mis2//string/sum sublist)))))
+
+            (t
+             (setq sum (+ sum 0)))))))
+;; (mis2//string/sum 9 "hi" '("test" "testing"))
+;; (mis2//string/sum "hi")
+;; (mis2//string/sum 9)
+;; (mis2//string/sum)
+
+
 ;;------------------------------------------------------------------------------
 ;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------

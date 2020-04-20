@@ -102,6 +102,301 @@ Pipeline for sink of:
         (mis2//contents/finalize plist))))
 
 
+(defun mis2//contents/finalize (string plist)
+  "Build final, propertized string from input STRING and PLIST string
+parts (:mis2//line, :mis2//box, etc).
+"
+  ;; Backwardsly (so no nreverse (last (left-most) first)), build list of
+  ;; strings for box parts, line parts, string, etc. then concat together.
+
+  ;; A boxed line is, in backwardsly:
+  ;;   - Box, Right:
+  ;;     - margin, right
+  ;;     - border, right
+  ;;     - padding, right
+  ;;     - (possible auto-padding inserted, depending on string, to get to
+  ;;        box edge when left-aligned)
+  ;;   - String
+  ;;   - Box, Left:
+  ;;     - (possible auto-padding char inserted)
+  ;;     - padding, left
+  ;;     - border, left
+  ;;     - margin, left
+  ;;   - Indentation, Leading
+  (let (deredro-postfix
+        deredro-prefix) ;; ordered stack, backwardsly
+
+    ;;-------------
+    ;; Box Parts
+    ;;-------------
+    (-setq (deredro-prefix deredro-postfix)
+      (mis2//contents/box/finalize string
+                                   plist
+                                   deredro-prefix
+                                   deredro-postfix))
+    ;; (message "%1$s %2$s: pre:  %4$S\n%3$s %2$s: post: %5$S"
+    ;;          "mis2//contents/finalize"
+    ;;          "boxed"
+    ;;          (make-string (length "mis2//contents/finalize") ?\s)
+    ;;          ;; print args 4+:
+    ;;          deredro-prefix deredro-postfix)
+
+    ;;-------------
+    ;; Indent Parts
+    ;;-------------
+    (-setq (deredro-prefix deredro-postfix)
+      (mis2//contents/indent/finalize string
+                                      plist
+                                      deredro-prefix
+                                      deredro-postfix))
+    ;; (message "%1$s %2$s: pre:  %4$S\n%3$s %2$s: post: %5$S"
+    ;;          "mis2//contents/finalize"
+    ;;          "indented"
+    ;;          (make-string (length "mis2//contents/finalize") ?\s)
+    ;;          ;; print args 4+:
+    ;;          deredro-prefix deredro-postfix)
+
+    ;;-------------
+    ;; Finalized
+    ;;-------------
+
+    ;; Finish the full thing.
+    ;; Parts are propertized properly; can just concatenate carelessly.
+    (concat
+     (apply #'concat deredro-prefix)
+     string
+     (apply #'concat deredro-postfix))))
+
+
+(defun mis2//contents/box/finalize (string plist stack-prefixes stack-postfixes)
+  "Build final, propertized box parts from STRING and PLIST string
+parts (:mis2//line, :mis2//box, etc).
+
+Pushes to the stacks based on `:margins', `:borders', and `:padding'
+in `:mis2//box'.
+
+Currently only capable of free-hand ASCII style boxes like:
+  +----+   +----+   ;;----;;
+  + hi +   | hi |   ;;-hi-;;
+  +----+   +----+   ;;----;;
+
+Currently not capable of figuring out how to interconnect the
+ASCII box drawing characters on its own - caller would have to
+figure it out on their own. So this can be done, you just have to
+do the hard work yourself:
+  ┌┬┬┬──────┬┬┬┐
+  ├┼┼┤  hi  ├┼┼┤
+  └┴┴┴──────┴┴┴┘
+
+Pushes parts into STACK-PREFIXES and STACK-PREFIXES 'ordered'
+stacks (last-first). Returns (stack-prefixes stack-postfixes).
+"
+  ;; Our box, if we have one, has been built in parts in `:mis2//box'
+  ;; in PLIST.
+  (if-let ((box (mis2//data/get :mis2//box plist)))
+      (let* ((margins (plist-get box :margins))
+             (borders (plist-get box :borders))
+             (padding (plist-get box :padding)))
+
+        ;; (message "mis2//contents/box/finalize: boxing: m: %S, b: %S, p: %S"
+        ;;          margins borders padding)
+
+        ;; Propertize this stuff as each individual piece gets made:
+        ;; (mis2//contents/propertize str-in-question :margins/whatever plist)
+
+        ;;-----
+        ;; - margin, right
+        ;; - border, right
+        ;;---
+        (push (mis2//contents/propertize (mis2//second margins)
+                                         :margins plist)
+              stack-postfixes)
+        (push (mis2//contents/propertize (mis2//second borders)
+                                         :borders plist)
+              stack-postfixes)
+        ;;-----
+        ;; (message "mis2//contents/box/finalize: margins & borders, right")
+        ;; (message "%1$s %2$s: pre:  %4$S\n%3$s %2$s: post: %5$S"
+        ;;          "mis2//contents/box/finalize"
+        ;;          "00"
+        ;;          (make-string (length "mis2//contents/box/finalize") ?\s)
+        ;;          ;; print args 4+:
+        ;;          stack-prefixes stack-postfixes)
+
+        ;;-----
+        ;; - padding, right
+        ;; - (possible auto-padding inserted, depending on string, to get to
+        ;;    box edge when left-aligned)
+        ;;---
+        ;; Add fixed-size padding elements to final pieces.
+        (when padding
+          (let (pad-left-adj-char pad-right-adj-char
+                                  ;; static pad strings still need added to output
+                                  ;; if they are non-nil
+                                  pad-left-static   pad-right-static)
+            ;; (message "%s: paddings start: %S (1st: %S (char? %S))"
+            ;;          "mis2//contents/box/finalize"
+            ;;          padding
+            ;;          (mis2//first padding)
+            ;;          (characterp (mis2//first padding)))
+
+            ;;---
+            ;; Inner or outer fixed padding?
+            ;;---
+            ;; padding: (char string string char)
+            (if (characterp (mis2//first padding))
+                (progn
+                  ;; Adjustable padding is on outsides.
+
+                  ;; Right comes first because backwardsly.
+                  (setq pad-right-adj-char (mis2//fourth padding))
+                  ;; Right static has to be saved (adjustable has to be
+                  ;; pushed in first).
+                  (setq pad-right-static (mis2//contents/propertize
+                                          (mis2//third padding)
+                                          :padding plist))
+
+                  ;; Left paddings. Static can be pushed now since it
+                  ;; comes last.
+                  (push (mis2//contents/propertize (mis2//second padding)
+                                                   :padding plist)
+                        stack-prefixes)
+                  (setq pad-left-adj-char (mis2//first padding)))
+
+              ;; Else:
+              ;;   padding: (string char char string)
+
+              ;; Right comes first because backwardsly.
+              ;; Right static can be pushed now as it comes after adjustable.
+              (push (mis2//contents/propertize (mis2//fourth padding)
+                                               :padding plist)
+                    stack-postfixes)
+              ;; Adjustable padding is on insides.
+              (setq pad-right-adj-char (mis2//third padding))
+
+              ;; Adjustable padding is on insides.
+              (setq pad-left-adj-char (mis2//second padding))
+              ;; Static padding. Save for after adjustable
+              (setq pad-left-static (mis2//contents/propertize
+                                     (mis2//first padding)
+                                     :padding plist)))
+            ;; (message "%s: padding (types, static outsides)"
+            ;;          "mis2//contents/box/finalize")
+            ;; (message "%1$s %2$s: pre:  %4$S\n%3$s %2$s: post: %5$S"
+            ;;          "mis2//contents/box/finalize"
+            ;;          "01"
+            ;;          (make-string (length "mis2//contents/box/finalize") ?\s)
+            ;;          ;; print args 4+:
+            ;;          stack-prefixes stack-postfixes)
+
+            ;;-----
+            ;; Padding parse done; figure out adjustable padding strings.
+            ;;-----
+            (when (or pad-right-adj-char pad-left-adj-char)
+              (let* ((width-line (mis2//contents/line/width plist))
+                     (width-reserved (mis2//contents/line/reserved-amount
+                                      plist))
+                     (width-remaining (- width-line
+                                         (mis2//first width-reserved)
+                                         (mis2//string/length-safe string)
+                                         (mis2//second width-reserved)))
+                     pad-left-str pad-right-str)
+                ;; Static/fixed string parts are all accounted for. Create our
+                ;; dynamic padding strings and then build final output.
+
+                ;; Ensure minimal padding on left & right.
+                (cond ((= width-remaining 1)
+                       ;; Only one char to work with; put it on the left?
+                       (setq pad-left-str (make-string 1 pad-left-adj-char)
+                             pad-right-str nil))
+
+                      ((> width-remaining 1)
+                       ;; Space to work in; put one on left and rest on
+                       ;; right-pad duty.
+                       (setq pad-left-str (make-string 1 pad-left-adj-char)
+                             pad-right-str (make-string (1- width-remaining)
+                                                        pad-left-adj-char)))
+
+                      (t  ;; Zero or negative - no more padding available.
+                       (setq pad-left-str nil
+                             pad-right-str nil)))
+
+                ;; Push into their final resting places...
+                (when pad-left-str
+                  (push (mis2//contents/propertize pad-left-str
+                                                   :padding plist)
+                        stack-prefixes))
+                (when pad-right-str
+                  (push (mis2//contents/propertize pad-right-str
+                                                   :padding plist)
+                        stack-postfixes))))
+
+            ;;---
+            ;; Need to push static paddings onto lists now?
+            ;;---
+            (when pad-right-static
+              (push (mis2//contents/propertize pad-right-static
+                                               :padding plist)
+                    stack-postfixes))
+            (when pad-left-static
+              (push (mis2//contents/propertize pad-left-static
+                                               :padding plist)
+                    stack-prefixes))
+            ;; (message "%s: padding (adjustable & static)"
+            ;;          "mis2//contents/box/finalize")
+            ;; (message "%1$s %2$s: pre:  %4$S\n%3$s %2$s: post: %5$S"
+            ;;          "mis2//contents/box/finalize"
+            ;;          "03"
+            ;;          (make-string (length "mis2//contents/box/finalize") ?\s)
+            ;;          ;; print args 4+:
+            ;;          stack-prefixes stack-postfixes)
+            ))
+
+        ;;-----
+        ;; - border, left
+        ;; - margin, left
+        ;;---
+        (push  (mis2//contents/propertize (mis2//first borders)
+                                          :borders plist)
+               stack-prefixes)
+        (push  (mis2//contents/propertize (mis2//first margins)
+                                          :margins plist)
+               stack-prefixes)
+        ;;-----
+        ;; (message "mis2//contents/box/finalize: borders & margin, left")
+        ;; (message "%1$s %2$s: pre:  %4$S\n%3$s %2$s: post: %5$S"
+        ;;          "mis2//contents/box/finalize"
+        ;;          "04"
+        ;;          (make-string (length "mis2//contents/box/finalize") ?\s)
+        ;;          ;; print args 4+:
+        ;;          stack-prefixes stack-postfixes)
+        ))
+
+  (list stack-prefixes stack-postfixes))
+
+
+(defun mis2//contents/indent/finalize (string plist stack-prefixes stack-postfixes)
+  "Build final, propertized indent parts from STRING and PLIST string
+parts (:mis2//line, :mis2//box, etc).
+
+Pushes parts into STACK-PREFIXES and STACK-PREFIXES 'ordered'
+stacks (last-first). Returns (stack-prefixes stack-postfixes).
+"
+  (if-let ((indent (plist-get (plist-get plist :mis2//line) :indent)))
+      (push (mis2//contents/propertize indent
+                                       :indent plist)
+            stack-prefixes))
+  ;; (message "mis2//contents/indent/finalize: indent")
+  ;; (message "%1$s %2$s: pre:  %4$S\n%3$s %2$s: post: %5$S"
+  ;;          "mis2//contents/indent/finalize"
+  ;;          "05"
+  ;;          (make-string (length "mis2//contents/indent/finalize") ?\s)
+  ;;          ;; print args 4+:
+  ;;          stack-prefixes stack-postfixes)
+
+  (list stack-prefixes stack-postfixes))
+
+
 ;;------------------------------------------------------------------------------
 ;; Content Sections
 ;;------------------------------------------------------------------------------
@@ -313,15 +608,6 @@ CONTENTS should be:
 ;;------------------------------------------------------------------------------
 ;; Content, uh... minions.
 ;;------------------------------------------------------------------------------
-(defun mis2//contents/finalize (string plist)
-  "Build final, propertized string from input STRING and PLIST string
-parts (:mis2//line, :mis2//box, etc).
-"
-  ;; The string is already propertized. Just do the rest.
-  ;; Box will propertize the boxing pieces as it builds them.
-  (mis2//contents/box/build string plist))
-
-
 (defun mis2//contents/propertize (string type plist &optional style-overrides)
   "Adds a 'face property to STRING from PLIST given content TYPE.
 If no appropriate face for TYPE found in PLIST, return string as-is.
@@ -364,136 +650,6 @@ Final sink for:
     string))
 
 
-;; (defun mis2//contents/text (contents plist)
-;;   "Builds CONTENTS into a propertized string based on settings/style in PLIST
-;; and CONTENTS.
-
-;; Will deal with differently faced sub-sections, like:
-;;   (mis2/message :settings settings :style style
-;;                 \"Unbelieveable! You, \"
-;;                 (:face :highlight \"SUBJECT NAME HERE\")
-;;                 \", must be the pride of \"
-;;                 (:face :title \"SUBJECT HOMETOWN HERE\")
-;;                 \".\")
-;; "
-;;   (message "mis2//contents/text: input: %S"
-;;            contents)
-
-;;   ;; Assumption:
-;;   ;;   /Either/ they have a "normal" string or format string & args,
-;;   ;;   OR they have a mis2 multi-formatting message like above.
-;;   ;; We have to figure out which one it is so we can process it correctly. So
-;;   ;; loop through the contents, looking for a :mis2//style keyword (e.g. :face)
-;;   ;; as the first item in a list (e.g. '("Hello, " (:face :title "JEFF"))).
-;;   (let ((formatter :format-emacs)) ;; default to simple/non-mis2 contents.
-;;     (dolist (element contents)
-;;       (message "mis2//contents/text: checking: %S... %S is style key? %S"
-;;                element
-;;                (mis2//first element)
-;;                (alist-get (mis2//first element) mis2/style/keys))
-
-;;       ;; Is this a mis2/style keyword?
-;;       (when (and (mis2//list-exists? element)
-;;                  (mis2//first element)
-;;                  (alist-get (mis2//first element) mis2/style/keys))
-;;         ;; Yes; set our kind to mis2 formatting.
-;;         (setq formatter :format-mis2)))
-;;     (message "mis2//contents/text: formatting as: %S, contents: %S"
-;;              formatter contents)
-;;     ;; and now call the contents builder/formatter
-;;     (cond ((eq formatter :format-mis2)
-;;            (mis2//format/contents contents plist))
-
-;;           ((eq formatter :format-emacs)
-;;            (mis2//format/text contents plist))
-
-;;           (t
-;;            (error "%S: Unknown formatting type '%S' for contents: %S"
-;;                   "mis2//contents/text"
-;;                   formatting contents)))))
-
-
-;; (defun mis2//format/contents (contents plist)
-;;   "Builds CONTENTS into a propertized string based on settings/style in PLIST
-;; and CONTENTS.
-
-;; Will deal with differently faced sub-sections, like:
-;;   (mis2/message :settings settings :style style
-;;                 \"Unbelieveable! You, \"
-;;                 (:face :highlight \"SUBJECT NAME HERE\")
-;;                 \", must be the pride of \"
-;;                 (:face :title \"SUBJECT HOMETOWN HERE\")
-;;                 \".\")
-;; "
-;;   (let (accum
-;;         list?
-;;         key?)
-;;     ;; for each item in contents list...
-;;     (dolist (element contents)
-;;       (message "mis2//format/contents: element: %S, contents: %S" element contents)
-;;       (setq list? (mis2//list? element)
-;;             key? (keywordp (mis2//first element)))
-;;       (cond
-;;        ;;-----------
-;;        ;; format: starts with `:format' keyword
-;;        ;;         '(:format :each
-;;        ;;                   '((:face :highlight "%s: ") (:face :title))
-;;        ;;                   results))
-;;        ((and list? key?
-;;              ;; `:format' means we want to format this some complicated way.
-;;              ;; which way is in `:format' key's value.
-;;              (eq (mis2//first element) :format))
-;;         (message "mis2//format/contents: formatter: %S %S, element: %S"
-;;                  (mis2//first element) (mis2//second element)
-;;                  element)
-;;         ;; format type is 2nd item in element, and we'll be nice and chop off
-;;         ;; the `:format :type' entries in element.
-;;         (push (mis2//format/by-format-type (mis2//second element)
-;;                                            (-drop 2 element)
-;;                                            plist)
-;;               accum))
-
-;;        ;;-----------
-;;        ;; div: starts with a style keyword
-;;        ;;      '(:face :title "hello there")
-;;        ((and list? key?
-;;              ;; keyword and in mis2/style/keys means we've got a style
-;;              ;; override here.
-;;              (alist-get (mis2//first element) mis2/style/keys))
-;;         (message "mis2//format/contents: style-overrides found: element: %S (style key: %S)"
-;;                  element (mis2//first element))
-;;         ;; Pick off all the style overrides, and then get the rest
-;;         ;; formatted/propertized.
-;;         (push (mis2//format/div element plist)
-;;               accum))
-
-;;        ;;-----------
-;;        ;; default: Just some string or list to be printed.
-;;        ;;          "hello there"
-;;        ;;          'hello-var
-;;        (t
-;;         (message "mis2//format/contents: just some default: element: %S"
-;;                  element)
-;;         ;; Just a string or something - format/propertize it on its own
-;;         ;; without any overrides.
-;;         (push (mis2//contents/propertize (if (stringp element)
-;;                                              element
-;;                                            (format "%s" element))
-;;                                          :text plist)
-;;               accum))))
-
-;;     ;; Done with sub-sections - put it all together.
-;;     (apply #'concat (nreverse accum))))
-;; ;; (mis2//format/contents
-;; ;;  '("Unbelieveable! You, "
-;; ;;    (:face :highlight "SUBJECT NAME HERE")
-;; ;;    ", must be the pride of "
-;; ;;    (:face :title "SUBJECT HOMETOWN HERE")
-;; ;;    ". "
-;; ;;    (:face :highlight 2))
-;; ;;  '(mis2//testing t))
-
-
 (defun mis2//format/by-format-type (type contents plist)
   "Format a sub-section of the contents list (CONTENTS) by format TYPE (e.g.
 `:each' for formatting a results accum).
@@ -518,9 +674,9 @@ Final sink for:
   ;; Stop after styles and propertize the rest using those overrides.
   (-let (((style-overrides contents) (mis2//style/overrides contents))
          (i 0)
-        (len (mis2//length-safe contents))
-        element
-        value)
+         (len (mis2//length-safe contents))
+         element
+         value)
 
     ;; (message "mis2//format/div: overrides: %S, string: %S"
     ;;          style-overrides
@@ -680,7 +836,7 @@ current buffer.
       fill-column))
 
 
-(defun mis2//contents/line/indent (string plist &optional overrides);; §-TODO-§ [2020-04-17]:
+(defun mis2//contents/line/indent (string plist &optional overrides)
   "Makes indent string for STRING based on `:indent' style setting in PLIST.
 "
   (when-let ((indent (mis2//style/get/from-data :indent plist overrides)))
@@ -833,7 +989,7 @@ RESERVED should be returned value from `mis2//contents/line/reserved-amount'.
   - It has its box styling parts in PLIST..
   - It may have box stylings in OVERRIDES plist foo.
 
-Creates the boxing parts for `mis2//contents/box/build' to complete later.
+Creates the boxing parts for `mis2//contents/box/finalize' to complete later.
 Puts the parts into PLIST under key `:mis2//box'.
 
 Currently only capable of free-hand ASCII style boxes like:
@@ -1002,7 +1158,7 @@ Strings can be asymmetrical.
            (mis2//second padding) padding))))
 
 
-(defun mis2//contents/box/borders (string plist &optional overrides);; §-TODO-§ [2020-04-17]:
+(defun mis2//contents/box/borders (string plist &optional overrides)
   "Takes STRING and adds left/right borders to it if defined in the mis2 PLIST.
 "
   ;; They're optional, so only do it if we have 'em.
@@ -1012,7 +1168,7 @@ Strings can be asymmetrical.
                                  :borders borders)))
 
 
-(defun mis2//contents/box/margins (string plist &optional overrides);; §-TODO-§ [2020-04-17]:
+(defun mis2//contents/box/margins (string plist &optional overrides)
   "If margins are defined in the mis2 PLIST, this takes STRING and margins
 inputs and creates final margins in `:mis2//box' in PLIST.
 "
@@ -1021,134 +1177,6 @@ inputs and creates final margins in `:mis2//box' in PLIST.
       ;; We have them - stuff 'em straight into the box.
       (mis2//contents/box/update plist
                                  :margins margins)))
-
-
-(defun mis2//contents/box/build (string plist)
-  "Takes a STRING, and assumes it is already aligned properly (left, right, or
-center). Builds around/in it on the one line based on `:margins', `:borders',
-and `:padding'.
-
-Builds the box around STRING on the one line based on boxing strings in PLIST.
-
-Currently only capable of free-hand ASCII style boxes like:
-  +----+   +----+   ;;----;;
-  + hi +   | hi |   ;;-hi-;;
-  +----+   +----+   ;;----;;
-
-Currently not capable of figuring out how to interconnect the
-ASCII box drawing characters on its own - caller would have to
-figure it out on their own. So this can be done, you just have to
-do the hard work yourself:
-  ┌┬┬┬──────┬┬┬┐
-  ├┼┼┤  hi  ├┼┼┤
-  └┴┴┴──────┴┴┴┘
-"
-  ;; A line is, in order:
-  ;;   - indentation
-  ;;   - margin, left
-  ;;   - border, left
-  ;;   - padding, left
-  ;;   - string
-  ;;   - (possible auto-padding inserted, depending on string, to get to
-  ;;      box edge when left-aligned)
-  ;;   - padding, right
-  ;;   - border, right
-  ;;   - margin, right
-
-  ;; Our box, if we have one, has been built in parts in `:mis2//box' in PLIST.
-  (if-let ((box (mis2//data/get :mis2//box plist)))
-      (let* ((indent     (plist-get (plist-get plist :mis2//line) :indent))
-             (margins    (plist-get box :margins))
-             (borders    (plist-get box :borders))
-             (padding    (plist-get box :padding))
-             prefix
-             postfix
-             pad-left-char
-             pad-right-char
-             pad-left-str
-             pad-right-str
-             (width-line (mis2//contents/line/width plist))
-             width-remaining)
-
-        ;; Propertize this stuff as each individual piece gets made:
-        ;; (mis2//contents/propertize str-in-question :margins/whatever plist)
-
-        (setq prefix (concat (mis2//contents/propertize indent
-                                                        :indent plist)
-                             (mis2//contents/propertize (mis2//first margins)
-                                                        :margins plist)
-                             (mis2//contents/propertize (mis2//first borders)
-                                                        :borders plist)))
-
-        (setq postfix (concat (mis2//contents/propertize (mis2//second borders)
-                                                         :borders plist)
-                              (mis2//contents/propertize (mis2//second margins)
-                                                         :margins plist)))
-
-        ;; Add fixed-size padding elements to final pieces.
-        (when padding
-          ;; padding: (char string string char)
-          ;;  - concat to STRING, leave fill chars for final step
-          (if (characterp (mis2//first padding))
-              (progn
-                (setq pad-left-char (mis2//first padding))
-                (setq string
-                      (concat (mis2//contents/propertize (mis2//second padding)
-                                                         :padding plist)
-                              string
-                              (mis2//contents/propertize (mis2//third padding)
-                                                         :padding plist)))
-                (setq pad-right-char (mis2//fourth padding)))
-
-            ;; padding: (string char char string)
-            ;;  - concat to prefix/postfix, leave fill chars for final step
-            (setq prefix (concat prefix
-                                 (mis2//contents/propertize (mis2//first padding)
-                                                            :padding plist)))
-            (setq pad-left-char (mis2//second padding))
-            (setq pad-right-char (mis2//third padding))
-            (setq postfix (concat
-                           (mis2//contents/propertize (mis2//fourth padding)
-                                                      :padding plist)
-                           postfix))))
-
-        (setq width-remaining (- width-line
-                                 (-sum (mapcar #'length
-                                               (list prefix string postfix)))))
-        ;; §-TODO-§ [2020-04-02]: Use :mis2//line's :padding amount instead of
-        ;; figuring out remaining?
-
-        ;; Ensure minimal padding on left & right.
-        (cond ((= width-remaining 1)
-               ;; Only one char to work with; put it on the left?
-               (setq pad-left-str (make-string 1 pad-left-char)
-                     pad-right-str nil))
-
-              ((> width-remaining 1)
-               ;; Space to work in; put one on left and rest on right-pad duty.
-               (setq pad-left-str (make-string 1 pad-left-char)
-                     pad-right-str (make-string (1- width-remaining)
-                                                pad-left-char)))
-
-              (t  ;; zero or negative remaining - no more padding available.
-               (setq pad-left-str nil
-                     pad-right-str nil)))
-
-        (when pad-left-str
-          (setq pad-left-str (mis2//contents/propertize pad-left-str
-                                                        :padding plist)))
-        (when pad-right-str
-          (setq pad-right-str (mis2//contents/propertize pad-right-str
-                                                         :padding plist)))
-
-        ;; Finish the full inner string.
-        ;; Parts are propertized properly; can just concatenate carelessly.
-        (concat prefix
-                pad-left-str
-                string
-                pad-right-str
-                postfix))
-    string))
 
 
 ;;---

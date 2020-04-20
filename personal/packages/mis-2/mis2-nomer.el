@@ -27,14 +27,18 @@
 ;;--                             Nomer Settings                               --
 ;;------------------------------------------------------------------------------
 
-(defcustom mis2/nomer/settings/user nil
+(defcustom mis2/nomer/settings/user
+  '(:theme :nomer
+    :line-width 90)
   "Variable for user to put their default/most used settings into
 for mis/nomers.
 "
   :group 'mis2)
 
 
-(defcustom mis2/nomer/style/user nil
+(defcustom mis2/nomer/style/user
+  '(:indent 5
+    :center t)
   "Variable for user to put their default/most used stylings into
 for mis/nomers.
 "
@@ -44,10 +48,6 @@ for mis/nomers.
 ;;--------------
 ;; Consts & Vars
 ;;--------------
-
-(defconst mis2/nomer/line-width 90
-  "Line width for formatting nomers.")
-
 
 (defvar mis2/nomer/list nil
   "Nomers loaded up and ready to go.")
