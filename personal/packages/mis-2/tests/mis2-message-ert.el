@@ -817,16 +817,15 @@ contains a full line marker (`:full').
 
 
 ;;------------------------------------------------------------------------------
-;; Test: mis2/message lines!
+;; Test: mis2/block
 ;;------------------------------------------------------------------------------
-;; (defun mis2/message (&rest args)
+;; (defun mis2/block (&rest args)
 
 ;;---
 ;; Test Case 000
 ;;---
 (ert-deftest mis2-ert/message/block ()
-  "Test that `mis2/message' outputs a properly formatted message when input
-contains an empty line marker (`:empty').
+  "Test that `mis2/block' outputs properly formatted messages.
 "
   (mis2-ert/mis2-message/setup)
 
@@ -860,6 +859,40 @@ contains an empty line marker (`:empty').
         (mis2/block '("hello %s" "there") "how are you?")
         (should (string= mis2-ert/mock/output/to-buffer
                          "hello there\nhow are you?")))))
+
+  (mis2-ert/mis2-message/teardown))
+
+
+;;---
+;; Test Case 001
+;;---
+(ert-deftest mis2-ert/message/block/lines ()
+  "Test that `mis2/block' outputs properly formatted messages including special
+lines (e.g. `:empty').
+"
+  (mis2-ert/mis2-message/setup)
+
+  ;; Setup for a message to test.
+  (let ((settings nil)
+        ;; None of these box parts should show up.
+        (style nil))
+               ;; '(:margins (">>" "<<")
+               ;;   :borders ("|" "|")
+               ;;   :padding ("--" "--"))))
+
+    (mis2-ert/mock 'mis2//message/output/to-buffer nil
+      (mis2-ert/mock 'mis2//message/output/to-minibuffer nil
+
+        (mis2/block :settings settings :style style
+                    :full "hello there" :empty "how are you?")
+        (should (string= mis2-ert/mock/output/to-buffer
+                         (concat (make-string 80 ?-) ;; :full
+                                 "\n" ;; :full's newline
+                                 "hello there"
+                                 "\n" ;; hello there's newline
+                                 ;; :empty
+                                 "\n" ;; :empty's newline
+                                 "how are you?"))))))
 
   (mis2-ert/mis2-message/teardown))
 

@@ -85,8 +85,6 @@ Pipeline for sink of:
     ;; (message "mis2//contents/build: contents: %S, overrides: %S -> string: %S"
     ;;          contents overrides string)
 
-    ;; §-TODO-§ [2020-04-17]: overrides below too
-
     ;; Prep Work: Boxing: Deal with any box styling.
     (mis2//contents/box/parts string plist overrides)
 
@@ -108,6 +106,8 @@ parts (:mis2//line, :mis2//box, etc).
 "
   ;; Backwardsly (so no nreverse (last (left-most) first)), build list of
   ;; strings for box parts, line parts, string, etc. then concat together.
+
+  ;; (message "mis2//contents/finalize: string: %S" string)
 
   ;; A boxed line is, in backwardsly:
   ;;   - Box, Right:
@@ -149,12 +149,12 @@ parts (:mis2//line, :mis2//box, etc).
                                       plist
                                       deredro-prefix
                                       deredro-postfix))
-    ;; (message "%1$s %2$s: pre:  %4$S\n%3$s %2$s: post: %5$S"
+    ;; (message "%1$s %2$s: pre:  %4$S\n%3$s %2$s: post: %5$S\n%3$s %2$s: string: %6$S"
     ;;          "mis2//contents/finalize"
     ;;          "indented"
     ;;          (make-string (length "mis2//contents/finalize") ?\s)
     ;;          ;; print args 4+:
-    ;;          deredro-prefix deredro-postfix)
+    ;;          deredro-prefix deredro-postfix string)
 
     ;;-------------
     ;; Finalized
@@ -552,18 +552,26 @@ different line types; see `mis2//line/full-lines'.
     (cond
      ((or (eq line-type :newline)
           (eq line-type :empty))
-      ;; Skip boxing parts for these line types
+      ;; Skip alignment and boxing parts for these line types;
+      ;; just want empty.
       (mis2//contents/box/update plist :skip t)
+      (mis2//contents/align/update plist :skip t)
+
       (mis2//contents/propertize (mis2//first build-data) :line plist))
 
      ;; "-" or something padded out to line length.
      ((eq line-type :full)
+      ;; Skip alignment part for full lines;
+      ;; they should be too full to be aligned...
+      (mis2//contents/align/update plist :skip t)
+
       ;; (message "mis2//contents/line: full. reserved: %S (sum: %S), build-data: %S (first: %S), string: %S"
       ;;          (mis2//contents/line/reserved-peek plist overrides)
       ;;          (-sum (mis2//contents/line/reserved-peek plist overrides))
       ;;          build-data
       ;;          (mis2//first build-data)
-      ;;          (make-string (-sum (mis2//contents/line/reserved-peek plist overrides))
+      ;;          (make-string (- (mis2//contents/line/width plist)
+      ;;                          (-sum (mis2//contents/line/reserved-peek plist overrides)))
       ;;                       (mis2//first build-data)))
 
       ;; Make full line (with room for reserved amount).
@@ -951,8 +959,10 @@ Final sink for:
 Shared 'final' sink for:
   :mis2//settings -- :line-width
 "
-  ;; Bail out on boxing if we've been asked to skip.
-  (unless (plist-get (mis2//data/get :mis2//align plist) :skip)
+  ;; (message "mis2//contents/align: input: %S" string)
+  (if (mis2//contents/align/get/from-data :skip plist)
+      ;; Bail out on boxing if we've been asked to skip.
+      string
 
     ;; Look for width (optional) and an alignment keyword.
     (let ((align-left   (mis2//style/get/from-data :left   plist overrides))
@@ -997,6 +1007,7 @@ RESERVED should be returned value from `mis2//contents/line/reserved-amount'.
     (mis2//contents/line/update plist :padding (list 0 len)))
 
   ;; ...And return unaltered string as it's already "aligned".
+  ;; (message "mis2//contents/align/left: in/out: %S" string)
   string)
 
 
@@ -1009,6 +1020,16 @@ RESERVED should be returned value from `mis2//contents/line/reserved-amount'.
   ;; Center on the full width for true center.
   (let* ((centered (s-center width string))
          (len (mis2//string/length-safe centered)))
+
+    ;; (message "%1$s %2$s:    input: %4$S\n%3$s %2$s: centered: %5$S"
+    ;;          "mis2//contents/align/center"
+    ;;          ""
+    ;;          (make-string (length "mis2//contents/align/center") ?\s)
+    ;;          ;; print args 4+:
+    ;;          string
+    ;;          (substring centered
+    ;;            (mis2//first reserved)
+    ;;            (- len (mis2//second reserved))))
 
     ;; Chop down string starting after left-reserved chars, and ending before
     ;; right-reserved chars.
@@ -1032,6 +1053,36 @@ RESERVED should be returned value from `mis2//contents/line/reserved-amount'.
                 (mis2//second reserved))))
     ;; Now all we have to do is pad out by our calculated length.
     (s-pad-left len " " string)))
+
+
+;;---
+;; Mis2 PLIST Getter/Setter
+;;---
+
+;; §-TODO-§ [2020-04-01]: use this in here
+(defun mis2//contents/align/get/from-data (key plist)
+  "Get align data from a mis2 data PLIST, then get KEY from that.
+"
+  (mis2//data/get/from-data key
+                            :mis2//align plist
+                            mis2//align/keys
+                            nil
+                            nil))
+
+
+(defmacro mis2//contents/align/update (plist key value)
+  "Given mis2 PLIST, get `:mis2//align' key, and update /that/ plist with
+KEY & VALUE.
+"
+  `(let (;;(,temp-plist ,plist)
+         ;; Get out our align plist from mis2 plist.
+         (align (mis2//data/get :mis2//align ,plist)))
+     ;; Update mis2 plist with newest align plist.
+     (setq ,plist
+           (plist-put ,plist
+                      :mis2//align
+                      ;; Add our key/value to align plist.
+                      (plist-put align ,key ,value)))))
 
 
 ;;----------------------------------------------------------------------------;;
