@@ -17,7 +17,7 @@
 ;; Consts & Vars
 ;;------------------------------------------------------------------------------
 
-(defconst mis2//align/keys '(:center :right :left)
+(defconst mis2//align/keys '(:center :right :left :skip)
   "Alignment keywords. Will be in the :mis2//style list if specified. Defaults
 to left-aligned.")
 
@@ -26,7 +26,7 @@ to left-aligned.")
   "Line-related keywords. Will be in the :mis2//line list if specified.")
 
 
-(defconst mis2//box/keys '(:margins :borders :padding)
+(defconst mis2//box/keys '(:margins :borders :padding :skip)
   "Box-related keywords. Will be in the :mis2//box list if specified.")
 
 
@@ -474,6 +474,7 @@ propertized output string from it using PLIST and OVERRIDES.
   (let ((section (mis2//contents/section/type contents)))
     ;; (message "mis2//contents/section: type: %S, contents: %S, plist: %S"
     ;;          section contents plist)
+    (setq plist (plist-put plist :mis2//section section))
     (cond ((eq section :mis2//section/text)
            (mis2//contents/section/text contents plist overrides))
 
@@ -551,24 +552,24 @@ different line types; see `mis2//line/full-lines'.
     (cond
      ((or (eq line-type :newline)
           (eq line-type :empty))
-      ;; §-TODO-§ [2020-04-16]: Add/remove something to plist to indicate
-      ;; not to add boxing or anything.
+      ;; Skip boxing parts for these line types
+      (mis2//contents/box/update plist :skip t)
       (mis2//contents/propertize (mis2//first build-data) :line plist))
 
      ;; "-" or something padded out to line length.
      ((eq line-type :full)
       ;; (message "mis2//contents/line: full. reserved: %S (sum: %S), build-data: %S (first: %S), string: %S"
-      ;;          (mis2//contents/line/reserved-amount plist)
-      ;;          (-sum (mis2//contents/line/reserved-amount plist))
+      ;;          (mis2//contents/line/reserved-peek plist overrides)
+      ;;          (-sum (mis2//contents/line/reserved-peek plist overrides))
       ;;          build-data
       ;;          (mis2//first build-data)
-      ;;          (make-string (-sum (mis2//contents/line/reserved-amount plist))
+      ;;          (make-string (-sum (mis2//contents/line/reserved-peek plist overrides))
       ;;                       (mis2//first build-data)))
 
       ;; Make full line (with room for reserved amount).
       (mis2//contents/propertize
        (make-string (- (mis2//contents/line/width plist)
-                       (-sum (mis2//contents/line/reserved-amount plist)))
+                       (-sum (mis2//contents/line/reserved-peek plist overrides)))
                     (mis2//first build-data))
        :line plist))
 
@@ -784,6 +785,58 @@ Does not propertize.
 ;;------------------------------------------------------------------------------
 
 
+(defun mis2//contents/line/reserved-peek (plist overrides)
+  "Look in PLIST for any settings/style/boxing/what-not that
+would reduce the amount of characters available to be used for
+filling.
+
+This looks at user's style and tries to guess what the final
+sizes of line/box parts will be. Use
+`mis2//contents/line/reserved-amount' if those are already built.
+
+E.g. if we're aligning to center on 80 columns, but need 10 for
+indentation, margins, etc, then we should center the string on 80
+still, but reserve 6 on the right and 4 on the left (to make up
+numbers), so a 70 width string should be returned.
+
+This function just says that those 6 and 4 are reserved.
+
+Returns tuple of '(left-reserved-chars right-reserved-chars).
+For our example: '(6 4)
+
+Pass-through sink for:
+  :mis2//line -- :indent
+  :mis2//box  -- :margins
+              -- :borders
+              -- :padding
+"
+  ;; Get the final line and box data for reserved characters.
+  (let ((indent-amt (or (mis2//style/get/from-data :indent  plist overrides)
+                        0))
+        (margins    (mis2//style/get/from-data :margins plist overrides))
+        (borders    (mis2//style/get/from-data :borders plist overrides))
+        ;; Either '(str str) or '(x y int):
+        (padding    (or (mis2//style/get/from-data :padding plist overrides)
+                        '(nil nil 0))))
+
+    ;; Reserved tuple of (left right) amounts. Some of these are expected to be
+    ;; nil, but `first', `second', and `length' all cope correctly with it.
+    (list
+     (+ indent-amt
+        (mis2//string/length-safe (mis2//first margins))
+        (mis2//string/length-safe (mis2//first borders))
+        ;; Either '(str str) or '(x y int):
+        (if (stringp (mis2//first padding))
+            (mis2//string/length-safe (mis2//first padding))
+          (mis2//third padding)))
+     (+ (mis2//string/length-safe (mis2//second margins))
+        (mis2//string/length-safe (mis2//second borders))
+        ;; Either '(str str) or '(x y int):
+        (if (stringp (mis2//first padding))
+            (mis2//string/length-safe (mis2//second padding))
+          (mis2//third padding))))))
+
+
 (defun mis2//contents/line/reserved-amount (plist)
   "Look in PLIST for any settings/style/boxing/what-not that
 would reduce the amount of characters available to be used by
@@ -806,10 +859,13 @@ Pass-through sink for:
               -- :padding
 "
   ;; Get the final line and box data for reserved characters.
-  (let ((indent  (mis2//contents/line/get/from-data :indent plist))
-        (margins (mis2//contents/box/get/from-data :margins plist))
-        (borders (mis2//contents/box/get/from-data :borders plist))
-        (padding (mis2//contents/box/get/from-data :padding plist)))
+  (let ((indent  (mis2//contents/line/get/from-data :indent  plist))
+        (margins (mis2//contents/box/get/from-data  :margins plist))
+        (borders (mis2//contents/box/get/from-data  :borders plist))
+        (padding (mis2//contents/box/get/from-data  :padding plist)))
+
+    ;; (message "mis2//contents/line/reserved-amount: indent: %S, margins: %S, borders: %S, padding: %S"
+    ;;          indent margins borders padding)
 
     ;; Reserved tuple of (left right) amounts. Some of these are expected to be
     ;; nil, but `first', `second', and `length' all cope correctly with it.
@@ -817,14 +873,10 @@ Pass-through sink for:
      (+ (mis2//string/length-safe indent)
         (mis2//string/length-safe (mis2//first margins))
         (mis2//string/length-safe (mis2//first borders))
-        (or
-         (mis2//string/length-safe (mis2//first padding))
-         (mis2//string/length-safe (mis2//second padding))))
+        (mis2//string/sum (mis2//first padding) (mis2//second padding)))
      (+ (mis2//string/length-safe (mis2//second margins))
         (mis2//string/length-safe (mis2//second borders))
-        (or
-         (mis2//string/length-safe (mis2//first padding))
-         (mis2//string/length-safe (mis2//second padding)))))))
+        (mis2//string/sum (mis2//third padding) (mis2//fourth padding))))))
 
 
 (defun mis2//contents/line/width (plist)
@@ -899,26 +951,29 @@ Final sink for:
 Shared 'final' sink for:
   :mis2//settings -- :line-width
 "
-  ;; Look for width (optional) and an alignment keyword.
-  (let ((align-left   (mis2//style/get/from-data :left   plist overrides))
-        (align-center (mis2//style/get/from-data :center plist overrides))
-        (align-right  (mis2//style/get/from-data :right  plist overrides))
-        (line-width   (mis2//contents/line/width plist))
-        ;; `line-width' is the full width desired - but we may not be allowed to
-        ;; use all that. We might need to reserve some space for e.g. boxing to
-        ;; draw characters before/after our aligned string.
-        (reserved (mis2//contents/line/reserved-amount plist)))
+  ;; Bail out on boxing if we've been asked to skip.
+  (unless (plist-get (mis2//data/get :mis2//align plist) :skip)
 
-    ;; Call a specific aligner or no-op.
-    (cond (align-center
-           (mis2//contents/align/center string line-width reserved plist))
-          (align-right
-           (mis2//contents/align/right string line-width reserved plist))
-          (t
-           ;; If we don't need to center or right align, then we're left
-           ;; aligning; it's left aligned already, but may need to do more
-           ;; anyways for e.g. boxing help.
-           (mis2//contents/align/left string line-width reserved plist)))))
+    ;; Look for width (optional) and an alignment keyword.
+    (let ((align-left   (mis2//style/get/from-data :left   plist overrides))
+          (align-center (mis2//style/get/from-data :center plist overrides))
+          (align-right  (mis2//style/get/from-data :right  plist overrides))
+          (line-width   (mis2//contents/line/width plist))
+          ;; `line-width' is the full width desired - but we may not be allowed to
+          ;; use all that. We might need to reserve some space for e.g. boxing to
+          ;; draw characters before/after our aligned string.
+          (reserved (mis2//contents/line/reserved-amount plist)))
+
+      ;; Call a specific aligner or no-op.
+      (cond (align-center
+             (mis2//contents/align/center string line-width reserved plist))
+            (align-right
+             (mis2//contents/align/right string line-width reserved plist))
+            (t
+             ;; If we don't need to center or right align, then we're left
+             ;; aligning; it's left aligned already, but may need to do more
+             ;; anyways for e.g. boxing help.
+             (mis2//contents/align/left string line-width reserved plist))))))
 
 
 (defun mis2//contents/align/left (string width reserved plist)
@@ -1013,29 +1068,31 @@ Pipeline for sources of:
   :mis2//box -- :fill
   :mis2//box -- :pad
 "
-  ;; A boxed line is, in order:
-  ;;   - indentation
-  ;;   - margin, left
-  ;;   - border, left
-  ;;   - padding, left
-  ;;   - string
-  ;;   - (possible auto-padding inserted, depending on string, to get to
-  ;;      box edge when left-aligned)
-  ;;   - padding, right
-  ;;   - border, right
-  ;;   - margin, right
+  ;; Bail out on boxing if we've been asked to skip.
+  (unless (mis2//contents/box/get/from-data :skip plist)
 
-  ;; We'll follow that order inside-out, but ignore the right-side auto-padding.
-  ;; Our padding step right now is just to build `:pad' and `:fill' for easy
-  ;; completion of line later.
+    ;; A boxed line is, in order:
+    ;;   - indentation
+    ;;   - margin, left
+    ;;   - border, left
+    ;;   - padding, left
+    ;;   - string
+    ;;   - (possible auto-padding inserted, depending on string, to get to
+    ;;      box edge when left-aligned)
+    ;;   - padding, right
+    ;;   - border, right
+    ;;   - margin, right
+    ;;
+    ;; But we don't really care at this level - we just call each part and have
+    ;; them build into the output key (:mis2//box) under the plist.
 
-  (mis2//contents/box/padding string plist overrides)
-  (mis2//contents/box/borders string plist overrides)
-  (mis2//contents/box/margins string plist overrides)
-  (mis2//contents/line/indent string plist overrides))
+    (mis2//contents/box/padding string plist overrides)
+    (mis2//contents/box/borders string plist overrides)
+    (mis2//contents/box/margins string plist overrides)
+    (mis2//contents/line/indent string plist overrides)))
 
 
-(defun mis2//contents/box/padding (string plist &optional overrides);; §-TODO-§ [2020-04-17]:
+(defun mis2//contents/box/padding (string plist &optional overrides)
   "Takes STRING and adds left/right padding (if defined in PLIST) to
 `:mis2//box' in PLIST.
 

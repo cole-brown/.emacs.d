@@ -242,6 +242,7 @@ Styles:
         :mis2//contents
         :mis2//box
         :mis2//line
+        :mis2//align
 
         :mis2//message
         :mis2//buffers
@@ -255,7 +256,8 @@ Public -> Private (see `mis2/custom/keywords'):
 
 Private-Only:
   :mis2//contents - contents of message, unformatted
-  :mis2//box      - intermediate parts for building final box
+  :mis2//box      - intermediate parts for building final box, skip flag
+  :mis2//align    - skip flag
   :mis2//message  - final, propertized, and formatted message
   :mis2//buffers  - list of buffer(s) to send output to
   :mis2//testing  - valid only in mis2 tests

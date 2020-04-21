@@ -740,6 +740,75 @@ contains several styled subsections.
   (mis2-ert/mis2-message/teardown))
 
 
+;;------------------------------------------------------------------------------
+;; Test: mis2/message lines!
+;;------------------------------------------------------------------------------
+;; (defun mis2/message (&rest args)
+
+;;---
+;; Test Case 000
+;;---
+(ert-deftest mis2-ert/message/line-empty ()
+  "Test that `mis2/message' outputs a properly formatted message when input
+contains an empty line marker (`:empty').
+"
+  (mis2-ert/mis2-message/setup)
+
+  ;; Setup for a message to test.
+  (let ((settings nil)
+        ;; None of these box parts should show up.
+        (style '(:margins (">>" "<<")
+                 :borders ("|" "|")
+                 :padding ("--" "--"))))
+
+    (mis2-ert/mock 'mis2//message/output/to-buffer nil
+      (mis2-ert/mock 'mis2//message/output/to-minibuffer nil
+
+        ;; Output message with multiple differently styled user-input sections.
+        (mis2/message :settings settings :style style
+                      :empty)
+
+        ;; Output an empty line?
+        (should (string= mis2-ert/mock/output/to-buffer "")))))
+
+  (mis2-ert/mis2-message/teardown))
+
+
+;;---
+;; Test Case 001
+;;---
+(ert-deftest mis2-ert/message/line-full ()
+  "Test that `mis2/message' outputs a properly formatted message when input
+contains a full line marker (`:full').
+"
+  (mis2-ert/mis2-message/setup)
+
+  ;; Setup for a message to test.
+  (let ((settings '(:line-width 80))
+        ;; None of these box parts should show up.
+        (style '(:margins (">>" "<<")
+                 :borders ("|" "|")
+                 :padding ("--" "--"))))
+
+    (mis2-ert/mock 'mis2//message/output/to-buffer nil
+      (mis2-ert/mock 'mis2//message/output/to-minibuffer nil
+
+        ;; Output message with multiple differently styled user-input sections.
+        (mis2/message :settings settings :style style
+                      :full)
+
+        ;; Output an empty line?
+        (should (string= mis2-ert/mock/output/to-buffer
+                         (concat ">>"
+                                 "|"
+                                 "--"
+                                 (make-string (- 80 (mis2//string/sum style))
+                                              ?\-)
+                                 "--"
+                                 "|"
+                                 "<<"))))))
+
+  (mis2-ert/mis2-message/teardown))
 
 
 ;;------------------------------------------------------------------------------
