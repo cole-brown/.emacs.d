@@ -364,8 +364,12 @@ list, that list will be considered the block of lines to output.
          ;; If we have a doubled list '((x y ...)), turn into just a list.
          (lines (if (and (= (mis2//length-safe lines) 1)
                          (mis2//list? (mis2//first lines)))
-                    (mis2//first lines)))
+                    (mis2//first lines)
+                  lines))
          plist)
+
+    ;; (message "mis2/block: args: %S, plist-meta: %S, lines: %S"
+    ;;          args plist-meta lines)
 
     ;; Parse has broken out settings/style/"the rest" into `plist-meta'.
     ;; We've already grabbed settings and style,
@@ -381,6 +385,7 @@ list, that list will be considered the block of lines to output.
       ;; (message "mis2/block line plist: %S" plist)
       (mis2//message/output (mis2//contents plist)))))
 ;; (mis2/message "hello there")
+;; (mis2/block "hello there")
 ;; (mis2/block "hello there" "how are you?")
 ;; (mis2/block '("hello %s" "there") "how are you?")
 

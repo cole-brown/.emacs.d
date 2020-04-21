@@ -65,7 +65,12 @@ specific to this test suite."
 (defun mis2-ert/mock/mis2//message/output/to-buffer (mis2-msg plist)
   "Save mis2-msg to `mis2-ert/mock/output/to-minibuffer' instead of normal
 functionality."
-  (setq mis2-ert/mock/output/to-buffer mis2-msg))
+  (setq mis2-ert/mock/output/to-buffer
+        (if mis2-ert/mock/output/to-buffer
+            (concat mis2-ert/mock/output/to-buffer
+                    "\n"
+                    mis2-msg)
+          mis2-msg)))
 
 
 (defun mis2-ert/mock/mis2//message/output/to-minibuffer (mis2-msg plist)
@@ -731,7 +736,7 @@ contains several styled subsections.
           (concat
            (propertize "Did something to these " 'face font-lock-warning-face)
            (propertize "2"                       'face font-lock-builtin-face)
-           (propertize " folders: "               'face font-lock-warning-face)
+           (propertize " folders: "              'face font-lock-warning-face)
            (propertize "/path/to/test0: "        'face font-lock-constant-face)
            (propertize "a.txt, b.txt, c.txt"     'face font-lock-builtin-face)
            (propertize "/path/to/test1: "        'face font-lock-constant-face)
@@ -807,6 +812,54 @@ contains a full line marker (`:full').
                                  "--"
                                  "|"
                                  "<<"))))))
+
+  (mis2-ert/mis2-message/teardown))
+
+
+;;------------------------------------------------------------------------------
+;; Test: mis2/message lines!
+;;------------------------------------------------------------------------------
+;; (defun mis2/message (&rest args)
+
+;;---
+;; Test Case 000
+;;---
+(ert-deftest mis2-ert/message/block ()
+  "Test that `mis2/message' outputs a properly formatted message when input
+contains an empty line marker (`:empty').
+"
+  (mis2-ert/mis2-message/setup)
+
+  ;; Setup for a message to test.
+  (let ((settings nil)
+        ;; None of these box parts should show up.
+        (style nil))
+               ;; '(:margins (">>" "<<")
+               ;;   :borders ("|" "|")
+               ;;   :padding ("--" "--"))))
+
+    (mis2-ert/mock 'mis2//message/output/to-buffer nil
+      (mis2-ert/mock 'mis2//message/output/to-minibuffer nil
+
+        (mis2/block :settings settings :style style
+                    "hello there")
+        (should (string= mis2-ert/mock/output/to-buffer
+                         "hello there"))
+
+        (setq mis2-ert/mock/output/to-buffer     nil
+              mis2-ert/mock/output/to-minibuffer nil)
+
+        (mis2/block :settings settings :style style
+                    "hello there" "how are you?")
+        (should (string= mis2-ert/mock/output/to-buffer
+                         "hello there\nhow are you?"))
+
+        (setq mis2-ert/mock/output/to-buffer     nil
+              mis2-ert/mock/output/to-minibuffer nil)
+
+        (mis2/block '("hello %s" "there") "how are you?")
+        (should (string= mis2-ert/mock/output/to-buffer
+                         "hello there\nhow are you?")))))
 
   (mis2-ert/mis2-message/teardown))
 
