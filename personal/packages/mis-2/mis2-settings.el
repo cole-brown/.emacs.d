@@ -243,6 +243,7 @@ Styles:
         :mis2//box
         :mis2//line
         :mis2//align
+        :mis2//format
 
         :mis2//message
         :mis2//buffers

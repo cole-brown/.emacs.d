@@ -745,6 +745,64 @@ contains several styled subsections.
   (mis2-ert/mis2-message/teardown))
 
 
+;;---
+;; Test Case 002
+;;---
+(ert-deftest mis2-ert/message/format-each/column-auto ()
+  "Test that `mis2/message' outputs a properly formatted message when input
+contains several styled subsections for auto-column-ing...
+"
+  (mis2-ert/mis2-message/setup)
+
+  ;; Setup for a message to test.
+  (let ((settings nil)
+        (style '(:face :text))
+        (results '(("/path/to/test0"                 "a.txt, b.txt, c.txt")
+                   ("/s/pth"                         "b.jpg, o.obj")
+                   ("/long/path/to/some/test/folder" "a.bis, c.cui, e.ts"))))
+
+    (mis2-ert/mock 'mis2//message/output/to-buffer nil
+      (mis2-ert/mock 'mis2//message/output/to-minibuffer nil
+
+        ;; Output message with a results list styled as
+        ;; indicated by ":format :each"
+        (mis2/message :style style
+                      "Did something to these "
+                      (list :face :title (length results))
+                      " folders:\n"
+                      (list :format :each :column :auto
+                            '((:face :highlight "%s: ") (:face :title "%s\n"))
+                            results))
+
+        ;; correctly propertized?
+        (should
+         (equal-including-properties
+          mis2-ert/mock/output/to-buffer
+          (concat
+           (propertize "Did something to these " 'face font-lock-warning-face)
+           (propertize "3"                       'face font-lock-builtin-face)
+           (propertize " folders:\n"             'face font-lock-warning-face)
+
+           (propertize "/path/to/test0: "
+                       'face font-lock-constant-face)
+           "                "
+           (propertize "a.txt, b.txt, c.txt\n"
+                       'face font-lock-builtin-face)
+
+           (propertize "/s/pth: "
+                       'face font-lock-constant-face)
+           "                        "
+           (propertize "b.jpg, o.obj\n"
+                       'face font-lock-builtin-face)
+
+           (propertize "/long/path/to/some/test/folder: "
+                       'face font-lock-constant-face)
+           (propertize "a.bis, c.cui, e.ts\n"
+                       'face font-lock-builtin-face)))))))
+
+  (mis2-ert/mis2-message/teardown))
+
+
 ;;------------------------------------------------------------------------------
 ;; Test: mis2/message lines!
 ;;------------------------------------------------------------------------------

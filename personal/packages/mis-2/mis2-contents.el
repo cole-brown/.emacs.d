@@ -30,6 +30,11 @@ to left-aligned.")
   "Box-related keywords. Will be in the :mis2//box list if specified.")
 
 
+(defconst mis2//format/keys '(:column)
+  "Format-related keywords. Will be in the :mis2//format list if specified.
+Not included: the base `:format' key.")
+
+
 (defconst mis2//line/full-lines
   '((:newline "")  ;; "\n"
     (:empty   "")  ;; "\n"
@@ -597,9 +602,39 @@ CONTENTS should be:
 "
   ;; Get the type keyword and then drop both :format and type keywords from
   ;; front of contents.
-  (mis2//format/by-format-type (mis2//second contents)
-                               (-drop 2 contents)
-                               plist))
+  (-let* (((format type . contents) contents)
+          (plist-fmt (list format type))
+          (i 0)
+          (len (mis2//length-safe contents))
+          element
+          value)
+
+    ;; Look for other formatting options like ":column :auto".
+    (while (< i len)
+      (setq element (mis2//nth i contents))
+
+      ;; We require our keys to go first, so just check the elements
+      ;; until not our key.
+      (if (memq element mis2//format/keys)
+          (progn
+            ;; Get keyword and val; save to plist-fmt.
+            ;; Keyword is element (and verified);
+            ;; just need to get value.
+            (setq value (mis2//nth (1+ i) contents))
+            (setq plist-fmt (plist-put plist-fmt element value))
+
+            ;; update the loop var for this key and value
+            (setq i (+ i 2)))
+
+        ;; Else we're past the style overrides and the rest is the contents now.
+        (setq contents (-drop i contents)
+              i len))) ;; Set index past end of contents so loop will end.
+
+    (mis2//data/update plist :mis2//format plist-fmt)
+
+    (mis2//format/by-format-type type
+                                 contents
+                                 plist)))
 
 
 (defun mis2//contents/section/div (contents plist &optional overrides)
@@ -679,13 +714,7 @@ Final sink for:
 (defun mis2//format/div (contents plist)
   "Format a sub-section of the contents list (CONTENTS).
 "
-  ;; Loop over contents list, pull styles out into override plist.
-  ;; Stop after styles and propertize the rest using those overrides.
-  (-let (((style-overrides contents) (mis2//style/overrides contents))
-         (i 0)
-         (len (mis2//length-safe contents))
-         element
-         value)
+  (-let [(style-overrides contents) (mis2//style/overrides contents)]
 
     ;; (message "mis2//format/div: overrides: %S, string: %S"
     ;;          style-overrides
@@ -713,11 +742,24 @@ FORMATS element, so for this example FORMATS and INPUTS are effectively:
 
 Which will then be processed down to a propertized string and returned.
 "
+  ;; (message "mis2//format/each: formats: %S, inputs: %S, plist: %S"
+  ;;          formats inputs plist)
+
   ;; (message "mis2//format/each: formats: %S, inputs: %S" formats inputs)
+
+  ;;---
+  ;; Style the Substance:
+  ;;   Format each row of the inputs to user's formats.
+  ;;---
   (let (each-input
         style
         substance
-        accum)
+        accum
+        ;; `accum' is just-a-list, but inputs are in tuples like:
+        ;;   2-tuple inputs = '(("abc" "xyz") ...)
+        ;; `column-stride' will be 2 in that case, for knowing how to stride
+        ;; across same-entries-same-elements in `accum'.
+        (column-stride (mis2//length-safe (mis2//first inputs))))
     ;; Loop over our inputs...
     (dolist (each-input inputs)
       ;; get our input element and it's mate from the formats.
@@ -730,6 +772,49 @@ Which will then be processed down to a propertized string and returned.
         ;; formatted as a div of these contents.
         (push (mis2//format/div (-snoc style substance) plist)
               accum)))
+
+    ;;---
+    ;; Robo-Stylist:
+    ;;   Check for more formatting options.
+    ;; NOTE: OUTPUT (`accum') IS BACKWARDS!
+    ;;---
+    (let ((column-fmt (mis2//data/get/from-data :column
+                                                :mis2//format
+                                                plist mis2//format/keys))
+          column-max
+          column-index)
+      (when (eq column-fmt :auto)
+        ;; Walk styled output list, gathering data about it.
+        ;; NOTE: IT IS BACKWARDS RIGHT NOW!
+        (dotimes (i (mis2//length-safe accum))
+          (setq column-index (% i column-stride))
+          ;; When not at the "end" of a column (which is 0 now because backwards
+          ;; accum), gather formatting info.
+          (when (not (= column-index 0))
+            (let ((cell (mis2//nth i accum))
+                  (cell-max (alist-get column-index column-max 0 nil #'=)))
+              ;; Set the generalized variable to the new max.
+              ;; I.e. set the new max into alist.
+              (setf (alist-get column-index column-max 0 nil #'=)
+                    (max cell-max (mis2//length-safe cell))))))
+
+        ;; Auto-format styled output list.
+        ;; NOTE: STILL BACKWARDS!
+        (let (auto-accum
+              min-length)
+          (dotimes (i (mis2//length-safe accum))
+            (setq column-index (% i column-stride))
+            (if (= column-index 0)
+                ;; End-of-row cell; just insert as-is.
+                (push (mis2//nth i accum) auto-accum)
+
+              ;; Else, try to pad before pushing.
+              (setq min-length (alist-get column-index column-max 0 nil #'=))
+              (push (s-pad-right min-length " " (mis2//nth i accum))
+                    auto-accum)))
+          (setq accum (nreverse auto-accum)))))
+
+    ;; (message "mis2//format/each: accum: %S" accum)
 
     (apply #'concat (nreverse accum))))
 
