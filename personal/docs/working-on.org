@@ -38,6 +38,10 @@
 
   - [-] General To Do: [0/2]
 
+    - [ ] helm-treemacs-icons
+      - https://www.reddit.com/r/emacs/comments/g5kb2z/helmtreemacsicons_treemacs_file_icons_for_helm/
+      - file/buffer type icons from treemacs integrated into parts of helm
+
     - [ ] Deadgrep Improvements
       - Transient interface for adding stuff to ripgrep commands (e.g. an ignore file option)?
       - Magit-Section interface for matches found in files?
