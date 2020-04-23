@@ -69,6 +69,7 @@ all in a 'mis2-ert/' \"namespace\".")
   (load-file "mis2-settings-ert.el")
   (load-file "mis2-contents-ert.el")
   (load-file "mis2-message-ert.el")
+  (load-file "mis2-nomer-ert.el")
 
   ;;---
   ;; Done
