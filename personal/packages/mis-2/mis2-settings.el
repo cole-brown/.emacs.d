@@ -244,6 +244,8 @@ Styles:
         :mis2//line
         :mis2//align
         :mis2//format
+        :mis2//output/wip  ;; output list (of work-in-progress)
+        :mis2//output/tabs ;; tab widths (of output)
 
         :mis2//message
         :mis2//buffers

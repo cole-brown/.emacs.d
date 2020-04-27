@@ -518,7 +518,11 @@ E.g. this is a :mis2//section/multi message:
       ;; (message "mis2//contents/section/multi: section: %S, contents: %S"
       ;;          section contents)
       ;; Recurse back up to our parent to process this section.
-      (push (mis2//contents/section section plist overrides) accum))
+      (push (mis2//contents/section section plist overrides) accum)
+      (mis2//data/update plist :mis2//output/wip accum)
+      (mis2//data/update plist
+                         :mis2//output/tabs
+                         (mis2//output/tab-stops accum)))
 
     ;; Done with sub-sections - put it all together.
     (apply #'concat (nreverse accum))))
@@ -759,7 +763,16 @@ Which will then be processed down to a propertized string and returned.
         ;;   2-tuple inputs = '(("abc" "xyz") ...)
         ;; `column-stride' will be 2 in that case, for knowing how to stride
         ;; across same-entries-same-elements in `accum'.
-        (column-stride (mis2//length-safe (mis2//first inputs))))
+        (column-stride (mis2//length-safe (mis2//first inputs)))
+        (tab-widths '((0 0)))
+        (wip (mis2//data/get :mis2//output/wip plist)))
+
+    ;; §-TODO-§ [2020-04-27]: tabs. :tab in format, wip, :mis2//output/tabs tab-stops...
+    ;; (when wip
+
+    (message "mis2//format/each: wip: %S" wip)
+
+    (message "mis2//format/each: plist: %S" plist)
     ;; Loop over our inputs...
     (dolist (each-input inputs)
       ;; get our input element and it's mate from the formats.

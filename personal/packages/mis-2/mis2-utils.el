@@ -178,6 +178,44 @@ E.g.
 
 
 ;;------------------------------------------------------------------------------
+;; List of Strings... *shrug*
+;;------------------------------------------------------------------------------
+
+(defun mis2//output/tab-stops (reverse-order-list)
+  "Returns tab stops for current output in reverse-order-list.
+
+Right now, returns how many chars exist after the last newline.
+So only tabstop 0.
+
+Returns list of tab-widths by position.
+For example, if this is returned:
+  '(8 20 37)
+Tab 0 is 8 characters wide, tab 1 is 20 characters wide, etc.
+"
+  (let ((tab-stop 0))
+    (dolist (string reverse-order-list)
+      (if-let* ((str-len (length string))
+                (matches (s-matched-positions-all "\n" string))
+                (last (nth (1- (length matches)) matches))
+                (len (- str-len
+                        ;; start of relevant substring for tab-stop
+                        (cdr last))))
+          ;; Tab-stop-relevant part is from newline to end of string.
+          (setq tab-stop (+ tab-stop len))
+
+        ;; else no newlines, so all this adds into tab-stop
+        (setq tab-stop (+ tab-stop str-len))))
+
+    ;; return alist of: '((0 width-0) ... (N width-N))
+    '(tab-stop)))
+;; (let ((list '("jeff" "hello")))
+;;   (message "message:")
+;;   (message (apply #'concat (reverse list)))
+;;   (message "\ntab stuff:")
+;;   (message (make-string (nth 0 (mis2//output/tab-stops list) ?-))))
+
+
+;;------------------------------------------------------------------------------
 ;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------
 

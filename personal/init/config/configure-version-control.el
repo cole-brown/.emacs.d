@@ -372,8 +372,6 @@ Magit to: add files, commit, and push.
 "
   (interactive)
 
-  ;; §-TODO-§ [2020-02-03]: replace `message' with `mis2/message'
-
   ;; Either have to require magit here, or set magit to ":demand t" in
   ;; use-package. Trying out requiring here as magit isn't the fastest to start.
   (require 'magit)
@@ -414,24 +412,33 @@ Magit to: add files, commit, and push.
                             "\n"))
 
           ;; Else, commit changes.
-          (let ((change-str (string-join ;; join results with comma
+          (let (
+                (changed-files
                           ;; gather up all changed files, strip out dir prefix
                           (mapcar (lambda (x)
                                     (string-remove-prefix default-directory x))
-                                  change-list)
-                          ", ")))
+                                  change-list))
+                ;; (change-str (string-join ;; join results with comma
+                ;;           ;; gather up all changed files, strip out dir prefix
+                ;;           (mapcar (lambda (x)
+                ;;                     (string-remove-prefix default-directory x))
+                ;;                   change-list)
+                ;;           ", "))
+                )
             ;; Add!
             (mis2/message :style style
                           "  "
                           '(:face :text-pop "Adding")
                           " changes found: "
-                          (list :face :highlight change-str)
+                          (list :format :each :column :auto
+                                '((:face :highlight))
+                                changed-files)
                           "...")
 
             ;; "add <path>" or "add -A ." work to add untracked.
             ;; "add -A ." == "add ." + "add -u ."
             ;; "add ." only adds modified.
-            (magit-call-git "add" "-A" ".")
+;;            (magit-call-git "add" "-A" ".")
 
             ;; Commit!
             (mis2/message :style style
@@ -442,7 +449,7 @@ Magit to: add files, commit, and push.
                           "...")
             ;; Don't 'commit all' ("commit -a"), so we can commit just whatever
             ;; sub-folder we are in.
-            (magit-call-git "commit" "-m" commit-message)
+;;            (magit-call-git "commit" "-m" commit-message)
 
             ;; Push?
             (mis2/message :style style
@@ -453,7 +460,7 @@ Magit to: add files, commit, and push.
                           "...")
             ;; Assume an origin of "origin", I guess?
             ;; Could also just "push" to default...
-            (magit-call-git "push" "origin")
+;;            (magit-call-git "push" "origin")
 
             ;; Done. Until I find all the edge cases I guess.
             ;; Like when push fails?
@@ -472,7 +479,7 @@ Magit to: add files, commit, and push.
                     (list :face :text-pop (length results))
                     " locations: \n"
                     ;; format for each: "path: changed.el, file.py, list.txt"
-                    (list :format :each
+                    (list :format :each :column :auto
                           '((:face :highlight "  %s: ") (:face :text-pop "%s\n"))
                           results)
                     "\n")))
