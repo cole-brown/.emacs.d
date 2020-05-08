@@ -36,7 +36,7 @@
       - use-tool ignores (executable-find) now, but maybe using Window's bash is better? Or not... IDK.
 
 
-  - [-] General To Do: [0/2]
+  - [-] General To Do: [4/32]
 
     - [ ] Deadgrep Improvements
       - Transient interface for adding stuff to ripgrep commands (e.g. an ignore file option)?
@@ -46,6 +46,8 @@
     - [ ] look at 'bufler.el'?
       - https://www.reddit.com/r/emacs/comments/fatjdw/annrfc_buflerel_group_buffers_into_workspaces/
       - Does it work with Helm?
+      - Added issue for helm-bufler
+        - https://github.com/alphapapa/bufler.el/issues/31
 
     - more paren matching?
       - https://www.reddit.com/r/emacs/comments/fh1bpg/a_variant_of_elisp_matching_paren_display/
@@ -59,9 +61,6 @@
       - [ ] org-journal: add encryption (fix gpg again again... again... -_-)
         - https://arenzana.org/2019/04/emacs-org-mode/
       - [ ] Or some other way of locking/unlocking whole dir?
-
-    - [ ] Different scroll bar?
-      - https://github.com/emacsorphanage/yascroll
 
     - [ ] renames
       - [ ] ?? spydez -> cole
@@ -186,15 +185,18 @@
       - [X] Started issue at (spydez/help/issue/visit "org-mode" "prettify-symbols.org")
       - [ ] See if issue is in other modes, or just org-mode?
       - [ ] Turn off for now?
+
     - [ ] "(declare)" stuff. e.g.
       - [ ] (pure t)
       - [ ] (side-effect-free t)
-
     - [ ] Check out DumbJump:
       - https://www.reddit.com/r/emacs/comments/d33ist/dumb_jump_v053_released_adds_support_for_10_more/
 
     - [ ] Don't beacon in the minibuffer?
       - [2019-10-21 Mon] Can't figure out when it was happening...
+
+    - [X] Different scroll bar?
+      - https://github.com/emacsorphanage/yascroll
 
     - [X] taskspace command
       - taskspace/notes
