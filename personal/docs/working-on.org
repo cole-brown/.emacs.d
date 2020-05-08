@@ -36,7 +36,7 @@
       - use-tool ignores (executable-find) now, but maybe using Window's bash is better? Or not... IDK.
 
 
-  - [-] General To Do: [4/32]
+  - [-] General To Do: [6/34]
 
     - [ ] helm-treemacs-icons
       - https://www.reddit.com/r/emacs/comments/g5kb2z/helmtreemacsicons_treemacs_file_icons_for_helm/
@@ -47,15 +47,13 @@
       - Magit-Section interface for matches found in files?
       - Figure out my issue searching for '§'
 
-    - [ ] look at 'bufler.el'?
+    - [-] look at 'bufler.el'?
       - https://www.reddit.com/r/emacs/comments/fatjdw/annrfc_buflerel_group_buffers_into_workspaces/
-      - Does it work with Helm?
-      - Added issue for helm-bufler
+      - [X] Does it work with Helm?
+        - Sorta. Not like I hoped but maybe enough; `bufler' buffer is great though...
+      - [X] Added issue for helm-bufler
         - https://github.com/alphapapa/bufler.el/issues/31
-
-    - more paren matching?
-      - https://www.reddit.com/r/emacs/comments/fh1bpg/a_variant_of_elisp_matching_paren_display/
-      - (Should) work with current paren matching...
+      - [ ] Re-enable helm-bufler when I can?
 
     - [ ] look at this modal editing thing for Dvorak?
       - https://www.reddit.com/r/emacs/comments/fw2wx2/yet_another_modal_editing_for_dvorak/
@@ -69,15 +67,6 @@
     - [ ] renames
       - [ ] ?? spydez -> cole
       - [ ] ?? spy -> cole
-
-    - [ ] emacs themes
-      - [ ] Look at (light):
-        - [ ] modus operandi https://peach-melpa.org/themes/modus-operandi-theme
-      - [ ] Look at (dark):
-        - [ ] modus vevendi https://peach-melpa.org/themes/modus-vivendi-theme
-        - [ ] labburn (zenburn w/ better colors?)
-          - https://peach-melpa.org/themes/labburn-theme
-          - https://github.com/ksjogo/labburn-theme
 
     - [ ] Get rid of use-tool?
       - It's not really doing much useful... and I haven't touched it since I
@@ -193,11 +182,27 @@
     - [ ] "(declare)" stuff. e.g.
       - [ ] (pure t)
       - [ ] (side-effect-free t)
+
     - [ ] Check out DumbJump:
       - https://www.reddit.com/r/emacs/comments/d33ist/dumb_jump_v053_released_adds_support_for_10_more/
 
     - [ ] Don't beacon in the minibuffer?
       - [2019-10-21 Mon] Can't figure out when it was happening...
+
+    - [X] emacs themes
+      - pass? I still like zenburn and it's getting updates and things...
+      - [X] Look at (light):
+        - [X] modus operandi https://peach-melpa.org/themes/modus-operandi-theme
+      - [X] Look at (dark):
+        - [X] modus vevendi https://peach-melpa.org/themes/modus-vivendi-theme
+        - [X] labburn (zenburn w/ better colors?)
+          - https://peach-melpa.org/themes/labburn-theme
+          - https://github.com/ksjogo/labburn-theme
+
+    - [X] more paren matching?
+      - https://www.reddit.com/r/emacs/comments/fh1bpg/a_variant_of_elisp_matching_paren_display/
+      - (Should) work with current paren matching...
+      - Eh... no for now.
 
     - [X] Different scroll bar?
       - https://github.com/emacsorphanage/yascroll
