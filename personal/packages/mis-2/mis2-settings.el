@@ -12,7 +12,24 @@
 ;; §-TODO-§ [2020-03-18]: Rename this mis2-configuration.el? mis2-config.el?
 ;; Break into 2 files? Keep all here?
 
+(require 'mis2-utils)
 (require 'mis2-themes)
+
+
+;;------------------------------------------------------------------------------
+;; Vars for User
+;;------------------------------------------------------------------------------
+
+(defcustom mis2/settings/user nil
+  "Variable for user to put their default/most used settings into.
+"
+  :group 'mis2)
+
+
+(defcustom mis2/style/user nil
+  "Variable for user to put their default/most used styling into.
+"
+  :group 'mis2)
 
 
 ;;------------------------------------------------------------------------------
@@ -42,7 +59,8 @@ minibuffer-echo-area functionality."
 
 
 (defcustom mis2/custom/keywords '(:settings :mis2//settings
-                                  :style    :mis2//style)
+                                  :style    :mis2//style
+                                  :defaults :mis2//user-defaults)
   "Settings and style keyword symbol names -> mis2 private symbols.
 "
   :group 'mis2
@@ -107,8 +125,8 @@ E.g. a :float is always a float, but a :range could be 0 to 100 or -0.5 to 0.5.
 
 
 (defconst mis2/settings/meta/keys
-  '((:interactive :const nil)
-    (:batch       :const nil))
+  '((:interactive   :const (t nil))
+    (:batch         :const (t nil)))
   "10,000 foot view: calls are either intended to be in an interactive manner,
 or as automatic output flung out as soon as it's reached. The main difference is
 how long the echo area timeout is changes between the two.
@@ -224,6 +242,8 @@ Styles:
         :mis2//contents
         :mis2//box
         :mis2//line
+        :mis2//align
+        :mis2//format
 
         :mis2//message
         :mis2//buffers
@@ -237,7 +257,8 @@ Public -> Private (see `mis2/custom/keywords'):
 
 Private-Only:
   :mis2//contents - contents of message, unformatted
-  :mis2//box      - intermediate parts for building final box
+  :mis2//box      - intermediate parts for building final box, skip flag
+  :mis2//align    - skip flag
   :mis2//message  - final, propertized, and formatted message
   :mis2//buffers  - list of buffer(s) to send output to
   :mis2//testing  - valid only in mis2 tests
@@ -320,43 +341,25 @@ MIS2--KEY's plist. Validates key is acceptable by checking for it as either:
                             mis2/settings/keys
                             mis2/settings/meta/keys))
 
-  ;; (if (mis2//data/plist? plist)
-  ;;     (if (or (alist-get key mis2/settings/keys)
-  ;;             (alist-get key mis2/settings/meta/keys))
-  ;;         ;; get settings plist from data plist, then get specific setting.
-  ;;         (plist-get (mis2//data/get :mis2//settings plist) key)
-
-  ;;       (error "settings: Key '%s' is not a known mis2/settings key: %S or %S"
-  ;;              key mis2/settings/keys mis2/settings/meta/keys))
-
-  ;;   (error "settings: Plist is not a mis2 plist. %S %S"
-  ;;          "Might be a mis2 settings, style, etc sub-list?"
-  ;;          plist)))
 
 ;;------------------------------------------------------------------------------
 ;; Style - Getters
 ;;------------------------------------------------------------------------------
 
-(defun mis2//style/get/from-data (key plist)
+(defun mis2//style/get/from-data (key plist overrides)
   "Get style from a mis2 data PLIST, then get KEY from style.
+Also gets KEY from OVERRIDES (note: overrides is just a style plist, not a
+mis2 plist).
+
+Returns value of key, preferring OVERRIDES if KEY exists in both
+PLIST and OVERRIDES.
 "
-  (mis2//data/get/from-data key
-                            :mis2//style plist
-                            nil
-                            mis2/style/keys
-                            nil))
-
-  ;; (if (mis2//data/plist? plist)
-  ;;     (if (alist-get key mis2/style/keys)
-  ;;         ;; get style plist from data plist, then get specific setting.
-  ;;         (plist-get (mis2//data/get :mis2//style plist) key)
-
-  ;;       (error "style: Key '%s' is not a known mis2/style key: %S"
-  ;;              key mis2/style/keys))
-
-  ;;   (error "style: Plist is not a mis2 plist. %S %S"
-  ;;          "Might be a mis2 settings, style, etc sub-list?"
-  ;;          plist)))
+  (or (plist-get overrides key) ;; §-TODO-§ [2020-04-17]: call `check-value'?
+      (mis2//data/get/from-data key
+                                :mis2//style plist
+                                nil
+                                mis2/style/keys
+                                nil)))
 
 
 ;;------------------------------------------------------------------------------
@@ -429,14 +432,14 @@ Examples:
        (when (and (not (null ,temp-args))
                   (listp ,temp-args)
                   (= 1 (length ,temp-args)))
-         (setq ,temp-args (first ,temp-args)))
+         (setq ,temp-args (mis2//first ,temp-args)))
 
        ;; Now look at the args and do the key and value checking.
        (cond
         ;; No args: No settings; no worries.
         ((or (null ,temp-args)
              (and (= 1 (length ,temp-args))
-                  (null (first ,temp-args))))
+                  (null (mis2//first ,temp-args))))
          ;; Give them back their list.
          ;; No update to it because no change.
          ,plist)
@@ -480,7 +483,7 @@ Examples:
          ;; Still have ,temp-args? Didn't end up with a pair - complain?
          (when ,temp-args
            (error "Uneven list; no value for last element: %s"
-                  (first ,temp-args)))
+                  (mis2//first ,temp-args)))
 
          ;; ...and return the list.
          ,plist)
@@ -588,14 +591,14 @@ Examples:
        (when (and (not (null ,temp-args))
                   (listp ,temp-args)
                   (= 1 (length ,temp-args)))
-         (setq ,temp-args (first ,temp-args)))
+         (setq ,temp-args (mis2//first ,temp-args)))
 
        ;; Now look at the args and do the key and value checking.
        (cond
         ;; No args: No style; no worries.
         ((or (null ,temp-args)
              (and (= 1 (length ,temp-args))
-                  (null (first ,temp-args))))
+                  (null (mis2//first ,temp-args))))
          ;; Give them back their list.
          ;; No update to it because no change.
          ,plist)
@@ -639,7 +642,7 @@ Examples:
          ;; Still have ,temp-args? Didn't end up with a pair - complain?
          (when ,temp-args
            (error "Uneven list; no value for last element: %s"
-                  (first ,temp-args)))
+                  (mis2//first ,temp-args)))
 
          ;; ...and return the list.
          ,plist)
@@ -685,6 +688,57 @@ Examples:
   (mis2//private/check-value key value #'mis2//style/check-key key-info))
 
 
+(defun mis2//style/overrides (contents)
+  "Pulls any style overrides out of CONTENTS.
+
+Returns '(style-overrides-list contents).
+  - Contents is either unchanged (if no overrides) or has had the overrides
+    dropped off the front of it.
+"
+  ;; Loop over contents list, pull styles out into override plist.
+  ;; Stop after styles and propertize the rest using those overrides.
+  (let (style-overrides
+        (i 0)
+        (len (mis2//length-safe contents))
+        element
+        value)
+    (while (< i len)
+      (setq element (mis2//nth i contents))
+
+      ;; We require our keys to go first, so just check the elements
+      ;; until not our key.
+      (if (and (not (eq (mis2//style/check-key element)
+                        :*bad-key-error*))
+               (< (1+ i) len)) ;; have room to look for key
+          (progn
+            ;; Get keyword and val; save to settings/style.
+            ;; Keyword is element (and verified);
+            ;; just need to get and verify value.
+            (setq value (mis2//nth (1+ i) contents))
+            (if (not (eq (mis2//style/check-value element value)
+                         :*bad-value-error*))
+                ;; Good - add to overrides.
+                (setq style-overrides (plist-put style-overrides element value))
+              ;; Bad - error out!
+              (error "%S: %S: %S %S. Content sub-section: %S"
+                     "mis2//style/overrides"
+                     value
+                     "not a valid value for style override"
+                     element
+                     contents))
+            ;; update the loop var for this key and value
+            (setq i (+ i 2)))
+
+        ;; Else we're past the style overrides and the rest is the contents now.
+        (setq contents (-drop i contents)
+              i len))) ;; Set index past end of contents so loop will end.
+
+    ;; (message "mis2//style/overrides: overrides: %S, string: %S"
+    ;;          style-overrides
+    ;;          (mis2//format/string contents))
+    (list style-overrides contents)))
+
+
 ;;------------------------------------------------------------------------------
 ;; Settings / Style Helpers
 ;;------------------------------------------------------------------------------
@@ -697,10 +751,10 @@ Examples:
 
   ;; sometimes need to override key-info in a recursion (e.g. :or case)
   (let* ((key-info (or key-info (funcall check-key-fn key)))
-         (type (and (listp key-info) (first key-info)))
-         (value-checker (and (listp key-info) (second key-info)))
-         (basic-validity (or (first (alist-get key mis2/validity/types))
-                             (first (alist-get type mis2/validity/types))))
+         (type (and (listp key-info) (mis2//first key-info)))
+         (value-checker (and (listp key-info) (mis2//second key-info)))
+         (basic-validity (or (mis2//first (alist-get key mis2/validity/types))
+                             (mis2//first (alist-get type mis2/validity/types))))
          success)
 
     ;; (message "    : ki: %S, t: %S, vc: %S, bv: %S"
@@ -737,7 +791,7 @@ Examples:
                         ;; only change value-checker.
                         key value check-key-fn
                         ;; override key-info with the or's key-info
-                        (nth i value-checker))))
+                        (mis2//nth i value-checker))))
           ;; Any success - passes 'or' test.
           (setq success value)))
       success)
@@ -760,23 +814,23 @@ Examples:
                (setq success value)
                (dotimes (i (length value))
                  ;; If (mis2//style/check-value :margins '("hi" "hello")):
-                 ;;  (nth i value)         - "hi" (sub-value)
-                 ;;  (nth i value-checker) - :string (sub-key)
+                 ;;  (mis2//nth i value)         - "hi" (sub-value)
+                 ;;  (mis2//nth i value-checker) - :string (sub-key)
                  ;; So ask sub-us to check this sub-key/sub-value.
                  (when (eq :*bad-value-error*
-                           (if (and (listp (nth i value-checker))
-                                    (keywordp (first (nth i value-checker))))
+                           (if (and (listp (mis2//nth i value-checker))
+                                    (keywordp (mis2//first (mis2//nth i value-checker))))
                                ;; e.g. (:const (:empty :fill)) as a
                                ;; value-checker for a list item.
                                (mis2//private/check-value
-                                (first (nth i value-checker))
-                                (nth i value)
+                                (mis2//first (mis2//nth i value-checker))
+                                (mis2//nth i value)
                                 check-key-fn
-                                (second (nth i value-checker)))
+                                (mis2//second (mis2//nth i value-checker)))
 
                              ;; e.g. :string as a value-checker for a list item.
-                             (mis2//private/check-value (nth i value-checker)
-                                                         (nth i value)
+                             (mis2//private/check-value (mis2//nth i value-checker)
+                                                         (mis2//nth i value)
                                                          check-key-fn)))
                    ;; failure - set success to a big nope
                    (setq success :*bad-value-error*)))
@@ -805,8 +859,8 @@ Examples:
       ;; Range must be a number (float or int) and must be in the range
       ;; specified (inclusive).
       (if (and (numberp value)
-               (<= (first value-checker) value)
-               (>= (second value-checker) value))
+               (<= (mis2//first value-checker) value)
+               (>= (mis2//second value-checker) value))
           value
         :*bad-value-error*))
 
@@ -847,7 +901,7 @@ Examples:
 "
   (let ((info (or (alist-get key valid-key-info)
                   (alist-get key valid-meta-key-info)))
-        (basic-validity (first (alist-get key mis2/validity/types))))
+        (basic-validity (mis2//first (alist-get key mis2/validity/types))))
 
     ;; Check basic validity first - it takes care of str, int, etc.
     (cond ((and (not (null basic-validity))

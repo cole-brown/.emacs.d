@@ -12,6 +12,9 @@
 ;;--                               Make It So!                                --
 ;;------------------------------------------------------------------------------
 
+(require 's)
+(require 'dash)
+
 
 (defgroup mis2 nil
   "Functions for manipulating strings, propertizing them, sending

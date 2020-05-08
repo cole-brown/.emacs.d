@@ -625,7 +625,17 @@
 ;; Also, now, useful non-interactive functions used in init.
 (spydez/require 'mis) ;; This should already be loaded by early-init, so no-op?
 (add-to-list 'load-path (spydez/path/to-dir spydez/dir/personal/packages "mis-2"))
-(spydez/require 'mis2) ;; §-TODO-§ [2020-04-06]: temp while mis2 still a WIP
+;;------------------------------------------------------------------------------
+;;
+;; §-TODO-§ [2020-04-06]: temp while mis2 still a WIP
+;;  - Put mis2 load into early-init where mis1 is loaded.
+;;  - Put mis2 config into bootstrap-libraries.el, probably? Or early-init too?
+(spydez/require 'mis2)
+;;
+(mis2/settings/update mis2/settings/user :echo t)
+;; ;; (mis2/style/update    mis2/style/user    )
+;;
+;;------------------------------------------------------------------------------
 (spydez/require 'strings-and-things)
 (spydez/require 'json-and-tom)
 (spydez/require 'misc-functions)

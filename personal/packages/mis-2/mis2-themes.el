@@ -5,6 +5,9 @@
 ;;--                             We have Themes.                              --
 ;;----------------------------Why not a Theme Song?-----------------------------
 
+(require 'dash)
+
+(require 'mis2-utils)
 
 
 ;; NOTE:
@@ -54,7 +57,43 @@
                :margins     font-lock-comment-delimiter-face ;; darker green
                :borders     font-lock-comment-delimiter-face ;; darker green
                :padding     font-lock-comment-face           ;; darkish green
+               ;; Whole Line
+               :line        font-lock-comment-delimiter-face ;; darker green
                ))
+
+    ;;---
+    ;; Faces for misnomers.
+    ;;---
+    (:nomer (;;---
+             ;; Text Things
+             ;;---
+             :title       font-lock-keyword-face       ;; gold/bold
+             :highlight   font-lock-variable-name-face ;; orangeish/peachish
+             :highlight2  font-lock-warning-face       ;; darker orangish/brownish
+             :highlight3  font-lock-warning-face       ;; darker orangeish/peachish
+             :text        font-lock-keyword-face       ;; gold/bold
+             :text-pop    font-lock-string-face        ;; darkish pinkish
+             :inattention font-lock-doc-face           ;; almost darkish green (close to comment/delimiter)
+             :attention   font-lock-preprocessor-face  ;; brightish blue
+             :attention2  font-lock-constant-face      ;; brightish green
+
+             :message     font-lock-builtin-face       ;; white/bold
+
+             ;; remaining:
+             ;; font-lock-function-name-face ;; light blue/teal
+             ;; Others that are too close to ones I use for me to tell the difference...
+
+             ;;---
+             ;; Non-texty Things:
+             ;;---
+             ;; Box by piece names:
+             :indent      font-lock-comment-delimiter-face
+             :margins     font-lock-comment-delimiter-face
+             :borders     font-lock-comment-delimiter-face
+             :padding     font-lock-comment-delimiter-face
+             ;; Whole Line
+             :line        font-lock-comment-delimiter-face
+             ))
 
     ;; §-TODO-§ [2020-03-25]: Remove custom stuff from in here; add when
     ;; configuring package.
@@ -94,6 +133,25 @@ See 'M-x list-faces-display' for all defined faces."
 
 
 ;;------------------------------------------------------------------------------
+;; Theme Adder
+;;------------------------------------------------------------------------------
+
+(defun mis2/themes/add (name faces-plist)
+  "Add theme NAME with FACES-PLIST to mis2/themes.
+
+NAME should be a symbol keyword.
+ - e.g. :my-theme
+
+FACES-PLIST should be a keyword/face-property PLIST.
+ - e.g. '(:borders font-lock-comment-delimiter-face)
+
+This sets theme NAME to FACES-PLIST, overwriting any existing
+theme of that name.
+"
+  (setq mis2/themes (plist-put mis2/themes name faces-plist)))
+
+
+;;------------------------------------------------------------------------------
 ;; Helper Functions
 ;;------------------------------------------------------------------------------
 
@@ -105,10 +163,10 @@ key for the `mis2/themes' alist.
 If cannot find a theme, returns default theme: `:default'.
 "
   ;; Get style, then get theme from style.
-  (or (plist-get (plist-get plist :mis2//style) :theme)
+  (or (plist-get (plist-get plist :mis2//settings) :theme)
       ;; Fallback to default if none found.
       :default))
-;; (mis2//themes/get/theme '(:mis2//style (:theme 'jeff)))
+;; (mis2//themes/get/theme '(:mis2//settings (:theme 'jeff)))
 
 
 (defun mis2//themes/get/misfaces-all (theme)
@@ -120,11 +178,16 @@ default theme: `:default'.
 
 Returns plist of key/values: (misface0 emface0 ... misfaceN emfaceN)
 "
+  ;; (message "get/misfaces-all-: %S" theme)
+  ;; (message "      mis2/themes: %S" mis2/themes)
+  ;; (message "   theme-misfaces: %S" (mis2//first (alist-get theme mis2/themes)))
+  ;; (message "  default-misfaces: %S" (mis2//first (alist-get :default mis2/themes)))
+
   ;; our alist cells are lists, not conses, so drop the outer list we get from
   ;; alist-get so we just have value, not (value).
   ;; We want (<face-key> <face-val> ...), not ((<face-key> <face-val> ...)).
-  (or (first (alist-get theme mis2/themes))
-      (first (alist-get :default mis2/themes))))
+  (or (mis2//first (alist-get theme mis2/themes))
+      (mis2//first (alist-get :default mis2/themes))))
 ;; (mis2//themes/get/misfaces-all :default)
 
 
@@ -135,7 +198,10 @@ MISFACE should be a plist key keyword symbol for THEME plist.
 
 Returns emface (emacs face property) or nil.
 "
-  (plist-get (mis2//themes/get/faces-all theme) misface))
+  ;; (message "get/emface-----: %S %S" misface theme)
+  ;; (message "   all-misfaces: %S" (mis2//themes/get/misfaces-all theme))
+  ;; (message "         emface: %S" (plist-get (mis2//themes/get/misfaces-all theme) misface))
+  (plist-get (mis2//themes/get/misfaces-all theme) misface))
 ;; (mis2//themes/get/emface :title :default)
 
 
@@ -215,6 +281,14 @@ Returns misface or nil.
 Checks :theme, :faces vs :face, falls back to default values, etc. Everything
 necessary to get from PLIST to emface (emacs face property).
 "
+  ;; (message "all-themes: %S" mis2/themes)
+  ;; (message "themes/emface: %S %S" type plist)
+  ;; (message "        theme: %S" (mis2//themes/get/theme plist))
+  ;; (message "      misface: %S" (mis2//themes/misface type (mis2//themes/get/theme plist) plist))
+  ;; (message "       emface: %S" (mis2//themes/get/emface
+  ;;                               (mis2//themes/misface type (mis2//themes/get/theme plist) plist)
+  ;;                               (mis2//themes/get/theme plist)))
+
   ;; Get theme (e.g. :default) from plist.
   (let* ((theme (mis2//themes/get/theme plist))
          ;; misface keyword (e.g. :title, :highlight, :attention) for:
@@ -223,7 +297,20 @@ necessary to get from PLIST to emface (emacs face property).
          ;;   - or fallback to the general mis2//style :face.
          (misface (mis2//themes/misface type theme plist)))
     ;; Get actual emacs face from the theme misface.
-    (mis2//themes/get/face misface theme)))
+    (mis2//themes/get/emface misface theme)))
+
+
+(defun mis2//themes/emface/from-style (styles-plist mis2-plist)
+  "Get emface (emacs face property) from :face in STYLES-PLIST.
+
+Returns emface or nil.
+"
+  (when (and styles-plist mis2-plist)
+    ;; Get `:face' (misface) from style plist, then translate to emface for
+    ;; this theme.
+    (mis2//themes/get/emface
+     (plist-get styles-plist :face) ;; misface getter
+     (mis2//themes/get/theme mis2-plist)))) ;; theme getter
 
 
 ;;------------------------------------------------------------------------------

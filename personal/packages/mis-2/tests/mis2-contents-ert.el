@@ -59,34 +59,35 @@ specific to this test suite."
 
 
 ;;------------------------------------------------------------------------------
-;; Test: mis2//contents/string/build
+;; Test: mis2//format/text
 ;;------------------------------------------------------------------------------
-;; (defun mis2//contents/string/build (contents)
+;; (defun mis2//format/text (contents)
 
 ;;---
 ;; Test Case 000
 ;;---
 (ert-deftest mis2-ert/contents/build/string/simple ()
-  "Test that `mis2//contents/string/build' can build & return a simple string
+  "Test that `mis2//format/text' can build & return a simple string
 from contents.
 "
   (mis2-ert/mis2-contents/setup)
 
-  ;; Simple string just gets returned as-is.
-  (should (string= (mis2//contents/string/build '("Hello, World."))
-                   "Hello, World."))
+  (let ((plist '(:mis2//testing t)))
+    ;; Simple string just gets returned as-is.
+    (should (string= (mis2//format/text '("Hello, World.") plist)
+                     "Hello, World."))
 
-  ;; Single other thing gets formatted.
-  (should (string= (mis2//contents/string/build '(:face))
-                   ":face"))
+    ;; Single other thing gets formatted.
+    (should (string= (mis2//format/text '(:face) plist)
+                     ":face"))
 
-  ;; Nothing in; nothing out (but it's a string now!).
-  (should (string= (mis2//contents/string/build nil)
-                   "nil"))
+    ;; Nothing in; nothing out (but it's a string now!).
+    (should (string= (mis2//format/text nil plist)
+                     "nil"))
 
-  ;; Single other thing gets formatted.
-  (should (string= (mis2//contents/string/build '((1 2 3 4 5)))
-                   "(1 2 3 4 5)"))
+    ;; Single other thing gets formatted.
+    (should (string= (mis2//format/text '((1 2 3 4 5)) plist)
+                     "(1 2 3 4 5)")))
 
   (mis2-ert/mis2-contents/teardown))
 
@@ -95,26 +96,30 @@ from contents.
 ;; Test Case 001
 ;;---
 (ert-deftest mis2-ert/contents/build/string/formatter ()
-  "Test that `mis2//contents/string/build' can build & return a simple string
+  "Test that `mis2//format/text' can build & return a simple string
 from contents.
 "
   (mis2-ert/mis2-contents/setup)
 
-  ;; More than one thing in contents means first thing is formatting string.
-  (should (string= (mis2//contents/string/build '("Hello, %s" "World."))
-                   "Hello, World."))
+  (let ((plist '(:mis2//testing t)))
+    ;; More than one thing in contents means first thing is formatting string.
+    (should (string= (mis2//format/text '("Hello, %s" "World.")
+                                                       plist)
+                     "Hello, World."))
 
-  ;; Bad contents? No formatter string...
-  (should-error (mis2//contents/string/build '(:keyword valueword)))
+    ;; Bad contents? No formatter string...
+    (should-error (mis2//format/text '(:keyword valueword)
+                                                    plist))
 
-  ;; Null formatter - also bad.
-  (should-error (mis2//contents/string/build '(nil "hello")))
+    ;; Null formatter - also bad.
+    (should-error (mis2//format/text '(nil "hello")
+                                                    plist))
 
-  ;; more extra args than percents in formatter
-  (should (string= (mis2//contents/string/build
-                    '("Hello, %s" "World" "," "my name is..."))
-                   ;; means we just don't get the rest.
-                   "Hello, World"))
+    ;; more extra args than percents in formatter
+    (should (string= (mis2//format/text
+                      '("Hello, %s" "World" "," "my name is...") plist)
+                     ;; means we just don't get the rest.
+                     "Hello, World")))
 
   (mis2-ert/mis2-contents/teardown))
 
@@ -128,34 +133,35 @@ from contents.
 ;; Test Case 000
 ;;---
 (ert-deftest mis2-ert/contents/build/propertize/nothing ()
-  "Test that `mis2//contents/string/propertize' can return an unaltered string
+  "Test that `mis2//contents/propertize' can return an unaltered string
 when no properties are there to add.
 "
   (mis2-ert/mis2-contents/setup)
 
-  ;; No mis2 plist at all is an error.
-  (should-error (mis2//contents/string/propertize "Hello, World." nil))
+  ;; Let higher level func do this.
+  ;; ;; No mis2 plist at all is an error.
+  ;; (should-error (mis2//contents/propertize "Hello, World." :text nil))
 
   ;; Simple string just gets returned as-is.
   ;; Using simplest 'valid' mis2 plist we can...
-  (should (string= (mis2//contents/string/propertize "Hello, World."
-                                                     '(:mis2//testing t))
+  (should (string= (mis2//contents/propertize "Hello, World."
+                                              :text '(:mis2//testing t))
                    "Hello, World."))
 
   ;; Have a mis2 plist without `:face' in style.
   (let ((plist '(:mis2//settings (:theme :default)
                  :mis2//style (:margins (">" "<"))
                  :mis2//testing t)))
-    (should (string= (mis2//contents/string/propertize "Hello, World."
-                                                       plist)
+    (should (string= (mis2//contents/propertize "Hello, World."
+                                                :text plist)
                      "Hello, World.")))
 
   ;; Have a mis2 plist without `:theme' or `:face' in style.
   (let ((plist '(:mis2//settings nil
                  :mis2//style (:margins (">" "<"))
                  :mis2//testing t)))
-    (should (string= (mis2//contents/string/propertize "Hello, World."
-                                                       plist)
+    (should (string= (mis2//contents/propertize "Hello, World."
+                                                :text plist)
                      "Hello, World.")))
 
   (mis2-ert/mis2-contents/teardown))
@@ -165,15 +171,15 @@ when no properties are there to add.
 ;; Test Case 001
 ;;---
 (ert-deftest mis2-ert/contents/build/propertize/face ()
-  "Test that `mis2//contents/string/propertize' can return a propertized string
+  "Test that `mis2//contents/propertize' can return a propertized string
 when there is a face to use.
 "
   (mis2-ert/mis2-contents/setup)
 
-  (setq mis2/themes '(:default (:test-face0 font-lock-keyword-face
-                                :test-face1 font-lock-comment-face)
-                      :fancy   (:test-face0 font-lock-string-face
-                                :test-face1 font-lock-type-face)))
+  (setq mis2/themes '((:default (:test-face0 font-lock-keyword-face
+                                 :test-face1 font-lock-comment-face))
+                      (:fancy   (:test-face0 font-lock-string-face
+                                 :test-face1 font-lock-type-face))))
 
   ;; Have a mis2 plist with `:face' in style, but no theme in settings.
   ;; Should use `:default' theme.
@@ -182,8 +188,9 @@ when there is a face to use.
                  :mis2//testing t))
         (expected-output "Hello, World.")
         message)
-    (setq message (mis2//contents/string/propertize "Hello, World."
-                                                    plist))
+    (setq message (mis2//contents/propertize "Hello, World."
+                                             :test-face0 plist))
+
     ;; Should have our string as expected.
     (should (string= message expected-output))
 
@@ -198,8 +205,8 @@ when there is a face to use.
                  :mis2//testing t))
         (expected-output "Hello, World.")
         message)
-    (setq message (mis2//contents/string/propertize "Hello, World."
-                                                    plist))
+    (setq message (mis2//contents/propertize "Hello, World."
+                                             :test-face0 plist))
     ;; Should have our string as expected.
     (should (string= message expected-output))
 
@@ -214,8 +221,8 @@ when there is a face to use.
                  :mis2//testing t))
         (expected-output "Hello, World.")
         message)
-    (setq message (mis2//contents/string/propertize "Hello, World."
-                                                    plist))
+    (setq message (mis2//contents/propertize "Hello, World."
+                                             :test-face1 plist))
     ;; Should have our string as expected.
     (should (string= message expected-output))
 
@@ -225,9 +232,9 @@ when there is a face to use.
                   'font-lock-type-face))))
 
   ;; Done; set mis2/themes back and check that that worked too.
-  (mis2-ert/mis2-contents/themes/restore)
+  (mis2-ert/setup/themes/restore)
 
-  (should (seq-set-equal-p mis2/themes mis2-ert/contents/themes/storage))
+  (should (seq-set-equal-p mis2/themes mis2-ert/setup/themes/storage))
 
   (mis2-ert/mis2-contents/teardown))
 
@@ -760,50 +767,52 @@ in the mis2 plist based on mis2//settings and mis2//style.
 
 
 ;;------------------------------------------------------------------------------
-;; Test: mis2//contents/box/build
+;; Test: mis2//contents/box/finalize
 ;;------------------------------------------------------------------------------
-;; (defun mis2//contents/box/build (string plist)
+;; (defun mis2//contents/box/finalize (string plist stack-prefixes stack-postfixes)
 
 ;;---
 ;; Test Case 000
 ;;---
-(ert-deftest mis2-ert/contents/box/build ()
-  "Test that `mis2//contents/box/bulid' can build the line based on parts in
+(ert-deftest mis2-ert/contents/box/finalize ()
+  "Test that `mis2//contents/box/finalize' can build the line based on parts in
 plist: :mis2//box, :mis2//line, and :mis2//contents.
 "
   (mis2-ert/mis2-contents/setup)
 
   ;; mis2 plist has initial stuff (settings, style) and
   ;; derived stuff (box, line). We'll only actually use derived.
-  (let ((plist '(:mis2//settings (:line-width 80)
-                 :mis2//style (:indent 4
-                               :margins ("left" "right")
+  (-let* ((plist '(:mis2//settings (:line-width 80)
+                   :mis2//style (:indent 4
+                                 :margins ("left" "right")
+                                 :borders ("|" "|")
+                                 :padding ("--" "--"))
+                   :mis2//box (:padding ("--" ?\s ?\s "--")
                                :borders ("|" "|")
-                               :padding ("--" "--"))
-                 :mis2//box (:padding ("--" ?\s ?\s "--")
-                             :borders ("|" "|")
-                             :margins (">>>" "<<<<<"))
-                 :mis2//line (:indent "    ")
-                 :mis2//testing t))
+                               :margins (">>>" "<<<<<"))
+                   :mis2//line (:indent "    ")
+                   :mis2//testing t))
+          (string "Hello, World.")
+          ((stack-prefixes stack-postfixes) (mis2//contents/box/finalize string
+                                                                         plist
+                                                                         nil
+                                                                         nil)))
 
-        (string "Hello, World.")
-        line
-        box)
+    (should (seq-set-equal-p
+             stack-prefixes
+             '(;; "    " ;; no indent
+               ">>>"  ;; margin, left
+               "|"    ;; border, left
+               "--"   ;; static pad, left
+               " "))) ;; dynamic pad, left
 
-    (should (string= (mis2//contents/box/build string
-                                               plist)
-                     (concat "    " ;; indent
-                             ">>>"  ;; margin, left
-                             "|"    ;; border, left
-                             "--"   ;; static pad, left
-                             " "    ;; dynamic pad, left
-                             string
-                             ;; dynamic pad, right
-                             "                                                "
-                             "--"    ;; static pad, right
-                             "|"     ;; border, right
-                             "<<<<<" ;; margin, right
-                             ))))
+    (should (seq-set-equal-p
+             stack-postfixes
+             '(;; dynamic pad, right
+               "                                                "
+               "--"        ;; static pad, right
+               "|"         ;; border, right
+               "<<<<<")))) ;; margin, right
 
   (mis2-ert/mis2-contents/teardown))
 
@@ -829,7 +838,7 @@ line based on inputs in plist: :mis2//settings, :mis2//style, and
                   :mis2//style (;; face: default if no specific in :faces
                                 :face :text
                                 ;; face: set specifics for everything this time
-                                :faces (:message :title
+                                :faces (:text    :title
                                         :indent  :inattention
                                         :margins :highlight
                                         :borders :borders
@@ -885,9 +894,9 @@ line based on inputs in plist: :mis2//settings, :mis2//style, and
          (propertize "<<<<<"      'face font-lock-constant-face))))))
 
   ;; Done; set mis2/themes back and check that that worked too.
-  (mis2-ert/mis2-contents/themes/restore)
+  (mis2-ert/setup/themes/restore)
 
-  (should (seq-set-equal-p mis2/themes mis2-ert/contents/themes/storage))
+  (should (seq-set-equal-p mis2/themes mis2-ert/setup/themes/storage))
 
   (mis2-ert/mis2-contents/teardown))
 

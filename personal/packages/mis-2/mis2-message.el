@@ -76,6 +76,29 @@
 ;;   (mis2/message :settings settings :style style message symbol0))
 
 
+;;------------------------------------------------------------------------------
+;; Inline Styling:
+;;------------------------------------------------------------------------------
+;; (mis2/message :settings settings :style style
+;;               "Unbelieveable! You, "
+;;               (:face :text-pop "SUBJECT NAME HERE")
+;;               ", must be the pride of "
+;;               (:face :text-inattention "SUBJECT HOMETOWN HERE")
+;;               ".")
+;;------------------------------------------------------------------------------
+
+;;------------------------------------------------------------------------------
+;; §-TODO-§ [2020-04-08]: Apply formatting to a results list.
+;;------------------------------------------------------------------------------
+;; (mis2/message :style style
+;;               "Did something to these "
+;;               (list :face :text-pop (length results))
+;;               " results: \n"
+;;               (list :format :each '((:face :highlight "%s: ") (:face :text-pop))
+;;                     results))
+;;------------------------------------------------------------------------------
+
+
 
 ;;----------------------------------...---...-----------------------------------
 ;;--                   We're all fine here... How are you?                    --
@@ -85,6 +108,7 @@
 (require 'dash)
 (require 's)
 
+(require 'mis2-utils)
 (require 'mis2-settings)
 (require 'mis2-contents)
 
@@ -145,17 +169,25 @@ Returns: '(:mis2//settings settings-element
   ;; Use 'contents' in this function - we'll be changing it and want to look at
   ;; the latest, not at original args.
   (let ((contents args)
-        settings style done)
+        defaults settings style
+        done)
     (while (not done)
       ;; We require our keys to go first, so just check the first element.
-      (if (and (keywordp (first contents))
-               (memq (first contents) mis2/custom/keywords))
+      (if (and (keywordp (mis2//first contents))
+               (memq (mis2//first contents) mis2/custom/keywords))
           ;; Get keyword (if it's our keyword) and val; save to settings/style.
-          (-if-let (mis2--kwd (plist-get mis2/custom/keywords (first contents)))
-              (let ((mis2-val (plist-get contents (first contents))))
+          (-if-let (mis2--kwd (plist-get mis2/custom/keywords (mis2//first contents)))
+              (let ((mis2-val (plist-get contents (mis2//first contents))))
+                ;; 'user-defaults' means load defaults (`mis2/settings/user',
+                ;; `mis2/style/user') as settings/style, then layer/override
+                ;; other settings/style on top.
+                (cond ((eq mis2--kwd :mis2//user-defaults)
+                       (setq settings mis2-val
+                             contents (-drop 2 contents)))
+
                 ;; settings and style should update their lists, and drop
                 ;; key/value from contents.
-                (cond ((eq mis2--kwd :mis2//settings)
+                 ((eq mis2--kwd :mis2//settings)
                        (setq settings mis2-val
                              contents (-drop 2 contents)))
                       ((eq mis2--kwd :mis2//style)
@@ -167,10 +199,38 @@ Returns: '(:mis2//settings settings-element
         ;; Else, didn't find a keyword at front of list. Done parsing.
         (setq done t)))
 
-    ;; and now return a tuple of parsed args.
-    (list :mis2//settings settings
-          :mis2//style style
-          :mis2//contents contents)))
+    ;; If they want to use defaults, we have to layer other settings/styles on
+    ;; top for proper priority ordering.
+    (let (settings-combined style-combined)
+      (if defaults
+          (progn
+            (setq settings-combined (copy-sequence mis2/settings/user))
+            (while settings
+              (let ((key (car settings))
+                    (value (cadr settings)))
+                (setq settings-combined (plist-put (car settings)
+                                                   (cadr settings))
+                      settings (cddr settings))))
+
+            (setq style-combined (copy-sequence mis2/style/user))
+            (while style
+              (let ((key (car style))
+                    (value (cadr style)))
+                (setq style-combined (plist-put (car style)
+                                                (cadr style))
+                      style (cddr style)))))
+        ;; Else just use what we've parsed out.
+        (setq settings-combined settings
+              style-combined    style))
+
+      ;; (message "mis2//message/parse: settings: %S" settings)
+      ;; (message "mis2//message/parse: style: %S" style)
+      ;; (message "mis2//message/parse: contents: %S" contents)
+
+      ;; and now return a tuple of parsed args.
+      (list :mis2//settings settings-combined
+            :mis2//style style-combined
+            :mis2//contents contents))))
 
 
 ;;------------------------------------------------------------------------------
@@ -189,6 +249,7 @@ Pipeline for sink of settings:
       (progn
         (mis2//message/output/to-buffer message plist)
         (mis2//message/output/to-minibuffer message plist))
+        ;; message)
 
     ;; Error out if not found.
     (error "No finalized mis2 message supplied. %S" plist)))
@@ -274,6 +335,59 @@ These keys must be at the front of the list - before any message args.
 "
   (let ((plist (apply #'mis2//message/parse args)))
     (mis2//message/output (mis2//contents plist))))
+
+
+(defun mis2/block (&rest args)
+  "For each mis2 message line in ARGS, call mis2/message.
+
+If `:settings' key is in ARGS, the next element is mis2 settings.
+If `:style' key is in ARGS, the next element is mis2 style.
+These keys must be at the front of the list - before any message lines.
+
+If final element in args (after parsing out settings/style) is a
+list, that list will be considered the block of lines to output.
+
+  Examples:
+    Valid:
+      (mis2/block \"hello there\" \"how are you?\")
+      (mis2/block '(\"hello %s\" \"jeff\") \"how are you?\")
+      (mis2/block :settings 'sets :style 'styles 'lines-list)
+      etc.
+    Invalid:
+      (mis2/block \"hello there\" \"how are you?\" :settings nil)
+      etc.
+"
+  (let* ((plist-meta (apply #'mis2//message/parse args))
+         (settings (plist-get plist-meta :mis2//settings))
+         (style (plist-get plist-meta :mis2//style))
+         (lines (plist-get plist-meta :mis2//contents))
+         ;; If we have a doubled list '((x y ...)), turn into just a list.
+         (lines (if (and (= (mis2//length-safe lines) 1)
+                         (mis2//list? (mis2//first lines)))
+                    (mis2//first lines)
+                  lines))
+         plist)
+
+    ;; (message "mis2/block: args: %S, plist-meta: %S, lines: %S"
+    ;;          args plist-meta lines)
+
+    ;; Parse has broken out settings/style/"the rest" into `plist-meta'.
+    ;; We've already grabbed settings and style,
+    ;; so just loop the lines for output.
+    (dolist (line lines)
+      (setq plist (list :mis2//settings settings
+                        :mis2//style    style
+                        ;; The contents should be a list; so make it one
+                        ;; if it isn't.
+                        :mis2//contents (if (mis2//list? line)
+                                            line
+                                          (list line))))
+      ;; (message "mis2/block line plist: %S" plist)
+      (mis2//message/output (mis2//contents plist)))))
+;; (mis2/message "hello there")
+;; (mis2/block "hello there")
+;; (mis2/block "hello there" "how are you?")
+;; (mis2/block '("hello %s" "there") "how are you?")
 
 
 ;;------------------------------------------------------------------------------

@@ -65,7 +65,12 @@ specific to this test suite."
 (defun mis2-ert/mock/mis2//message/output/to-buffer (mis2-msg plist)
   "Save mis2-msg to `mis2-ert/mock/output/to-minibuffer' instead of normal
 functionality."
-  (setq mis2-ert/mock/output/to-buffer mis2-msg))
+  (setq mis2-ert/mock/output/to-buffer
+        (if mis2-ert/mock/output/to-buffer
+            (concat mis2-ert/mock/output/to-buffer
+                    "\n"
+                    mis2-msg)
+          mis2-msg)))
 
 
 (defun mis2-ert/mock/mis2//message/output/to-minibuffer (mis2-msg plist)
@@ -557,7 +562,7 @@ out into mis2 settings/style.
         (style '(;; face: default if no specific in :faces
                  :face :text
                  ;; face: set specifics for everything this time
-                 :faces (:message :title
+                 :faces (:text    :title
                          :indent  :inattention
                          :margins :highlight
                          :borders :borders
@@ -647,6 +652,305 @@ specified buffer.
 
         (should (string= (buffer-string)
                          "hello there\n")))))
+
+  (mis2-ert/mis2-message/teardown))
+
+
+;;------------------------------------------------------------------------------
+;; Test: mis2/message multi-formatting!
+;;------------------------------------------------------------------------------
+;; (defun mis2/message (&rest args)
+
+;;---
+;; Test Case 000
+;;---
+(ert-deftest mis2-ert/message/multi-formatted ()
+  "Test that `mis2/message' outputs a properly formatted message when input
+contains several styled subsections.
+"
+  (mis2-ert/mis2-message/setup)
+
+  ;; Setup for a message to test.
+  (let ((settings nil)
+        (style '(:face :text)))
+
+    (mis2-ert/mock 'mis2//message/output/to-buffer nil
+      (mis2-ert/mock 'mis2//message/output/to-minibuffer nil
+
+        ;; Output message with multiple differently styled user-input sections.
+        (mis2/message :settings settings :style style
+                      "Unbelieveable! You, "
+                      '(:face :highlight "SUBJECT NAME HERE")
+                      ", must be the pride of "
+                      '(:face :title "SUBJECT HOMETOWN HERE")
+                      ".")
+
+        ;; correctly propertized?
+        (cl-flet ((ms #'make-string))
+          (should
+           (equal-including-properties
+            mis2-ert/mock/output/to-buffer
+            (concat
+
+             (propertize "Unbelieveable! You, "    'face font-lock-warning-face)
+             (propertize "SUBJECT NAME HERE"       'face font-lock-constant-face)
+             (propertize ", must be the pride of " 'face font-lock-warning-face)
+             (propertize "SUBJECT HOMETOWN HERE"   'face font-lock-builtin-face)
+             (propertize "."                       'face font-lock-warning-face))))))))
+
+  (mis2-ert/mis2-message/teardown))
+
+
+;;---
+;; Test Case 001
+;;---
+(ert-deftest mis2-ert/message/format-each ()
+  "Test that `mis2/message' outputs a properly formatted message when input
+contains several styled subsections.
+"
+  (mis2-ert/mis2-message/setup)
+
+  ;; Setup for a message to test.
+  (let ((settings nil)
+        (style '(:face :text))
+        (results '(("/path/to/test0" "a.txt, b.txt, c.txt")
+                   ("/path/to/test1" "b.jpg, o.jpg, o.png"))))
+
+    (mis2-ert/mock 'mis2//message/output/to-buffer nil
+      (mis2-ert/mock 'mis2//message/output/to-minibuffer nil
+
+        ;; Output message with a results list styled as
+        ;; indicated by ":format :each"
+        (mis2/message :style style
+                      "Did something to these "
+                      (list :face :title (length results))
+                      " folders: "
+                      (list :format :each
+                            '((:face :highlight "%s: ") (:face :title))
+                            results))
+
+        ;; correctly propertized?
+        (should
+         (equal-including-properties
+          mis2-ert/mock/output/to-buffer
+          (concat
+           (propertize "Did something to these " 'face font-lock-warning-face)
+           (propertize "2"                       'face font-lock-builtin-face)
+           (propertize " folders: "              'face font-lock-warning-face)
+           (propertize "/path/to/test0: "        'face font-lock-constant-face)
+           (propertize "a.txt, b.txt, c.txt"     'face font-lock-builtin-face)
+           (propertize "/path/to/test1: "        'face font-lock-constant-face)
+           (propertize "b.jpg, o.jpg, o.png"     'face font-lock-builtin-face)))))))
+
+  (mis2-ert/mis2-message/teardown))
+
+
+;;---
+;; Test Case 002
+;;---
+(ert-deftest mis2-ert/message/format-each/column-auto ()
+  "Test that `mis2/message' outputs a properly formatted message when input
+contains several styled subsections for auto-column-ing...
+"
+  (mis2-ert/mis2-message/setup)
+
+  ;; Setup for a message to test.
+  (let ((settings nil)
+        (style '(:face :text))
+        (results '(("/path/to/test0"                 "a.txt, b.txt, c.txt")
+                   ("/s/pth"                         "b.jpg, o.obj")
+                   ("/long/path/to/some/test/folder" "a.bis, c.cui, e.ts"))))
+
+    (mis2-ert/mock 'mis2//message/output/to-buffer nil
+      (mis2-ert/mock 'mis2//message/output/to-minibuffer nil
+
+        ;; Output message with a results list styled as
+        ;; indicated by ":format :each"
+        (mis2/message :style style
+                      "Did something to these "
+                      (list :face :title (length results))
+                      " folders:\n"
+                      (list :format :each :column :auto
+                            '((:face :highlight "%s: ") (:face :title "%s\n"))
+                            results))
+
+        ;; correctly propertized?
+        (should
+         (equal-including-properties
+          mis2-ert/mock/output/to-buffer
+          (concat
+           (propertize "Did something to these " 'face font-lock-warning-face)
+           (propertize "3"                       'face font-lock-builtin-face)
+           (propertize " folders:\n"             'face font-lock-warning-face)
+
+           (propertize "/path/to/test0: "
+                       'face font-lock-constant-face)
+           "                "
+           (propertize "a.txt, b.txt, c.txt\n"
+                       'face font-lock-builtin-face)
+
+           (propertize "/s/pth: "
+                       'face font-lock-constant-face)
+           "                        "
+           (propertize "b.jpg, o.obj\n"
+                       'face font-lock-builtin-face)
+
+           (propertize "/long/path/to/some/test/folder: "
+                       'face font-lock-constant-face)
+           (propertize "a.bis, c.cui, e.ts\n"
+                       'face font-lock-builtin-face)))))))
+
+  (mis2-ert/mis2-message/teardown))
+
+
+;;------------------------------------------------------------------------------
+;; Test: mis2/message lines!
+;;------------------------------------------------------------------------------
+;; (defun mis2/message (&rest args)
+
+;;---
+;; Test Case 000
+;;---
+(ert-deftest mis2-ert/message/line-empty ()
+  "Test that `mis2/message' outputs a properly formatted message when input
+contains an empty line marker (`:empty').
+"
+  (mis2-ert/mis2-message/setup)
+
+  ;; Setup for a message to test.
+  (let ((settings nil)
+        ;; None of these box parts should show up.
+        (style '(:margins (">>" "<<")
+                 :borders ("|" "|")
+                 :padding ("--" "--"))))
+
+    (mis2-ert/mock 'mis2//message/output/to-buffer nil
+      (mis2-ert/mock 'mis2//message/output/to-minibuffer nil
+
+        ;; Output message with multiple differently styled user-input sections.
+        (mis2/message :settings settings :style style
+                      :empty)
+
+        ;; Output an empty line?
+        (should (string= mis2-ert/mock/output/to-buffer "")))))
+
+  (mis2-ert/mis2-message/teardown))
+
+
+;;---
+;; Test Case 001
+;;---
+(ert-deftest mis2-ert/message/line-full ()
+  "Test that `mis2/message' outputs a properly formatted message when input
+contains a full line marker (`:full').
+"
+  (mis2-ert/mis2-message/setup)
+
+  ;; Setup for a message to test.
+  (let ((settings '(:line-width 80))
+        ;; None of these box parts should show up.
+        (style '(:margins (">>" "<<")
+                 :borders ("|" "|")
+                 :padding ("--" "--"))))
+
+    (mis2-ert/mock 'mis2//message/output/to-buffer nil
+      (mis2-ert/mock 'mis2//message/output/to-minibuffer nil
+
+        ;; Output message with multiple differently styled user-input sections.
+        (mis2/message :settings settings :style style
+                      :full)
+
+        ;; Output an empty line?
+        (should (string= mis2-ert/mock/output/to-buffer
+                         (concat ">>"
+                                 "|"
+                                 "--"
+                                 (make-string (- 80 (mis2//string/sum style))
+                                              ?\-)
+                                 "--"
+                                 "|"
+                                 "<<"))))))
+
+  (mis2-ert/mis2-message/teardown))
+
+
+;;------------------------------------------------------------------------------
+;; Test: mis2/block
+;;------------------------------------------------------------------------------
+;; (defun mis2/block (&rest args)
+
+;;---
+;; Test Case 000
+;;---
+(ert-deftest mis2-ert/message/block ()
+  "Test that `mis2/block' outputs properly formatted messages.
+"
+  (mis2-ert/mis2-message/setup)
+
+  ;; Setup for a message to test.
+  (let ((settings nil)
+        ;; None of these box parts should show up.
+        (style nil))
+               ;; '(:margins (">>" "<<")
+               ;;   :borders ("|" "|")
+               ;;   :padding ("--" "--"))))
+
+    (mis2-ert/mock 'mis2//message/output/to-buffer nil
+      (mis2-ert/mock 'mis2//message/output/to-minibuffer nil
+
+        (mis2/block :settings settings :style style
+                    "hello there")
+        (should (string= mis2-ert/mock/output/to-buffer
+                         "hello there"))
+
+        (setq mis2-ert/mock/output/to-buffer     nil
+              mis2-ert/mock/output/to-minibuffer nil)
+
+        (mis2/block :settings settings :style style
+                    "hello there" "how are you?")
+        (should (string= mis2-ert/mock/output/to-buffer
+                         "hello there\nhow are you?"))
+
+        (setq mis2-ert/mock/output/to-buffer     nil
+              mis2-ert/mock/output/to-minibuffer nil)
+
+        (mis2/block '("hello %s" "there") "how are you?")
+        (should (string= mis2-ert/mock/output/to-buffer
+                         "hello there\nhow are you?")))))
+
+  (mis2-ert/mis2-message/teardown))
+
+
+;;---
+;; Test Case 001
+;;---
+(ert-deftest mis2-ert/message/block/lines ()
+  "Test that `mis2/block' outputs properly formatted messages including special
+lines (e.g. `:empty').
+"
+  (mis2-ert/mis2-message/setup)
+
+  ;; Setup for a message to test.
+  (let ((settings nil)
+        ;; None of these box parts should show up.
+        (style nil))
+               ;; '(:margins (">>" "<<")
+               ;;   :borders ("|" "|")
+               ;;   :padding ("--" "--"))))
+
+    (mis2-ert/mock 'mis2//message/output/to-buffer nil
+      (mis2-ert/mock 'mis2//message/output/to-minibuffer nil
+
+        (mis2/block :settings settings :style style
+                    :full "hello there" :empty "how are you?")
+        (should (string= mis2-ert/mock/output/to-buffer
+                         (concat (make-string 80 ?-) ;; :full
+                                 "\n" ;; :full's newline
+                                 "hello there"
+                                 "\n" ;; hello there's newline
+                                 ;; :empty
+                                 "\n" ;; :empty's newline
+                                 "how are you?"))))))
 
   (mis2-ert/mis2-message/teardown))
 

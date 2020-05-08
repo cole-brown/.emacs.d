@@ -372,13 +372,14 @@ Magit to: add files, commit, and push.
 "
   (interactive)
 
-  ;; §-TODO-§ [2020-02-03]: replace `message' with `mis/message/propertize'
+  ;; §-TODO-§ [2020-02-03]: replace `message' with `mis2/message'
 
   ;; Either have to require magit here, or set magit to ":demand t" in
   ;; use-package. Trying out requiring here as magit isn't the fastest to start.
   (require 'magit)
 
-  (let (results)
+  (let ((style '(:face :title))
+        results)
     ;; walk our list of auto-commit loctaions
     (dolist (location spydez/dir/git/auto-commit-locations)
       ;; Change the default-directory just for this scope...
@@ -394,15 +395,23 @@ Magit to: add files, commit, and push.
                                     "spydez/magit/auto-commit function."))
             (change-list (spydez/magit/changes-in-subdir location)))
 
-        (message "Checking %s..." location)
+        (mis2/message :style style
+                      "\nChecking "
+                      (list :face :highlight location)
+                      "...")
         ;; Magit works on `default-directory', so we are checking status
         ;; on our repo with this.
         (if (null change-list)
             (progn
               ;; Save that nothing happened.
-              (push (cons location nil) results)
+              (push (cons location "None.") results)
               ;; Say why nothing happened.
-              (message "  No changes to auto-commit: %s" default-directory))
+              (mis2/message :style style
+                            "  "
+                            '(:face :text-pop "No")
+                            " changes to auto-commit: "
+                            (list :face :highlight default-directory)
+                            "\n"))
 
           ;; Else, commit changes.
           (let ((change-str (string-join ;; join results with comma
@@ -412,7 +421,12 @@ Magit to: add files, commit, and push.
                                   change-list)
                           ", ")))
             ;; Add!
-            (message "  Adding changes found: %s..." change-str)
+            (mis2/message :style style
+                          "  "
+                          '(:face :text-pop "Adding")
+                          " changes found: "
+                          (list :face :highlight change-str)
+                          "...")
 
             ;; "add <path>" or "add -A ." work to add untracked.
             ;; "add -A ." == "add ." + "add -u ."
@@ -420,34 +434,48 @@ Magit to: add files, commit, and push.
             (magit-call-git "add" "-A" ".")
 
             ;; Commit!
-            (message "  Committing changes: %s..." change-str)
+            (mis2/message :style style
+                          "  "
+                          '(:face :text-pop "Committing")
+                          " changes: "
+                          (list :face :highlight change-str)
+                          "...")
             ;; Don't 'commit all' ("commit -a"), so we can commit just whatever
             ;; sub-folder we are in.
             (magit-call-git "commit" "-m" commit-message)
 
             ;; Push?
-            (message "  Pushing changes: %s..." change-str)
+            (mis2/message :style style
+                          "  "
+                          '(:face :text-pop "Pushing ")
+                          "changes: "
+                          (list :face :highlight change-str)
+                          "...")
             ;; Assume an origin of "origin", I guess?
             ;; Could also just "push" to default...
             (magit-call-git "push" "origin")
 
             ;; Done. Until I find all the edge cases I guess.
             ;; Like when push fails?
-            (message "  Committed and pushed (probably): %s" change-str)
+            (mis2/message :style style
+                          "  "
+                          '(:face :text-pop "Committed")
+                          " and "
+                          '(:face :text-pop "pushed")
+                          '(:face :highlight2 " (probably?)")
+                          ": "
+                          (list :face :highlight change-str))
+            (push (cons location (or change-str "None.")) results)))))
 
-            (push (cons location change-str) results)))))
-
-    (message "Auto-Commit ran on %s locations: \n%s"
-             (length results)
-             ;; format for each: "path: changed.el, file.py, list.txt"
-             (string-join
-              (mapcar (lambda (x) (format "  %s: %s"
-                                          (car x)
-                                          (if (null (cdr x))
-                                              "None."
-                                            (cdr x))))
-                      results)
-              "\n"))))
+      (mis2/message :style style
+                    "\nAuto-Commit ran on "
+                    (list :face :text-pop (length results))
+                    " locations: \n"
+                    ;; format for each: "path: changed.el, file.py, list.txt"
+                    (list :format :each
+                          '((:face :highlight "  %s: ") (:face :text-pop "%s\n"))
+                          results)
+                    "\n")))
 ;; (spydez/magit/auto-commit)
 
 
