@@ -67,8 +67,8 @@
     "
 ^Signatures^                           | ^Org-Mode^             | ^Sig/TODO Search^         | ^Align^
 ^----------^---------------------------+-^--------^-------------+-^---------------^---------+-^-----^-----------------------
-_/_:   ?/?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _n_: New Journal Entry | _s m_: ?s m?^^^^^^^^^^^^^ | _; a_: Align Region After....
-_-_:   ?-?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _v_: Visit Journal     | _s s_: Search...          | _; o_: Align Region Before...
+_/_:   ?/?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _n_: New Journal Entry | _s m_: ?s m?^^^^^^^^^^^^^ | _; a_: Align Region Before...
+_-_:   ?-?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _v_: Visit Journal     | _s s_: Search...          | _; o_: Align Region After....
 _m_:   ?m?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    | ^   ^                     | _; ;_: Align Regexp...
 _t_:   ?t?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _p_: Pomodoro History  | ^   ^                     | _; q_: Complex Align Regexp...
 _c_:   ?c?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _r_: Pomodoro Start    | ^   ^                     | _a_:   Align Region
@@ -175,8 +175,8 @@ _e p_: ?e p?
     ;;-------------------------------------------------------------------------
     ;; Alignment
     ;;-------------------------------------------------------------------------
-    ("; a" (call-interactively #'spydez/align-after))
-    ("; o" (call-interactively #'spydez/align-before))
+    ("; a" (call-interactively #'spydez/align-before))
+    ("; o" (call-interactively #'spydez/align-after))
     ("; ;" (call-interactively #'align-regexp))
     ("; q" (lambda () (interactive)
              (setq current-prefix-arg '(4))

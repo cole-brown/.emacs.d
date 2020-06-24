@@ -17,28 +17,21 @@
 ;; TODO: python-mode vs elpy...?
 ;; https://github.com/jorgenschaefer/elpy
 
-(use-package python
-  :mode ("\\.py\\'" . python-mode)
-  :interpreter ("python" . python-mode)
+(defun spydez/python/use-package/init (lsp-enabled)
+  "Runs `use-package' :init block for python-mode.
+"
+  (mis/message/propertize t :default
+                          (format "spydez/python/use-package/init: LSP? %S"
+                                  (spydez/packages/enabled-p 'lsp-mode)))
 
-  ;;---
-  ;; Language Server Protocol for Python (LSP)
-  ;;---
-  :after lsp-mode
-  ;;:demand t
-
-
-  ;;-----
-  :init
-  ;;-----
-  (spydez/hook/defun python-mode-hook t
+  (spydez/hook/defun python-mode-hook nil
                      nil nil "init/config/configure-python.el"
     "Settings for python-mode itself. Non-LSP stuff."
     ;; pycodestyle insists 79 is the One True Fill Column...
     ;; We'll try it for all our python in general.
     (setq fill-column 79))
 
-  (spydez/hook/defun python-mode-hook t
+  (spydez/hook/defun python-mode-hook nil
                      "python-lsp" nil "init/config/configure-python.el"
     "LSP setup and stuff."
     ;; Tell some annoying LSP messages to f right off back where
@@ -55,6 +48,10 @@
                                 "E221"
                                 ;; spaces after equals...
                                 "E222"
+                                ;; spaces before keyword...
+                                "E271"
+                                ;; spaces after keyword...
+                                "E272"
                                 ;; Breaking before binary operator
                                 ;; ...Complains about valid PEP-8 things.
                                 "W503"
@@ -71,48 +68,14 @@
       ;;                         ;; I like to line things up.
       ;;                         '("disable=C0326"))
       )
-    (spydez/hook/lsp-immediate))
+    (spydez/hook/lsp-immediate)))
 
+(defun spydez/python/use-package/config (lsp-enabled)
+  "Runs `use-package' :init block for python-mode.
+"
+  ;; Nothing currently. Just all these comments from when I was trying to get
+  ;; python and lsp behaving...
 
-  ;;-----
-  :hook
-  ;;-----
-  ;;---
-  ;; Language Server Protocol for Python (LSP)
-  ;;---
-  ((python-mode . spydez/hook/python-lsp)
-   (python-mode . spydez/hook/python-mode-hook))
-
-
-  ;; No global binds for python ATM.
-
-  ;;-----
-  :bind ;; python-mode-map
-  ;;-----
-  (:map python-mode-map
-        ;; [2019-08-12]
-        ;;   - Moved `comment-or-uncomment-region' to configure-dev-env.el
-        ;;     and upgraded to prog-mode-map.
-        ;;   - Found out that isn't enough and I have to also map it here to
-        ;;     overwrite `python-shell-send-buffer' keybind.
-        ;;   - So `comment-or-uncomment-region' is bound in 2 maps.
-        ;; `python-shell-send-buffer' still sounds useful, but not on "C-c C-c"
-        ("C-c C-c" . comment-or-uncomment-region))
-
-
-  ;;-----
-  :custom
-  ;;-----
-  ;; Set this undocumented thingy to same as tab-width so complaints stop?
-  ;;   - "Can't guess" complaint didn't stop.
-  (python-indent-offset spydez/dev-env/tab/normal "Set indent to tab-width.")
-
-  (python-fill-docstring-style 'symmetric)
-
-
-  ;; ;;-----
-  ;; :config
-  ;; ;;-----
   ;; (mis/warning nil nil "Uh... hi? python:config")
 
   ;; ;; Language Server Protocol for Python (LSP)
@@ -151,6 +114,120 @@
 
   ;; (add-hook 'lsp-after-initialize-hook 'lsp-set-cfg)
   )
+
+;; Shenanigans to make this work both with and without LSP. Try to keep both of
+;; these in sync... Or transfer out to all work done in init/config.
+(if (spydez/packages/enabled-p 'lsp-mode)
+    ;; NOTE [2020-06-09]: Have to install Python's language server too:
+    ;;   https://emacs-lsp.github.io/lsp-mode/page/lsp-pyls/
+    ;;   pip install ‘python-language-server[all]’
+    (use-package python
+      :mode ("\\.py\\'" . python-mode)
+      :interpreter ("python" . python-mode)
+
+      ;;---
+      ;; Language Server Protocol for Python (LSP)
+      ;;---
+      :after lsp-mode
+      ;; :demand t
+
+      ;;-----
+      :init
+      ;;-----
+      (spydez/python/use-package/init (spydez/packages/enabled-p 'lsp-mode))
+
+      ;;-----
+      :hook
+      ;;-----
+      ;;---
+      ;; Language Server Protocol for Python (LSP)
+      ;;---
+      ((python-mode . spydez/hook/python-lsp)
+       (python-mode . spydez/hook/python-mode-hook))
+
+      ;; No global binds for python ATM.
+
+      ;;-----
+      :bind ;; python-mode-map
+      ;;-----
+      (:map python-mode-map
+            ;; [2019-08-12]
+            ;;   - Moved `comment-or-uncomment-region' to configure-dev-env.el
+            ;;     and upgraded to prog-mode-map.
+            ;;   - Found out that isn't enough and I have to also map it here to
+            ;;     overwrite `python-shell-send-buffer' keybind.
+            ;;   - So `comment-or-uncomment-region' is bound in 2 maps.
+            ;; `python-shell-send-buffer' still sounds useful, but not on "C-c C-c"
+            ("C-c C-c" . comment-or-uncomment-region))
+
+      ;;-----
+      :custom
+      ;;-----
+      ;; Set this undocumented thingy to same as tab-width so complaints stop?
+      ;;   - "Can't guess" complaint didn't stop.
+      (python-indent-offset spydez/dev-env/tab/normal "Set indent to tab-width.")
+
+      (python-fill-docstring-style 'symmetric)
+
+      ;; ;;-----
+      ;; :config
+      ;; ;;-----
+      ;; (spydez/python/use-package/config (spydez/packages/enabled-p 'lsp-mode))
+      )
+
+  ;; Else, no LSP Mode available right now.
+  (use-package python
+    :mode ("\\.py\\'" . python-mode)
+    :interpreter ("python" . python-mode)
+
+    ;;---
+    ;; No LSP Mode for this version!!!
+    ;;---
+    ;; :after 'lsp-mode
+    :demand t
+
+    ;;-----
+    :init
+    ;;-----
+    (spydez/python/use-package/init (spydez/packages/enabled-p 'lsp-mode))
+
+    ;;-----
+    :hook
+    ;;-----
+    ;;---
+    ;; Language Server Protocol for Python (LSP)
+    ;;---
+    (python-mode . spydez/hook/python-mode-hook)
+
+    ;; No global binds for python ATM.
+
+    ;;-----
+    :bind ;; python-mode-map
+    ;;-----
+    (:map python-mode-map
+          ;; [2019-08-12]
+          ;;   - Moved `comment-or-uncomment-region' to configure-dev-env.el
+          ;;     and upgraded to prog-mode-map.
+          ;;   - Found out that isn't enough and I have to also map it here to
+          ;;     overwrite `python-shell-send-buffer' keybind.
+          ;;   - So `comment-or-uncomment-region' is bound in 2 maps.
+          ;; `python-shell-send-buffer' still sounds useful, but not on "C-c C-c"
+          ("C-c C-c" . comment-or-uncomment-region))
+
+    ;;-----
+    :custom
+    ;;-----
+    ;; Set this undocumented thingy to same as tab-width so complaints stop?
+    ;;   - "Can't guess" complaint didn't stop.
+    (python-indent-offset spydez/dev-env/tab/normal "Set indent to tab-width.")
+
+    (python-fill-docstring-style 'symmetric)
+
+    ;; ;;-----
+    ;; :config
+    ;; ;;-----
+    ;; (spydez/python/use-package/config (spydez/packages/enabled-p 'lsp-mode))
+    ))
 
 ;; Django has several modes for different parts:
 ;; https://code.djangoproject.com/wiki/Emacs

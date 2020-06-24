@@ -173,9 +173,10 @@
 ;; (set-keyboard-coding-system  'utf-8)   ; pretty
 ;; (set-selection-coding-system 'utf-8)   ; please
 ;; (prefer-coding-system        'utf-8)   ; with sugar on top
+;; (setq default-process-coding-system '(utf-8-dos . utf-8-dos))
 ;; (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+;; (setq default-process-coding-system '(utf-8-dos . undecided-dos))
 ;; (setq-default buffer-file-coding-system 'utf-8-unix)
-;; (setq-default default-buffer-file-coding-system 'utf-8-unix)
 ;; (set-default-coding-systems 'utf-8-unix)
 ;; (prefer-coding-system 'utf-8-unix)
 ;; deadgrep search for this to see if we're good yet?: §

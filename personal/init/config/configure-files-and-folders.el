@@ -7,6 +7,10 @@
 ;;------------------------------------------------------------------------------
 ;; Dired
 ;;------------------------------------------------------------------------------
+
+;; Extra Dired goodies like 'F' in dired-mode for 'find (open) all marked files'
+(require 'dired-x)
+
 ;; TODO: note for this:
 ;; `C-x d' for dired
 ;; TODO: add a shortcut for `find-dired'?

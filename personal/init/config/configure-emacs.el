@@ -26,6 +26,12 @@
 ;;------------------------------------------------------------------------------
 ;; General Keybinds
 ;;------------------------------------------------------------------------------
+
+;; I use this for push-to-talk and want emacs to not ding every time
+;; it's pressed.
+(global-set-key (kbd "<f13>") 'ignore)
+
+
 ;; TODO: a custom, more useful layout for the function keys? I use F3 and
 ;; F4 currently for doing macros, but none of the rest.
 ;; e.g.:

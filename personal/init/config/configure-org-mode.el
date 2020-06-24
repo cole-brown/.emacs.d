@@ -211,8 +211,8 @@
 
   ;; Set org-hid-emphasis-markers so that the markup indicators are not shown.
   ;; (so +strike+, /italic/, *bold* show font change, but hides the +/*)
-  (org-hide-emphasis-markers t
-   "Hide the ASCII font change markers, show the font change.")
+  ;; (org-hide-emphasis-markers t
+  ;;  "Hide the ASCII font change markers, show the font change.")
 
   ;; Org Source Code Blocks: Fontify by their native mode.
   (org-src-fontify-natively t

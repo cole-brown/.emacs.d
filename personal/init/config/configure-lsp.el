@@ -25,7 +25,7 @@ were shut down.
                           "Killed %s LSP servers."
                           (let ((shutdown (spydez/lsp/shutdown-all)))
                             (if (and shutdown (listp shutdown))
-                                (len shutdown)
+                                (length shutdown)
                               0))))
 
 

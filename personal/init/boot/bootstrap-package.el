@@ -385,12 +385,14 @@ than MAX-NUM.
   "Packages (feature names) that should be disabled this
   init (for this computer?).")
 
+
 (defun spydez/packages/disable (package)
   (add-to-list 'spydez/packages/disabled package)
   (mis/info/when nil
                           "Setting '%s' to disabled. Full list: %s"
                           package spydez/packages/disabled))
 ;; (spydez/packages/disable 'jeff)
+
 
 (defun spydez/packages/enabled-p (package)
   (not (memq package spydez/packages/disabled)))
