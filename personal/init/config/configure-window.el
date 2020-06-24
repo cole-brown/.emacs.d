@@ -41,7 +41,7 @@
 ;; Tool bar must go. (new, open, etc buttons).
 (when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 ;; Scroll bar useful for buffer size/position at-a-glance.
-(when (fboundp 'scroll-bar-mode) (scroll-bar-mode 1))
+(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 
 ;; Winner-mode lets you use C-c <left> and C-c <right> to switch between window
 ;; configurations. This is handy when something has popped up a buffer that you
@@ -312,6 +312,23 @@
 (use-package switch-window
   :bind
   (("C-x o" . switch-window)))
+
+
+;;------------------------------------------------------------------------------
+;; Better Looking Scroll Bar?
+;;------------------------------------------------------------------------------
+
+(use-package yascroll
+  :custom
+  ;; Never hide yascroll bars.
+  (yascroll:delay-to-hide nil)
+
+  :config
+  ;; Enable yascroll bars; disable OS's scroll bars.
+  (global-yascroll-bar-mode 1)
+  (when (and global-yascroll-bar-mode
+         (fboundp 'scroll-bar-mode))
+    (scroll-bar-mode -1)))
 
 
 ;;------------------------------------------------------------------------------
