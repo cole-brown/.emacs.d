@@ -88,25 +88,26 @@ auto-complete to have pity is my game."
 ;;     - "helm source for yasnippet.el" Thank you. Very useful info.
 
 
-;;------------------------------------------------------------------------------
-;; Default/External Snippets
-;;------------------------------------------------------------------------------
-;; "Official Collection of Snippets"
-;; https://github.com/AndreaCrotti/yasnippet-snippets
-;; https://github.com/manuel-uberti/.emacs.d/blob/master/lisp/mu-completion.el
-;;   Looks like no real setup - just make sure my snippets are ahead of these
-;;   in the list `yas-snippet-dirs'.
-;; Some people have this inside of (use-package yasnippet)
-(use-package yasnippet-snippets
-  :after yasnippet
-  :demand t
+;; ...Was `:disabled' not enough?!
+;; ;;------------------------------------------------------------------------------
+;; ;; Default/External Snippets
+;; ;;------------------------------------------------------------------------------
+;; ;; "Official Collection of Snippets"
+;; ;; https://github.com/AndreaCrotti/yasnippet-snippets
+;; ;; https://github.com/manuel-uberti/.emacs.d/blob/master/lisp/mu-completion.el
+;; ;;   Looks like no real setup - just make sure my snippets are ahead of these
+;; ;;   in the list `yas-snippet-dirs'.
+;; ;; Some people have this inside of (use-package yasnippet)
+;; (use-package yasnippet-snippets
+;;   :after yasnippet
+;;   :demand t
 
-  ;; Trial [2020-03-18]
-  ;; This triggers on single/dual letters way too often when I wanted to just
-  ;; autocomplete a word/name that's used a lot in current context. I don't
-  ;; think I'm using many of the snippets, if any, anyways, so... disable
-  ;; for now.
-  :disabled)
+;;   ;; Trial [2020-03-18]
+;;   ;; This triggers on single/dual letters way too often when I wanted to just
+;;   ;; autocomplete a word/name that's used a lot in current context. I don't
+;;   ;; think I'm using many of the snippets, if any, anyways, so... disable
+;;   ;; for now.
+;;   :disabled)
 
 
 ;;------------------------------------------------------------------------------

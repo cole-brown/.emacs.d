@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# contributor: Cole Brown <git@spydez.com>
+# name: spy-md: prog-mode medium comment section
+# key: spy-md
+# --
+
+`(mis/comment/wrap (make-string 30 ?-) t "" t)`
+`(mis/comment/wrap "" t)` `yas-selected-text`$0
+`(mis/comment/wrap (make-string 30 ?-) t "" t)`
