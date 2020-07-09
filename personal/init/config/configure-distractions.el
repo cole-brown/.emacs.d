@@ -139,8 +139,7 @@
   ;; TODO: default to home or org-docs dir? would probably need to def org-docs
   ;; in .emacs.d if defaulting to it...
   ;; (redtick-history-file (spydez/path/to-file spydez/dir/org-docs "logbook"
-  (redtick-history-file (spydez/path/to-file spydez/dir/home "logbook"
-                                             spydez/dev/system/hash
+  (redtick-history-file (spydez/path/to-file (spydez/dirky/path nil :logbook)
                                              "redtick-history.txt")
                         "Default. Overridden in finalize-domain.el?")
 
@@ -195,7 +194,8 @@ ignore when moody is managing the time tab."
     ;; secrets exist and we have done all the error checking. use-package it.
     (use-package spotify
       :load-path (lambda () (spydez/path/to-dir
-                             spydez/dir/packages/git-submodules "spotify"))
+                             (spydez/dirky/path :init :packages/submodules)
+                             "spotify"))
 
       ;; Checked above and error/warning message, but can do here if lazy or
       ;; want quiet load/ignore.

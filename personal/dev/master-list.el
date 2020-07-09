@@ -31,7 +31,8 @@
  ;; Home Laptop/Tablet
  ;;---
  ((equal spydez/dev/system/hash "computer-d122-2b66")
-  (setq spydez/dev/domain/name "home"
+  (setq spydez/dirky/domain    :home
+        spydez/dev/domain/name "home"
         spydez/dev/domain/subname "deep"
         spydez/dev/system/hash (spydez/hash-and-reduce
                                   spydez/dev/system/name
@@ -43,7 +44,8 @@
  ;; Home Desktop 2017-
  ;;---
  ((equal spydez/dev/system/hash "computer-2418-d188")
-  (setq spydez/dev/domain/name "home"
+  (setq spydez/dirky/domain    :home
+        spydez/dev/domain/name "home"
         ;; I never know what to call my home stuff...
         ;;   - Name it after less popular OSes? Like Plan 9 from Bell Labs?
         ;;   - Name it an androgynous name? Like Sasha from this list?
@@ -63,7 +65,8 @@
  ;; PFO Desktop 2013-
  ;;---
  ((equal spydez/dev/system/hash "computer-898a-27ab")
-  (setq spydez/dev/domain/name "work"
+  (setq spydez/dirky/domain    :work
+        spydez/dev/domain/name "work"
         spydez/dev/domain/subname "pfo"
         spydez/dev/system/hash (spydez/hash-and-reduce
                                   spydez/dev/system/name

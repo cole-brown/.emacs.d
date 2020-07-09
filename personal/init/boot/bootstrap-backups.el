@@ -18,12 +18,12 @@
 ;; files ending in ~ that are cluttering up your directory lists. Move where
 ;; they get stored.
 (when (spydez/dir/self-policing-p)
-  (setq backup-directory-alist `(("." . ,spydez/dir/backup-files))))
+  (setq backup-directory-alist `(("." . ,(spydez/dirky/path :emacs :backup-files)))))
 
 ;; Also pull auto-saves out to their own folder.
 (setq auto-save-file-name-transforms
       (if (spydez/dir/self-policing-p)
-          `((".*" ,spydez/dir/auto-save-files t)) ;; self-police? my auto-save location
+          `((".*" ,(spydez/dirky/path :emacs :auto-save-files) t)) ;; self-police? my auto-save location
         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))) ;; else no-littering's
 
 
@@ -53,10 +53,10 @@
 ;; Ask tramp to behave as well.
 (when (spydez/dir/self-policing-p)
   (setq tramp-auto-save-directory   (spydez/path/to-dir
-                                     spydez/dir/emacs
+                                     (spydez/dirky/path :default :emacs.d)
                                      "tramp" "auto-save"))
   (setq tramp-persistency-file-name (spydez/path/to-file
-                                     spydez/dir/emacs
+                                     (spydez/dirky/path :default :emacs.d)
                                      "tramp" "persistency.el")))
 
 

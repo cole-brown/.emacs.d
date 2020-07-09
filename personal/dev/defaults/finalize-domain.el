@@ -50,8 +50,8 @@
    ;; Emacs Stuff
    ;;---
    ;; Working on .emacs.d a lot right now so add these in.
-   (spydez/path/to-file spydez/dir/personal/docs "working-on.org")
-   (spydez/path/to-file spydez/dir/emacs "init.el")
+   (spydez/path/to-file (spydez/dirky/path :emacs :docs) "working-on.org")
+   (spydez/path/to-file (spydez/dirky/path :default :emacs.d) "init.el")
    ))
 ;; TODO: check that these exist before opening. Complain (:warning level?) if not.
 

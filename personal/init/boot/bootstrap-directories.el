@@ -11,52 +11,51 @@
 ;;-----------------------------------------------------------------------------
 
 
-;;---
-;; Not-Mine Packages
-;;---
+;; This is the directory where all packages obtained from elsewhere are kept.
+(let ((packages-dir (list :emacs.d "packages")))
+  ;; Now set up more stuff for init, package setup, load-path, etc...
 
-(defconst spydez/dir/packages/all-but-mine
-  (spydez/path/to-dir spydez/dir/emacs "packages")
-  "Emacs 'packages' directory parent for various package sources: elpa, git
-  submodules, git subtrees, manually copied files, etc.")
+  ;;---
+  ;; Not-Mine Packages
+  ;;---
+  (spydez/dirky/add :init :packages/elpa
+                  ;; Minor shenanigans to append to end of  list...
+                  (apply #'append packages-dir (cons "elpa" nil) nil)
+                  "The standard Emacs Lisp Package Archive.")
+
+  ;; Ye Olde Way (Copy/Paste)
+  (spydez/dirky/add :init :packages/manual
+                    ;; Minor shenanigans to append to end of  list...
+                    (apply #'append packages-dir (cons "manual" nil) nil)
+                    (concat "These were copy/pasted from somewhere and I "
+                            "don't want to fold them into my own code or "
+                            "make them my own."))
+
+  ;; Ye Newe Way (git sub-repos)
+  (spydez/dirky/add :init :packages/subtrees
+                    ;; Minor shenanigans to append to end of  list...
+                    (apply #'append packages-dir (cons "subtrees" nil) nil)
+                    "Git Subtrees in my .emacs.d Git Repo.")
+  (spydez/dirky/add :init :packages/submodules
+                    ;; Minor shenanigans to append to end of  list...
+                    (apply #'append packages-dir (cons "submodules" nil) nil)
+                    "Git Submodules in my .emacs.d Git Repo.")
+
+  ;;---
+  ;; Mine!
+  ;;---
+  ;; "Packages"...
+  ;; Basically a big enough little feature that I moved it away from my files,
+  ;; removed all "spydez/*" and gave it a bit of love.
+
+  (spydez/dirky/add :load-path :personal/packages
+                    '(:personal "packages")
+                    "Custom/personal emacs 'packages' directory."))
 
 
-(defconst spydez/dir/packages/elpa
-  (spydez/path/to-dir spydez/dir/packages/all-but-mine "elpa")
-  "The standard Emacs Lisp Package Archive.")
-
-;; And tell emacs we moved it.
-(customize-set-variable 'package-user-dir spydez/dir/packages/elpa)
-
-
-(defconst spydez/dir/packages/manual
-  (spydez/path/to-dir spydez/dir/packages/all-but-mine "manual")
-  "These were copy/pasted from somewhere and I don't want to fold them into my
-  own code or make them my own.")
-
-
-(defconst spydez/dir/packages/git-subtrees
-  (spydez/path/to-dir spydez/dir/packages/all-but-mine "subtrees")
-  "These are git subtrees. Git subtree vs module is different
-  enough for me to want to differentiate now so I know later...")
-
-
-(defconst spydez/dir/packages/git-submodules
-  (spydez/path/to-dir spydez/dir/packages/all-but-mine "submodules")
-  "These are git modules. Git subtree vs module is different
-  enough for me to want to differentiate now so I know later...")
-
-
-;;---
-;; Mine!
-;;---
-;; "Packages"...
-;; Basically a big enough little feature that I moved it away from my files,
-;; removed all "spydez/*" and gave it a bit of love.
-
-(defconst spydez/dir/personal/packages
-  (spydez/path/to-dir spydez/dir/emacs/personal "packages")
-  "Custom/personal emacs 'packages' directory.")
+;; And tell emacs we moved elpa.
+(customize-set-variable 'package-user-dir
+                        (spydez/dirky/path :init :packages/elpa))
 
 
 ;;------------------------------------------------------------------------------
@@ -69,35 +68,30 @@
 ;; These should all be protected by if/when spydez/dir/self-policing-p sexprs.
 ;; They are put in no-littering's var or etc right now.
 
-;; folders for auto-save files and backup-files (#*# and *~)
-(defconst spydez/dir/backup-files
-  (spydez/path/to-dir spydez/dir/emacs "backups")
-  "Full path before no-littering package.")
+;; Folders for auto-save files and backup-files (#*# and *~)
+(spydez/dirky/add :emacs :backup-files
+                  '(:emacs.d "backups")
+                  "Full path for backups before/sans no-littering package.")
 
-(defconst spydez/dir/auto-save-files
-  (spydez/path/to-dir spydez/dir/emacs "auto-save-list"))
+(spydez/dirky/add :emacs :auto-save-files
+                  '(:emacs.d "auto-save-list")
+                  "Auto-save location before/sans no-littering package.")
 
-(defconst spydez/file/save-history
-  (spydez/path/to-file spydez/dir/emacs "savehist")
-  "History of commands, etc.")
+;; §-TODO-§ [2020-07-09]: Not used? Get rid of if so.
+;; (spydez/dirky/add :emacs :save-history
+;;                   '(:emacs.d "savehist")
+;;                   "History of commands, etc.")
 
 
 ;;---
 ;; My Lisp
 ;;---
 
-(defconst spydez/dir/yasnippets
-  (spydez/path/to-dir spydez/dir/emacs/personal "snippets")
-  "My Yasnippets directory.")
+(spydez/dirky/add :emacs :yasnippets
+                  '(:personal "snippets")
+                  "My Yasnippets directory.")
 ;; Could add an override of my own snippets if needed.
-
-(defconst spydez/dir/packages/use-tool
-  (spydez/path/to-dir spydez/dir/personal/packages "use-tool")
-  "use-tool directory.")
-
-(defconst spydez/dir/packages/taskspace
-  (spydez/path/to-dir spydez/dir/personal/packages "taskspace")
-  "taskspace directory.")
+(spydez/dirky/path :emacs :yasnippets)
 
 
 ;;-----------------------------------------------------------------------------
@@ -122,86 +116,81 @@
 ;;
 ;; Don't use .emacs.d.
 ;; https://stackoverflow.com/questions/24779041/disable-warning-about-emacs-d-in-load-path
-;; (add-to-list 'load-path spydez/dir/emacs)
+;; (add-to-list 'load-path (spydez/dirky/path :default :emacs.d))
 
 ;; Personal packages.
-(add-to-list 'load-path spydez/dir/packages/use-tool)
-(add-to-list 'load-path spydez/dir/packages/taskspace)
+(add-to-list 'load-path (spydez/path/to-dir
+                         (spydez/dirky/path :load-path :personal/packages)
+                         "use-tool"))
+(add-to-list 'load-path (spydez/path/to-dir
+                         (spydez/dirky/path :load-path :personal/packages)
+                         "taskspace"))
+
+;; Need these ordered for overrides to work correctly, so don't just do the
+;; dirky list in whatever order it's in.
 
  ;; non-init; don't care about and should be overridable.
-(add-to-list 'load-path spydez/dir/personal/lisp)
+(add-to-list 'load-path (spydez/dirky/path :load-path :lisp))
+
 
 ;; Defaults first so everything else overrides.
-(add-to-list 'load-path spydez/dir/dev/defaults)
-(add-to-list 'load-path spydez/dir/emacs/personal)
-(add-to-list 'load-path spydez/dir/personal/init)
+(add-to-list 'load-path (spydez/dirky/path :load-path :dev/defaults))
+(add-to-list 'load-path (spydez/dirky/path :default   :personal))
+;; This one isn't in dirky since it has nothing in it... It would be
+;; .emacs.d/personal/init
+;; (add-to-list 'load-path (spydez/dirky/path :load-path :init))
 
 ;; Now get into the actual bulk of emacs init and setup.
 ;; Do we include zeroth or not? I think sure... for now.
-(add-to-list 'load-path spydez/dir/init/zeroth)
-(add-to-list 'load-path spydez/dir/init/boot)
-(add-to-list 'load-path spydez/dir/init/config)
-(add-to-list 'load-path spydez/dir/init/finalize)
+(add-to-list 'load-path (spydez/dirky/path :load-path :zeroth))
+(add-to-list 'load-path (spydez/dirky/path :load-path :boot))
+(add-to-list 'load-path (spydez/dirky/path :load-path :config))
+(add-to-list 'load-path (spydez/dirky/path :load-path :finalize))
 
 ;; Overrides start here. Most specific to this computer last.
-(add-to-list 'load-path spydez/dir/dev/domain-all)
-(add-to-list 'load-path spydez/dir/dev/system-all)
-(add-to-list 'load-path spydez/dir/dev/domain-this)
-(add-to-list 'load-path spydez/dir/dev/system-this)
-;; TODO-reorg-done: more in the load path? new dirs (dev, init...)?
+;; Don't have anything here now... skipping: .emacs.d/personal/dev/domains/
+;; (add-to-list 'load-path (spydez/dirky/path :load-path :domains))
+;; Don't have anything here now... skipping: .emacs.d/personal/dev/computers
+;; (add-to-list 'load-path (spydez/dirky/path :load-path :systems))
+(add-to-list 'load-path (spydez/dirky/path :load-path :dev/domain))
+(add-to-list 'load-path (spydez/dirky/path :load-path :dev/system))
 
 
 ;;------------------------------------------------------------------------------
 ;; Secrets Directories
 ;;------------------------------------------------------------------------------
 
-;; TODO-SECRETS: Change from spydez/.../secrets... to secrets/... ??
-;;   ...not convinced.
+(spydez/dirky/add :secrets :secrets.d
+                  '(:home ".secrets.d")
+                  "Location of secrets dir on this computer.")
 
-(defconst spydez/dir/roam
-  (spydez/path/to-dir spydez/dir/home ".lily.d")
-  "Location of org-roam dir on this computer.")
+(spydez/dirky/add :secrets :classified
+                  '(:secrets.d "classified")
+                  "Location of more secret stuff?")
 
-(defconst spydez/dir/secrets
-  (spydez/path/to-dir spydez/dir/home ".secrets.d")
-  "Location of secrets dir on this computer.")
+(spydez/dirky/add :secrets :dev/defaults
+                  '(:secrets.d "dev" "defaults")
+                  "All of my optional/default setup elisp files...")
 
-(defconst spydez/dir/secrets/classified
-  (spydez/path/to-dir spydez/dir/secrets "classified")
-  "Location of secrets dir on this computer.")
+(spydez/dirky/add :secrets :dev/domains
+                  '(:secrets.d "dev" "domains")
+                  "Domains folder. For subdirs of work, home, etc.")
 
-(defconst spydez/file/classified/emacs-general
-  (spydez/path/to-file spydez/dir/secrets/classified "emacs.classified.el.gpg")
-  "Location of emacs' elisp secrets.")
+(spydez/dirky/add :secrets :dev/domain
+                  '(:dev/domains spydez/dev/domain/name)
+                  (concat "Anything that has to be domain specific. "
+                          "Tab widths or whatnot."))
 
-(defconst spydez/dir/secrets/dev
-  (spydez/path/to-dir spydez/dir/secrets "dev")
-  "Dev config outside of .emacs.d.")
+(spydez/dirky/add :secrets :dev/systems
+                  '(:secrets.d "dev" "computers")
+                  "Computers folder. For subdirs of different computers.")
 
-(defconst spydez/dir/secrets/dev/defaults
-  (spydez/path/to-dir spydez/dir/secrets/dev "defaults")
-  "All of my optional/default setup elisp files...")
+(spydez/dirky/add :secrets :dev/system
+                  '(:dev/systems spydez/dev/system/hash)
+                  (concat "Anything that has to be computer specific. "
+                          "Overriding tab widths or whatnot."))
 
-(defconst spydez/dir/secrets/dev/domain-all
-  (spydez/path/to-dir spydez/dir/secrets/dev "domains")
-  "Domains folder. For subdirs of work, home, etc.")
-
-(defconst spydez/dir/secrets/dev/domain-this
-  (spydez/path/to-dir spydez/dir/secrets/dev/domain-all
-                      spydez/dev/domain/name)
-  "Anything that has to be domain specific. Tab widths or whatnot.")
-
-(defconst spydez/dir/secrets/dev/system-all
-  (spydez/path/to-dir spydez/dir/secrets/dev "computers")
-  "Computers folder. For subdirs of different computers.")
-
-(defconst spydez/dir/secrets/dev/system-this
-  (spydez/path/to-dir spydez/dir/secrets/dev/system-all
-                      spydez/dev/system/hash)
-  "Anything that has to be computer specific.
-Overriding tab widths or whatnot.")
-
-;; (make-directory spydez/dir/secrets/dev/system-this t)
+;; (make-directory (spydez/dirky/path :secrets :dev/system) t)
 
 
 ;;------------------------------------------------------------------------------
@@ -211,12 +200,12 @@ Overriding tab widths or whatnot.")
 ;; NOTE: these are all higher priority than any .emacs.d path, right now,
 ;; so take care.
 ;; Leaving Off: spydez/dir/secrets/dev
-(add-to-list 'load-path spydez/dir/secrets/dev/defaults)
-(add-to-list 'load-path spydez/dir/secrets/classified)
-(add-to-list 'load-path spydez/dir/secrets/dev/domain-all)
-(add-to-list 'load-path spydez/dir/secrets/dev/domain-this)
-(add-to-list 'load-path spydez/dir/secrets/dev/system-all)
-(add-to-list 'load-path spydez/dir/secrets/dev/system-this)
+(add-to-list 'load-path (spydez/dirky/path :secrets :dev/defaults))
+(add-to-list 'load-path (spydez/dirky/path :secrets :classified))
+(add-to-list 'load-path (spydez/dirky/path :secrets :dev/domains))
+(add-to-list 'load-path (spydez/dirky/path :secrets :dev/domain))
+(add-to-list 'load-path (spydez/dirky/path :secrets :dev/systems))
+(add-to-list 'load-path (spydez/dirky/path :secrets :dev/system))
 ;; Add highest-priority/most specific to this computer last.
 
 

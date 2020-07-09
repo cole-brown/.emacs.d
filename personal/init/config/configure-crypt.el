@@ -14,8 +14,9 @@
 ;;------------------------------------------------------------------------------
 ;; EasyPG, GPG, Etc.
 ;;------------------------------------------------------------------------------
-;; So much went wrong setting this up... see `spydez/dir/docs/issues' for
-;; notes and solution.
+;; So much went wrong setting this up... see:
+;;   (spydez/dirky/path :emacs :docs/issues)
+;; for notes and solution.
 
 ;; TODO: [2019-08-09] Is this working again?
 ;; [2019-02-15] This finally works. I can see my key; I can decrypt/encrypt my test file.
@@ -26,7 +27,7 @@
 ;; Can't use expand-file-name with hacky unixy paths...
 ;; So just muck it on our own and we're like a hacky onion. In muck.
 (let ((spydez/hack/ugly-hacky-gpg-dir
-       (concat (spydez/path/windows-to-mingw spydez/dir/home) ".gnupg/")))
+       (concat (spydez/dirky/path :default :home) ".gnupg/")))
   ;; [2019-08-08]
   ;; Moved custom.el out of source control, back to this as we don't care about
   ;; custom var spam in custom.el anymore.

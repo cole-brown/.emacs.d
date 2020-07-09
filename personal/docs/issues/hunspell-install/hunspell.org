@@ -12,7 +12,9 @@ $ ./hunspell.exe --version
 
 Best info so far as it includes "download and install hunspell" as a step...
   https://lists.gnu.org/archive/html/help-gnu-emacs/2014-04/msg00030.html
-   - saved in: spydez/dir/docs/issues  hunspell-install/lists.gnu.org_hunspell-Windows_a-fully-working-example.txt
+   - saved in: (spydez/path/to-file (spydez/dirky/path :emacs :docs/issues)
+                                     "hunspell-install"
+                                     "lists.gnu.org_hunspell-Windows_a-fully-working-example.txt")
 
 Download Windows binaries:
   https://sourceforge.net/projects/ezwinports/

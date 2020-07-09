@@ -69,7 +69,7 @@ auto-complete to have pity is my game."
   ;; Want my snippets at the front of the list (ahead of yasnippet-snippets')
   ;; Currently this goes:
   ;;   mine, yasnippet's snippets dir, yasnippet-snippets' dir.
-  (add-to-list 'yas-snippet-dirs spydez/dir/yasnippets)
+  (add-to-list 'yas-snippet-dirs (spydez/dirky/path :emacs :yasnippets))
 
   ;; Get rid of `yas-expand' binding on TAB. Cannot do this from the `:bind'
   ;; section, annoyingly. And other annoyinglies as well. See:

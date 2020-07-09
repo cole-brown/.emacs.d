@@ -156,10 +156,10 @@
 
 ;; Bare minimum in the Load-Path for finding bootstrapping files:
 ;; Add in order of more-overridable/less-specific.
-(add-to-list 'load-path spydez/dir/init/boot)    ;; "all systems" stuff
-(add-to-list 'load-path spydez/dir/dev/defaults) ;; "system defaults" stuff
+(add-to-list 'load-path (spydez/dirky/path :load-path :boot))         ;; "all systems" stuff
+(add-to-list 'load-path (spydez/dirky/path :load-path :dev/defaults)) ;; "system defaults" stuff
 ;; Could add a domain level if needed?
-(add-to-list 'load-path spydez/dir/dev/system-this) ;; most specific
+(add-to-list 'load-path (spydez/dirky/path :load-path :dev/system))   ;; most specific
 
 (spydez/init/step/set-completed 'zeroth 'system)
 

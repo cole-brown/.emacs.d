@@ -185,9 +185,10 @@ in.
   :custom
   ;;-------
   (taskspace/type :noteless)
-  (taskspace/dir/remote-notes (spydez/path/to-dir spydez/dir/roam
-                                                  "taskspace"
-                                                  spydez/dev/system/hash))
+  (taskspace/dir/remote-notes (spydez/path/to-dir
+                               (spydez/dirky/path :default :roam)
+                               "taskspace"
+                               spydez/dev/domain/name))
   (taskspace/datetime/format spydez/datetime/format/yyyy-mm-dd)
   ;; (taskspace/shell-fn #'shell) ;; leave as default
   (taskspace/dir spydez/dir/taskspace-root)

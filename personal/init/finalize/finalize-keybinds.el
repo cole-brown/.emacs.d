@@ -65,15 +65,15 @@
     ;; dying on.
     ;; Yay...
     "
-^Signatures^                           | ^Org-Mode^             | ^Sig/TODO Search^         | ^Align^
-^----------^---------------------------+-^--------^-------------+-^---------------^---------+-^-----^-----------------------
-_/_:   ?/?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _n_: New Journal Entry | _s m_: ?s m?^^^^^^^^^^^^^ | _; a_: Align Region Before...
-_-_:   ?-?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _v_: Visit Journal     | _s s_: Search...          | _; o_: Align Region After....
-_m_:   ?m?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    | ^   ^                     | _; ;_: Align Regexp...
-_t_:   ?t?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _p_: Pomodoro History  | ^   ^                     | _; q_: Complex Align Regexp...
-_c_:   ?c?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _r_: Pomodoro Start    | ^   ^                     | _a_:   Align Region
-_h_:   ?h?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    | ^   ^                     | _'_:   Align Current
-_g_:   ?g?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^ ^                    |
+^Signatures^                           | ^Org-Mode^                      | ^Sig/TODO Search^         | ^Align^
+^----------^---------------------------+-^--------^----------------------+-^---------------^---------+-^-----^-----------------------
+_t c_: ?t c?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _h n_: (home) New Journal Entry | _s m_: ?s m?^^^^^^^^^^^^^ | _; a_: Align Region Before...
+_t t_: ?t t?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _h v_: (home) Visit Journal     | _s s_: Search...          | _; o_: Align Region After....
+_t g_: ?t g?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _w n_: (work) New Journal Entry | ^   ^                     | _; ;_: Align Regexp...
+_t h_: ?t h?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _w v_: (work) Visit Journal     | ^   ^                     | _; q_: Complex Align Regexp...
+_n n_: ?n n?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| ^   ^                           | ^   ^                     | _a_:   Align Region
+_n s_: ?n s?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _p h_: Pomodoro History         | ^   ^                     | _'_:   Align Current
+_n m_: ?n m?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^| _p s_: Pomodoro Start           |
 _e w_: ?e w?
 _e c_: ?e c?
 _e p_: ?e p?
@@ -98,40 +98,41 @@ _e p_: ?e p?
     ;;-------------------------------------------------------------------------
 
     ;;---
-    ;; Normal Signatures
-    ;;---
-    ("/" (spydez/signature/insert spydez/signature/short-pre)
-     (format "%-5s %-26s" "sig:" spydez/signature/short-pre))
-    ("-" (spydez/signature/insert spydez/signature/name-post)
-     (format "%-5s %-26s" "sig:" spydez/signature/name-post))
-
-    ;; just a mark char
-    ("m" (spydez/signature/insert spydez/signature/char)
-     (format "%-5s %-26s" "mark:" spydez/signature/char))
-
-    ;;---
     ;; TODO Signatures
     ;;---
 
     ;; Timestamped
-    ("t" (insert (spydez/signature/todo/timestamp t))
-     (format "%-5s %-26s" "sig:" (spydez/signature/todo/timestamp t)))
-    ("c" (mis/comment/unless (insert (spydez/signature/todo/comment t)))
+    ("t c" (mis/comment/unless (insert (spydez/signature/todo/comment t)))
      (apply #'format "%-5s %-26s"
                      (if (mis/comment/ignore)
                          '("" "  (N/A for Major Mode)")
-                       `("comm:"
+                       `("todo:"
                          ,(spydez/signature/todo/comment t)))))
+    ("t t" (insert (spydez/signature/todo/timestamp t))
+     (format "%-5s %-26s" "todo:" (spydez/signature/todo/timestamp t)))
 
     ;; Bare
-    ("h" (insert (spydez/signature/todo/timestamp nil))
-     (format "%-5s %-26s" "sig:" (spydez/signature/todo/timestamp nil)))
-    ("g" (mis/comment/unless (insert (spydez/signature/todo/comment nil)))
+    ("t g" (mis/comment/unless (insert (spydez/signature/todo/comment nil)))
      (apply #'format "%-5s %-26s"
                      (if (mis/comment/ignore)
                          '("" "  (N/A for Major Mode)")
-                       `("comm:"
+                       `("todo:"
                          ,(spydez/signature/todo/comment nil)))))
+    ("t h" (insert (spydez/signature/todo/timestamp nil))
+     (format "%-5s %-26s" "todo:" (spydez/signature/todo/timestamp nil)))
+
+    ;;---
+    ;; Normal Signatures
+    ;;---
+    ("n n" (spydez/signature/insert spydez/signature/short-pre)
+     (format "%-5s %-26s" "note:" spydez/signature/short-pre))
+    ("n s" (spydez/signature/insert spydez/signature/name-post)
+     (format "%-5s %-26s" "note:" spydez/signature/name-post))
+
+    ;; just a mark char
+    ("n m" (spydez/signature/insert spydez/signature/char)
+     (format "%-5s %-26s" "mark:" spydez/signature/char))
+
 
     ;;---
     ;; Email Addresses
@@ -152,16 +153,23 @@ _e p_: ?e p?
     ;;---
     ;; Org-Journal
     ;;---
-    ("n" org-journal-new-entry)
-    ("v" (funcall org-journal-find-file
-                  (org-journal-get-entry-path)))
+    ("h n" (spydez/dev/domain/with "home"
+             (org-journal-new-entry nil)))
+    ("h v" (spydez/dev/domain/with "home"
+             (funcall org-journal-find-file
+              (org-journal-get-entry-path))))
+    ("w n" (spydez/dev/domain/with "work"
+             (org-journal-new-entry nil)))
+    ("w v" (spydez/dev/domain/with "work"
+             (funcall org-journal-find-file
+              (org-journal-get-entry-path))))
 
     ;;-----------------------------------------------------------------------
     ;; Redtick Pomodoro Timer
     ;;-----------------------------------------------------------------------
 
-    ("p" (find-file redtick-history-file))
-    ("r" (funcall #'redtick))
+    ("p h" (find-file redtick-history-file))
+    ("p s" (funcall #'redtick))
 
     ;;-------------------------------------------------------------------------
     ;; Search

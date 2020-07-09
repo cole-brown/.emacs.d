@@ -245,7 +245,9 @@ For the transition, maybe a func for checking..."
 ;; ;; Some packages want to write to our custom file, so set that up first. An
 ;; ;; unadorned filename (just "custom.el") wasn't getting picked up as the custom
 ;; ;; file, so expanded:
-;; (setq custom-file (spydez/path/to-file spydez/dir/emacs/personal "custom.el"))
+;; (setq custom-file (spydez/path/to-file
+;;                    (spydez/dirky/path :load-path :personal)
+;;                    "custom.el"))
 ;; ;; May need a better setter if custom-file needs adjusted per computer...
 ;; ;;
 ;; ;; Possibly move custom-file setting up, and loading down below loading of

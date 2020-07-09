@@ -247,7 +247,7 @@ Feature, if needed: Check more maps than just global?"
 ;; Performance: (Very) Long Lines
 ;;------------------------------------------------------------------------------
 
-;; See in spydez/dir/docs/notes
+;; See in (spydez/dirky/path :emacs :docs/notes)
 ;;   - performance.long-lines.org
 ;;   - performance.long-lines.example.log
 
@@ -272,7 +272,7 @@ Feature, if needed: Check more maps than just global?"
 ;; too-long-lines-mode to enable the mode globally."
 (use-package too-long-lines-mode
   ;; have it specify that it's in the manual package archive dir
-  :load-path spydez/dir/packages/manual
+  :load-path (lambda () (spydez/dirky/path :init :packages/manual))
   ;; May want a "version" on the file?
   ;; For now... I downloaded that on [2019-02-25 Mon].
 

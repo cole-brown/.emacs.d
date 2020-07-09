@@ -47,7 +47,8 @@
   "Returns a string which is fully expanded path to issue file.
 Also copies it to the clipboard and puts it in *Messages*, unless
 quiet arg is non-nil."
-  (let ((path (spydez/path/to-file spydez/dir/docs/issues issue-dir file-name)))
+  (let ((path (spydez/path/to-file (spydez/dirky/path :emacs :docs/issues)
+                                   issue-dir file-name)))
     (unless quiet
       (with-temp-buffer
         (insert path)

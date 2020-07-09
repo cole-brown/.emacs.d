@@ -145,7 +145,7 @@ I believe I hadn't gotten to the root at this point, because I am confused (or w
   ;;   "Region whose highlighting depends on `whitespace-point'.")
   ;;
   ;; NOTE: Have started an issue/bug at:
-  ;;   (spydez/path/to-file spydez/dir/docs/issues "whitespace-and-butler" "bug-info.outdated.el")
+  ;;   (spydez/path/to-file (spydez/dirky/path :emacs :docs/issues) "whitespace-and-butler" "bug-info.outdated.el")
   ;;   also:
   ;;    https://www.reddit.com/r/emacs/comments/ctlxxp/whitespacemode_and_wsbutler_bug_help/
   ;;---

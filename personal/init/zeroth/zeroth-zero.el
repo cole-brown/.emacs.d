@@ -77,12 +77,14 @@ Emacs is first idle.")
 absolute, or relative in C source, or nil if unknown.
 
 If used on only my code with nil PATH-ALIST, returns relative to
-`spydez/dir/emacs/personal', to `spydez/dir/secrets', or nil.
+`(spydez/dirky/path :load-path :personal)', to
+`(spydez/dirky/path :secrets :secrets.d)', or nil.
 
 If cannot find a path for SYMBOL, will try to use LOCATION as a backup."
   (let ((path (cdr (find-function-library symbol)))
         (roots-list (or roots-list
-                        (list spydez/dir/emacs/personal spydez/dir/secrets))))
+                        (list (spydez/dirky/path :load-path :personal)
+                              (spydez/dirky/path :secrets :secrets.d)))))
     (cond
      ;; no path, but have a (backup) location
      ((and (not path)
@@ -138,11 +140,12 @@ If cannot find a path for SYMBOL, will try to use LOCATION as a backup."
 ;; §-TODO-§ [2019-10-11]: Move and rename? Actually, may need to leave here...
 ;; but rename?
 (defun spydez/function/insert-location ()
-  "Insert path relative to `spydez/dir/emacs/personal', as quoted string, at point."
+  "Insert path relative to `(spydez/dirky/path :load-path :personal)',
+as quoted string, at point."
   (interactive)
   (insert ?\"
           (spydez/path/to-relative (buffer-file-name)
-                                   spydez/dir/emacs/personal)
+                                   (spydez/dirky/path :load-path :personal))
           ?\"))
 
 

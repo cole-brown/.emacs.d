@@ -80,7 +80,7 @@ It seems to be the case that an unbalanced number of double quotes will throw of
 I do not know where to even start right now on this...
 
 Go here to poke around:
-  (find-file (spydez/path/to-file spydez/dir/init/config "configure-org-mode.el"))
+  (find-file (spydez/path/to-file (spydez/dirky/path :load-path :config) "configure-org-mode.el"))
 * Find offender?
 
 - emacs --no-init & manual hunt?

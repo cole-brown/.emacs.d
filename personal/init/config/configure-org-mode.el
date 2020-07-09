@@ -760,7 +760,7 @@ So in the non-nil TO-LOWER case, we will return 'value' if asked for:
   ;; TODO: default to home or org-docs dir? would probably need to def org-docs
   ;; in .emacs.d if defaulting to it...
   ;; (org-journal-dir (spydez/path/to-dir spydez/dir/org-docs "logbook"))
-  (org-journal-dir (spydez/path/to-dir spydez/dir/home "logbook"))
+  (org-journal-dir (spydez/dirky/path nil :logbook))
 
   ;; Tack day name onto our format for the org-journal headline.
   ;; Could put in date-and-time.el with other formats, but I don't think it's a
@@ -807,7 +807,8 @@ So in the non-nil TO-LOWER case, we will return 'value' if asked for:
 ;; Trial: [2020-02-13]
 (use-package org-roam
   :load-path (lambda () (spydez/path/to-dir
-                         spydez/dir/packages/git-submodules "org-roam"))
+                         (spydez/dirky/path :init :packages/submodules)
+                         "org-roam"))
   :after org
   :demand t
 
@@ -846,7 +847,7 @@ It uses TITLE and the current timestamp to form a unique title."
 
   ;; Every org file within this directory tree root is part of
   ;; the org-roam ecosystem.
-  (org-roam-directory spydez/dir/roam)
+  (org-roam-directory (spydez/dirky/path :default :roam))
 
   (org-roam-buffer (spydez/buffer/special-name "lily" nil :info))
 
@@ -895,7 +896,7 @@ It uses TITLE and the current timestamp to form a unique title."
   (deft-recursive t)
   (deft-use-filter-string-for-filename t)
   (deft-default-extension "org")
-  (deft-directory spydez/dir/roam)
+  (deft-directory (spydez/dirky/path :default :roam))
   (deft-use-filename-as-title t))
 
 

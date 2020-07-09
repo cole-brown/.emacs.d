@@ -22,7 +22,7 @@
  ((bound-and-true-p spydez/bootstrap/system/known-p)
 
   ;; system's dir exists or system doesn't need special setup here.
-  (if (or (file-exists-p spydez/dir/dev/system-this)
+  (if (or (file-exists-p (spydez/dirky/path :load-path :dev/system))
           (not spydez/dev/setup/additional-required))
       ;; a-ok - no need to do anything
       (spydez/init/step/set-completed 'bootstrap '(system specific))
@@ -34,17 +34,18 @@
      spydez/dev/system/name
      (if spydez/dev/setup/additional-required
          "(more setup required?)"
-       (format "(setup file missing: %s" spydez/dir/dev/system-this)))
+       (format "(setup file missing: %s" (spydez/dirky/path :load-path :dev/system))))
     (spydez/init/step/set-completed 'bootstrap '(system default))))
  ;;!!!!!
  ;; AFTER SETUP IN master-list.el ONLY!
  ;;   If you need to create the system's dir for additional-setup, put cursor
  ;; after closing parenthesis and eval with C-x C-e
  ;;---
- ;; (make-directory spydez/dir/dev/system-this)
+ ;; (make-directory (spydez/dirky/path :load-path :dev/system))
  ;;---
  ;; Creates the dir, fails if no parent.
- ;; Parent is probably spydez/dir/emacs/personal and should exist manually.
+ ;; Parent is probably (spydez/dirky/path :load-path :personal) and
+ ;; should exist manually.
  ;;!!!!!
 
 
@@ -58,7 +59,7 @@
   (mis/warning
    nil nil
    "Hello there from bootstrap-system. This system needs added to: '%s'"
-   (spydez/path/to-file spydez/dir/personal/dev "master-list.el"))
+   (spydez/path/to-file (spydez/dirky/path :load-path :devices) "master-list.el"))
 
   ;; Make sure these are correct:
   (mis/warning
@@ -74,10 +75,10 @@
   ;; Then make sure these folders/files are correct/exist:
   (mis/warning
    nil nil
-   "  dir/domain: %s" spydez/dir/dev/domain-this)
+   "  dir/domain: %s" (spydez/dirky/path :load-path :dev/domain))
   (mis/warning
    nil nil
-   "  dir/system: %s" spydez/dir/dev/system-this)
+   "  dir/system: %s" (spydez/dirky/path :load-path :dev/system))
 
   ;; And we're only done w/ default bootstrap.
   (spydez/init/step/set-completed 'bootstrap '(system default))))

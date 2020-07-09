@@ -169,7 +169,7 @@
   ;;   - ob-restclient    - for putting the restclient calls into a better notes file?
   )
 
-;; See (spydez/path/to-file spydez/dir/personal/docs "example.restclient")
+;; See (spydez/path/to-file (spydez/dirky/path :emacs :docs) "example.restclient")
 ;; for an example file.
 ;; TODO: move that and unicode.txt into references if we get rid of other people's emacs files...
 
