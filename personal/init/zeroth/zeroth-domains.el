@@ -70,15 +70,39 @@ valid options.
   )
 
 
-(defmacro spydez/dev/domain/with (domain &rest body)
-  "Lexically set `spydez/dev/domain/name' to DOMAIN, then run BODY in that
-lexical context.
+(defmacro spydez/dev/domain/with (name key &rest body)
+  "Lexically set `spydez/dev/domain/name' to NAME and
+`spydez/dirky/domain' to KEY, then run BODY in that lexical
+context.
 "
   (declare (indent defun))
-  `(let ((spydez/dev/domain/name ,domain))
+  `(let ((spydez/dev/domain/name ,name)
+         (spydez/dirky/domain ,key))
      ,@body))
-;; (spydez/dev/domain/with "work"
-;;   (message "%s" spydez/dev/domain/name))
+;; (spydez/dev/domain/with "work" :work
+;;   (message "n: %s, k: %s" spydez/dev/domain/name spydez/dirky/domain))
+
+
+(defmacro spydez/dev/domain/with/home (&rest body)
+  "Lexically set `spydez/dev/domain/name' to \"home\" and
+`spydez/dirky/domain' to `:home', then run BODY in that lexical
+context.
+"
+  (declare (indent defun))
+  `(spydez/dev/domain/with "home" :home ,@body))
+;; (spydez/dev/domain/with/home
+;;   (message "n: %s, k: %s" spydez/dev/domain/name spydez/dirky/domain))
+
+
+(defmacro spydez/dev/domain/with/work (&rest body)
+  "Lexically set `spydez/dev/domain/name' to \"work\" and
+`spydez/dirky/domain' to `:work', then run BODY in that lexical
+context.
+"
+  (declare (indent defun))
+  `(spydez/dev/domain/with "work" :work ,@body))
+;; (spydez/dev/domain/with/work
+;;   (message "n: %s, k: %s" spydez/dev/domain/name spydez/dirky/domain))
 
 
 ;;------------------------------------------------------------------------------

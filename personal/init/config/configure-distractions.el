@@ -138,7 +138,6 @@
   ;; or somewhere.
   ;; TODO: default to home or org-docs dir? would probably need to def org-docs
   ;; in .emacs.d if defaulting to it...
-  ;; (redtick-history-file (spydez/path/to-file spydez/dir/org-docs "logbook"
   (redtick-history-file (spydez/path/to-file (spydez/dirky/path nil :logbook)
                                              "redtick-history.txt")
                         "Default. Overridden in finalize-domain.el?")

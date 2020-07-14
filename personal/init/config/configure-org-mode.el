@@ -135,8 +135,8 @@
   ;;----------------------------------------------------------------------------
   :custom
 
-  ;; could also be `spydez/dir/org-docs' or `spydez/dir/org-docs-dropbox'.
-  (org-directory spydez/dir/org-docs-secrets)
+  ;; could also be `:vault/org' or `:dropbox/org'.
+  (org-directory (spydez/dirky/path :secrets :secrets/org))
   (org-default-notes-file (spydez/path/to-file org-directory "notes.org"))
 
   (org-log-done t "auto-timestamp when TODOs are turned to DONE state")
@@ -420,8 +420,9 @@
   :demand t
 
   :custom
-  (org-contacts-files (spydez/path/to-file spydez/dir/org-docs-secrets
-                                           "contacts.org"))
+  (org-contacts-files (spydez/path/to-file
+                       (spydez/dirky/path :secrets :secrets/org)
+                       "contacts.org"))
 
   :config
   ;; §-TODO-§ [2019-10-14]: get Org-Contacts working...
@@ -759,7 +760,6 @@ So in the non-nil TO-LOWER case, we will return 'value' if asked for:
   ;; or somewhere.
   ;; TODO: default to home or org-docs dir? would probably need to def org-docs
   ;; in .emacs.d if defaulting to it...
-  ;; (org-journal-dir (spydez/path/to-dir spydez/dir/org-docs "logbook"))
   (org-journal-dir (spydez/dirky/path nil :logbook))
 
   ;; Tack day name onto our format for the org-journal headline.

@@ -78,7 +78,8 @@ into `spydez/dirky/keys' if it is not present. Otherwise an error
 is raised.
 "
   ;; Get the keybase list that we'll be inserting into.
-  (let ((base (assoc :init spydez/dirky/keys))
+  (let ((keybase (or keybase spydez/dirky/domain))
+	(base (assoc :init spydez/dirky/keys))
         (element (list dirkey value comment)))
     ;; Add keybase to dirky if needed/allowed.
     (if (not base)
@@ -163,7 +164,7 @@ Return FALLBACK (default nil) if nothing found.
 
 (defun spydez/dirky/resolve (keybase &rest elements)
   "Resolves all ELEMENTS - strings and dirky keywords in
-`spydez/dir/keywords' expected.
+`spydez/dirky/keys' expected.
 
 KEYBASE is used for all elements that are not strings (uses
 `spydez/dirky/get' to try to resolve those).
@@ -213,7 +214,7 @@ KEYBASE is used for all elements that are not strings (uses
 
 (defun spydez/dirky/path (keybase &rest elements)
   "Build a path based on ELEMENTS, which should either be paths, path fragments,
-dir names, or keywords in `spydez/dir/keywords'.
+dir names, or keywords in `spydez/dirky/keys'.
 
 KEYBASE is used for all elements that are not strings (uses
 `spydez/dirky/get' to try to resolve those).

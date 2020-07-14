@@ -153,14 +153,14 @@ _e p_: ?e p?
     ;;---
     ;; Org-Journal
     ;;---
-    ("h n" (spydez/dev/domain/with "home"
+    ("h n" (let ((org-journal-dir (spydez/dirky/path :home :logbook)))
              (org-journal-new-entry nil)))
-    ("h v" (spydez/dev/domain/with "home"
+    ("h v" (let ((org-journal-dir (spydez/dirky/path :home :logbook)))
              (funcall org-journal-find-file
               (org-journal-get-entry-path))))
-    ("w n" (spydez/dev/domain/with "work"
+    ("w n" (let ((org-journal-dir (spydez/dirky/path :work :logbook)))
              (org-journal-new-entry nil)))
-    ("w v" (spydez/dev/domain/with "work"
+    ("w v" (let ((org-journal-dir (spydez/dirky/path :work :logbook)))
              (funcall org-journal-find-file
               (org-journal-get-entry-path))))
 

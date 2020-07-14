@@ -159,8 +159,6 @@ For the transition, maybe a func for checking..."
 
     ;; Self-police if we don't have no-littering.
     (not (featurep 'no-littering))
-    ;; TODO: Also t if in spydez/dir/personal?
-    ;;   - Don't care about this case right now.
   ))
 
 

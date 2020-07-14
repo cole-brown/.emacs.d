@@ -199,7 +199,7 @@
 
 ;; NOTE: these are all higher priority than any .emacs.d path, right now,
 ;; so take care.
-;; Leaving Off: spydez/dir/secrets/dev
+;; Leaving Off: secrets dev
 (add-to-list 'load-path (spydez/dirky/path :secrets :dev/defaults))
 (add-to-list 'load-path (spydez/dirky/path :secrets :classified))
 (add-to-list 'load-path (spydez/dirky/path :secrets :dev/domains))

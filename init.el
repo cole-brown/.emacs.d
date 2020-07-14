@@ -412,7 +412,7 @@
 
 ;; Cross-platform dir and file names:
 ;;   http://www.gnu.org/software/emacs/manual/html_node/elisp/Directory-Names.html#Directory-Names
-;; Helpers in "spydez/path/*", and dir names are "spydez/dir/*".
+;; Helpers in "spydez/path/*" and "spydez/dirky/*".
 
 
 ;;----------------------------------------------------------------------------;;
@@ -524,14 +524,6 @@
 ;; Misc Stuff
 ;;---
 (spydez/require 'bootstrap-consts)
-
-;; TODO: just delete? configure-crypt does not care about this anymore, I don't think...
-;; TODO: move this to configure-crypt? And/or rejigger configure-crypt so some can happen soon enough for this to be happy actually loading a file.
-;; Load sensitive information from outside of .emacs.d
-;;(if (bound-and-true-p spydez/dir/doc-save-common)
-;;    (when (not (load (spydez/path/to-file spydez/dir/doc-save-common ".emacs.secrets") 'noerror))
-;;      (mis/warning nil :debug "No secrets to load."))
-;;  (mis/warning nil nil "No secrets loaded. Do not know where to look. '%s' undefined." 'spydez/dir/doc-save-common))
 
 
 ;;---

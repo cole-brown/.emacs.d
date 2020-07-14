@@ -19,7 +19,7 @@
 ;; org-protocol set up in configure-org-mode.el
 
 (defconst spydez/file/org/web-bookmarks
-  (spydez/path/to-file spydez/dir/org-docs-secrets "web-bookmarks.org")
+  (spydez/path/to-file (spydez/dirky/path :secrets :secrets/org) "web-bookmarks.org")
   "Org-Mode file for web bookmarksfile.")
 
 ;; Does this work now?
@@ -27,7 +27,10 @@
 ;; https://orgmode.org/manual/Template-expansion.html#Template-expansion
 (add-to-list 'org-capture-templates
              `("w" "Web Bookmark Capture" entry
-               (file+headline spydez/file/org/web-bookmarks "INBOX")
+               (file+headline (spydez/path/to-file
+                               (spydez/dirky/path :secrets :secrets/org)
+                               "web-bookmarks.org")
+                              "INBOX")
                ,(concat "* %a" ;; title line: org-link of URL/Title
                        "\n\n"  ;; blank line
 
@@ -121,8 +124,9 @@
 ;;     @="\"C:\\Programme\\Emacs\\emacs\\bin\\emacsclientw.exe\" \"%1\""
 ;;
 ;; Or here is the file:
-;; (spydez/path/to-file spydez/dir/org-docs-secrets
-;;                      "setup-org-bookmark-protocol.reg")
+;;  (spydez/path/to-file
+;;   (spydez/dirky/path :secrets :secrets/org)
+;;   "setup-org-bookmark-protocol.reg")
 ;; NOTE: Open that and update path to emacs executable!!!
 
 

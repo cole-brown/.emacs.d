@@ -191,7 +191,7 @@ in.
                                spydez/dev/domain/name))
   (taskspace/datetime/format spydez/datetime/format/yyyy-mm-dd)
   ;; (taskspace/shell-fn #'shell) ;; leave as default
-  (taskspace/dir spydez/dir/taskspace-root)
+  (taskspace/dir (spydez/dirky/path nil :taskspace))
 
   ;; (taskspace/dir/copy-files-src ...) ;; don't have any right now
 

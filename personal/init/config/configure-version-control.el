@@ -313,8 +313,8 @@
 
 (defcustom spydez/dir/git/auto-commit-locations
   (list
-   spydez/dir/doc-save-secrets
-   spydez/dir/doc-save-vault
+   (spydez/dirky/path :secrets :secrets/docs)
+   (spydez/dirky/path nil :vault/docs)
    (spydez/dirky/path :default :roam))
   "List of strings of directories (TODO: add allowance for single
 files?) to automatically add/commit/push in their respective git
@@ -331,7 +331,7 @@ repos."
    (spydez/dirky/path :default :emacs.d)
    (spydez/dirky/path :secrets :secrets.d)
    (spydez/dirky/path :default :roam)
-   spydez/dir/doc-save-vault)
+   (spydez/dirky/path nil :vault/docs))
   "List of strings of directories (TODO: add allowance for single
 files?) to automatically add/commit/push in their respective git
 repos."
