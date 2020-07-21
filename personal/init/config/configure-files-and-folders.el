@@ -57,6 +57,21 @@
 ;;   (setq ls-lisp-use-localized-time-format t))
 
 
+;; Invert of default 'q' (`quit-window'). 'q' will kill window, and 'C-u q'
+;; will quit and bury it instead.
+(define-key dired-mode-map (kbd "q") #'spydez/window/kill-or-quit)
+
+  ;;---
+  :bind ;; deadgrep-mode-map
+  ;;---
+  (:map deadgrep-mode-map
+        ;; Ok'd: [2019-08-27] -> [2019-09-24]
+        ;; Kill buffer instead of quit.
+        ;; TRIAL: [2019-10-28]
+        ;; kill-or-quit instead of original quit-or-kill?
+        ("q" . kill-this-buffer))
+
+
 ;;---
 ;; peep-dired
 ;;---

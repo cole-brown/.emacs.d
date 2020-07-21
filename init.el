@@ -723,9 +723,6 @@
 ;; Org-Mode: Final Boss of Emacs Major Modes
 (spydez/require 'configure-org-mode)
 
-;; Dired Mode - seems IDE adjacent so it may go into configure-dev-env.
-;;   Putting it there for now.
-;;   - It could go into its own configure-dired though
 ;; Auto-Complete - hippie and dabbrev
 ;; Parenthesis Matching/Delimiters
 ;; Basically stuff that is development/programmer in nature but global or for
