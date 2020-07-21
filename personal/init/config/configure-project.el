@@ -76,14 +76,14 @@
   ;; :delight '(:eval (concat " " (projectile-project-name)))
   ;; ...That doesn't work. Ok then. I guess set it in config.
 
-  ;;---
+  ;;--------------------------
   :bind-keymap
-  ;;---
+  ;;--------------------------
   ("C-c p" . projectile-command-map)
 
-  ;;---
+  ;;--------------------------
   :custom
-  ;;---
+  ;;--------------------------
   ;; mode line: trying this for now:
   ;;   orig: " Projectile[<proj>:<type>]"
   ;;   curr: " P[<proj>:<type>]"
@@ -115,10 +115,11 @@
   ;; I don't have any ignored yet... Maybe `third-party' if dirs can be ignored.
   ;; (add-to-list 'projectile-globally-ignored-files "node-modules")
 
-  ;;---
+  ;;--------------------------
   :config
-  ;;---
+  ;;--------------------------
   (projectile-global-mode))
+
 
 ;; integrate with Helm
 ;; demos and such: https://tuhdo.github.io/helm-projectile.html
@@ -132,6 +133,99 @@
 
 
 ;;------------------------------------------------------------------------------
+;; Bufler - Buffer Management
+;;------------------------------------------------------------------------------
+;; https://www.reddit.com/r/emacs/comments/fatjdw/annrfc_buflerel_group_buffers_into_workspaces/
+;; https://github.com/alphapapa/bufler.el#commands
+;; Trial [2020-03-18]
+(use-package bufler
+  :after helm
+  :demand t
+  ;; bufler is opening an interactive window for something my init is doing right now...
+  ;; :disabled
+
+  ;; ;;--------------------------
+  ;; :custom
+  ;; ;;--------------------------
+
+
+  ;; ;;--------------------------
+  ;; :config
+  ;; ;;--------------------------
+  ;; 
+  ;; ;; bufler-defgroups should go here...
+  ;; ;; (setf bufler-groups (bufler-defgroups ...))
+  )
+
+;; Commands:    https://github.com/alphapapa/bufler.el#commands
+;;   bufler
+;;       Show the Bufler buffer list.
+;;
+;;   bufler-mode
+;;       Enable the Bufler workspace mode, which allows each frame to have a
+;;       chosen workspace from Bufler’s groups.
+;;
+;;   bufler-tabs-mode
+;;       Enable the Bufler workspace tabs mode, which uses tab-bar-mode and
+;;       tab-line-mode from Emacs 27+ to display Bufler workspaces and buffers.
+;;
+;;   bufler-switch-buffer
+;;       Switch to a buffer selected from the frame’s workspace. With prefix,
+;;       select from all buffers. With two prefixes, also set the frame’s
+;;       workspace.
+;;
+;;   bufler-workspace-frame-set
+;;       Set the frame’s workspace. Setting the workspace may be done
+;;       automatically by bufler-switch-buffer, but this command may be used to
+;;       set the workspace to a group containing other groups, after which
+;;       bufler-switch-buffer will present buffers from the selected group and
+;;       its subgroups.
+;;
+;;   bufler-workspace-buffer-set
+;;       Set the current buffer’s workspace name. With prefix, unset it. Note
+;;       that, in order for a buffer to appear in a named workspace, the buffer
+;;       must be matched by an auto-workspace group before any other group.
+
+;; Bindings
+;;
+;; In the Bufler buffer list, these keys are available (use C-h m to get the
+;; most up-to-date listing). They operate on all buffers in the section at
+;; point.
+;;
+;;   ?         : Show key bindings Hydra.
+;;   1 – 4     : Cycle section levels at point.
+;;   M-1 – M-4 : Cycle top-level sections.
+;;   RET       : Switch to buffer.
+;;   SPC       : Peek at buffer, keeping focus in buffer list.
+;;   g         : Refresh Bufler list (with prefix, force updating
+;;             : buffers’ VC state and grouping).
+;;   f         : Set the current frame’s workspace to the group
+;;             : at point (with prefix, unset).
+;;   F         : Make a new frame whose workspace is the group at point.
+;;   N         : Add buffers to named workspace (with prefix, remove from it).
+;;   k         : Kill buffers.
+;;   s         : Save buffers.
+
+
+;; TODO: This is fucking up way back in bootstrap-packages?! Its autoload during `package-initialize' wants helm to be up and running already.
+;;
+;; (use-package helm-bufler
+;;   :after (helm bufler)
+;; 
+;;  :demand t
+;;   ;;---
+;;   :config
+;;   ;;---
+;; 
+;;   ;; hook into Helm
+;;   ;; (helm :sources '(helm-bufler-source))
+;;   (setq helm-mini-default-sources '(helm-source-buffers-list
+;;                                     helm-bufler-source
+;;                                     helm-source-recentf
+;;                                     helm-source-buffer-not-found)))
+
+
+;;------------------------------------------------------------------------------
 ;; Taskspace Manager
 ;;------------------------------------------------------------------------------
 
@@ -139,11 +233,47 @@
   ;; My own personal package - do not package manager it.
   :ensure nil
 
-
-  ;;-------
+  ;;------------------------------
   :init
-  ;;-------
+  ;;------------------------------
 
+
+  ;;---
+  ;; "Home" Domain
+  ;;---
+  (spydez/jerky/set 'custom 'taskspace 'dir 'notes :home
+                    :value (spydez/path/to-dir
+                            (spydez/dirky/path :default :roam)
+                            "taskspace"
+                            (spydez/dirky/domain/key-to-str :home))
+                    :docstr "dir for home taskspace notes")
+
+  (spydez/jerky/set 'custom 'taskspace 'dir 'root :home
+                    :value (spydez/dirky/path :home :taskspace)
+                    :docstr "dir for home taskspace data/files")
+
+  (spydez/jerky/set 'custom 'taskspace 'dir 'root :home
+                    :value (spydez/dirky/path :home :taskspace)
+                    :docstr "dir for home taskspace data/files")
+
+
+  ;;---
+  ;; "Work" Domain
+  ;;---
+  (spydez/jerky/set 'custom 'taskspace 'dir 'notes :work
+                    :value (spydez/path/to-dir
+                            (spydez/dirky/path :default :roam)
+                            "taskspace"
+                            (spydez/dirky/domain/key-to-str :work))
+                    :docstr "dir for home taskspace notes")
+
+  (spydez/jerky/set 'custom 'taskspace 'dir 'root :work
+                    :value (spydez/dirky/path :work :taskspace)
+                    :docstr "dir for home taskspace data/files")
+
+  ;;---
+  ;; Other Init...
+  ;;---
   (defun spydez/taskspace/gen-org-notes (taskname taskpath)
     "NOTE: Could be redefined later for more work-specific details, so check 
 e.g. 'finalize-domain-secret.el' for a redef. Or 'C-h f
@@ -181,9 +311,9 @@ in.
   ;; (spydez/taskspace/gen-org-notes "" "")
 
 
-  ;;-------
+  ;;------------------------------
   :custom
-  ;;-------
+  ;;------------------------------
   (taskspace/type :noteless)
   (taskspace/dir/remote-notes (spydez/path/to-dir
                                (spydez/dirky/path :default :roam)

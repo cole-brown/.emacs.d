@@ -57,6 +57,21 @@
             "'*helpful variable: helm-buffer-max-length*'. "
             "Default was 20. Upping to 30 to see how it goes."))
 
+  ;; These are Helm vars...
+  ;; Do I... do I use these with helm-flx?
+  ;;  Or only when not using helm-flx?
+  ;;    Or what?
+  ;; https://tuhdo.github.io/helm-intro.html
+  (helm-M-x-fuzzy-match                  t)
+  (helm-buffers-fuzzy-matching           t)
+  (helm-completion-in-region-fuzzy-match t)
+  (helm-file-cache-fuzzy-match           t)
+  (helm-imenu-fuzzy-match                t)
+  (helm-mode-fuzzy-match                 t)
+  (helm-locate-fuzzy-match               t)
+  (helm-recentf-fuzzy-match              t)
+  (helm-semantic-fuzzy-match             t)
+
   ;;-----
   :bind ;; global
   ;;-----
@@ -134,80 +149,98 @@
 ;; Helm: Fuzzy Matching
 ;;---
 
-;; "As for the fuzzy matching, look into the "helm-flx" package. It gives you real fuzzy matching, much better than the default helm matching."
-;;   - https://news.ycombinator.com/item?id=11100341
-;; https://github.com/PythonNut/helm-flx
-;; Trial [2019-03-01]
-(use-package helm-flx
-  :after helm
-
-  ;;---
-  :custom
-  ;;---
-
-  ;; "Turn it on"
-  (helm-flx-for-helm-find-files t)
-  (helm-flx-for-helm-locate     t)
-
-  ;; "Make it fuzzy... everywhere."
-
-  ;; These are Helm vars...
-  ;; Do I... do I use these with helm-flx?
-  ;;  Or only when not using helm-flx?
-  ;;    Or what?
-  ;; https://tuhdo.github.io/helm-intro.html
-  (helm-M-x-fuzzy-match                  t)
-  (helm-buffers-fuzzy-matching           t)
-  (helm-completion-in-region-fuzzy-match t)
-  (helm-file-cache-fuzzy-match           t)
-  (helm-imenu-fuzzy-match                t)
-  (helm-mode-fuzzy-match                 t)
-  (helm-locate-fuzzy-match               t)
-  (helm-recentf-fuzzy-match              t)
-  (helm-semantic-fuzzy-match             t)
-
-  ;;---
-  :config
-  ;;---
-
-  ;; and enable
-  (helm-flx-mode +1))
+;; ;; Trial [2020-07-14]: Fail. It can't even compile its elisp file. 
+;; ;; [2020-07-14]: helm-fuzzier broke after a helm update.
+;; ;; Find-files no longer found anything at all.
+;; ;; Commenting out helm-flx and helm-fuzzier for now; trying helm-fuzzy.
+;; (use-package helm-fuzzy
+;;   :after helm
+;; 
+;;   ;;---
+;;   :config
+;;   ;;---
+;; 
+;;   ;; and enable
+;;   (helm-fuzzy-mode +1))
 
 
-;; helm-fuzzier will only enhance matching for sources that have fuzzy-matching
-;; enabled, so be sure to enable fuzzy-matching for the sources you're
-;; interested in by setting the appropriate variable.
-;;   https://github.com/EphramPerdition/helm-fuzzier
-;; Use in conjunction with helm-flx.
-;; Trial [2019-03-01]
-;;   - Yeah this is better.
-;;     - Without flx or fuzzier: M-x helm-projectile RET concom finds nothing.
-;;     - With flx, no fuzzier:   M-x helm-projectile RET concom has *con*fig/*c*onfigure-*o*rg-*m*ode as best.
-;;     - With flx, and fuzzier:  M-x helm-projectile RET concom has config/*con*figure-*com*pletion as best.
-(use-package helm-fuzzier
-  :after helm
+;; [2020-07-14]: helm-fuzzier broke after a helm update.
+;; Find-files no longer found anything at all.
 
-  ;;---
-  :custom
-  ;;---
-  ;; These are also set in my helm-flx config...
-  ;; I don't know if they're needed there, but they are
-  ;; wanted here by helm-fuzzier.
-  (helm-M-x-fuzzy-match                  t)
-  (helm-buffers-fuzzy-matching           t)
-  (helm-completion-in-region-fuzzy-match t)
-  (helm-file-cache-fuzzy-match           t)
-  (helm-imenu-fuzzy-match                t)
-  (helm-mode-fuzzy-match                 t)
-  (helm-locate-fuzzy-match               t)
-  (helm-recentf-fuzzy-match              t)
-  (helm-semantic-fuzzy-match             t)
-
-  ;;---
-  :config
-  ;;---
-
-  (helm-fuzzier-mode 1))
+;; ;; "As for the fuzzy matching, look into the "helm-flx" package. It gives you real fuzzy matching, much better than the default helm matching."
+;; ;;   - https://news.ycombinator.com/item?id=11100341
+;; ;; https://github.com/PythonNut/helm-flx
+;; ;; Trial [2019-03-01]
+;; (use-package helm-flx
+;;   :after helm
+;; 
+;;   ;;---
+;;   :custom
+;;   ;;---
+;; 
+;;   ;; "Turn it on"
+;;   (helm-flx-for-helm-find-files t)
+;;   (helm-flx-for-helm-locate     t)
+;; 
+;;   ;; "Make it fuzzy... everywhere."
+;; 
+;;   ;; These are Helm vars...
+;;   ;; Do I... do I use these with helm-flx?
+;;   ;;  Or only when not using helm-flx?
+;;   ;;    Or what?
+;;   ;; https://tuhdo.github.io/helm-intro.html
+;;   (helm-M-x-fuzzy-match                  t)
+;;   (helm-buffers-fuzzy-matching           t)
+;;   (helm-completion-in-region-fuzzy-match t)
+;;   (helm-file-cache-fuzzy-match           t)
+;;   (helm-imenu-fuzzy-match                t)
+;;   (helm-mode-fuzzy-match                 t)
+;;   (helm-locate-fuzzy-match               t)
+;;   (helm-recentf-fuzzy-match              t)
+;;   (helm-semantic-fuzzy-match             t)
+;; 
+;;   ;;---
+;;   :config
+;;   ;;---
+;; 
+;;   ;; and enable
+;;   (helm-flx-mode +1))
+;;  
+;;  
+;; ;; helm-fuzzier will only enhance matching for sources that have fuzzy-matching
+;; ;; enabled, so be sure to enable fuzzy-matching for the sources you're
+;; ;; interested in by setting the appropriate variable.
+;; ;;   https://github.com/EphramPerdition/helm-fuzzier
+;; ;; Use in conjunction with helm-flx.
+;; ;; Trial [2019-03-01]
+;; ;;   - Yeah this is better.
+;; ;;     - Without flx or fuzzier: M-x helm-projectile RET concom finds nothing.
+;; ;;     - With flx, no fuzzier:   M-x helm-projectile RET concom has *con*fig/*c*onfigure-*o*rg-*m*ode as best.
+;; ;;     - With flx, and fuzzier:  M-x helm-projectile RET concom has config/*con*figure-*com*pletion as best.
+;; (use-package helm-fuzzier
+;;   :after helm
+;; 
+;;   ;;---
+;;   :custom
+;;   ;;---
+;;   ;; These are also set in my helm-flx config...
+;;   ;; I don't know if they're needed there, but they are
+;;   ;; wanted here by helm-fuzzier.
+;;   (helm-M-x-fuzzy-match                  t)
+;;   (helm-buffers-fuzzy-matching           t)
+;;   (helm-completion-in-region-fuzzy-match t)
+;;   (helm-file-cache-fuzzy-match           t)
+;;   (helm-imenu-fuzzy-match                t)
+;;   (helm-mode-fuzzy-match                 t)
+;;   (helm-locate-fuzzy-match               t)
+;;   (helm-recentf-fuzzy-match              t)
+;;   (helm-semantic-fuzzy-match             t)
+;; 
+;;   ;;---
+;;   :config
+;;   ;;---
+;; 
+;;   (helm-fuzzier-mode 1))
 
 
 ;;---
@@ -437,99 +470,6 @@
 
 ;; Do we leave hippie and M-/ as one thing, and company as a totally different
 ;; thing? Think I'll try that for now.
-
-
-;;------------------------------------------------------------------------------
-;; Bufler - Buffer Management
-;;------------------------------------------------------------------------------
-;; https://www.reddit.com/r/emacs/comments/fatjdw/annrfc_buflerel_group_buffers_into_workspaces/
-;; https://github.com/alphapapa/bufler.el#commands
-;; Trial [2020-03-18]
-(use-package bufler
-  :after helm
-  :demand t
-  ;; bufler is opening an interactive window for something my init is doing right now...
-  ;; :disabled
-
-  ;; ;;---
-  ;; :custom
-  ;; ;;---
-
-
-  ;; ;;---
-  ;; :config
-  ;; ;;---
-  ;; 
-  ;; ;; bufler-defgroups should go here...
-  ;; ;; (setf bufler-groups (bufler-defgroups ...))
-  )
-
-;; Commands:    https://github.com/alphapapa/bufler.el#commands
-;;   bufler
-;;       Show the Bufler buffer list.
-;;
-;;   bufler-mode
-;;       Enable the Bufler workspace mode, which allows each frame to have a
-;;       chosen workspace from Bufler’s groups.
-;;
-;;   bufler-tabs-mode
-;;       Enable the Bufler workspace tabs mode, which uses tab-bar-mode and
-;;       tab-line-mode from Emacs 27+ to display Bufler workspaces and buffers.
-;;
-;;   bufler-switch-buffer
-;;       Switch to a buffer selected from the frame’s workspace. With prefix,
-;;       select from all buffers. With two prefixes, also set the frame’s
-;;       workspace.
-;;
-;;   bufler-workspace-frame-set
-;;       Set the frame’s workspace. Setting the workspace may be done
-;;       automatically by bufler-switch-buffer, but this command may be used to
-;;       set the workspace to a group containing other groups, after which
-;;       bufler-switch-buffer will present buffers from the selected group and
-;;       its subgroups.
-;;
-;;   bufler-workspace-buffer-set
-;;       Set the current buffer’s workspace name. With prefix, unset it. Note
-;;       that, in order for a buffer to appear in a named workspace, the buffer
-;;       must be matched by an auto-workspace group before any other group.
-
-;; Bindings
-;;
-;; In the Bufler buffer list, these keys are available (use C-h m to get the
-;; most up-to-date listing). They operate on all buffers in the section at
-;; point.
-;;
-;;   ?         : Show key bindings Hydra.
-;;   1 – 4     : Cycle section levels at point.
-;;   M-1 – M-4 : Cycle top-level sections.
-;;   RET       : Switch to buffer.
-;;   SPC       : Peek at buffer, keeping focus in buffer list.
-;;   g         : Refresh Bufler list (with prefix, force updating
-;;             : buffers’ VC state and grouping).
-;;   f         : Set the current frame’s workspace to the group
-;;             : at point (with prefix, unset).
-;;   F         : Make a new frame whose workspace is the group at point.
-;;   N         : Add buffers to named workspace (with prefix, remove from it).
-;;   k         : Kill buffers.
-;;   s         : Save buffers.
-
-
-;; TODO: This is fucking up way back in bootstrap-packages?! Its autoload during `package-initialize' wants helm to be up and running already.
-;;
-;; (use-package helm-bufler
-;;   :after (helm bufler)
-;; 
-;;  :demand t
-;;   ;;---
-;;   :config
-;;   ;;---
-;; 
-;;   ;; hook into Helm
-;;   ;; (helm :sources '(helm-bufler-source))
-;;   (setq helm-mini-default-sources '(helm-source-buffers-list
-;;                                     helm-bufler-source
-;;                                     helm-source-recentf
-;;                                     helm-source-buffer-not-found)))
 
 
 ;;------------------------------------------------------------------------------

@@ -5,8 +5,6 @@
 ;;--                             We have Themes.                              --
 ;;----------------------------Why not a Theme Song?-----------------------------
 
-(require 'dash)
-
 (require 'mis2-utils)
 
 

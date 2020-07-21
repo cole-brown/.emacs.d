@@ -79,7 +79,7 @@ is raised.
 "
   ;; Get the keybase list that we'll be inserting into.
   (let ((keybase (or keybase spydez/dirky/domain))
-	(base (assoc :init spydez/dirky/keys))
+        (base (assoc :init spydez/dirky/keys))
         (element (list dirkey value comment)))
     ;; Add keybase to dirky if needed/allowed.
     (if (not base)
@@ -233,9 +233,25 @@ KEYBASE is used for all elements that are not strings (uses
 ;; (spydez/dirky/path nil :logbook)
 
 
+(defun spydez/dirky/domain/key-to-str (keybase)
+  "Returns domain string paired with domain key in `spydez/dev/domains', or nil
+if none found.
+"
+  (nth 0 (alist-get keybase spydez/dev/domains)))
+;; (spydez/dirky/domain/key-to-str :home)
+;; (spydez/dirky/domain/key-to-str :jeff)
+
+
 ;;------------------------------------------------------------------------------
 ;; Constants / Vars
 ;;------------------------------------------------------------------------------
+
+(defvar spydez/dev/domains
+  '((:home "home")
+    (:work "work"))
+  "All known domains in the known universe.
+")
+
 
 (defvar spydez/dirky/domain :default
   "A 'default' domain to use if the KEYBASE arg is nil.
@@ -326,8 +342,12 @@ You'll probably set it in 'master-list.el'.
                '(:devices "defaults")
                "All of my optional/default setup elisp files...")
 
+         (list :dev/domains
+               '(:devices "domains")
+               "Anything for multiple domains.")
+
          (list :dev/domain
-               '(:devices "domains" spydez/dev/domain/name)
+               '(:dev/domains spydez/dev/domain/name)
                (concat "Anything that has to be domain specific. "
                        "Tab widths or whatnot."))
 

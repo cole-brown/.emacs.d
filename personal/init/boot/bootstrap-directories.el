@@ -125,6 +125,9 @@
 (add-to-list 'load-path (spydez/path/to-dir
                          (spydez/dirky/path :load-path :personal/packages)
                          "taskspace"))
+(add-to-list 'load-path (spydez/path/to-dir
+                         (spydez/dirky/path :load-path :personal/packages)
+                         "jerky"))
 
 ;; Need these ordered for overrides to work correctly, so don't just do the
 ;; dirky list in whatever order it's in.
@@ -148,8 +151,7 @@
 (add-to-list 'load-path (spydez/dirky/path :load-path :finalize))
 
 ;; Overrides start here. Most specific to this computer last.
-;; Don't have anything here now... skipping: .emacs.d/personal/dev/domains/
-;; (add-to-list 'load-path (spydez/dirky/path :load-path :domains))
+(add-to-list 'load-path (spydez/dirky/path :load-path :dev/domains))
 ;; Don't have anything here now... skipping: .emacs.d/personal/dev/computers
 ;; (add-to-list 'load-path (spydez/dirky/path :load-path :systems))
 (add-to-list 'load-path (spydez/dirky/path :load-path :dev/domain))

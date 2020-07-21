@@ -617,8 +617,8 @@
 ;; Also, now, useful non-interactive functions used in init.
 (spydez/require 'mis) ;; This should already be loaded by early-init, so no-op?
 (add-to-list 'load-path (spydez/path/to-dir
-			 (spydez/dirky/path :load-path :personal/packages)
-			 "mis-2"))
+                         (spydez/dirky/path :load-path :personal/packages)
+                         "mis-2"))
 ;;------------------------------------------------------------------------------
 ;;
 ;; §-TODO-§ [2020-04-06]: temp while mis2 still a WIP
@@ -705,6 +705,9 @@
 ;; TODO-maybe-as-well: multiple git users (work, personal) for magit/github
 ;;   good instructions so it's easy to setup in order to download .emacs.d from
 ;;   github repo next time.
+
+;; Load up my stupid work-from-home-computer work-around...
+(spydez/require 'configure-domains)
 
 ;; For moving around in and messing with text via or at point and/or mark.
 ;; Hi Mark.
@@ -1014,3 +1017,4 @@
 ;;---------------------------------------------------------------------------;;
 ;;----                                                                   ----;;
 ;;------                            (~fin~)                            ------;;
+

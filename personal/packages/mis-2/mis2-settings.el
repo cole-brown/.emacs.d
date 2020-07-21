@@ -7,7 +7,6 @@
 
 
 (require 'dash)
-(require 's)
 
 ;; §-TODO-§ [2020-03-18]: Rename this mis2-configuration.el? mis2-config.el?
 ;; Break into 2 files? Keep all here?
