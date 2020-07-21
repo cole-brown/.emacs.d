@@ -153,14 +153,22 @@ _e p_: ?e p?
     ;;---
     ;; Org-Journal
     ;;---
-    ("h n" (let ((org-journal-dir (spydez/dirky/path :home :logbook)))
+    ("h n" (let ((org-journal-dir (spydez/dirky/path :home :logbook))
+                 (org-journal-file-format
+                  (spydez/jerky/get 'custom 'org-journal 'filename :home)))
              (org-journal-new-entry nil)))
-    ("h v" (let ((org-journal-dir (spydez/dirky/path :home :logbook)))
+    ("h v" (let ((org-journal-dir (spydez/dirky/path :home :logbook))
+                 (org-journal-file-format
+                  (spydez/jerky/get 'custom 'org-journal 'filename :home)))
              (funcall org-journal-find-file
               (org-journal-get-entry-path))))
-    ("w n" (let ((org-journal-dir (spydez/dirky/path :work :logbook)))
+    ("w n" (let ((org-journal-dir (spydez/dirky/path :work :logbook))
+                 (org-journal-file-format
+                  (spydez/jerky/get 'custom 'org-journal 'filename :work)))
              (org-journal-new-entry nil)))
-    ("w v" (let ((org-journal-dir (spydez/dirky/path :work :logbook)))
+    ("w v" (let ((org-journal-dir (spydez/dirky/path :work :logbook))
+                 (org-journal-file-format
+                  (spydez/jerky/get 'custom 'org-journal 'filename :work)))
              (funcall org-journal-find-file
               (org-journal-get-entry-path))))
 

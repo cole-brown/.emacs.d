@@ -740,9 +740,31 @@ So in the non-nil TO-LOWER case, we will return 'value' if asked for:
   :after org
   :demand t
 
-  ;; ;;-----
+
+  ;;------------------------------
+  :init
+  ;;------------------------------
+
+  ;;---
+  ;; "Home" Domain
+  ;;---
+  (spydez/jerky/set 'custom 'org-journal 'filename :home
+                    :value (concat spydez/datetime/format/yyyy-mm-dd
+                                   ".notebook.org")
+                    :docstr "`org-journal-file-format' for :home")
+
+  ;;---
+  ;; "Work" Domain
+  ;;---
+  (spydez/jerky/set 'custom 'org-journal 'filename :work
+                    :value (concat spydez/datetime/format/yyyy-mm-dd
+                                   ".logbook.org")
+                    :docstr "`org-journal-file-format' for :work")
+
+
+  ;; ;;------------------------------
   ;; :bind*
-  ;; ;;-----
+  ;; ;;------------------------------
   ;; ;; Force some bindings. ':bind*' overrides minor mode binds.
   ;; ("C-," . spydez/hydra/journal/body)
 
@@ -751,9 +773,9 @@ So in the non-nil TO-LOWER case, we will return 'value' if asked for:
   ;; ;; Trying this binding/hydra out instead.
 
 
-  ;;-----
+  ;;------------------------------
   :custom
-  ;;-----
+  ;;------------------------------
 
   ;; Top dir for org-journals.
   ;; NOTE: Placeholder! Should get overridden in <secrets>/finalize-domain.el
@@ -785,9 +807,9 @@ So in the non-nil TO-LOWER case, we will return 'value' if asked for:
                                    ".journal.org"))
 
 
-  ;;-----
+  ;;------------------------------
   :config
-  ;;-----
+  ;;------------------------------
   ;; move cache to no-littering's /var
   ;; TODO: remove when no-littering updates to catch this.
   (setq org-journal-cache-file
@@ -812,9 +834,9 @@ So in the non-nil TO-LOWER case, we will return 'value' if asked for:
   :after org
   :demand t
 
-  ;;-----
+  ;;------------------------------
   :init
-  ;;-----
+  ;;------------------------------
   (defun spydez/org-roam/file-name/timestamp-title (title)
     "Return a file name (without extension) for new files.
 
@@ -825,14 +847,14 @@ It uses TITLE and the current timestamp to form a unique title."
       (format "%s_%s" timestamp slug)))
 
 
-  ;;-----
+  ;;------------------------------
   :hook
-  ;;-----
+  ;;------------------------------
   (org-mode . org-roam-mode)
 
-  ;;-----
+  ;;------------------------------
   :bind
-  ;;-----
+  ;;------------------------------
   ("C-c n l" . org-roam)
   ("C-c n t" . org-roam-today)
   ("C-c n f" . org-roam-find-file)
@@ -841,9 +863,9 @@ It uses TITLE and the current timestamp to form a unique title."
 
   ;; Could put in grab-bag hydra if desired.
 
-  ;;-----
+  ;;------------------------------
   :custom
-  ;;-----
+  ;;------------------------------
 
   ;; Every org file within this directory tree root is part of
   ;; the org-roam ecosystem.
@@ -869,9 +891,9 @@ It uses TITLE and the current timestamp to form a unique title."
   ;; (org-roam-link-title-format "R:%s")
 
 
-  ;; ;;-----
+  ;; ;;------------------------------
   ;; :config
-  ;; ;;-----
+  ;; ;;------------------------------
   ;; ;; move cache to no-littering's /var
   ;; ;; TODO: remove when no-littering updates to catch this.
   ;; (setq org-journal-cache-file
@@ -904,16 +926,16 @@ It uses TITLE and the current timestamp to form a unique title."
 ;; Org Sticky Headers
 ;;------------------------------------------------------------------------------
 (use-package org-sticky-header
-  ;;-----
+  ;;------------------------------
   :custom
-  ;;-----
+  ;;------------------------------
 
   ;; Child and parent headings are seperated by a /.
   (org-sticky-header-full-path 'full)
 
-  ;;-----
+  ;;------------------------------
   :hook
-  ;;-----
+  ;;------------------------------
   (org-mode . org-sticky-header-mode))
 
 
