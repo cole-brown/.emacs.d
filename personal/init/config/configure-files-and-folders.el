@@ -8,6 +8,10 @@
 ;; Dired
 ;;------------------------------------------------------------------------------
 
+;;------------------------------
+;; Dired Settings / Extras
+;;------------------------------
+
 ;; Extra Dired goodies like 'F' in dired-mode for 'find (open) all marked files'
 (require 'dired-x)
 
@@ -57,24 +61,18 @@
 ;;   (setq ls-lisp-use-localized-time-format t))
 
 
+;;------------------------------
+;; Dired Keybinds
+;;------------------------------
+
 ;; Invert of default 'q' (`quit-window'). 'q' will kill window, and 'C-u q'
 ;; will quit and bury it instead.
 (define-key dired-mode-map (kbd "q") #'spydez/window/kill-or-quit)
 
-  ;;---
-  :bind ;; deadgrep-mode-map
-  ;;---
-  (:map deadgrep-mode-map
-        ;; Ok'd: [2019-08-27] -> [2019-09-24]
-        ;; Kill buffer instead of quit.
-        ;; TRIAL: [2019-10-28]
-        ;; kill-or-quit instead of original quit-or-kill?
-        ("q" . kill-this-buffer))
 
-
-;;---
+;;------------------------------
 ;; peep-dired
-;;---
+;;------------------------------
 ;; For quick look into files/folders at point in dired buffer. Shows in
 ;; `other-window'. Scroll peeped file in `other-window' down/up with
 ;; <space>, <backspace>.
