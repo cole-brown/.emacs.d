@@ -238,45 +238,12 @@
   ;;------------------------------
 
   ;;---
-  ;; "Home" Domain
+  ;; General (Non-Per-Domain) Init...
   ;;---
-  (spydez/jerky/set 'custom 'taskspace 'dir 'notes :home
-                    :value (spydez/path/to-dir
-                            (spydez/dirky/path :default :roam)
-                            "taskspace"
-                            (spydez/dirky/domain/key-to-str :home))
-                    :docstr "dir for home taskspace notes")
-
-  (spydez/jerky/set 'custom 'taskspace 'dir 'root :home
-                    :value (spydez/dirky/path :home :taskspace)
-                    :docstr "dir for home taskspace data/files")
-
-  (spydez/jerky/set 'custom 'taskspace 'dir 'root :home
-                    :value (spydez/dirky/path :home :taskspace)
-                    :docstr "dir for home taskspace data/files")
-
-
-  ;;---
-  ;; "Work" Domain
-  ;;---
-  (spydez/jerky/set 'custom 'taskspace 'dir 'notes :work
-                    :value (spydez/path/to-dir
-                            (spydez/dirky/path :default :roam)
-                            "taskspace"
-                            (spydez/dirky/domain/key-to-str :work))
-                    :docstr "dir for home taskspace notes")
-
-  (spydez/jerky/set 'custom 'taskspace 'dir 'root :work
-                    :value (spydez/dirky/path :work :taskspace)
-                    :docstr "dir for home taskspace data/files")
-
-  ;;---
-  ;; Other Init...
-  ;;---
-  (defun spydez/taskspace/gen-org-notes (taskname taskpath)
-    "NOTE: Could be redefined later for more work-specific details, so check 
+  (defun spydez/taskspace/generate (taskname taskpath)
+    "NOTE: Could be redefined later for more work-specific details, so check
 e.g. 'finalize-domain-secret.el' for a redef. Or 'C-h f
-spydez/taskspace/gen-org-notes' and see what file it's defined
+spydez/taskspace/generate' and see what file it's defined
 in.
 "
     ;; Format:
@@ -307,7 +274,53 @@ in.
             "     ├┼┼┤                             ...                              ├┼┼┤"
             "     └┴┴┴──────────────────────────────────────────────────────────────┴┴┴┘"
             ))
-  ;; (spydez/taskspace/gen-org-notes "" "")
+  ;; (spydez/taskspace/generate "" "")
+
+
+  ;;---
+  ;; "Home" Domain
+  ;;---
+  (spydez/jerky/set 'custom 'taskspace 'dir 'notes :home
+                    :value (spydez/path/to-dir
+                            (spydez/dirky/path :default :roam)
+                            "taskspace"
+                            (spydez/dirky/domain/key-to-str :home))
+                    :docstr "dir for home taskspace notes")
+
+  (spydez/jerky/set 'custom 'taskspace 'dir 'root :home
+                    :value (spydez/dirky/path :home :taskspace)
+                    :docstr "dir for home taskspace data/files")
+
+  (spydez/jerky/set 'custom 'taskspace 'dir 'root :home
+                    :value (spydez/dirky/path :home :taskspace)
+                    :docstr "dir for home taskspace data/files")
+
+  ;; alias it here; (re)define it later.
+  (defalias 'spydez/taskspace/generate/home 'spydez/taskspace/generate)
+  (spydez/jerky/set 'custom 'taskspace 'gen-files-alist :home
+                    :value 'spydez/taskspace/generate/work
+                    :docstr "Alist for what to generate for new taskspace.")
+
+
+  ;;---
+  ;; "Work" Domain
+  ;;---
+  (spydez/jerky/set 'custom 'taskspace 'dir 'notes :work
+                    :value (spydez/path/to-dir
+                            (spydez/dirky/path :default :roam)
+                            "taskspace"
+                            (spydez/dirky/domain/key-to-str :work))
+                    :docstr "dir for home taskspace notes")
+
+  (spydez/jerky/set 'custom 'taskspace 'dir 'root :work
+                    :value (spydez/dirky/path :work :taskspace)
+                    :docstr "dir for home taskspace data/files")
+
+  ;; alias it here; (re)define it later.
+  (defalias 'spydez/taskspace/generate/work 'spydez/taskspace/generate)
+  (spydez/jerky/set 'custom 'taskspace 'gen-files-alist :work
+                    :value 'spydez/taskspace/generate/work
+                    :docstr "Alist for what to generate for new taskspace.")
 
 
   ;;------------------------------
@@ -328,14 +341,107 @@ in.
    ;; projectile: empty file
    '((".projectile" "")
      ;; notes.org: setup with org header snippet ready to go
-     (taskspace/file-name/notes spydez/taskspace/gen-org-notes)))
+     (taskspace/file-name/notes spydez/taskspace/generate)))
 
   ;; (taskspace/dir/always-ignore ...) ;; may have to adjust soon?
 
   ;; (taskspace/dir-name/separator ...)
   ;; (taskspace/dir-name/parts-alists ...)
   ;; (taskspace/dir-name/valid-desc-regexp ...)
-  )
+
+
+  ;;------------------------------
+  :config
+  ;;------------------------------
+
+
+  ;;---
+  ;; Context Switching...
+  ;;---
+  (defun spydez/taskspace/around (domain func)
+    "Basically an ':around' advice, but temporary. Sets taskspace
+custom vars in lexical scope from jerky kvs before taskspace
+function call."
+    (let ((taskspace/dir/remote-notes (spydez/jerky/get 'custom 'taskspace
+                                                        'dir 'notes domain))
+          (taskspace/dir (spydez/jerky/get 'custom 'taskspace
+                                           'dir 'root domain))
+          (taskspace/gen-files-alist (spydez/jerky/set
+                                      'custom 'taskspace
+                                      'gen-files-alist domain)))
+      (call-interactively func)
+      ))
+
+  ;;---
+  ;; Hydra For Contexts...
+  ;;---
+
+  (with-feature 'hydra
+    (defhydra spydez/hydra/taskspace (:color blue ;; default exit heads
+                                      :idle 0.75  ;; no help for x seconds
+                                      :hint none) ;; no hint - just docstr
+      "
+^Work^                                        | ^Home^
+^----^----------------------------------------+-^----^---------------------------------------
+_w n_: ?w n?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ | _h n_: ?h n?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_w v_: ?w v?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ | _h v_: ?h v?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_w d_: ?w d?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ | _h d_: ?h d?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_w p_: ?w p?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ | _h p_: ?h p?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_w t_: ?w t?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ | _h t_: ?h t?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_w w_: ?w w?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ | _h w_: ?h w?^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"
+      ;;------------------------------------------------------------------------
+      ;; Work Work...
+      ;;------------------------------------------------------------------------
+
+      ("w n" (funcall #'spydez/taskspace/around :work #'taskspace/create)
+       (apply #'format "%-12s: %-24s"
+              '("New" "taskspace/create")))
+      ("w v" (funcall #'spydez/taskspace/around :work #'taskspace/notes)
+       (apply #'format "%-12s: %-24s"
+              '("Visit" "taskspace/notes")))
+      ("w d" (funcall #'spydez/taskspace/around :work #'taskspace/create)
+       (apply #'format "%-12s: %-24s"
+              '("Dired" "taskspace/dired")))
+      ("w p" (funcall #'spydez/taskspace/around :work #'taskspace/create)
+       (apply #'format "%-12s: %-24s"
+              '("Parent/Root" "taskspace/parent-dired")))
+      ("w t" (funcall #'spydez/taskspace/around :work #'taskspace/create)
+       (apply #'format "%-12s: %-24s"
+              '("Task Name" "taskspace/task-name/dwim")))
+      ("w w" (funcall #'spydez/taskspace/around :work #'taskspace/create)
+       (apply #'format "%-12s: %-24s"
+              '("Task Dir" "taskspace/task-dir/dwim")))
+
+      ;;------------------------------------------------------------------------
+      ;; Home... Work?..
+      ;;------------------------------------------------------------------------
+
+      ("h n" (funcall #'spydez/taskspace/around :home #'taskspace/create)
+       (apply #'format "%-12s: %-24s"
+              '("New" "taskspace/create")))
+      ("h v" (funcall #'spydez/taskspace/around :home #'taskspace/notes)
+       (apply #'format "%-12s: %-24s"
+              '("Visit" "taskspace/notes")))
+      ("h d" (funcall #'spydez/taskspace/around :home #'taskspace/create)
+       (apply #'format "%-12s: %-24s"
+              '("Dired" "taskspace/dired")))
+      ("h p" (funcall #'spydez/taskspace/around :home #'taskspace/create)
+       (apply #'format "%-12s: %-24s"
+              '("Parent/Root" "taskspace/parent-dired")))
+      ("h t" (funcall #'spydez/taskspace/around :home #'taskspace/create)
+       (apply #'format "%-12s: %-24s"
+              '("Task Name" "taskspace/task-name/dwim")))
+      ("h w" (funcall #'spydez/taskspace/around :home #'taskspace/create)
+       (apply #'format "%-12s: %-24s"
+              '("Task Dir" "taskspace/task-dir/dwim")))
+      ))
+
+  ;; global keybind (can override minor mode binds)
+  ;; (bind-key* "C-," #'spydez/hydra/taskspace/body)
+
+  ;; Bind the hydra's entry to something more typable.
+  (defalias 'spydez/taskspace 'spydez/hydra/taskspace/body))
 
 
 ;;------------------------------------------------------------------------------
