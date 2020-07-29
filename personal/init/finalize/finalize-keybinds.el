@@ -138,11 +138,11 @@ _e p_: ?e p?
     ;; Email Addresses
     ;;---
     ;; Could truncate w/ "..." if not enough room to work with.
-    ("e w" (insert (spydez/signature/email/get :work))
+    ("e w" (insert (spydez/jerky/get "custom.signature.email.work"))
      (format "%-8s %-23s" "email:" "work"))
-    ("e c" (insert (spydez/signature/email/get :code))
+    ("e c" (insert (spydez/jerky/get "custom.signature.email.code"))
      (format "%-8s %-23s" "email:" "code"))
-    ("e p" (insert (spydez/signature/email/get :personal))
+    ("e p" (insert (spydez/jerky/get "custom.signature.email.home"))
      (format "%-8s %-23s" "email:" "personal"))
 
 
