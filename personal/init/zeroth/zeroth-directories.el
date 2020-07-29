@@ -258,6 +258,9 @@ if none found.
 You probably want: `:home' or `:work'
 You'll probably set it in 'master-list.el'.
 ")
+;; Any keyword is safe for local-variable-ing this... Though ':work or :home'
+;; would be the (current) safest check.
+(put 'spydez/dirky/domain 'safe-local-variable #'keywordp)
 
 
 (defvar spydez/dirky/keys

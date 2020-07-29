@@ -13,6 +13,6 @@
 # --
 #+TITLE:       ${1:`(capitalize (file-name-nondirectory (file-name-sans-extension (buffer-file-name))))`}
 #+AUTHOR:      ${2:Cole Brown}
-#+EMAIL:       ${3:git@spydez.com}
-#+DATE:        ${4:`(let ((x (org-insert-time-stamp nil nil t))))`}
+#+EMAIL:       ${3:`(spydez/jerky/get 'custom 'signature 'email spydez/dirky/domain)`}
+#+DATE:        ${4:`(format-time-string spydez/datetime/format/org-inactive-derivative)`}
 $0
