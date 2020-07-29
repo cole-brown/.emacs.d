@@ -30,12 +30,51 @@
 
 
 ;;------------------------------------------------------------------------------
-;; Trial: Helm package
+;; M-spydez
 ;;------------------------------------------------------------------------------
-;; Try out this newfangle Helm thing...
-;; http://pages.sachachua.com/.emacs.d/Sacha.html#org04e47b9
+
+;; Ideally, spider emoji? But...
+;;   - 🕷
+;;   - 🕷️
+;;   - 🕸️
+;; ...I ain't got any.
+;;
+;; Kooru?
+;; - コール
+;; - With like...?
+;;   - ∵ ∴
+;;   - 〈〉
+;;   - ：
+;; - コール〉
+;;   - 〈コール〉
+;; - コール∵  <- "because"
+;; - コール∴  <- "therefore"
+;; - コール：
+;; M-<something>?
+;;- M-∴
+;;- H-x? Hyper-x?
+;;  - (kbd "C-c x") is available...
+;;  - 〈∵〉 or 〈∴〉
+
+(defun spydez/completion/filtered-M-x (prefixarg &optional command-name typed)
+  "Acts similar to M-x / `execute-extended-command', except this one only
+looks for my functions.
+"
+  (declare (interactive-only command-execute))
+
+  (interactive
+   ;; see: read-extended-command
+   ;; see: execute-extended-command
+
+   ;; ∴〉
+   ()))
+
+
+
+;;------------------------------------------------------------------------------
+;; Helm package
+;;------------------------------------------------------------------------------
 ;; https://github.com/emacs-helm/helm/wiki
-;; Trial: [2019-01-18]
 (use-package helm
   :delight helm-mode
   :demand t
