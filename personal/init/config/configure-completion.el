@@ -56,6 +56,58 @@
 ;;  - (kbd "C-c x") is available...
 ;;  - 〈∵〉 or 〈∴〉
 
+
+;; §-TODO-§ [2020-07-29]: Finish this.
+;; (defun spydez//completion/find-command ()
+;;   "Read command name to invoke in `spydez/completion/filtered-M-x'."
+;;   (minibuffer-with-setup-hook
+;;       (lambda ()
+;;         (add-hook 'post-self-insert-hook
+;;                   (lambda ()
+;;                     (setq execute-extended-command--last-typed
+;;                           (minibuffer-contents)))
+;;                   nil 'local)
+;;         (set (make-local-variable 'minibuffer-default-add-function)
+;;              (lambda ()
+;;                ;; Get a command name at point in the original buffer
+;;                ;; to propose it after M-n.
+;;                (with-current-buffer (window-buffer (minibuffer-selected-window))
+;;                  (and (commandp (function-called-at-point))
+;;                       (format "%S" (function-called-at-point)))))))
+;;
+;;     ;; Read a string, completing from and restricting to the set of
+;;     ;; 'my' defined commands (as per filter). Don't provide any initial input.
+;;     ;; Save the command read on the extended-command history list.
+;;     (completing-read
+;;      (concat (cond
+;;               ((eq current-prefix-arg '-) "- ")
+;;               ((and (consp current-prefix-arg)
+;;                     (eq (car current-prefix-arg) 4)) "C-u ")
+;;               ((and (consp current-prefix-arg)
+;;                     (integerp (car current-prefix-arg)))
+;;                (format "%d " (car current-prefix-arg)))
+;;               ((integerp current-prefix-arg)
+;;                (format "%d " current-prefix-arg)))
+;;              ;; This isn't strictly correct if `execute-extended-command'
+;;              ;; is bound to anything else (e.g. [menu]).
+;;              ;; It could use (key-description (this-single-command-keys)),
+;;              ;; but actually a prompt other than "M-x" would be confusing,
+;;              ;; because "M-x" is a well-known prompt to read a command
+;;              ;; and it serves as a shorthand for "Extended command: ".
+;;              "M-x ")
+;;      (lambda (string pred action)
+;;        (let ((pred
+;;               (if (memq action '(nil t))
+;;                   ;; Exclude obsolete commands from completions.
+;;                   (lambda (sym)
+;;                     (and (funcall pred sym)
+;;                          (or (equal string (symbol-name sym))
+;;                              (not (get sym 'byte-obsolete-info)))))
+;;                 pred)))
+;;          (complete-with-action action obarray string pred)))
+;;      #'commandp t nil 'extended-command-history)))
+
+
 (defun spydez/completion/filtered-M-x (prefixarg &optional command-name typed)
   "Acts similar to M-x / `execute-extended-command', except this one only
 looks for my functions.
