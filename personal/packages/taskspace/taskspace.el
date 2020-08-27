@@ -17,7 +17,7 @@
 ;;   1) Can it do X?
 ;;      - No... I really meant simple.
 ;;   2) Can it do multiple taskspace roots?
-;;      - Yes.
+;;      - Yes... I had to make it less simple.
 
 ;; It can make a folder based on a simple dating and numbering scheme, with a
 ;; simple description tacked on for human usability.
@@ -47,6 +47,12 @@
 ;;---------------
 ;; Commands:
 ;;---------------
+;;   The Main command:
+;;     `taskspace/create'
+;;       - Create a new taskspace. Will prompt for the short description.
+;;         - e.g. description of "2019-01-01_2_some-task-name" is
+;;           "some-task-name".
+;;
 ;;   DWIM commands:
 ;;     - Accepts numeric prefix arg.
 ;;       - 0 or no prefix: Today's date
@@ -63,62 +69,130 @@
 ;;       - Taskspace directory name only.
 ;;         - e.g. "2019-01-01_2_some-task-name"
 ;;
-;;   DWIM derived:
-;;     - Use `taskspace/dir/dwim' to determine which taskspace is
-;;       intended from the context.
+;;   Other Commands:
 ;;     `taskspace/dired'
 ;;       - Opens the directory of a task in emacs
+;;         (uses find-file, so defaults to dired-mode buffer).
+;;     `taskspace/parent-dired'
+;;       - Opens the directory of all tasks in emacs (aka `(taskspace//config group :dir/tasks)')
 ;;         (uses find-file, so defaults to dired-mode buffer).
 ;;     `taskspace/shell'
 ;;       - Opens the directory of all tasks in emacs (aka `(taskspace//config group :dir/tasks)')
 ;;         (uses find-file, so defaults to dired-mode buffer).
-;;
-;;   Other Commands:
-;;     `taskspace/create'
-;;       - Create a new taskspace. Will prompt for the short description.
-;;         - e.g. description of "2019-01-01_2_some-task-name" is
-;;           "some-task-name".
-;;     `taskspace/parent-dired'
-;;       - Opens the directory of all tasks in emacs (aka `(taskspace//config group :dir/tasks)')
-;;         (uses find-file, so defaults to dired-mode buffer).
+;;       - Use `taskspace/dir/dwim' to determine which taskspace is
+;;         intended from the context.
 
 
 ;;---------------
 ;; Settings:
 ;;---------------
-;; See 'General Settings' header and all the `defcustom' defined vars for
-;; taskspace to find out what all can be customized right now.
-;;
-;; Or see Customize help for `taskspace' (M-x customize-group RET taskspace)
+;; See 'General Settings' header to find out what all can be customized per
+;; group right now.
 
 
-;;---------------
-;; Configuration:
-;;---------------
-;; Simple to set up with use-package.
+;;------------------------------
+;; Use-Package Config, Simple:
+;;------------------------------
 ;;
-;; TODO: fix this example.
-;; use-package example:
 ;;  (use-package taskspace
-;;    :custom
-;;    ((taskspace//config group :format/datetime) "%Y-%m-%d")
-;;    ;; ((taskspace//config group :function/shell) #'shell) ;; leave as default
-;;    ((taskspace//config group :dir/tasks) "~/workspace")
-;;
-;;    ((taskspace//config group :file/new/generate)
-;;     ;; projectile: empty file
-;;     '((".projectile" . "")
-;;       ;; notes.org: setup with my org header snippet ready to go
-;;       ((taskspace//config group :file/notes) . "org-header-snippet")))
-;;
-;;    ;; others to consider:
-;;    ;; ((taskspace//config group :file/new/copy) ...)
-;;    ;; ((taskspace//config group :dir/tasks/ignore) ...)
-;;    ;; ((taskspace//config group :naming/separator) ...)
-;;    ;; ((taskspace//config group :naming/parts-alists) ...)
-;;    ;; ((taskspace//config group :naming/description/rx/valid) ...)
-;;    )
+;;    :ensure nil)
 
+;;------------------------------
+;; Use-Package Config, Multi-Group:
+;;------------------------------
+;;
+;; (use-package taskspace
+;;   ;; My own personal package - do not package manager it.
+;;   :ensure nil
+;;
+;;   ;;------------------------------
+;;   :init
+;;   ;;------------------------------
+;;
+;;   ;;---
+;;   ;; General (Non-Per-Domain) Init...
+;;   ;;---
+;;   (defun my/taskspace/generate (taskname taskpath)
+;;     "NOTE: Could be redefined later for more work-specific details, so check
+;; e.g. 'finalize-domain-secret.el' for a redef. Or 'C-h f
+;; my/taskspace/generate' and see what file it's defined
+;; in.
+;; "
+;;     ;; Format:
+;;     ;; spy-header snippet key
+;;     ;;
+;;     ;; taskname
+;;     ;; taskpath
+;;     ;;
+;;     ;; 'mkdir cmd'
+;;     ;;
+;;     ;; fancy box to separate this stuff from start of normal notes
+;;     (format (concat "%s\n" ;; header
+;;                     "\n"
+;;                     "#+TASKSPACE: %s\n" ;; taskpath
+;;                     "%s\n" ;; taskname
+;;                     "\n"
+;;                     "%s\n" ;; mkdir cmd for remote servers
+;;                     "\n"
+;;                     "%s\n" ;; fancy box top
+;;                     "%s\n" ;; fancy box middle
+;;                     "%s\n" ;; fancy box bottom
+;;                     "\n\n")
+;;             "my-header-snippet"
+;;             taskpath
+;;             taskname
+;;             (format "mkdir ~/temp/%s" taskname)
+;;             "     ┌┬┬┬──────────────────────────────────────────────────────────────┬┬┬┐"
+;;             "     ├┼┼┤                             ...                              ├┼┼┤"
+;;             "     └┴┴┴──────────────────────────────────────────────────────────────┴┴┴┘"
+;;             ))
+;;
+;;   ;;---
+;;   ;; "Home" Domain
+;;   ;;---
+;;
+;;   ;; I can redef later if I want different ones..
+;;   (defalias 'my/taskspace/generate/home 'my/taskspace/generate)
+;;
+;;   (defvar my/taskspace/group/home
+;;     '((:type/notes      :self-contained)
+;;       (:format/datetime my/datetime/format/yyyy-mm-dd)
+;;       (:dir/tasks my/taskspace/path/tasks/home)
+;;       (:dir/notes my/taskspace/path/notes/home)
+;;       (:file/new/generate ((".projectile" "") ;; projectile: empty file
+;;                            ;; notes.org: setup with org header snippet
+;;                            ;; ready to go
+;;                            ((taskspace//config :home :file/notes)
+;;                             my/taskspace/generate/home))))
+;;     "Custom settings for my `:home' taskspace group.")
+;;
+;;   ;;---
+;;   ;; "Work" Domain
+;;   ;;---
+;;
+;;   ;; I can redef later if I want different ones..
+;;   (defalias 'my/taskspace/generate/work 'my/taskspace/generate)
+;;
+;;   (defvar my/taskspace/group/work
+;;     '((:type/notes      :noteless)
+;;       (:format/datetime my/datetime/format/yyyy-mm-dd)
+;;       (:dir/tasks my/taskspace/path/tasks/work)
+;;       (:dir/notes my/taskspace/path/notes/work)
+;;       (:file/new/generate ((".projectile" "") ;; projectile: empty file
+;;                            ;; notes.org: setup with org header snippet
+;;                            ;; ready to go
+;;                            ((taskspace//config :home :file/notes)
+;;                             my/taskspace/generate/home))))
+;;     "Custom settings for my `:home' taskspace group.")
+;;
+;;   ;;------------------------------
+;;   :custom
+;;   ;;------------------------------
+;;
+;;   (taskspace/groups
+;;    '((:work    "Work Taskspace" my/taskspace/group/work)
+;;      (:home    "Home Taskspace" my/taskspace/group/home)
+;;      (:default "Defaults"       taskspace/group/default))))
 
 
 ;;; Code:
@@ -134,6 +208,7 @@
 
 
 ;; §-TODO-§ [2020-08-20]: Change private functions to 'taskspace//'
+;; §-TODO-§ [2020-08-19]: Rename functions to sort them better.
 
 
 (require 'cl) ;; for `some'
