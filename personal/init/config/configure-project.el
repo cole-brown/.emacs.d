@@ -322,32 +322,68 @@ in.
                     :value 'spydez/taskspace/generate/work
                     :docstr "Alist for what to generate for new taskspace.")
 
+  (defvar spydez/taskspace/group/work
+    '((:type/notes      :noteless)
+      (:format/datetime spydez/datetime/format/yyyy-mm-dd)
+      (:dir/tasks (spydez/dirky/path :work :taskspace))
+      (:dir/notes (spydez/path/to-dir
+                               (spydez/dirky/path :default :roam)
+                               "taskspace"
+                               (spydez/dirky/domain/key-to-str :work)))
+      (:file/new/generate ((".projectile" "") ;; projectile: empty file
+                           ;; notes.org: setup with org header snippet
+                           ;; ready to go
+                           ((taskspace//config :work :file/notes)
+                            spydez/taskspace/generate/work))))
+    "Custom settings for my `:work' taskspace group.")
+
+  (defvar spydez/taskspace/group/home
+    '((:type/notes      :noteless)
+      (:format/datetime spydez/datetime/format/yyyy-mm-dd)
+      (:dir/tasks (spydez/dirky/path :home :taskspace))
+      (:dir/notes (spydez/path/to-dir
+                               (spydez/dirky/path :default :roam)
+                               "taskspace"
+                               (spydez/dirky/domain/key-to-str :home)))
+      (:file/new/generate ((".projectile" "") ;; projectile: empty file
+                           ;; notes.org: setup with org header snippet
+                           ;; ready to go
+                           ((taskspace//config :home :file/notes)
+                            spydez/taskspace/generate/home))))
+    "Custom settings for my `:home' taskspace group.")
 
   ;;------------------------------
   :custom
   ;;------------------------------
-  (taskspace/type :noteless)
-  (taskspace/dir/remote-notes (spydez/path/to-dir
-                               (spydez/dirky/path :default :roam)
-                               "taskspace"
-                               spydez/dev/domain/name))
-  (taskspace/datetime/format spydez/datetime/format/yyyy-mm-dd)
-  ;; (taskspace/shell-fn #'shell) ;; leave as default
-  (taskspace/dir (spydez/dirky/path nil :taskspace))
 
-  ;; (taskspace/dir/copy-files-src ...) ;; don't have any right now
+  (taskspace/groups
+   '((:work    "Work Taskspace" spydez/taskspace/group/work)
+     (:home    "Home Taskspace" spydez/taskspace/group/home)
+     (:default "Defaults"       taskspace/group/default)))
 
-  (taskspace/gen-files-alist
-   ;; projectile: empty file
-   '((".projectile" "")
-     ;; notes.org: setup with org header snippet ready to go
-     (taskspace/file-name/notes spydez/taskspace/generate)))
+  ;; ;; old customs
+  ;; (taskspace/type :noteless)
+  ;; (taskspace/dir/remote-notes (spydez/path/to-dir
+  ;;                              (spydez/dirky/path :default :roam)
+  ;;                              "taskspace"
+  ;;                              spydez/dev/domain/name))
+  ;; (taskspace/datetime/format spydez/datetime/format/yyyy-mm-dd)
+  ;; ;; (taskspace/shell-fn #'shell) ;; leave as default
+  ;; (taskspace/dir (spydez/dirky/path nil :taskspace))
 
-  ;; (taskspace/dir/always-ignore ...) ;; may have to adjust soon?
+  ;; ;; (taskspace/dir/copy-files-src ...) ;; don't have any right now
 
-  ;; (taskspace/dir-name/separator ...)
-  ;; (taskspace/dir-name/parts-alists ...)
-  ;; (taskspace/dir-name/valid-desc-regexp ...)
+  ;; (taskspace/gen-files-alist
+  ;;  ;; projectile: empty file
+  ;;  '((".projectile" "")
+  ;;    ;; notes.org: setup with org header snippet ready to go
+  ;;    (taskspace/file-name/notes spydez/taskspace/generate)))
+
+  ;; ;; (taskspace/dir/always-ignore ...) ;; may have to adjust soon?
+
+  ;; ;; (taskspace/dir-name/separator ...)
+  ;; ;; (taskspace/dir-name/parts-alists ...)
+  ;; ;; (taskspace/dir-name/valid-desc-regexp ...)
 
 
   ;;------------------------------
@@ -355,27 +391,27 @@ in.
   ;;------------------------------
 
 
-  ;;---
-  ;; Context Switching...
-  ;;---
-  (defun spydez/taskspace/around (domain func)
-    "Basically an ':around' advice, but temporary. Sets taskspace
-custom vars in lexical scope from jerky kvs before taskspace
-function call."
-    (let ((taskspace/dir/remote-notes (spydez/jerky/get 'custom 'taskspace
-                                                        'dir 'notes domain))
-          (taskspace/dir (spydez/jerky/get 'custom 'taskspace
-                                           'dir 'root domain))
-          (taskspace/gen-files-alist (spydez/jerky/set
-                                      'custom 'taskspace
-                                      'gen-files-alist domain)))
-      (call-interactively func)
-      ))
+;;   ;;---
+;;   ;; Context Switching...
+;;   ;;---
+;;   (defun spydez/taskspace/around (domain func)
+;;     "Basically an ':around' advice, but temporary. Sets taskspace
+;; custom vars in lexical scope from jerky kvs before taskspace
+;; function call."
+;;     (let ((taskspace/dir/remote-notes (spydez/jerky/get 'custom 'taskspace
+;;                                                         'dir 'notes domain))
+;;           (taskspace/dir (spydez/jerky/get 'custom 'taskspace
+;;                                            'dir 'root domain))
+;;           (taskspace/gen-files-alist (spydez/jerky/set
+;;                                       'custom 'taskspace
+;;                                       'gen-files-alist domain)))
+;;       (call-interactively func)
+;;       ))
 
   ;;---
   ;; Hydra For Contexts...
   ;;---
-
+  ;; TODO: redo hydra for new group-aware taskspaces.
   (with-feature 'hydra
     (defhydra spydez/hydra/taskspace (:color blue ;; default exit heads
                                       :idle 0.75  ;; no help for x seconds
