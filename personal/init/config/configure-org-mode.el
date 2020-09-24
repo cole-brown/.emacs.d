@@ -823,10 +823,8 @@ So in the non-nil TO-LOWER case, we will return 'value' if asked for:
 ;;------------------------------------------------------------------------------
 ;; Org Roam (Zettelkasten Note-Taking with Org-Mode)
 ;;------------------------------------------------------------------------------
-;; https://blog.jethro.dev/posts/introducing_org_roam/
-;;   https://blog.jethro.dev/posts/zettelkasten_with_org/
-;; https://github.com/jethrokuan/org-roam
-;; Trial: [2020-02-13]
+;; https://github.com/org-roam/org-roam
+;; https://www.orgroam.com/
 (use-package org-roam
   :load-path (lambda () (spydez/path/to-dir
                          (spydez/dirky/path :init :packages/submodules)
@@ -850,18 +848,24 @@ It uses TITLE and the current timestamp to form a unique title."
   ;;------------------------------
   :hook
   ;;------------------------------
-  (org-mode . org-roam-mode)
+  (after-init . org-roam-mode)
 
   ;;------------------------------
-  :bind
+  :bind ;; org-roam-mode-map
   ;;------------------------------
-  ("C-c n l" . org-roam)
-  ("C-c n t" . org-roam-today)
-  ("C-c n f" . org-roam-find-file)
-  ("C-c n i" . org-roam-insert)
-  ("C-c n g" . org-roam-show-graph)
+  (:map org-roam-mode-map
+        (("C-c n l" . org-roam)
+         ("C-c n f" . org-roam-find-file)
+         ("C-c n g" . org-roam-graph-show)))
 
-  ;; Could put in grab-bag hydra if desired.
+  ;;------------------------------
+  :bind ;; org-mode-map
+  ;;------------------------------
+  (:map org-mode-map
+        (("C-c n i" . org-roam-insert))
+        (("C-c n I" . org-roam-insert-immediate)))
+
+  ;; Could put stuff in grab-bag hydra or new hydra if I want?..
 
   ;;------------------------------
   :custom
@@ -920,6 +924,17 @@ It uses TITLE and the current timestamp to form a unique title."
   (deft-default-extension "org")
   (deft-directory (spydez/dirky/path :default :roam))
   (deft-use-filename-as-title t))
+
+
+;; https://github.com/org-roam/company-org-roam
+(use-package company-org-roam
+  :after (org company)
+  :demand t
+
+  ;;------------------------------
+  :config
+  ;;------------------------------
+  (push 'company-org-roam company-backends))
 
 
 ;;------------------------------------------------------------------------------

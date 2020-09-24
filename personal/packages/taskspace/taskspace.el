@@ -47,13 +47,13 @@
 ;;---------------
 ;; Commands:
 ;;---------------
-;;   The Main command:
+;;   The Main Command:
 ;;     `taskspace/create'
 ;;       - Create a new taskspace. Will prompt for the short description.
 ;;         - e.g. description of "2019-01-01_2_some-task-name" is
 ;;           "some-task-name".
 ;;
-;;   DWIM commands:
+;;   DWIM Commands:
 ;;     - Accepts numeric prefix arg.
 ;;       - 0 or no prefix: Today's date
 ;;       - positive: Future date; N days from now.
@@ -63,10 +63,10 @@
 ;;       - If just one existing: Return it.
 ;;       - If multiple: Choose from prompt of options.
 ;;     `taskspace/dir/dwim'
-;;       - Fully qualified path to taskspace.
+;;       - Returns fully qualified path to taskspace.
 ;;         - e.g. "c:/home/user/taskspace/2019-01-01_2_some-task-name"
 ;;     `taskspace/name/dwim'
-;;       - Taskspace directory name only.
+;;       - Returns taskspace (directory) name only.
 ;;         - e.g. "2019-01-01_2_some-task-name"
 ;;
 ;;   Other Commands:
@@ -77,8 +77,7 @@
 ;;       - Opens the directory of all tasks in emacs (aka `(taskspace//config group :dir/tasks)')
 ;;         (uses find-file, so defaults to dired-mode buffer).
 ;;     `taskspace/shell'
-;;       - Opens the directory of all tasks in emacs (aka `(taskspace//config group :dir/tasks)')
-;;         (uses find-file, so defaults to dired-mode buffer).
+;;       - Opens a shell.
 ;;       - Use `taskspace/dir/dwim' to determine which taskspace is
 ;;         intended from the context.
 
@@ -365,12 +364,18 @@ multiple taskspaces.
 ;; Per-Group Config/Settings Helpers
 ;;------------------------------------------------------------------------------
 
-(defun taskspace//config (group key)
-  "Get the value of KEY from GROUP's settings alist in `taskspace/groups'.
+(defun taskspace//config (group key &optional field)
+  "Get the FIELD of KEY from GROUP's settings alist in `taskspace/groups'.
 If GROUP doesn't exist in `taskspace/groups', this will look for `:default'.
 Errors if nothing is found in GROUP or :default settings.
+
+If FIELD is nil or `:setting', gets the setting's value.
+
+If FIELD is `:docstr', gets the setting's docstr.
+
+If FIELD is `:key', gets the setting's key, which is KEY. Almost
+useless, but does validate entry's exists.
 "
-  ;; §-TODO-§ [2020-08-17]: Also use this to get symbol/docstr?
   (let ((entry nil)
         (settings (taskspace//config/group->settings group)))
     ;; First, try to get from group's settings (if we found group's settings).
@@ -392,16 +397,42 @@ Errors if nothing is found in GROUP or :default settings.
          "Taskspace: Could not find setting '%S' in group '%S' or default."
          key group)
 
-      ;; Got group; return value.
+      ;; Got group; return value of requested field.
       ;; Entry should be: (symbol value docstr)
-      ;; Now figure out what it actually is and return it.
-      (taskspace//config/entry->setting entry))))
+      ;; Now figure out which is requested, what it actually is, and return it.
+      (cond ((eq field :key)
+             (taskspace//config/entry->key entry))
+
+            ((eq field :docstr)
+             (taskspace//config/entry->docstr entry))
+
+            (t
+             (taskspace//config/entry->setting entry))))))
 ;; (taskspace//config :home :format/datetime)
+;; (taskspace//config :home :format/datetime :setting)
+;; (taskspace//config :home :format/datetime :docstr)
+;; (taskspace//config :home :format/datetime :key)
 ;; (taskspace//config :home :type/notes)
 ;; (taskspace//config :home :dir/tasks)
 ;; (taskspace//config :home :dir/tasks/ignore)
 ;; (taskspace//config :home :naming/parts-alists)
 ;; (taskspace//config :home :file/new/copy)
+
+
+(defun taskspace//config/entry->docstr (entry)
+  "Helper for taskspace//config.
+
+Given an ENTRY from a group's settings alist, returns its docstr or nil.
+"
+  (nth 2 entry))
+
+
+(defun taskspace//config/entry->key (entry)
+  "Helper for taskspace//config.
+
+Given an ENTRY from a group's settings alist, returns its key/symbol or nil.
+"
+  (nth 0 entry))
 
 
 (defun taskspace//config/entry->setting (entry)
@@ -620,16 +651,12 @@ Returns nil or a string in TASKSPACES.
       (setq display-names (mapcar #'file-name-nondirectory taskspaces)))
 
      ;; unexpected -> error?
-     ;;   - TODO: -> nil instead?
-     (t (error "Unknown display option `%s'" display))
-     )
+     (t (error "Unknown display option `%s'" display)))
 
     ;; Give user their choices...
     ;;
     ;; With helm at the wheel, this goes to helm--completing-read-default.
     ;; `confirm' to force completion to one complete choice.
-    ;; TODO: Pretty up for Helm? Name the choices window something nice -
-    ;;   it's just "pp-eval-expression" right now.
     (let ((choice (completing-read (format "Choose %s: "
                                            (taskspace//group/display-name group))
                                    display-names nil 'confirm)))
@@ -1173,7 +1200,6 @@ found in parts-alists.
          split-alist)
 
     ;; find the right alist for building the dir string
-    ;; TODO: pull this out of here and split-name and make func maybe?
     (dolist (alist (taskspace//config group :naming/parts-alists) split-alist)
       (when (= name-len (length alist))
         (setq split-alist alist)))
@@ -1226,11 +1252,6 @@ NAME should just be directory name; do not use path.
 ;; (taskspace//naming/split :default "2000_0_zort" nil)
 ;; (taskspace//naming/split :default "2000_0_zort" 'number)
 ;; (taskspace//naming/split :default "2000_zort" 'number)
-;;
-;; TODO: make work with 3+ where date is 1, number is 2, 3+ are all desc that
-;; had "_" in it...
-;;
-;; (taskspace//naming/split "2000_0_zort_jeff" 'number)
 
 
 ;;------------------------------
@@ -1298,8 +1319,6 @@ and returns string.
 ;;--                          Interactive Commands                            --
 ;;------------------------------------------------------------------------------
 
-;; TODO-DWIM: If in a taskspace file/folder, return that.
-
 ;;;###autoload
 (defun taskspace/name/dwim ()
   "Interactive. DWIM to kill-ring and return today's task string
@@ -1314,11 +1333,6 @@ Choose from multiple.
 
     ;; copy to kill-ring
     (kill-new taskname)
-
-    ;; §-TODO-§ [2020-03-17]: We'd need another return from task-dir/dwim to
-    ;; know what it did...
-    ;; ;; say what we did
-    ;; (message "Existing taskspace: %s" taskname)
 
     ;; return it
     taskname
@@ -1431,7 +1445,6 @@ Else:
 ;; (taskspace/dir/dwim -1 :home)
 
 
-;; TODO: support creating for non-today dates?
 ;;;###autoload
 (defun taskspace/create (group desc)
   "Interactive. Creates a new taskspace for today with the description
@@ -1440,7 +1453,6 @@ supplied.
   ;; Do we need a max len? Leaving out until I feel otherwise.
   ;;
   ;; §-TODO-§ [2020-08-18]: GROUP TODO: change interactive.
-  ;;   - Completing read for entering group by symbol name or display name
   ;;   - Something that'll convert spaces into hyphens for description?
   (interactive (list
                 (taskspace//prompt/group)
@@ -1494,9 +1506,6 @@ supplied.
 
         ;; Can also put skeleton org file. Or just org file with yasnippet ready
         ;; to go...
-        ;; TODO: dynamic names for files?
-        ;;   - notes.<desc>.org?
-        ;;   - _notes.<desc>.org?
 
         ;; Copy taskpath to kill-ring.
         (kill-new taskpath)
@@ -1585,9 +1594,6 @@ If in a file or sub-dir of the task dir, go to the task's dir.
 ;; M-x taskspace/dired/root
 
 
-;; TODO: Need to get my shell better. MSYS/Git-Bash shell and emacs
-;; don't like each other all that much by default.
-
 ;;;###autoload
 (defun taskspace/shell (group)
   "Interactive. Opens the current taskspace's top dir in an emacs shell buffer.
@@ -1620,8 +1626,6 @@ Shell opened can be set by modifying:
 ;; (taskspace/shell :work)
 ;; M-x taskspace/shell
 
-
-;; TODO: dwim <date>'s task ? (is this a dupe of taskspace/dir/dwim?)
 
 ;;;###autoload
 (defun taskspace/notes (date-input group)
@@ -1663,17 +1667,6 @@ Opens:
     (cond
      ;; error out if we have no idea what date to dwim with...
      ((null date) (error "Date string is nil: %s" date))
-
-     ;; Doesn't match the other options, which only choose. And this one only
-     ;; creates? And you can only create if you have 0 notes? Meh. Rethink if
-     ;; you want this.
-     ;; ;; if none, create one?
-     ;; ((null taskspaces)
-     ;;  ;; call-interactively will give user prompt for description,
-     ;;  ;; etc. as if they called themselves.
-     ;;  (funcall-interactively #'taskspace/create group)
-     ;;  ;; §-TODO-§ [2020-01-30]: Then open the notes file?
-     ;;  )
 
      ;; If just one, open its notes file.
      ((= length-ts 1)
@@ -1726,14 +1719,10 @@ Opens:
 ;; Tasks, Wants, Feature Requests, etc.
 ;;------------------------------------------------------------------------------
 
-;; TODO: Make empty dirs when creating task?
-;; (e.g. "archive" or "done" or something)
-
 ;; TODO-PKG:
 ;;   - Comments/layout like a real package.
 ;;     e.g. https://github.com/tarsius/moody/blob/master/moody.el
 
-;; TODO: uh... tests? idk
 
 ;;------------------------------------------------------------------------------
 ;; The End.
